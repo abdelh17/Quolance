@@ -1,4 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
+npx lint-stagedcd quolance-ui && npm run lint && npm run test
+cd spring-boot-app && ./mvnw test
+cd quolance-ui && npm run lint && npm run test
