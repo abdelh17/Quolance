@@ -18,15 +18,22 @@ function LinkButton({
 }) {
   const oneItemRef = React.useRef<HTMLSpanElement>(null);
   const twoItemRef = React.useRef<HTMLSpanElement>(null);
+
   const handleMouseOver = () => {
-    const oneWidth = oneItemRef.current!.offsetWidth;
-    const twoWidth = twoItemRef.current!.offsetWidth;
-    oneItemRef.current!.style.transform = `translateX(${twoWidth}px)`;
-    twoItemRef.current!.style.transform = `translateX(-${oneWidth}px)`;
+    const oneElement = oneItemRef.current;
+    const twoElement = twoItemRef.current;
+
+    if (oneElement && twoElement) {
+      const oneWidth = oneElement.offsetWidth;
+      const twoWidth = twoElement.offsetWidth;
+      oneElement.style.transform = `translateX(${twoWidth}px)`;
+      twoElement.style.transform = `translateX(-${oneWidth}px)`;
+    }
   };
+
   const handleMouseOut = () => {
-    oneItemRef.current!.style.transform = 'none';
-    twoItemRef.current!.style.transform = 'none';
+    oneItemRef.current?.style.setProperty('transform', 'none');
+    twoItemRef.current?.style.setProperty('transform', 'none');
   };
   return (
     <Link

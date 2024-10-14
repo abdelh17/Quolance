@@ -1,8 +1,10 @@
+// sample commit message:
+// CHORE: Write whatever here
+// Feat: Add a new feature
+// fix: resolve login bug
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    //   TODO Add Scope Enum Here
-    // 'scope-enum': [2, 'always', ['yourscope', 'yourscope']],
     'type-enum': [
       2,
       'always',
@@ -20,5 +22,12 @@ module.exports = {
         'vercel',
       ],
     ],
+    'type-case': [0],
+    'type-empty': [2, 'never'],
+    'scope-case': [0],
+    'subject-case': [0],
+    'subject-empty': [2, 'never'],
+    'subject-full-stop': [0],
+    'header-max-length': [0],
   },
 };

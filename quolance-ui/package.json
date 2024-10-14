@@ -7,15 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "eslint src --fix && yarn format",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "lint:strict": "eslint --max-warnings=0 src",
     "typecheck": "tsc --noEmit --incremental false",
     "test:watch": "jest --watch",
     "test": "jest",
     "format": "prettier -w .",
     "format:check": "prettier -c .",
-    "postbuild": "next-sitemap --config next-sitemap.config.js",
-    "prepare": "husky install"
+    "postbuild": "next-sitemap --config next-sitemap.config.js"
   },
   "dependencies": {
     "clsx": "^1.2.1",
@@ -39,8 +38,6 @@
     "tailwind-merge": "^1.13.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^16.3.0",
-    "@commitlint/config-conventional": "^16.2.4",
     "@svgr/webpack": "^6.5.1",
     "@tailwindcss/forms": "^0.5.4",
     "@testing-library/jest-dom": "^5.16.5",
@@ -54,9 +51,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^7.0.4",
     "jest": "^27.5.1",
-    "lint-staged": "^12.5.0",
     "next-router-mock": "^0.7.5",
     "next-sitemap": "^2.5.28",
     "postcss": "^8",
@@ -68,14 +63,5 @@
     "prettier-plugin-tailwindcss": "^0.1.13",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=0",
-      "prettier -w"
-    ],
-    "**/*.{json,css,scss,md,webmanifest}": [
-      "prettier -w"
-    ]
   }
 }
