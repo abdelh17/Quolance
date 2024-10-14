@@ -10,8 +10,8 @@ const monsterratFont = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'Servibe Next App',
-  description: 'One Stop Service',
+  title: 'Quolance',
+  description: 'One Stop Freelancing Services',
 };
 
 export default function RootLayout({

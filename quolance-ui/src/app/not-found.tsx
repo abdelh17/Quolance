@@ -1,11 +1,7 @@
-import * as React from 'react';
+import ErrorPage from '@/app/(without-main-layout)/not-found/page';
 
-import Layout from '@/components/layout/Layout';
-
-export default function NotFoundPage() {
-  return (
-    <Layout>
-      <div> custom general not found page</div>
-    </Layout>
-  );
+function NotFoundPage() {
+  return <ErrorPage />;
 }
+
+export default NotFoundPage;
