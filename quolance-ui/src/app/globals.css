@@ -1,0 +1,523 @@
+/*============================================
+# Template Name: Servibe Nextjs
+# Version: 1.0
+# Author: pixelaxis
+# Author URI: https://themeforest.net/user/pixelaxis/
+# Description: Servibe - On Deman Service Nextjs App
+============================================*/
+
+/*============================================
+======== Table of Css Content =========
+# Default font family
+# Scrollbar design
+# Typography
+# Main Container styles
+# Padding
+# Header Styles Start
+# scroll to top button
+# Faq section start
+# Professional Service Slider start
+# Hexagon Styles
+# Modal create
+# How it works border
+# filter modal
+# message chat sidebar
+# Comment Reply
+# Box shadow styles
+# Gradient styles
+# input number arrow hide
+# Keyframe animation
+# Matter JS
+# Swiper styles
+# Hexagon css
+# Calendar style
+# Horizontal dashed border
+============================================*/
+
+/* Tailwind import */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scrollbar design */
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0065ff;
+  border-radius: 3px;
+}
+
+/* body styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  color: #0e0d39;
+}
+
+@layer components {
+  html {
+    @apply scroll-smooth;
+  }
+  /* Typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply m-0 p-0 !leading-[120%];
+  }
+  p {
+    @apply !leading-[150%];
+  }
+  .display-1 {
+    @apply xxl:text-[96px] text-4xl font-bold !leading-[120%] md:text-5xl lg:text-6xl xl:text-7xl;
+  }
+  .display-2 {
+    @apply text-4xl font-bold !leading-[120%] md:text-5xl lg:text-6xl xl:text-[88px];
+  }
+  .display-3 {
+    @apply xxl:text-[64px] text-4xl font-bold lg:text-5xl  xl:text-6xl;
+  }
+  .display-4 {
+    @apply text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl xl:text-[56px];
+  }
+  .heading-1 {
+    @apply xxl:text-5xl text-[28px] font-bold sm:text-[32px] md:text-4xl lg:text-[40px] xl:text-[44px];
+  }
+  .heading-2 {
+    @apply xxl:text-[40px] text-[28px] font-bold lg:text-[32px] xl:text-4xl;
+  }
+  .heading-3 {
+    @apply xxl:text-[32px] text-2xl font-bold xl:text-[28px];
+  }
+  .heading-4 {
+    @apply xxl:text-2xl text-xl font-bold  xl:text-[22px];
+  }
+  .heading-5 {
+    @apply xxl:text-xl text-lg  font-bold;
+  }
+  .heading-6 {
+    @apply xxl:text-xl text-lg  font-bold;
+  }
+  .lead-text {
+    @apply text-xl lg:text-2xl;
+  }
+  .xl-body {
+    @apply text-base lg:text-lg xl:text-xl;
+  }
+  .l-body {
+    @apply text-base lg:text-lg;
+  }
+  .m-body {
+    @apply text-sm xl:text-base;
+  }
+  .s-body {
+    @apply text-sm;
+  }
+
+  /* Main Container styles */
+  .container {
+    @apply xxl:max-w-[1296px] mx-auto max-sm:max-w-[90%] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px];
+  }
+  .large-container {
+    @apply 4xl:max-w-[1760px] mx-auto;
+  }
+
+  /* stp = section top padding, sbp= section bottom padding */
+  .stp-30 {
+    @apply xl:pt-30 pt-16 md:pt-24;
+  }
+  .sbp-30 {
+    @apply xl:pb-30 pb-16 md:pb-24;
+  }
+  .stp-15 {
+    @apply xl:pt-15 pt-8 md:pt-12;
+  }
+  .sbp-15 {
+    @apply xl:pb-15 pb-8 md:pb-12;
+  }
+
+  /* Header Styles Start */
+  .headerFixed {
+    @apply animationOne fixed bg-white shadow-md;
+  }
+  .headerAbsolute {
+    @apply animationTwo absolute;
+  }
+  .mobileMenuBgOpen {
+    @apply translate-y-0  opacity-30;
+  }
+  .mobileMenuBgClose {
+    @apply translate-y-[-100%] opacity-0 delay-500;
+  }
+  .mobileMenuOpen {
+    @apply visible translate-y-0 opacity-100  delay-500;
+  }
+  .mobileMenuClose {
+    @apply invisible translate-y-[100%] opacity-50;
+  }
+  .subMenuClose {
+    @apply max-h-0;
+  }
+  .subMenuOpen {
+    @apply max-h-[500px];
+  }
+  .activeDashboardHeaderMenu {
+    @apply bg-b300 text-white;
+  }
+  .activeDashboardHeaderMobileMenu {
+    @apply underline;
+  }
+
+  /* scroll to top button */
+  .scrollButtonHide {
+    bottom: -10rem;
+  }
+  .scrollButtonShow {
+    bottom: 3rem;
+  }
+
+  /* Faq section start */
+  .faqOpen {
+    @apply max-h-[500px];
+  }
+  .faqClose {
+    @apply max-h-0;
+  }
+  .faqIconRotate {
+    @apply rotate-90;
+  }
+
+  /* Professional Service Slider start */
+  .professionalServiceActiveButton {
+    @apply border-b300 text-b300;
+  }
+  .activeTab {
+    @apply animationOne;
+  }
+  .hiddenTab {
+    @apply animationTwo hidden;
+  }
+
+  /* Hexagon Styles */
+  .hexagon-styles {
+    @apply relative mx-auto inline-block before:absolute before:left-0 before:h-full before:w-full before:rotate-[60deg] before:overflow-hidden before:bg-inherit after:absolute after:h-full after:w-full after:rotate-[-60deg] after:overflow-hidden after:bg-inherit;
+  }
+
+  /* Modal create */
+  .modalOpen {
+    @apply visible scale-100 opacity-100;
+  }
+  .modalClose {
+    @apply invisible scale-0 opacity-0;
+  }
+
+  /* How it works border */
+  .activeButton {
+    @apply border-r300 border-b-4;
+  }
+  .inActiveButton {
+    @apply border-n30 border-b-2;
+  }
+
+  /* filter modal */
+  .filterModalBgOpen {
+    @apply translate-y-0;
+  }
+  .filterModalBgClose {
+    @apply translate-y-full;
+  }
+  .filterModalOpen {
+    @apply translate-y-0 opacity-100;
+  }
+  .filterModalClose {
+    @apply -translate-y-full opacity-0;
+  }
+
+  /* message chat sidebar */
+  .chatSidebarOpen {
+    @apply max-lg:visible max-lg:translate-x-0;
+  }
+  .chatSidebarClose {
+    @apply max-lg:invisible max-lg:translate-x-[-100%];
+  }
+
+  /* Comment Reply */
+  .openReplyBox {
+    @apply max-h-[100px] pt-3 opacity-100;
+  }
+  .closeReplyBox {
+    @apply max-h-0 opacity-0;
+  }
+}
+
+@layer base {
+  .eventunset {
+    pointer-events: unset;
+  }
+}
+
+/* Box shadow styles */
+.box-shadow-1 {
+  box-shadow: 0px 20px 24px -6px rgba(16, 24, 40, 0.08),
+    0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+}
+.box-shadow-2 {
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+}
+.box-shadow-3 {
+  box-shadow: 0px 24px 48px -12px rgba(0, 101, 255, 0.1);
+}
+
+/* Gradient styles */
+.linear_gradient_one {
+  background: linear-gradient(
+    -360deg,
+    rgba(0, 101, 255, 0) 0%,
+    #554aff 100.14%
+  );
+}
+
+/* input number arrow hide */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefoxs */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* Keyframe animation */
+.circle {
+  animation: circleAnimation 15s linear infinite;
+}
+.zoomInOut {
+  animation: zoomInOutAnimation 10s linear infinite;
+}
+.jumping1 {
+  animation: jumpingImage1 3s linear infinite;
+}
+.jumping2 {
+  animation: jumpingImage2 3s linear infinite;
+}
+.slideRight {
+  animation: slideRight 3s linear infinite;
+}
+.slideLeft {
+  animation: slideLeft 3s linear infinite;
+}
+.animationTwo {
+  animation: fadeDown2 0.5s linear;
+}
+.lineAnimation {
+  animation: line 3s;
+}
+.animationOne {
+  animation: fadeDown 0.5s linear;
+}
+
+@keyframes circleAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes zoomInOutAnimation {
+  50% {
+    transform: scale(0.9);
+  }
+}
+@keyframes jumpingImage1 {
+  50% {
+    transform: translateY(10px);
+  }
+}
+@keyframes jumpingImage2 {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes slideRight {
+  50% {
+    transform: translateX(10px);
+  }
+}
+@keyframes slideLeft {
+  50% {
+    transform: translateX(-10px);
+  }
+}
+@keyframes fadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeDown2 {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes line {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: auto !important;
+  }
+}
+
+/* matter js */
+.tags-container > canvas {
+  position: relative;
+  top: -1px;
+  left: -1px;
+}
+
+.tags-container {
+  width: 100vw;
+  height: 400px;
+  margin-top: 0vw;
+  overflow: hidden;
+}
+
+/* swiper */
+.swiper-scrollbar-drag {
+  background: #0065ff !important;
+  width: 300px !important;
+}
+.home3-testimonial-carousel .swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  background-color: #94949e !important;
+}
+.home3-testimonial-carousel .swiper-pagination-bullet-active {
+  background-color: #ff5630 !important;
+}
+/* swiper smooth slide */
+.smooth .swiper-wrapper {
+  -webkit-transition-timing-function: linear !important;
+  -o-transition-timing-function: linear !important;
+  transition-timing-function: linear !important;
+}
+
+/* Hexagon css */
+.r-hex3 {
+  transform: rotate(-30deg) skewX(30deg);
+}
+.r-hex3 *,
+.r-hex3 *:before {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: inherit;
+  height: inherit;
+}
+.r-hex-inner3 {
+  transform: skewX(-30deg) rotate(60deg) skewX(30deg);
+}
+.r-hex-inner-3 {
+  transform: skewX(-30deg) rotate(60deg) skewX(30deg);
+}
+.r-hex-inner-3:before {
+  transform: skewX(-30deg) rotate(-90deg);
+  content: '';
+}
+.expertImg1::before {
+  background: url(/images/expert_img_1.png);
+}
+.expertImg2::before {
+  background: url(/images/expert_img_2.png);
+}
+.expertImg3::before {
+  background: url(/images/expert_img_3.png);
+}
+.expertImg4::before {
+  background: url(/images/expert_img_4.png);
+}
+.expertImg5::before {
+  background: url(/images/expert_img_5.png);
+}
+.expertImg6::before {
+  background: url(/images/expert_img_6.png);
+}
+.expertImgBig::before {
+  background: url(/images/people13.png);
+}
+
+/* Calendar style */
+.current-date {
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+.calendar li {
+  color: #333;
+  width: calc(100% / 7);
+  font-size: 1.07rem;
+}
+.calendar .weeks li {
+  font-weight: 500;
+  cursor: default;
+}
+.calendar .days li {
+  z-index: 1;
+  cursor: pointer;
+  position: relative;
+  margin-top: 30px;
+}
+.days li.inactive {
+  color: #aaa;
+}
+.days li.active {
+  color: #fff;
+}
+.days li::before {
+  position: absolute;
+  content: '';
+  left: 50%;
+  top: 50%;
+  height: 40px;
+  width: 40px;
+  z-index: -1;
+  border-radius: 50%;
+
+  transform: translate(-50%, -50%);
+}
+.days li.active::before {
+  background: #1e90ff;
+}
+.days li:not(.active):hover::before {
+  background: #f2f2f2;
+}
+
+/* Horizontal dashed border */
+.line-horizontal {
+  background-image: linear-gradient(90deg, transparent 50%, #b4baff 0);
+  background-size: 10px 100%;
+}
