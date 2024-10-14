@@ -12,7 +12,9 @@ function ErrorPage() {
       </div>
       <div className='stp-15 flex flex-col items-center justify-center text-center'>
         <h2 className='heading-2'>Page Not Found</h2>
-        <p className='pb-10 pt-3'>
+
+
+                <p className='pb-10 pt-3'>
           The page you are looking for doesn&apos;t exist or has been moved
         </p>
 
