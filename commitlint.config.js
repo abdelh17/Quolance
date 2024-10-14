@@ -1,6 +1,6 @@
 // sample commit message:
-// CHORE: Write whatever here
-// Feat: Add a new feature
+// chore: Write whatever here
+// feat: Add a new feature
 // fix: resolve login bug
 module.exports = {
   extends: ['@commitlint/config-conventional'],
