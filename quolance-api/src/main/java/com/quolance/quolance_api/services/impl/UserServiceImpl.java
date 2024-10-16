@@ -1,7 +1,8 @@
-package com.quolance.quolance_api.services;
+package com.quolance.quolance_api.services.impl;
 
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.UserRepository;
+import com.quolance.quolance_api.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
