@@ -25,6 +25,6 @@ public class UserRegistrationDto {
     @JsonProperty("firstName")
     private String firstName;
 
-    @JsonProperty("userType")
-    private String userType;
+    @JsonProperty("role")
+    private String role;
 }

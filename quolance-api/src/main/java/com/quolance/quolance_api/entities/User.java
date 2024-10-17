@@ -1,10 +1,11 @@
 package com.quolance.quolance_api.entities;
 
-import com.quolance.quolance_api.entities.enums.UserType;
+import com.quolance.quolance_api.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -30,11 +31,12 @@ public class User extends AbstractEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    private UserType userType;
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toString());
+        return List.of(authority);
     }
 
     @Override

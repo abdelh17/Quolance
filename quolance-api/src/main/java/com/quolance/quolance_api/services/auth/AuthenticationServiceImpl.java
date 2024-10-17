@@ -1,10 +1,11 @@
 package com.quolance.quolance_api.services.auth;
 
 import com.quolance.quolance_api.dtos.LoginResponseDto;
+import com.quolance.quolance_api.dtos.UserDto;
 import com.quolance.quolance_api.dtos.UserLoginDto;
 import com.quolance.quolance_api.dtos.UserRegistrationDto;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.UserType;
+import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.AuthenticationService;
 import com.quolance.quolance_api.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setFirstName(userRegistrationDto.getFirstName());
         user.setLastName(userRegistrationDto.getLastName());
         user.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
-        user.setUserType(UserType.valueOf(userRegistrationDto.getUserType()));
+        user.setRole(Role.valueOf(userRegistrationDto.getUserType()));
 
         userService.save(user);
         userRegistrationDto.setPassword("");
@@ -54,6 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         loginResponseDto.setAccessToken(accessToken);
         loginResponseDto.setRefreshToken(refreshToken);
         loginResponseDto.setExpiresIn(jwtService.getExpirationTime());
+        loginResponseDto.setUser(UserDto.fromEntity(authenticatedUser));
         return loginResponseDto;
     }
 }
