@@ -5,7 +5,7 @@ import com.quolance.quolance_api.entities.User;
 import java.util.Optional;
 
 public interface UserService {
-    User save(User user);
+    User createUser(User user);
 
     Optional<User> findByEmail(String email);
 }
