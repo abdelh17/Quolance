@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+      
+jobs:
+  frontend-build-test:
+    name: Build and Test Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      # Step 1: Install Dependencies
+      - name: Install Dependencies
+        run: |
+          cd quolance-ui
+          npm install
+          
+      # UNCOMMENT WHEN THERE ARE TESTS IN FRONTEND
+      # # Step 2: Run Tests
+      # - name: Run Tests
+      #   run: |
+      #     cd quolance-ui
+      #     npm test
+
+      # Step 3: Build Frontend Package
+      - name: Build Frontend
+        run: |
+          cd quolance-ui
+          npm run build
+  
+  backend-build-test:
+    name: Build and Test Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      # Set up JDK for Spring Boot
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      
+      # Build and test Spring Boot backend
+      - name: Build and Test Spring Boot
+        run: |
+          cd quolance-api
+          ./mvnw clean install
+          ./mvnw test
