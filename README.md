@@ -50,3 +50,17 @@ To get started, follow these steps:
    ```sh
    ./mvnw clean install
    ```
+## Wikis table of contents
+- [Meeting minutes](https://github.com/abdelh17/Quolance/wiki/Meeting-Minutes)
+- [Risks](https://github.com/abdelh17/Quolance/wiki/Risks)
+- [Legal and Ethical Issues](https://github.com/abdelh17/Quolance/wiki/Legal-and-Ethical-Issues)
+- [Economic](https://github.com/abdelh17/Quolance/wiki/Economic)
+- [Personas](https://github.com/abdelh17/Quolance/wiki/Personas)
+- [Diversity Statement](https://github.com/abdelh17/Quolance/wiki/Diversity-Statement)
+- [Overall Architecture and Class Diagrams](https://github.com/abdelh17/Quolance/wiki/Overall-Architecture-and-Class-Diagrams)
+- [Infrastructure and tools](https://github.com/abdelh17/Quolance/wiki/Infrastructure-and-tools)
+- [Name Conventions](https://github.com/abdelh17/Quolance/wiki/Name-Conventions)
+- [Testing Plan and Continuous Integration](https://github.com/abdelh17/Quolance/wiki/Testing-Plan-and-Continuous-Integration)
+- [Deployment Plan and Infrastructure ](https://github.com/abdelh17/Quolance/wiki/Deployment-Plan-and-Infrastructure)
+
+
