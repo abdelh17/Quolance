@@ -23,8 +23,6 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 
 ## Developer guide
 
-## Getting Started
-
 To get started, follow these steps:
 
 1. Clone the repository:
