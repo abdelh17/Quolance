@@ -23,16 +23,14 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 
 ## Developer guide
 
-## Getting Started
-
 To get started, follow these steps:
 
 1. Clone the repository:
    ```sh
    git clone https://github.com/your-username/Quolance.git
    ```
-
-2. Navigate to the project directory (In this case, we use the front-end directory as an example):
+**Frontend setup**
+2. Navigate to the UI directory 
    ```sh
    cd quolance-ui
    ```
@@ -41,47 +39,26 @@ To get started, follow these steps:
    ```sh
    npm install
    ```
+  **Backend setup**
+4. Navigate to the API directory 
+   ```sh
+   cd quolance-api
+   ```
+5. Build
+   ```sh
+   ./mvnw clean install
+   ```
+## Wikis table of contents
+- [Meeting minutes](https://github.com/abdelh17/Quolance/wiki/Meeting-Minutes)
+- [Risks](https://github.com/abdelh17/Quolance/wiki/Risks)
+- [Legal and Ethical Issues](https://github.com/abdelh17/Quolance/wiki/Legal-and-Ethical-Issues)
+- [Economic](https://github.com/abdelh17/Quolance/wiki/Economic)
+- [Personas](https://github.com/abdelh17/Quolance/wiki/Personas)
+- [Diversity Statement](https://github.com/abdelh17/Quolance/wiki/Diversity-Statement)
+- [Overall Architecture and Class Diagrams](https://github.com/abdelh17/Quolance/wiki/Overall-Architecture-and-Class-Diagrams)
+- [Infrastructure and tools](https://github.com/abdelh17/Quolance/wiki/Infrastructure-and-tools)
+- [Name Conventions](https://github.com/abdelh17/Quolance/wiki/Name-Conventions)
+- [Testing Plan and Continuous Integration](https://github.com/abdelh17/Quolance/wiki/Testing-Plan-and-Continuous-Integration)
+- [Deployment Plan and Infrastructure ](https://github.com/abdelh17/Quolance/wiki/Deployment-Plan-and-Infrastructure)
 
-### Commit Structure
 
-We use conventional commit messages to automate versioning and changelog generation. Each commit message should be structured as follows:
-
-```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-#### Types
-
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation only changes
-- `style`: Changes that do not affect the meaning of the code
-- `refactor`: A code change that neither fixes a bug nor adds a feature
-- `perf`: A code change that improves performance
-- `test`: Adding missing tests or correcting existing tests
-- `chore`: Changes to the build process or auxiliary tools and libraries
-- `ci`: Changes to our CI configuration files and scripts
-- `vercel`: Changes related to Vercel deployment
-
-#### Example
-
-```
-feat: add new button component
-
-This new button component includes hover and focus states.
-
-Closes #123
-```
-
-### Contributing
-
-1. Create a new branch for your feature or bug fix
-2. Make your changes
-3. Run tests and ensure linting passes
-4. Commit your changes using the conventional commit format
-5. Push your branch and create a pull request
-For developers working on the Quolance UI project, please refer to the quolance-ui README for detailed setup and development instructions.
