@@ -21,8 +21,6 @@ public class Tag extends AbstractEntity{
     @ManyToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<Project> project;
 
-    @ManyToMany(mappedBy = "tag", cascade = CascadeType.ALL)
-    private List<AssociatedTags> associatedTags;
 
 
 }

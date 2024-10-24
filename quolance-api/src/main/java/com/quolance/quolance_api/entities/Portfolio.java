@@ -17,5 +17,8 @@ public class Portfolio extends AbstractEntity{
     @OneToOne(mappedBy = "portfolio")
     private PortfolioItem item;
 
+    @OneToOne(mappedBy = "portfolio")
+    private User user;
+
 
 }

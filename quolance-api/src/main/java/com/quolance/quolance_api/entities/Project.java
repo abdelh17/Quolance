@@ -1,9 +1,6 @@
 package com.quolance.quolance_api.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +16,13 @@ public class Project extends AbstractEntity{
 
     private String status;
 
+    @ManyToOne
+    private User client;
+
     @ManyToMany(mappedBy = "projects", cascade = CascadeType.ALL)
     private List<Application> applications;
 
     @ManyToMany(mappedBy = "projects", cascade = CascadeType.ALL)
-    private List<AssociatedTags> associatedTags;
+    private List<Tag> tags;
 
 }

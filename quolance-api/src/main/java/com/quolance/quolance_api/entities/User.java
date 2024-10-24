@@ -67,8 +67,5 @@ public class User extends AbstractEntity implements UserDetails {
         return true;
     }
 
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    private List<UserNotificationSubscription> userNotificationSubscriptions;
-
 
 }
