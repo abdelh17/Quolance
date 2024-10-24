@@ -29,6 +29,9 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Profile profile;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private Role role;
@@ -63,6 +66,9 @@ public class User extends AbstractEntity implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private List<UserNotificationSubscription> userNotificationSubscriptions;
 
 
 }
