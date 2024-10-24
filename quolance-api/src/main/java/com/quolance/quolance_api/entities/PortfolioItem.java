@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "portfolio_item")
+@Table(name = "portfolioItem")
 public class PortfolioItem extends AbstractEntity{
 
     private String name;

@@ -1,27 +1,25 @@
 package com.quolance.quolance_api.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.quolance.quolance_api.entities.enums.ApplicationStatus;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+
+@Entity
 @Getter
 @Setter
-@Entity
 @Table(name = "application")
 public class Application extends  AbstractEntity{
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus status;
 
-    // Many-to-one with Project (side of the many-to-many)
     @ManyToOne
     @JoinColumn(name = "projectId")
     private Project project;
 
-    // Many-to-one with Freelancer (side of the many-to-many)
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;

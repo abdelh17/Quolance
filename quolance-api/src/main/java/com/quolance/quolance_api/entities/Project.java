@@ -7,10 +7,10 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Table(name = "project")
 @Entity
 @Getter
 @Setter
+@Table(name = "project")
 public class Project extends AbstractEntity{
 
     private String description;
