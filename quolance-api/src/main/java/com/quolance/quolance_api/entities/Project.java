@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.entities;
 
+import com.quolance.quolance_api.entities.enums.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,10 +20,12 @@ public class Project extends AbstractEntity{
     @ManyToOne
     private User client;
 
-    @ManyToMany(mappedBy = "projects", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project")
     private List<Application> applications;
 
-    @ManyToMany(mappedBy = "projects", cascade = CascadeType.ALL)
+    @ElementCollection(targetClass = Tag.class)
+    @CollectionTable(name = "projectTags", joinColumns = @JoinColumn(name = "projectId"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tag")
     private List<Tag> tags;
-
 }

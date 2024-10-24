@@ -32,6 +32,10 @@ public class User extends AbstractEntity implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     private Profile profile;
 
+    @OneToOne
+    @JoinColumn(name = "portfolio_id")
+    private Portfolio portfolio;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private Role role;

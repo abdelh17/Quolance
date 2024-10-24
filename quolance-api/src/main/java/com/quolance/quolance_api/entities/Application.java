@@ -18,11 +18,11 @@ public class Application extends  AbstractEntity{
 
     // Many-to-one with Project (side of the many-to-many)
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "projectId")
     private Project project;
 
     // Many-to-one with Freelancer (side of the many-to-many)
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 }
