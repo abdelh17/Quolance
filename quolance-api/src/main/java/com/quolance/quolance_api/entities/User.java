@@ -11,10 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Table(name = "users")
 @Entity
 @Getter
 @Setter
+@Table(name = "users")
 public class User extends AbstractEntity implements UserDetails {
 
     @Column(nullable = false)
@@ -28,6 +28,14 @@ public class User extends AbstractEntity implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profileId")
+    private Profile profile;
+
+    @OneToOne
+    @JoinColumn(name = "portfolioId")
+    private Portfolio portfolio;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
