@@ -39,7 +39,7 @@ To get started, follow these steps:
    ```sh
    npm install
    ```
-  **Backend setup**
+  **Backend setup**  
 4. Navigate to the API directory 
    ```sh
    cd quolance-api
@@ -47,6 +47,10 @@ To get started, follow these steps:
 5. Build
    ```sh
    ./mvnw clean install
+   ```
+6. Run
+   ```sh
+   ./mvnw spring-boot:run
    ```
 ## Wikis table of contents
 - [Meeting minutes](https://github.com/abdelh17/Quolance/wiki/Meeting-Minutes)
