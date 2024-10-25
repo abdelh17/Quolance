@@ -13,7 +13,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserDto {
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
 
     @JsonProperty("email")
     @NotBlank(message = "The email is required")
