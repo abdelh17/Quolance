@@ -19,7 +19,7 @@ public class AbstractEntity {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @CreatedDate
     @Column(
