@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
+import Header from "@/components/global/Header";
 
 import './globals.css';
 
@@ -24,7 +25,10 @@ export default function RootLayout({
       <body
         className={`${monsterratFont.variable} ${monsterratFont.className}`}
       >
+         <Header/>
+        <main className="pt-[100px]">
         {children}
+        </main>
       </body>
     </html>
   );
