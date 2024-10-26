@@ -31,15 +31,13 @@ public class FreelancerController {
 
     @GetMapping("/projects")
     public ResponseEntity<List<ProjectDto>> getAllProjects() {
-        List<ProjectDto> projects = projectService.getAllProjects();
+        List<ProjectDto> projects = freelancerService.getAllAvailableProjects();
         return ResponseEntity.ok(projects);
     }
 
     @GetMapping("/projects/{id}")
     public ResponseEntity<ProjectDto> getProjectById(@PathVariable Long id) {
-        ProjectDto project = projectService.getProjectById(id);
+        ProjectDto project = freelancerService.getProjectById(id);
         return ResponseEntity.ok(project);
     }
 }
-
-

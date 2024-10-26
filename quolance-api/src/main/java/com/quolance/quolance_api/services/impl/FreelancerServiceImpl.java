@@ -1,10 +1,12 @@
 package com.quolance.quolance_api.services.impl;
 
 import com.quolance.quolance_api.dtos.ApplicationDto;
+import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.FreelancerService;
+import com.quolance.quolance_api.services.ProjectService;
 import com.quolance.quolance_api.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.List;
 public class FreelancerServiceImpl implements FreelancerService {
     private final UserService userService;
     private final ApplicationService applicationService;
+    private final ProjectService projectService;
 
     @Override
     public ApplicationDto submitApplication(ApplicationDto applicationDto) {
@@ -29,5 +32,15 @@ public class FreelancerServiceImpl implements FreelancerService {
     public List<ApplicationDto> getMyApplications(Long freelancerId) {
         List<ApplicationDto> applications = applicationService.getApplicationByFreelancerId(freelancerId);
         return applications;
+    }
+
+    @Override
+    public List<ProjectDto> getAllAvailableProjects() {
+        return projectService.getAllProjects();
+    }
+
+    @Override
+    public ProjectDto getProjectById(Long id) {
+        return projectService.getProjectById(id);
     }
 }
