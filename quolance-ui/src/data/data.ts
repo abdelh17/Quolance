@@ -21,7 +21,7 @@ export const headerMenu = [
 
   export const ProjectList = [
     {
-      id: uuidv4(),
+      id: 1,
       name: "Real-Time Video Streaming Platform Development",
       description: "Develop a scalable video streaming platform with real-time video and chat features. Must support multiple users and handle high traffic efficiently. Use modern technologies like WebRTC. Backend should be built using Node.js and socket.io.",
       tags: ["web", "node", "webrtc"],
@@ -30,7 +30,7 @@ export const headerMenu = [
       applicants: 8,
     },
     {
-      id: uuidv4(),
+      id: 2,
       name: "Develop a Full-Stack Marketplace Application",
       description: "Create a marketplace web app allowing users to buy and sell products. Include secure payment processing and a rating system for buyers and sellers. Preferred technologies are React for the frontend and Node.js for the backend.",
       tags: ["web", "react", "node"],
@@ -39,7 +39,7 @@ export const headerMenu = [
       applicants: 5,
     },
     {
-      id: uuidv4(),
+      id: 3,
       name: "Build a Healthcare Mobile App with Appointment Booking",
       description: "Develop a healthcare app that allows patients to book appointments with doctors. Integrate a calendar system and notifications. The app should be cross-platform and secure, using React Native.",
       tags: ["mobile", "react-native", "health"],
@@ -48,7 +48,7 @@ export const headerMenu = [
       applicants: 12,
     },
     {
-      id: uuidv4(),
+      id: 4,
       name: "Design and Build a Corporate Website with WordPress",
       description: "Design a responsive corporate website for a tech company. Must include a blog, product pages, and contact forms. The website should be SEO-optimized and built with WordPress.",
       tags: ["web", "wordpress", "seo"],
@@ -57,7 +57,7 @@ export const headerMenu = [
       applicants: 6,
     },
     {
-      id: uuidv4(),
+      id: 5,
       name: "Develop a Progressive Web App (PWA) for News Aggregation",
       description: "Create a PWA that aggregates news from various sources in real-time. Must include push notifications and offline access. Technologies: React and Node.js.",
       tags: ["web", "pwa", "node"],
@@ -66,7 +66,7 @@ export const headerMenu = [
       applicants: 9,
     },
     {
-      id: uuidv4(),
+      id: 6,
       name: "Build an Online Learning Platform with Video Lectures",
       description: "Develop an online learning platform that allows users to watch video lectures and take quizzes. Include user profiles and progress tracking. Use Laravel for the backend and Vue.js for the frontend.",
       tags: ["web", "laravel", "vue"],
@@ -75,7 +75,7 @@ export const headerMenu = [
       applicants: 4,
     },
     {
-      id: uuidv4(),
+      id: 7,
       name: "Develop a CRM System with Task Management Features",
       description: "Create a CRM system that allows businesses to manage customer interactions and tasks. Integrate email tracking and a task scheduler. Backend in Python with a Django framework.",
       tags: ["web", "python", "django"],
@@ -84,7 +84,7 @@ export const headerMenu = [
       applicants: 3,
     },
     {
-      id: uuidv4(),
+      id: 8,
       name: "Build a FinTech App for Personal Budget Management",
       description: "Develop a personal budgeting app that helps users track their spending and savings goals. Include graphs for data visualization. Prefer using React Native and a Node.js backend.",
       tags: ["mobile", "react-native", "fintech"],
@@ -93,7 +93,7 @@ export const headerMenu = [
       applicants: 11,
     },
     {
-      id: uuidv4(),
+      id: 9,
       name: "Create a Real Estate Listing Website with Filters",
       description: "Develop a real estate listing platform with advanced search and filtering options. Include a map integration for location-based searches. Use Vue.js and a PHP backend.",
       tags: ["web", "vue", "php"],
@@ -102,7 +102,7 @@ export const headerMenu = [
       applicants: 7,
     },
     {
-      id: uuidv4(),
+      id: 10,
       name: "Blockchain-Powered NFT Marketplace Development",
       description: "Develop an NFT marketplace that allows users to mint, buy, and sell NFTs. Include a wallet integration and smart contract functionality. Use Solidity for smart contracts and React for the frontend.",
       tags: ["web", "blockchain", "solidity"],
@@ -111,7 +111,7 @@ export const headerMenu = [
       applicants: 6,
     },
     {
-      id: uuidv4(),
+      id: 11,
       name: "AI-Based Job Recommendation System",
       description: "Develop an AI-based job recommendation platform that matches users to jobs based on their profiles. The platform should use machine learning algorithms and provide real-time job recommendations.",
       tags: ["ai", "python", "machine-learning"],
@@ -120,7 +120,7 @@ export const headerMenu = [
       applicants: 14,
     },
     {
-      id: uuidv4(),
+      id: 12,
       name: "Implement a Cloud-Based Inventory Management System",
       description: "Develop a cloud-based inventory management system for small businesses. Include features like product tracking, stock alerts, and sales reporting. Use AWS and Python.",
       tags: ["cloud", "aws", "python"],
@@ -129,7 +129,7 @@ export const headerMenu = [
       applicants: 9,
     },
     {
-      id: uuidv4(),
+      id: 13,
       name: "Create a Mobile App for Event Management",
       description: "Develop a mobile app that allows users to manage events, sell tickets, and provide updates. The app should support notifications and social media integrations. Use React Native and Firebase.",
       tags: ["mobile", "react-native", "firebase"],
@@ -138,7 +138,7 @@ export const headerMenu = [
       applicants: 13,
     },
     {
-      id: uuidv4(),
+      id: 14,
       name: "Web Scraping Tool for Market Data Collection",
       description: "Build a web scraping tool that collects market data from various sources. The tool should store data in a structured format and provide analytics. Use Python with Scrapy.",
       tags: ["web", "python", "analytics"],
@@ -147,7 +147,7 @@ export const headerMenu = [
       applicants: 5,
     },
     {
-      id: uuidv4(),
+      id: 15,
       name: "Develop a Social Media Monitoring Tool",
       description: "Create a tool that monitors and analyzes social media trends in real-time. Provide sentiment analysis and keyword tracking. Use Python for data processing and React for the frontend.",
       tags: ["web", "python", "react"],
@@ -156,7 +156,7 @@ export const headerMenu = [
       applicants: 8,
     },
     {
-      id: uuidv4(),
+      id: 16,
       name: "Redesign E-Commerce Website for Improved UX/UI",
       description: "Redesign an existing e-commerce website to improve the user experience and interface. Focus on mobile responsiveness and accessibility. Use HTML, CSS, and JavaScript.",
       tags: ["web", "ux/ui", "html"],
