@@ -1,15 +1,19 @@
 import Link from "next/link";
 
 function ProjectCard({
+  id,
   name,
   tags,
   datePosted,
+  description,
   status,
   applicants,
 }: {
+  id : number;
   name: string;
   tags: string[];
   datePosted: string;
+  description: string;
   status: string;
   applicants: number;
 }) {
@@ -50,7 +54,7 @@ function ProjectCard({
       <div className="flex h-full w-full flex-col items-center justify-center rounded-2xl  border-n30 px-6 py-8 text-center text-n300 md:max-w-[176px]">
      
       <Link
-            href="/services/service-details"
+            href={`/freelancer-apply/${id}`} 
             className="relative flex items-center justify-center overflow-hidden rounded-full bg-b300 px-3 py-2 mt-4 text-sm font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:text-n900 hover:after:w-[calc(100%+2px)] lg:px-4 lg:py-3 max-md:w-full"
           >
             <span className="relative z-10">View Details</span>

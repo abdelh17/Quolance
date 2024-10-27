@@ -97,7 +97,7 @@ function Projects() {
           <div className="col-span-12 rounded-xl border border-n30 p-4 sm:p-8 lg:col-span-8">
             <div className="flex flex-col gap-4">
               {currentServices.map(({ id, ...props }) => (
-                <ServiceCard key={id} {...props} />
+                <ServiceCard key={id} id={id} {...props} />
               ))}
             </div>
 
