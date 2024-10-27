@@ -38,6 +38,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userService.createUser(user);
         userRegistrationDto.setPassword("");
+
+        //TODO: Send Verification Email
+
         return userRegistrationDto;
     }
 

@@ -47,6 +47,9 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private Role role;
 
+    @Column(nullable = false)
+    private boolean verified = false;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toString());
