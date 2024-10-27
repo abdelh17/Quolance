@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
-import Header from "@/components/global/Header";
 
 import './globals.css';
+
+import Header from '@/components/global/Header';
+
+import Providers from '@/util/Providers';
 
 const monsterratFont = Montserrat({
   subsets: ['latin'],
@@ -25,10 +28,10 @@ export default function RootLayout({
       <body
         className={`${monsterratFont.variable} ${monsterratFont.className}`}
       >
-         <Header/>
-        <main className="pt-[100px]">
-        {children}
-        </main>
+        <Providers>
+          <Header />
+          <main className='pt-[100px]'>{children}</main>
+        </Providers>
       </body>
     </html>
   );
