@@ -26,4 +26,17 @@ public class ProjectServiceImpl implements ProjectService {
         return projects.stream().map(ProjectDto::fromEntity).toList();
 
     }
+
+    @Override
+    public List<ProjectDto> getAllProjects() {
+        List<Project> projects = projectRepository.findAll();
+        return projects.stream().map(ProjectDto::fromEntity).toList();
+    }
+
+    @Override
+    public ProjectDto getProjectById(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+        return ProjectDto.fromEntity(project);
+    }
 }
