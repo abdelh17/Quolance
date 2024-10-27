@@ -53,7 +53,7 @@ function FreelancerProjectsView() {
       <section className='sbp-30 stp-30'>
         <div className='container grid grid-cols-12 gap-6'>
           <ProjectFilter filter={projectFilter} setFilter={setProjectFilter} />
-          <div className='border-n30 col-span-12 rounded-xl border p-4 sm:p-8 lg:col-span-8'>
+          <div className='border-n30 col-span-12 rounded-xl border px-3 py-4 sm:p-8 lg:col-span-8'>
             <div className='flex flex-col gap-4'>
               {currentServices.map(({ id, ...props }) => (
                 <ServiceCard key={id} id={id} {...props} />
