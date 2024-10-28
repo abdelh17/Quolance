@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+
+import { ProjectList } from "@/data/data";
+
 import BreadCrumb from "@/components/global/BreadCrumb";
 import Pagination from "@/components/ui/Pagination";
 import ServiceCard from "@/components/ui/ProjectCard";
-import { ProjectList } from "@/data/data";
 
 const ITEMS_PER_PAGE = 4; // Number of services per page
 

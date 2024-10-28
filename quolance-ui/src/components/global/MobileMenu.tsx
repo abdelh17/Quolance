@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SetStateAction } from "react";
 import AnimateHeight from "react-animate-height";
 import { PiCaretRight, PiX } from "react-icons/pi";
+
 import { headerMenu } from "../../data/data";
 import useToggle from "../../hooks/useToggle";
 
@@ -79,7 +80,7 @@ function MobileMenu({
                   </AnimateHeight>
                 </div>
               ) : (
-                <Link href={"#"} className=" hover:text-b500 duration-300">
+                <Link href="#" className=" hover:text-b500 duration-300">
                   {menu.name}
                 </Link>
               )}
