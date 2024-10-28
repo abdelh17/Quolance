@@ -19,13 +19,13 @@ function PostsTasksSteps() {
       <section className='sbp-30'>
         <div className='4xl:large-container max-4xl:container flex items-center justify-between pt-6'>
           <Link
-            href='/quolance-ui/src/public'
+            href='/'
             className='pt-1 text-2xl font-bold'
           >
             Quolance
           </Link>
           <Link
-            href='/quolance-ui/src/public'
+            href='/'
             className='hover:text-r300 flex items-center justify-start gap-2 text-lg font-medium duration-500'
           >
             Cancel{' '}
