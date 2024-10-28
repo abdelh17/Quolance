@@ -4,7 +4,7 @@ import { ProjectList } from '@/data/data';
 
 import BreadCrumb from '@/components/global/BreadCrumb';
 import Pagination from '@/components/ui/Pagination';
-import ServiceCard from '@/components/ui/projects/ProjectCard';
+import ProjectCard from '@/components/ui/projects/ProjectCard';
 import ProjectFilter from '@/components/ui/projects/ProjectFilter';
 
 import {
@@ -56,7 +56,7 @@ function FreelancerProjectsView() {
           <div className='border-n30 col-span-12 rounded-xl border px-3 py-4 sm:p-8 lg:col-span-8'>
             <div className='flex flex-col gap-4'>
               {currentServices.map(({ id, ...props }) => (
-                <ServiceCard key={id} id={id} {...props} />
+                <ProjectCard key={id} id={id} {...props} view={'freelancer'} />
               ))}
             </div>
             <div className='container pt-8'>
