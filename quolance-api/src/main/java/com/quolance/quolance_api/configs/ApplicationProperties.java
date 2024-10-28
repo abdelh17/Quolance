@@ -12,4 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class ApplicationProperties {
   private List<String> allowedOrigins;
+  private String applicationName;
+  private String baseUrl;
 }
