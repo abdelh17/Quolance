@@ -2,8 +2,10 @@
 
 import { useParams } from "next/navigation"; // Use useParams to get the dynamic parameter
 import { useEffect, useState } from "react";
-import BreadCrumb from "@/components/global/BreadCrumb";
+
 import { ProjectList } from "@/data/data"; // Import your mock data
+
+import BreadCrumb from "@/components/global/BreadCrumb";
 
 type Project = {
   id: number;
