@@ -6,14 +6,18 @@ import com.quolance.quolance_api.dtos.UserDto;
 import com.quolance.quolance_api.dtos.UserLoginDto;
 import com.quolance.quolance_api.dtos.UserRegistrationDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.VerificationCode;
 import com.quolance.quolance_api.entities.enums.Role;
+import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
 import com.quolance.quolance_api.services.AuthenticationService;
 import com.quolance.quolance_api.services.UserService;
+import com.quolance.quolance_api.services.VerificationCodeService;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.jobrunr.scheduling.BackgroundJobRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
+    private final VerificationCodeService verificationCodeService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -39,9 +44,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userService.createUser(user);
         userRegistrationDto.setPassword("");
 
-        //TODO: Send Verification Email
+//        sendVerificationEmail(user);
 
         return userRegistrationDto;
+    }
+
+    private void sendVerificationEmail(User user) {
+        VerificationCode verificationCode = new VerificationCode(user);
+        user.setVerificationCode(verificationCode);
+        verificationCodeService.createVerificationCode(verificationCode);
+        SendWelcomeEmailJob sendWelcomeEmailJob = new SendWelcomeEmailJob(user.getId());
+        BackgroundJobRequest.enqueue(sendWelcomeEmailJob);
     }
 
     public LoginResponseDto authenticate(UserLoginDto userLoginDto, HttpServletResponse httpServletResponse) {

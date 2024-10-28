@@ -50,6 +50,9 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(nullable = false)
     private boolean verified = false;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private VerificationCode verificationCode;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toString());
