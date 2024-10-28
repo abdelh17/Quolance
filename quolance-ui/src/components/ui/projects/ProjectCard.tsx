@@ -1,9 +1,11 @@
 import Link from 'next/link';
+import { UserRoles } from '@/types/userTypes';
 
 function ProjectCard({
   id,
   name,
   tags,
+  view,
   datePosted,
   description,
   status,
@@ -12,6 +14,7 @@ function ProjectCard({
   id: number;
   name: string;
   tags: string[];
+  view: UserRoles;
   datePosted: string;
   description: string;
   status: string;
@@ -36,7 +39,7 @@ function ProjectCard({
       </div>
 
       <div className='flex items-center justify-between'>
-        <div className='text-n400 flex flex-wrap gap-1 text-sm'>
+        <div className='text-n400 flex flex-wrap gap-2 text-sm'>
           {tags.map((tag, index) => (
             <p key={index} className='bg-b50 rounded-xl px-3 py-2 font-medium'>
               {tag}
@@ -46,9 +49,11 @@ function ProjectCard({
 
         <Link
           href={`/projects/${id}`}
-          className='bg-b300 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-3 py-2 text-sm font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-4 lg:py-3'
+          className='bg-b300 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-3 py-2 text-sm font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-4 lg:py-2'
         >
-          <span className='relative z-10'>View Details</span>
+          <span className='relative z-10'>
+            {view === 'freelancer' ? 'View Details' : 'View Submissions'}
+          </span>
         </Link>
       </div>
     </div>

@@ -1,9 +1,13 @@
-"use client";
-
-import { useParams } from "next/navigation"; // Use useParams to get the dynamic parameter
-import { useEffect, useState } from "react";
-import BreadCrumb from "@/components/global/BreadCrumb";
-import { ProjectList } from "@/data/data"; // Import your mock data
+// app/(with-main-layout)/projects/[id]/page.tsx
+'use client';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import BreadCrumb from '@/components/global/BreadCrumb';
+import { ProjectList } from '@/data/data';
+import { useGetUserProfile } from '@/hooks/userHooks';
+import ProjectDetails from '@/app/(with-main-layout)/projects/[id]/ProjectDetails';
+import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
+import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
 
 type Project = {
   id: number;
@@ -15,102 +19,45 @@ type Project = {
   applicants: number;
 };
 
-function FreelancerApply() {
-  const { id } = useParams(); // Get project ID from the URL
-
+function ProjectPage() {
+  const { id } = useParams();
+  const { data: user, isLoading } = useGetUserProfile();
   const [project, setProject] = useState<Project | null>(null);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (id) {
-      // Fetch project details from the mock data when the id is available
-      const projectId = Number(id); // Convert id to a number
-      const fetchedProject = ProjectList.find((p) => p.id === projectId); // Find project by id
-      setProject(fetchedProject || null); // Set project or null if not found
+      const projectId = Number(id);
+      const fetchedProject = ProjectList.find((p) => p.id === projectId);
+      setProject(fetchedProject || null);
     }
   }, [id]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
+  if (isLoading) {
+    return <div className={'mx-auto ml-10'}>Loading...</div>;
+  }
 
-  const handleSubmit = async () => {
-    console.log("Submitting application:", coverLetter, file);
-    // Add form submission logic here
-  };
+  if (!project) {
+    return <p className='text-error mb-6'>No project found for ID: {id}</p>;
+  }
 
   return (
     <>
-      <BreadCrumb pageName="Apply to Project" isSearchBoxShow={false} />
+      <BreadCrumb pageName='Project Details' isSearchBoxShow={false} />
 
-      <section className="container stp-30 sbp-30">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-span-8">
-            <h2 className="heading-1 mb-6 text-primary">Apply to Project</h2>
-
-            {/* Display Project Details */}
-            {project ? (
-              <div className="mb-12 p-8 rounded-lg bg-white shadow-lg box-shadow-1">
-                <h3 className="heading-2 mb-4 text-primary">{project.name}</h3>
-
-                <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
-                  <p>Date Posted: <span className="text-primary">{project.datePosted}</span></p>
-                  <p>Status: <span className={`font-medium px-3 py-1 rounded-lg ${project.status === "open" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>{project.status}</span></p>
-                  <p>Applicants: <span className="text-primary">{project.applicants}</span></p>
-                </div>
-
-                <p className="mb-6 leading-relaxed text-gray-700">{project.description}</p>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tags.map((tag, index) => (
-                    <span key={index} className="px-3 py-1 rounded-full bg-blue-100 text-blue-500 text-sm">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p className="text-error mb-6">No project found for ID: {id}</p> // Handle case when no project is found
+      <section className='container mt-14'>
+        {/* Project Details - Visible to all users */}
+        <ProjectDetails project={project} />
+        <div className=''>
+          <div className=''>
+            {/* Application Form - Only visible to freelancers */}
+            {user?.role === 'freelancer' && (
+              <ProjectApplication projectId={project.id} />
             )}
 
-            {/* Application Form */}
-            <div className="mt-6 p-8 rounded-lg bg-white shadow-lg box-shadow-1">
-              <h3 className="heading-3 text-primary mb-6">Your Application</h3>
-
-              <div className="mb-6">
-                <label htmlFor="coverLetter" className="block font-medium text-lg mb-2">Cover Letter</label>
-                <textarea
-                  id="coverLetter"
-                  className="w-full rounded-lg border border-gray-300 p-4 mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Introduce yourself and explain why you're a great fit for this project..."
-                  value={coverLetter}
-                  onChange={(e) => setCoverLetter(e.target.value)}
-                  rows={6}
-                />
-                <p className="text-sm text-gray-500">Max 500 words</p>
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="fileUpload" className="block font-medium text-lg mb-2">Attach Your Portfolio</label>
-                <input
-                  id="fileUpload"
-                  type="file"
-                  className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  onChange={handleFileChange}
-                />
-                <p className="text-sm text-gray-500">Accepted formats: PDF, Docx, PNG</p>
-              </div>
-
-              <div className="mt-8">
-                <button
-                  className="w-full bg-primary text-white py-4 rounded-lg font-medium shadow-md transition-all hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50"
-                  onClick={handleSubmit}
-                >
-                  Submit Application
-                </button>
-              </div>
-            </div>
+            {/* Proposals List - Only visible to clients */}
+            {user?.role === 'client' && (
+              <ProjectSubmissions projectId={project.id} />
+            )}
           </div>
         </div>
       </section>
@@ -118,4 +65,4 @@ function FreelancerApply() {
   );
 }
 
-export default FreelancerApply;
+export default ProjectPage;

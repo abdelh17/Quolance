@@ -4,7 +4,7 @@ import FreelancerProjectsView from '@/app/(with-main-layout)/projects/Freelancer
 import ClientProjectsView from '@/app/(with-main-layout)/projects/ClientProjectsView';
 
 function Projects() {
-  const { data: user, isLoading } = useGetUserProfile('2');
+  const { data: user, isLoading } = useGetUserProfile();
 
   return (
     <>
