@@ -10,5 +10,5 @@ public interface VerificationCodeService {
 
     Optional<VerificationCode> findByCode(String code);
 
-    boolean UpdateVerficiationCodeStatus(VerificationCode verificationCode);
+    boolean updateVerificationCodeStatus(VerificationCode verificationCode);
 }

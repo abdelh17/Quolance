@@ -25,7 +25,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
-    public boolean UpdateVerficiationCodeStatus(VerificationCode verificationCode) {
+    public boolean updateVerificationCodeStatus(VerificationCode verificationCode) {
         return verificationCodeRepository.save(verificationCode) != null;
     }
 
