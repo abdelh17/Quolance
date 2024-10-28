@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { UserType } from '@/types/userTypes';
+import { ProjectType } from '@/types/projectTypes';
 
 export const headerMenu = [
   {
@@ -17,7 +18,7 @@ export const headerMenu = [
   },
 ];
 
-export const ProjectList = [
+export const ProjectList: ProjectType[] = [
   {
     id: 1,
     name: 'Real-Time Video Streaming Platform Development',
@@ -204,5 +205,136 @@ export const Users: UserType[] = [
     role: 'freelancer',
     createdAt: '2024-02-01T00:00:00Z',
     updatedAt: '2024-02-01T00:00:00Z',
+  },
+  {
+    id: '4',
+    name: 'Sarah Johnson',
+    email: 'sarah.j@gmail.com',
+    role: 'freelancer',
+    createdAt: '2024-02-05T00:00:00Z',
+    updatedAt: '2024-02-05T00:00:00Z',
+  },
+  {
+    id: '5',
+    name: 'Alex Chen',
+    email: 'alex.chen@gmail.com',
+    role: 'freelancer',
+    createdAt: '2024-02-10T00:00:00Z',
+    updatedAt: '2024-02-10T00:00:00Z',
+  },
+  {
+    id: '6',
+    name: 'Emma Wilson',
+    email: 'emma.w@gmail.com',
+    role: 'freelancer',
+    createdAt: '2024-02-15T00:00:00Z',
+    updatedAt: '2024-02-15T00:00:00Z',
+  },
+];
+
+export const submissioners = [
+  {
+    id: uuidv4(),
+    img: 'expertImg1',
+    freelancerName: 'Juan Mullins',
+    location: 'Brooklyn, NY, USA',
+    features: ['$50 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Handyman', 'Gardening'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg2',
+    freelancerName: 'Ronald Higgins',
+    location: 'Brooklyn, NY, USA',
+    features: ['$45 - &80/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Plumber', 'Handyman'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg3',
+    freelancerName: 'Leroy Curtis',
+    location: 'Brooklyn, NY, USA',
+    features: ['$75 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg4',
+    freelancerName: 'Kenneth Sims',
+    location: 'Brooklyn, NY, USA',
+    features: ['$25 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Plumber', 'Cleaning', 'Plumber', 'Plumber'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg5',
+    freelancerName: 'Sarah Bryan',
+    location: 'Brooklyn, NY, USA',
+    features: ['$75 - &200/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Plumber', 'Gardening', 'Plumber'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg6',
+    freelancerName: 'Todd Meyer',
+    location: 'Brooklyn, NY, USA',
+    features: ['$75 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Gardening', 'Photography', 'Plumber', 'Plumber', 'Handyman'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg1',
+    freelancerName: 'Jeanette Alexander',
+    location: 'Brooklyn, NY, USA',
+    features: ['$50 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Handyman', 'Photography', 'Plumber', 'Plumber'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg5',
+    freelancerName: 'Beatrice Gill',
+    location: 'Brooklyn, NY, USA',
+    features: ['$75 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: [
+      'Photography',
+      'Gardening',
+      'Plumber',
+      'Plumber',
+      'Plumber',
+      'Plumber',
+      'Plumber',
+      'Plumber',
+    ],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg4',
+    freelancerName: 'Marvin Perry',
+    location: 'Brooklyn, NY, USA',
+    features: ['$50 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Gardening', 'Handyman', 'Plumber', 'Plumber', 'Plumber'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg2',
+    freelancerName: 'Marvin Lamb',
+    location: 'Brooklyn, NY, USA',
+    features: ['$75 - &120/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Photography', 'Renovation', 'Plumber', 'Plumber'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg6',
+    freelancerName: 'Bradley Pittman',
+    location: 'Brooklyn, NY, USA',
+    features: ['$25 - &120/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Renovation', 'Cleaning', 'Plumber', 'Plumber'],
+  },
+  {
+    id: uuidv4(),
+    img: 'expertImg3',
+    freelancerName: 'Alice Ortega',
+    location: 'Brooklyn, NY, USA',
+    features: ['$75 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
+    services: ['Renovation', 'Photography', 'Plumber', 'Plumber'],
   },
 ];
