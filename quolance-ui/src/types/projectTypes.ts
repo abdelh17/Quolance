@@ -9,3 +9,13 @@ export const ProjectFilterOptionsDefault: ProjectFilterOptions = {
   order: 'desc',
   status: 'all',
 };
+
+export type ProjectType = {
+  id: number;
+  name: string;
+  description: string;
+  tags: string[];
+  datePosted: string;
+  status: string;
+  applicants: number;
+};
