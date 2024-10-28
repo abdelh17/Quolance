@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface ProjectService {
     ProjectDto createProject(Project project);
     List<ProjectDto> getProjectsByClientId(Long clientId);
-
     List<ProjectDto> getAllProjects();
     ProjectDto getProjectById(Long id);
     Optional<Project> getProjectEntityById(Long id);
