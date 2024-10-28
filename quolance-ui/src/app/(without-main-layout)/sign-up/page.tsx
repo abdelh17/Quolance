@@ -12,8 +12,8 @@ import {
   PiUser,
 } from "react-icons/pi";
 
-import facebook from "/public/images/facebook_icon.png";
-import google from "/public/images/google_icon.png";
+import facebook from "@/public/images/facebook_icon.png";
+import google from "@/public/images/google_icon.png";
 
 function SignUpPage() {
   const [loginStep, setLoginStep] = useState(1);

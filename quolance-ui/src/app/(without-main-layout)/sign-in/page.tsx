@@ -4,8 +4,8 @@ import Link from "next/link";
 import { PiEnvelopeSimple, PiLock } from "react-icons/pi";
 import "swiper/css";
 
-import facebook from "/public/images/facebook_icon.png";
-import google from "/public/images/google_icon.png";
+import facebook from "@/public/images/facebook_icon.png";
+import google from "@/public/images/google_icon.png";
 
 function SignInPage() {
   return (
