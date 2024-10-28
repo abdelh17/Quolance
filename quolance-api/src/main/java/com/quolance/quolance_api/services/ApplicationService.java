@@ -10,5 +10,9 @@ public interface ApplicationService {
 
     ApplicationDto createApplication(Application Application);
 
-    List<ApplicationDto> getApplicationByFreelancerId(Long freelancerId);
+    List<ApplicationDto> getApplicationByFreelancerId(Long freelancerId); //TODO Applications with s not Application
+
+    List<ApplicationDto> getApplicationsByProjectId(Long projectId);
+
+
 }
