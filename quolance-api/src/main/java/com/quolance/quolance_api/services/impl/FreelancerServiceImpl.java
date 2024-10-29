@@ -3,6 +3,7 @@ package com.quolance.quolance_api.services.impl;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.FreelancerService;
@@ -22,8 +23,13 @@ public class FreelancerServiceImpl implements FreelancerService {
     @Override
     public ApplicationDto submitApplication(ApplicationDto applicationDto) {
         User freelancer = userService.findById(applicationDto.getUserId()).orElseThrow();
+        Project project = projectService.getProjectEntityById(applicationDto.getProjectId()).orElseThrow();
+
         Application applicationToSave = ApplicationDto.toEntity(applicationDto);
+
         applicationToSave.setFreelancer(freelancer);
+        applicationToSave.setProject(project);
+
         ApplicationDto savedApplication = applicationService.createApplication(applicationToSave);
         return savedApplication;
     }

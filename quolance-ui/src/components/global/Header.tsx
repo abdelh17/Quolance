@@ -3,9 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PiCaretDown, PiListBold, PiPlusBold } from "react-icons/pi";
+
+import MobileMenu from "./MobileMenu";
 import { headerMenu } from "../../data/data";
 import useScroll from "../../hooks/useScroll";
-import MobileMenu from "./MobileMenu";
 
 function Header() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);

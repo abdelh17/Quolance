@@ -16,12 +16,9 @@ export default function ProjectSubmissions({
   return (
     <section className='sbp-30 stp-30'>
       <div className='container'>
-        <h2 className='heading-2 pb-3'>
-          Discover the world’s best flexible talent
-        </h2>
+        <h2 className='heading-2 pb-3'>Project Submissions</h2>
         <p className='text-n300 font-medium'>
-          Browse and connect with top talent who can help bring your next
-          project to life
+          Browse and connect with top talent
         </p>
 
         <div className='stp-15 sbp-15 flex items-start justify-start'>

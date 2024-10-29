@@ -26,4 +26,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<Application> applications = applicationRepository.findAllByFreelancerId(freelancerId);
         return applications.stream().map(ApplicationDto::fromEntity).toList();
     }
+
+    @Override
+    public List<ApplicationDto> getApplicationsByProjectId(Long projectId) {
+        List<Application> applications = applicationRepository.findAllByProjectId(projectId);
+        return applications.stream().map(ApplicationDto::fromEntity).toList();
+    }
 }
