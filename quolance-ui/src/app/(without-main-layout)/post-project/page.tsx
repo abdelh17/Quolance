@@ -8,6 +8,7 @@ import { PiCheckBold, PiXBold } from 'react-icons/pi';
 import StepOne from '@/components/postProjectSteps/StepOne';
 import StepTwo from '@/components/postProjectSteps/StepTwo';
 import StepThree from '@/components/postProjectSteps/StepThree';
+import StepFour from '@/components/postProjectSteps/StepFour';
 
 import stepIcon from '@/public/images/steps_icon.png';
 
@@ -90,6 +91,7 @@ function PostsTasksSteps() {
                 {steps === 0 && <StepOne />}
                 {steps === 1 && <StepTwo />}
                 {steps === 2 && <StepThree />}
+                {steps === 3 && <StepFour />}
 
                 <div
                   className={`stp-15 flex items-center ${

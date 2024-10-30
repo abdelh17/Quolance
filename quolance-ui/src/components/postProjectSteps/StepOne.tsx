@@ -22,7 +22,7 @@ function StepOne() {
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         Detailed Project Description <span className='text-red-500'>* </span>
       </p>
-      <textarea className='bg-n30 mt-4 min-h-[130px] w-full rounded-lg'></textarea>
+      <textarea className='bg-n30 mt-4 min-h-[130px] w-full rounded-lg p-4'></textarea>
     </div>
   );
 }

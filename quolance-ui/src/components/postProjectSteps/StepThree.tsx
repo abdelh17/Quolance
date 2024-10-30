@@ -4,7 +4,7 @@ import ExpectectedDeliveryRadioGroup from '../ui/client/ExpectedDeliveryRadioGro
 function StepThree() {
   return (
     <div className=''>
-      <h4 className='heading-4'>Basic Project Information</h4>
+      <h4 className='heading-4'>Timeline & Delivery Preferences</h4>
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         Expected Delivery <span className='text-red-500'>* </span>
       </p>

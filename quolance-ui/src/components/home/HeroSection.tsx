@@ -7,13 +7,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 
 import sliderImg1 from '@/public/images/freelancer-hero-img-1.jpg';
-import sliderImg2 from '@/public/images/freelancer-hero-img-2.jpg';
 
 import FadeDown from '../animation/FadeDown';
 import FadeRight from '../animation/FadeRight';
 import FadeTop from '../animation/FadeTop';
 
-const sliderImages = [sliderImg1, sliderImg2];
+const sliderImages = [sliderImg1];
 
 function HeroSection() {
   return (
