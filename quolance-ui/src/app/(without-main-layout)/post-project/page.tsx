@@ -8,6 +8,7 @@ import { PiCheckBold, PiXBold } from 'react-icons/pi';
 import StepOne from '@/components/postProjectSteps/StepOne';
 
 import stepIcon from '@/public/images/steps_icon.png';
+import StepTwo from '@/components/postProjectSteps/stepTwo';
 
 const stepsName = ['Basic Project Information', 'Project Scope & Requirements', 'Timeline & Preferences', 'Previewing & Confirmation'];
 
@@ -48,7 +49,7 @@ function PostsTasksSteps() {
                           <div className='bg-b300 flex items-center justify-center rounded-full p-2 !leading-none text-white'>
                             <PiCheckBold />
                           </div>
-                          <p className='text-sm font-medium'>Basic Project Information'</p>
+                          <p className='text-sm font-medium'>{item}</p>
                         </div>
                       ) : (
                         <div
@@ -83,6 +84,7 @@ function PostsTasksSteps() {
             <div className='col-span-12 md:col-span-8 xl:col-span-6 xl:col-start-6'>
               <div className='border-n30 rounded-3xl border p-6 sm:p-8'>
                 {steps === 0 && <StepOne />}
+                {steps === 1 && <StepTwo />}
 
                 <div
                   className={`stp-15 flex items-center ${

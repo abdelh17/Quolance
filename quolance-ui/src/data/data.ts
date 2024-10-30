@@ -4,24 +4,32 @@ import { ProjectType } from '@/types/projectTypes';
 import { UserType } from '@/types/userTypes';
 
 export const expertiseNeeded = [
-  "Frontend Developer",
-  "Backend Developer",
-  "Fullstack Developer",
-  "Wordpress Developer",
-  "UI/UX Designer",
-  "Project Manager",
-  "QA Tester",
-  "Content Writer",
-  "SEO Specialist",
-  "Social Media Manager",
-  "Data Analyst",
-  "Customer Support",
-  "Virtual Assistant",
-  "E-commerce Specialist",
-  "Mobile App Developer",
-  "Graphic Designer",
-  "Video Editor",
-  "Digital Marketer",
+  'Frontend Developer',
+  'Backend Developer',
+  'Fullstack Developer',
+  'Wordpress Developer',
+  'UI/UX Designer',
+  'Project Manager',
+  'QA Tester',
+  'Content Writer',
+  'SEO Specialist',
+  'Social Media Manager',
+  'Data Analyst',
+  'Customer Support',
+  'Virtual Assistant',
+  'E-commerce Specialist',
+  'Mobile App Developer',
+  'Graphic Designer',
+  'Video Editor',
+  'Digital Marketer',
+];
+
+export const budgetOptions = [
+  { value: 'less-than-500', label: 'Less than $500' },
+  { value: '500-1000', label: '$500 to $1,000' },
+  { value: '1000-5000', label: '$1,000 to $5,000' },
+  { value: '5000-10000', label: '$5,000 to $10,000' },
+  { value: '10000-and-above', label: '$10,000 and above' },
 ];
 
 export const categoryDropDownMenu = [
@@ -38,7 +46,6 @@ export const categoryDropDownMenu = [
   { id: uuidv4(), label: 'E-commerce' },
 ];
 
-
 export const headerMenu = [
   {
     id: uuidv4(),
@@ -54,7 +61,7 @@ export const headerMenu = [
         id: uuidv4(),
         name: 'Find Clients',
         link: '/find-clients',
-      }
+      },
     ],
   },
   {

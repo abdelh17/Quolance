@@ -2,7 +2,6 @@
 
 import DropDown from '@/components/ui/DropDown';
 import { categoryDropDownMenu } from '@/data/data';
-import CheckBoxGroup from '../ui/checkbox/CheckBoxGroup';
 
 function StepOne() {
   return (
