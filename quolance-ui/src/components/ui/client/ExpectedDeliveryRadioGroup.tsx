@@ -1,9 +1,9 @@
 export default function ExpectectedDeliveryRadioGroup() {
   const expectedDelivery = [
-    { id: 1, label: 'Immediately' },
-    { id: 2, label: 'This month' },
-    { id: 3, label: 'In the next few months' },
-    { id: 4, label: 'Flexible' },
+    { id: '1-immediately', label: 'Immediately' },
+    { id: '2-this_month', label: 'This month' },
+    { id: '3-next_few_months', label: 'In the next few months' },
+    { id: '4-flexible', label: 'Flexible' },
   ];
 
   return (
@@ -12,10 +12,10 @@ export default function ExpectectedDeliveryRadioGroup() {
         {expectedDelivery.map((item) => (
           <div key={item.id} className='flex items-center'>
             <input
-              defaultChecked={item.id === 1}
-              id={item.id.toString()}
-              name='notification-method'
+              defaultChecked={item.id === '1-immediately'}
+              id={item.id}
               type='radio'
+              name='expectedDelivery'
               className='h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600'
             />
             <label

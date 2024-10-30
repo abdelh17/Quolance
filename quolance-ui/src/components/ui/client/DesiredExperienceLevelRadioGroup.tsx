@@ -1,9 +1,10 @@
 export default function DesiredExperienceLevelRadioGroup() {
   const desiredExperienceLevel = [
-    { id: 1, label: 'Beginner ($)' },
-    { id: 2, label: 'Intermediate ($$)' },
-    { id: 3, label: 'Expert ($$$)' },
+    { id: 'beginner', label: 'Beginner ($)' },
+    { id: 'intermediate', label: 'Intermediate ($$)' },
+    { id: 'expert', label: 'Expert ($$$)' },
   ];
+  
 
   return (
     <fieldset>
@@ -11,10 +12,10 @@ export default function DesiredExperienceLevelRadioGroup() {
         {desiredExperienceLevel.map((item) => (
           <div key={item.id} className='flex items-center'>
             <input
-              defaultChecked={item.id === 1}
-              id={item.id.toString()}
-              name='notification-method'
+              defaultChecked={item.id === 'beginner'}
+              id={item.id}
               type='radio'
+              name="experienceLevel"
               className='h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600'
             />
             <label
