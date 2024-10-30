@@ -3,6 +3,42 @@ import { v4 as uuidv4 } from 'uuid';
 import { ProjectType } from '@/types/projectTypes';
 import { UserType } from '@/types/userTypes';
 
+export const expertiseNeeded = [
+  "Frontend Developer",
+  "Backend Developer",
+  "Fullstack Developer",
+  "Wordpress Developer",
+  "UI/UX Designer",
+  "Project Manager",
+  "QA Tester",
+  "Content Writer",
+  "SEO Specialist",
+  "Social Media Manager",
+  "Data Analyst",
+  "Customer Support",
+  "Virtual Assistant",
+  "E-commerce Specialist",
+  "Mobile App Developer",
+  "Graphic Designer",
+  "Video Editor",
+  "Digital Marketer",
+];
+
+export const categoryDropDownMenu = [
+  { id: uuidv4(), label: 'Web Development' },
+  { id: uuidv4(), label: 'Graphic Design' },
+  { id: uuidv4(), label: 'Content Writing' },
+  { id: uuidv4(), label: 'Digital Marketing' },
+  { id: uuidv4(), label: 'App Development' },
+  { id: uuidv4(), label: 'Video Editing' },
+  { id: uuidv4(), label: 'Animation' },
+  { id: uuidv4(), label: 'UI/UX Design' },
+  { id: uuidv4(), label: 'Data Entry' },
+  { id: uuidv4(), label: 'Virtual Assistant' },
+  { id: uuidv4(), label: 'E-commerce' },
+];
+
+
 export const headerMenu = [
   {
     id: uuidv4(),

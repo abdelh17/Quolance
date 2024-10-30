@@ -1,32 +1,31 @@
-"use client";
+'use client';
 
-import ServiceModal from "@/components/ui/ServiceModal";
-
+import DropDown from '@/components/ui/DropDown';
+import { categoryDropDownMenu } from '@/data/data';
+import CheckBoxGroup from '../ui/checkbox/CheckBoxGroup';
 
 function StepOne() {
-    return (
-        <div className="">
-            <h4 className="heading-4">Project information</h4>
-            <p className="pb-4 pt-6 lg:pt-10">
-                Project Title *
-            </p>
-            <input
-                type="text"
-                className="w-full rounded-lg bg-n30 p-3 outline-none"
-            />
+  return (
+    <div className=''>
+      <h4 className='heading-4'>Basic Project Information</h4>
+      <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
+        Project Category *
+      </p>
+      <DropDown items={categoryDropDownMenu} />
 
-            <p className="pb-4 pt-6 font-medium text-n300 lg:pt-10">
-                Detailed Project Description*
-            </p>
-            <textarea className="mt-4 min-h-[130px] w-full rounded-lg bg-n30"></textarea>
+      <p className='pb-4 pt-6 lg:pt-10'>Project Title *</p>
 
-            <p className="pb-4 pt-6 font-medium text-n300 lg:pt-10">
-                Project Category*
-            </p>
+      <input
+        type='text'
+        className='bg-n30 w-full rounded-lg p-3 outline-none'
+      />
 
-            <ServiceModal />
-        </div>
-    );
+      <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
+        Detailed Project Description*
+      </p>
+      <textarea className='bg-n30 mt-4 min-h-[130px] w-full rounded-lg'></textarea>
+    </div>
+  );
 }
 
 export default StepOne;

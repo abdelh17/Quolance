@@ -9,7 +9,7 @@ import StepOne from '@/components/postProjectSteps/StepOne';
 
 import stepIcon from '@/public/images/steps_icon.png';
 
-const stepsName = ['Title & Date', 'Location', 'Details', 'Budget'];
+const stepsName = ['Basic Project Information', 'Project Scope & Requirements', 'Timeline & Preferences', 'Previewing & Confirmation'];
 
 function PostsTasksSteps() {
   const [steps, setSteps] = useState(0);
@@ -48,7 +48,7 @@ function PostsTasksSteps() {
                           <div className='bg-b300 flex items-center justify-center rounded-full p-2 !leading-none text-white'>
                             <PiCheckBold />
                           </div>
-                          <p className='text-sm font-medium'>Title & Date</p>
+                          <p className='text-sm font-medium'>Basic Project Information'</p>
                         </div>
                       ) : (
                         <div

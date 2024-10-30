@@ -1,9 +1,15 @@
 import type { Config } from "tailwindcss";
+import { nextui } from "@nextui-org/react"; // Import NextUI plugin
 
 const config: Config = {
   content: [
+    // Your own content paths
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/*.{js,ts,jsx,tsx,mdx}",
+
+    // Include NextUI component paths
+    "./node_modules/@nextui-org/theme/dist/components/button.js",
+    "./node_modules/@nextui-org/theme/dist/components/(button|snippet|code|input).js",
   ],
   theme: {
     extend: {
@@ -17,7 +23,7 @@ const config: Config = {
         "4xl": "1800px",
       },
       colors: {
-        //blue color
+        // Blue colors
         b10: "#CFD8FA",
         b50: "#e6f0ff",
         b75: "#96c0ff",
@@ -28,7 +34,7 @@ const config: Config = {
         b500: "#003e9c",
         b900: "#1E2783",
 
-        //yellow color
+        // Yellow colors
         y50: "#fef9ea",
         y75: "#fde8a7",
         y100: "#fcdf83",
@@ -38,7 +44,7 @@ const config: Config = {
         y500: "#987919",
         y600: "#FFAB00",
 
-        //violate color
+        // Violet colors
         v50: "#f0ebff",
         v75: "#c3adff",
         v100: "#aa8bff",
@@ -47,7 +53,7 @@ const config: Config = {
         v400: "#4c27b3",
         v500: "#42229c",
 
-        //neutral color
+        // Neutral colors
         n10: "#fafafb",
         n20: "#f5f5f7",
         n30: "#ececef",
@@ -67,30 +73,28 @@ const config: Config = {
         n800: "#1a1943",
         n900: "#0e0d39",
 
-        //green-color
+        // Green colors
         g50: "#E9F9EF",
         g75: "#A4E7BD",
-
         g100: "#B9FF5A",
         g200: "#ABFF38",
-
         g300: "#22C55E",
         g400: "#118D57",
 
-        //red color
+        // Red colors
         r50: "#F9E7E4",
         r100: "#FFAC82",
         r300: "#FF5630",
 
-        // orange color
+        // Orange color
         o300: "#FFAB00",
 
-        //electric blue,
+        // Electric blue
         eb50: "#C9DBF5",
         eb100: "#ADF8FF",
         eb200: "#5AF0FF",
 
-        // bg color
+        // Background colors
         bg1: "#F3FFD7",
         bg2: "#C6EFF3",
         bg3: "#FFF5CC",
@@ -98,7 +102,7 @@ const config: Config = {
         bg5: "#FFCCC3",
         bg6: "#FEF6E5",
 
-        // stroke color
+        // Stroke color
         sp: "rgba(154, 153, 172, .4)",
       },
       padding: {
@@ -108,6 +112,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+    plugins: [nextui()], // Add the NextUI plugin
 };
+
 export default config;
