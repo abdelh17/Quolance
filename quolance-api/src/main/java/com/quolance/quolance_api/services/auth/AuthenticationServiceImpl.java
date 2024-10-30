@@ -44,7 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userService.createUser(user);
         userRegistrationDto.setPassword("");
 
-//        sendVerificationEmail(user);
+        sendVerificationEmail(user);
 
         return userRegistrationDto;
     }

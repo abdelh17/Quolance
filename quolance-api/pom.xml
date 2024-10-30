@@ -112,8 +112,8 @@
 
 		<dependency>
 			<groupId>org.jobrunr</groupId>
-			<artifactId>jobrunr-spring-boot-starter</artifactId>
-			<version>5.1.7</version>
+			<artifactId>jobrunr-spring-boot-3-starter</artifactId>
+			<version>7.0.0</version>
 		</dependency>
 
 		<dependency>

@@ -25,6 +25,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     @Operation(
             summary = "Create a new user (client/freelancer)",
+
             description = "Create a new user by passing a UserRegistrationDto"
     )
     public ResponseEntity<UserRegistrationDto> register(@RequestBody UserRegistrationDto userRegistrationDto) {
