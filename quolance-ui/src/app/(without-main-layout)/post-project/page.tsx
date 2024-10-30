@@ -6,11 +6,18 @@ import { useState } from 'react';
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 
 import StepOne from '@/components/postProjectSteps/StepOne';
+import StepTwo from '@/components/postProjectSteps/StepTwo';
+import StepThree from '@/components/postProjectSteps/StepThree';
 
 import stepIcon from '@/public/images/steps_icon.png';
-import StepTwo from '@/components/postProjectSteps/stepTwo';
 
-const stepsName = ['Basic Project Information', 'Project Scope & Requirements', 'Timeline & Preferences', 'Previewing & Confirmation'];
+
+const stepsName = [
+  'Basic Project Information',
+  'Project Scope & Requirements',
+  'Timeline & Preferences',
+  'Previewing & Confirmation',
+];
 
 function PostsTasksSteps() {
   const [steps, setSteps] = useState(0);
@@ -19,10 +26,7 @@ function PostsTasksSteps() {
     <>
       <section className='sbp-30'>
         <div className='4xl:large-container max-4xl:container flex items-center justify-between pt-6'>
-          <Link
-            href='/'
-            className='pt-1 text-2xl font-bold'
-          >
+          <Link href='/' className='pt-1 text-2xl font-bold'>
             Quolance
           </Link>
           <Link
@@ -85,6 +89,7 @@ function PostsTasksSteps() {
               <div className='border-n30 rounded-3xl border p-6 sm:p-8'>
                 {steps === 0 && <StepOne />}
                 {steps === 1 && <StepTwo />}
+                {steps === 2 && <StepThree />}
 
                 <div
                   className={`stp-15 flex items-center ${
