@@ -1,14 +1,15 @@
 'use client';
 import { useState } from 'react';
 import { PiMapPinBold } from 'react-icons/pi';
-import RadioGroup from '../ui/RadioGroup';
+import ClientBudgetRadioGroup from '../ui/client/ClientBudgetRadioGroup';
+import DesiredExperienceLevelRadioGroup from '../ui/client/DesiredExperienceLevelRadioGroup';
 
 function StepTwo() {
   const [active, setActive] = useState(0);
   const [isRemote, setIsRemote] = useState(true);
   return (
     <div>
-      <h4 className='heading-4'>Tell us where</h4>
+      <h4 className='heading-4'>Project Scope & Requirements</h4>
       <div className='pt-6 lg:pt-10'>
         <p className='text-n300 pb-4 font-medium'>Is this remote work?*</p>
         <div className='flex items-center justify-start font-medium'>
@@ -49,7 +50,11 @@ function StepTwo() {
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         What is your budget?*
       </p>
-      <RadioGroup />
+      <ClientBudgetRadioGroup />
+      <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
+        What experience level are you looking for in a freelancer?*
+      </p>
+      <DesiredExperienceLevelRadioGroup />
     </div>
   );
 }

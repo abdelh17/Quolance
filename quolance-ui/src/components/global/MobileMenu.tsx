@@ -85,7 +85,7 @@ function MobileMenu({
               )}
             </li>
           ))}
-          
+
           <li className='hover:text-b500 duration-500'>
             <Link href='/sign-up' className='rounded-lg px-2 py-3 '>
               Sign up
@@ -99,7 +99,7 @@ function MobileMenu({
         </ul>
 
         <Link
-          href=''
+          href='/post-project'
           className='bg-y300 text-n900 rounded-full px-4 py-2 text-base font-medium ltr:ml-4 rtl:mr-4'
         >
           Post A Project

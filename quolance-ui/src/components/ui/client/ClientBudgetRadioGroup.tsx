@@ -1,4 +1,4 @@
-export default function ClientBudget() {
+export default function ClientBudgetRadioGroup() {
   const clientBudget = [
     { id: 1, label: 'Less than $500' },
     { id: 2, label: '$500 to $1,000' },
