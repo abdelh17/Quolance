@@ -1,18 +1,74 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { UserType } from '@/types/userTypes';
 import { ProjectType } from '@/types/projectTypes';
+import { UserType } from '@/types/userTypes';
 
 export const headerMenu = [
   {
     id: uuidv4(),
-    name: 'Projects',
+    name: 'How It Works',
     isSubmenu: true,
     submenu: [
       {
         id: uuidv4(),
-        name: 'All Projects',
-        link: '/projects',
+        name: 'Find A Freelancer',
+        link: '/find-a-freelancer',
+      },
+      {
+        id: uuidv4(),
+        name: 'Find Clients',
+        link: '/find-clients',
+      }
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: 'Why Quolance?',
+    isSubmenu: true,
+    submenu: [
+      {
+        id: uuidv4(),
+        name: 'About US',
+        link: '/about-us',
+      },
+      {
+        id: uuidv4(),
+        name: 'Sucess Stories',
+        link: '/sucess-stories',
+      },
+      {
+        id: uuidv4(),
+        name: 'Reviews',
+        link: '/quolance-reviews',
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: "What's New?",
+    isSubmenu: true,
+    submenu: [
+      {
+        id: uuidv4(),
+        name: 'Blog',
+        link: '/blog',
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: 'Support',
+    isSubmenu: true,
+    submenu: [
+      {
+        id: uuidv4(),
+        name: 'FAQs',
+        link: '/faqs',
+      },
+      {
+        id: uuidv4(),
+        name: 'Contact Us',
+        link: '/contact-us',
       },
     ],
   },
