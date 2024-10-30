@@ -58,7 +58,7 @@ function Header() {
               </Link>
             </div>
 
-            <div className='flex items-center justify-between gap-6'>
+            <div className='flex items-center justify-between gap-6 max-lg:hidden'>
               <ul className='xxl:gap-6 flex items-center justify-start gap-2 font-medium max-sm:hidden'>
                 {headerMenu.map((menu) => (
                   <li key={menu.id}>

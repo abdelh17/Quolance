@@ -3,9 +3,8 @@ import { Montserrat } from 'next/font/google';
 
 import './globals.css';
 
-import Header from '@/components/global/Header';
-
 import Providers from '@/util/Providers';
+//THIS IS THE GLOBAL LAYOUT, IT WILL WRAP ALL THE PAGES
 
 const monsterratFont = Montserrat({
   subsets: ['latin'],
@@ -29,8 +28,7 @@ export default function RootLayout({
         className={`${monsterratFont.variable} ${monsterratFont.className}`}
       >
         <Providers>
-          <Header />
-          <main className='pt-[100px]'>{children}</main>
+          <main>{children}</main>
         </Providers>
       </body>
     </html>
