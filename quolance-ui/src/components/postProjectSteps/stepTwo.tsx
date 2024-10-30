@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { PiMapPinBold } from 'react-icons/pi';
 import RadioGroup from '../ui/RadioGroup';
-import { budgetOptions } from '@/data/data';
 
 function StepTwo() {
   const [active, setActive] = useState(0);
@@ -40,15 +39,17 @@ function StepTwo() {
             <PiMapPinBold />
             <input
               type='text'
-              className='placeholder:text-n900 w-full bg-transparent outline-none placeholder:font-medium'
-              placeholder='Enter suburd or postcode'
+              className='w-full bg-transparent outline-none placeholder:font-medium placeholder:text-gray-500'
+              placeholder='For example : Montreal, Vancouver, Toronto, etc.'
             />
           </div>
         </>
       )}
 
-        <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>What is your budget?*</p>
-        <RadioGroup budgetOptions={budgetOptions} />
+      <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
+        What is your budget?*
+      </p>
+      <RadioGroup />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import DropDown from '@/components/ui/DropDown';
-import { categoryDropDownMenu } from '@/data/data';
 
 function StepOne() {
   return (
@@ -10,8 +9,7 @@ function StepOne() {
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         Project Category *
       </p>
-      <DropDown items={categoryDropDownMenu} />
-
+      <DropDown/>
       <p className='pb-4 pt-6 lg:pt-10'>Project Title *</p>
 
       <input

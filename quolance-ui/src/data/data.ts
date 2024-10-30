@@ -24,28 +24,6 @@ export const expertiseNeeded = [
   'Digital Marketer',
 ];
 
-export const budgetOptions = [
-  { value: 'less-than-500', label: 'Less than $500' },
-  { value: '500-1000', label: '$500 to $1,000' },
-  { value: '1000-5000', label: '$1,000 to $5,000' },
-  { value: '5000-10000', label: '$5,000 to $10,000' },
-  { value: '10000-and-above', label: '$10,000 and above' },
-];
-
-export const categoryDropDownMenu = [
-  { id: uuidv4(), label: 'Web Development' },
-  { id: uuidv4(), label: 'Graphic Design' },
-  { id: uuidv4(), label: 'Content Writing' },
-  { id: uuidv4(), label: 'Digital Marketing' },
-  { id: uuidv4(), label: 'App Development' },
-  { id: uuidv4(), label: 'Video Editing' },
-  { id: uuidv4(), label: 'Animation' },
-  { id: uuidv4(), label: 'UI/UX Design' },
-  { id: uuidv4(), label: 'Data Entry' },
-  { id: uuidv4(), label: 'Virtual Assistant' },
-  { id: uuidv4(), label: 'E-commerce' },
-];
-
 export const headerMenu = [
   {
     id: uuidv4(),
