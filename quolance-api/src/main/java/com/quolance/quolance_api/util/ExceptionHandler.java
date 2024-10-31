@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.util;
 
+import com.quolance.quolance_api.util.ApiException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-      HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+                                                                HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     Map<String, String> errors = new HashMap<>();
     List<String> generalErrors = new ArrayList<>();
     ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -41,6 +42,27 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
+  @org.springframework.web.bind.annotation.ExceptionHandler(ApiException.class)
+  public ResponseEntity<HttpErrorResponse> handleException(ApiException e) {
+    log.info("Handling ApiException: {}", e.getMessage());
+    var response = HttpErrorResponse.of(e.getMessage(), e.getStatus(), e.getErrors(), null);
+    return new ResponseEntity<>(response, HttpStatus.valueOf(e.getStatus()));
+  }
+
+  @org.springframework.web.bind.annotation.ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<HttpErrorResponse> handleException(BadCredentialsException e) {
+    log.info("Handling BadCredentialsException: {}", e.getMessage());
+    var response = HttpErrorResponse.of(e.getMessage(), 401, null, null);
+    return new ResponseEntity<>(response, HttpStatus.valueOf(401));
+  }
+
+  @org.springframework.web.bind.annotation.ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<HttpErrorResponse> handleException(AuthorizationDeniedException e) {
+    log.info("Handling AuthorizationDeniedException: {}", e.getMessage());
+    var response = HttpErrorResponse.of(e.getMessage(), 403, null, null);
+    return new ResponseEntity<>(response, HttpStatus.valueOf(403));
+  }
+
   @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
   public ResponseEntity<HttpErrorResponse> handleException(Exception e) {
     log.error("Unhandled exception", e);
@@ -48,3 +70,4 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
+
