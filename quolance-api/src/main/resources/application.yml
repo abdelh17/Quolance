@@ -1,0 +1,47 @@
+app:
+  allowed-origins: http://localhost
+  application-name: Quolance
+  base-url: http://localhost:8080/
+
+spring:
+  application:
+    name: quolance-api
+  datasource:
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO}
+    show-sql: false
+    properties:
+      hibernate.format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: localhost
+    port: ${MAILPIT_SMTP_PORT}
+    username: ${MAILPIT_USER}
+    password: ${MAILPIT_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+security:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    expiration-time: 86400000
+    refresh-token:
+      expiration: 604800000
+
+org:
+  jobrunr:
+    background-job-server:
+      enabled: true
+    dashboard:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
