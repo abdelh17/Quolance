@@ -1,8 +1,12 @@
 #!/bin/bash
 
+# Determine the script's directory and project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 # Define paths for .env and docker-compose.yml
-ENV_FILE="./.env"
-DOCKER_COMPOSE_FILE="./infrastructure/docker-compose.yaml"
+ENV_FILE="$PROJECT_ROOT/.env"
+DOCKER_COMPOSE_FILE="$PROJECT_ROOT/infrastructure/docker-compose.yaml"
 
 # Define options
 options=("Create and start container" "Stop container" "Destroy container (down)" "Exit")
@@ -11,7 +15,7 @@ options=("Create and start container" "Stop container" "Destroy container (down)
 header() {
   clear
   echo "============================"
-  echo "   Quolance Internal Script  "
+  echo "  Quolance Internal Script  "
   echo "============================"
   echo
   echo "Choose an option for the Docker Compose container:"
