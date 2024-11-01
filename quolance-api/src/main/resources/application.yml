@@ -4,6 +4,8 @@ app:
   base-url: http://localhost:8080/
 
 spring:
+  config:
+    import: "optional:file:../.env[.properties]"
   application:
     name: quolance-api
   datasource:
