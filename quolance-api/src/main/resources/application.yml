@@ -1,9 +1,21 @@
 app:
-  allowed-origins: http://localhost
   application-name: Quolance
-  base-url: http://localhost:8080/
+  base-url: "http://localhost,http://localhost:3000"
+  allowed-origins: "http://localhost"
+  login-page-url: "${app.base-url}/auth/login"
+  login-success-url: "${app.base-url}/auth/login-success"
 
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: "${GITHUB_CLIENT_ID}"
+            client-secret: "${GITHUB_CLIENT_SECRET}"
+          google:
+            client-id: "${GOOGLE_CLIENT_ID}"
+            client-secret: "${GOOGLE_CLIENT_SECRET}"
   config:
     import: "optional:file:../.env[.properties]"
   application:
@@ -47,3 +59,6 @@ org:
 logging:
   level:
     org.springframework.security: DEBUG
+
+server:
+  port: 8081

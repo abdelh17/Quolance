@@ -26,6 +26,7 @@ services:
       MP_UI_AUTH_PASS: "${MAILPIT_PASSWORD}"
     networks:
       - springboot-network
+
   caddy:
     image: caddy:latest
     volumes:
@@ -33,8 +34,9 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+    networks:
+      - springboot-network
+
 networks:
   springboot-network:
     driver: bridge
-volumes:
-  starter_kit_db:
