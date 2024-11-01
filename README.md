@@ -21,37 +21,114 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 | Zakaria El Manar El Bouanani| 40190432   | Zakaria0907      | zakaria.elmanar@gmail.com      |
 
 
-## Developer guide
+## Developer Guide
 
-To get started, follow these steps:
+**To get started, follow these steps:**
 
 1. Clone the repository:
    ```sh
    git clone https://github.com/your-username/Quolance.git
    ```
-**Frontend setup**
-2. Navigate to the UI directory 
+
+---
+
+### Frontend Setup
+
+1. Navigate to the UI directory:
    ```sh
    cd quolance-ui
    ```
 
-3. Install dependencies:
+2. Install dependencies:
    ```sh
    npm install
    ```
-  **Backend setup**  
-4. Navigate to the API directory 
-   ```sh
-   cd quolance-api
+
+---
+
+### Backend Setup
+
+To ease local development, services and dependencies—such as the PostgreSQL database and SMTP server for email—are containerized and automatically set up using the `quolance` script. You just need docker to be installed and ready!
+
+#### Prerequisites
+
+Before running the script, ensure the following:
+
+1. **Docker**  
+   Install Docker and ensure it’s running. [Download Docker here](https://www.docker.com/get-started).
+
+2. **.env File**  
+   Obtain the latest `.env` file from a teammate and place it in the root of the project at `Quolance/.env`.  
+   Alternatively, you can create your own `.env` file with the following template (replace the values as needed):
+
+   ```plaintext
+   DB_DDL_AUTO=create-drop
+   JWT_SECRET_KEY=your_jwt_secret_key
+   MAILPIT_SMTP_PORT=1025
+   MAILPIT_UI_PORT=8025
+   POSTGRES_DB=quolance-postgres-db
+   POSTGRES_PASSWORD=your_postgres_password
+   POSTGRES_HOST_PORT=5434
+   POSTGRES_CONTAINER_PORT=5432
+   POSTGRES_USER=postgres
+   MAILPIT_USER=mailpit
+   MAILPIT_PASSWORD=mailpit
    ```
-5. Build
-   ```sh
-   ./mvnw clean install
-   ```
-6. Run
-   ```sh
-   ./mvnw spring-boot:run
-   ```
+
+---
+
+### Running the Backend Setup Script
+
+To set up the backend environment, run the following command from the root directory:
+
+- **Windows**:
+  ```bash
+  ./scripts/quolance.sh
+  ```
+- **Mac/Linux**:
+  ```bash
+  sh ./scripts/quolance.sh
+  ```
+
+#### Script Options
+
+Once you run the script, you’ll see a menu with the following options:
+![image](https://github.com/user-attachments/assets/71957d87-6433-4bb6-bf33-81b7b13c8233)
+
+
+
+1. **Create and Start Containers**  
+   Choose option `1` and press Enter to start the containers. After starting, you should see your containers running...
+
+   **In the Docker Desktop app:**
+   ![image](https://github.com/user-attachments/assets/dc4bc539-60b8-4cf3-844d-47565dc96060)
+
+   **Or by running `docker ps` in your terminal:**
+   ![image](https://github.com/user-attachments/assets/6553c1bd-1a23-4f8b-9533-0c87abdc6393)
+
+3. **Stop Containers**  
+   Use option `2` to stop the containers without removing them (ideal if you want to keep your database).
+
+4. **Destroy Containers**  
+   Select option `3` to completely stop and remove the containers, resetting everything.
+
+5. **Exit**  
+   Option `4` exits the script.
+
+---
+
+### Building and Running the Application
+
+Once the containers are running, on your terminal navigate to the `quolance-api` directory to build and run the backend:
+
+```bash
+cd quolance-api
+./mvnw clean install
+./mvnw spring-boot:run
+```
+
+---
+
 ## Wikis table of contents
 - [Meeting minutes](https://github.com/abdelh17/Quolance/wiki/Meeting-Minutes)
 - [Risks](https://github.com/abdelh17/Quolance/wiki/Risks)
@@ -64,5 +141,3 @@ To get started, follow these steps:
 - [Name Conventions](https://github.com/abdelh17/Quolance/wiki/Name-Conventions)
 - [Testing Plan and Continuous Integration](https://github.com/abdelh17/Quolance/wiki/Testing-Plan-and-Continuous-Integration)
 - [Deployment Plan and Infrastructure ](https://github.com/abdelh17/Quolance/wiki/Deployment-Plan-and-Infrastructure)
-
-
