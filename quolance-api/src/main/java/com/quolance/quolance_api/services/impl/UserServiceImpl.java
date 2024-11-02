@@ -13,7 +13,7 @@ import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.VerificationCodeRepository;
 import com.quolance.quolance_api.services.UserService;
-import com.quolance.quolance_api.util.ApiException;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.scheduling.BackgroundJobRequest;
@@ -37,11 +37,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto create(CreateUserRequestDto request) {
+//        if(userRepository.existsByEmail(request.getEmail())) {
+//            throw new UserAlreadyExistsException("A user with this email already exists.");
+//        }
         if(userRepository.existsByEmail(request.getEmail())) {
-            throw ApiException.builder()
-                    .status(400)
-                    .message("User with this email already exists")
-                    .build();
+            throw new ApiException("A user with this email already exists.");
         }
         User user = new User(request);
         user = userRepository.save(user);

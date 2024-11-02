@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.util;
 
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.util.ApiException;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
