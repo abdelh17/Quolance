@@ -4,6 +4,8 @@ import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,10 @@ public class UsersController {
             summary = "Create a new user",
             description = "Create a new user by passing a CreateUserRequestDto"
     )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User created successfully"),
+            @ApiResponse(responseCode = "400", description = "Validation error")
+    })
     public ResponseEntity<UserResponseDto> create(@Valid @RequestBody CreateUserRequestDto request) {
         UserResponseDto user = userService.create(request);
         return ResponseEntity.ok(user);

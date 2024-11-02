@@ -37,9 +37,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto create(CreateUserRequestDto request) {
-//        if(userRepository.existsByEmail(request.getEmail())) {
-//            throw new UserAlreadyExistsException("A user with this email already exists.");
-//        }
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new ApiException("A user with this email already exists.");
         }

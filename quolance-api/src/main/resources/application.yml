@@ -47,13 +47,6 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
 
-security:
-  jwt:
-    secret-key: ${JWT_SECRET_KEY}
-    expiration-time: 86400000
-    refresh-token:
-      expiration: 604800000
-
 org:
   jobrunr:
     background-job-server:
