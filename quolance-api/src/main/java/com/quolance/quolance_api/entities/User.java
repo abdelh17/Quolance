@@ -2,18 +2,24 @@ package com.quolance.quolance_api.entities;
 
 import com.quolance.quolance_api.dtos.CreateUserRequestDto;
 import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
-import com.quolance.quolance_api.util.ApplicationContextProvider;
 import com.quolance.quolance_api.entities.enums.Role;
+import com.quolance.quolance_api.util.ApplicationContextProvider;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.core.*;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @SuperBuilder
@@ -71,7 +77,7 @@ public class User extends AbstractEntity implements UserDetails {
         this.password = passwordEncoder.encode(data.getPassword());
         this.firstName = data.getFirstName();
         this.lastName = data.getLastName();
-        this.role = Role.CLIENT;
+        this.role = Role.valueOf(data.getRole());
     }
 
     /**
@@ -130,21 +136,21 @@ public class User extends AbstractEntity implements UserDetails {
     // User account status methods
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Add custom logic if needed
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Add custom logic if needed
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Add custom logic if needed
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // Change to 'return verified;' if email verification required
+        return true;
     }
 }

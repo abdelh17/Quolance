@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.auth;
 
+import com.quolance.quolance_api.services.AuthService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;

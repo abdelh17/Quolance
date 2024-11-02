@@ -3,7 +3,6 @@ package com.quolance.quolance_api.controllers;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.services.AuthService;
 import com.quolance.quolance_api.dtos.UserResponseDto;
-import com.quolance.quolance_api.services.auth.AuthServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(

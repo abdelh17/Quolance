@@ -2,18 +2,11 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.dtos.*;
-import com.quolance.quolance_api.services.impl.UserServiceImpl;
+import com.quolance.quolance_api.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
@@ -21,7 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequiredArgsConstructor
 public class UsersController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final ApplicationProperties applicationProperties;
 
     /**

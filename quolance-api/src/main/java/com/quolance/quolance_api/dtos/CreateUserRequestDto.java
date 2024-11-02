@@ -26,4 +26,5 @@ public class CreateUserRequestDto {
     private String passwordConfirmation;
     private String firstName;
     private String lastName;
+    private String role;
 }
