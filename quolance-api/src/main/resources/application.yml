@@ -21,7 +21,7 @@ spring:
   application:
     name: quolance-api
   datasource:
-    url: jdbc:postgresql://localhost:${POSTGRES_HOST_PORT}/${POSTGRES_DB}
+    url: ${DATASOURCE_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
