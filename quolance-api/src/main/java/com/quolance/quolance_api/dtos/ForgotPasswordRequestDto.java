@@ -1,6 +1,6 @@
 package com.quolance.quolance_api.dtos;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLoginDto {
-    @NotBlank(message = "The email is required")
+public class ForgotPasswordRequestDto {
+    @Email
     private String email;
-    @NotBlank(message = "The password is required")
-    private String password;
 }

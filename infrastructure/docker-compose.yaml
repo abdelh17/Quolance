@@ -1,15 +1,42 @@
 services:
-  mailpit:
-    image: axllent/mailpit
-    container_name: mailpit
-    restart: unless-stopped
-    volumes:
-      - ./data:/data
+  postgres:
+    image: postgres:latest
+    container_name: quolance-postgres-db-container
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - 8025:8025
-      - 1025:1025
+      - "${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}"
+    networks:
+      - springboot-network
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: quolance-mailpit-smtp-container
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_UI_PORT}:${MAILPIT_UI_PORT}"  # Mailpit UI
+      - "${MAILPIT_SMTP_PORT}:${MAILPIT_SMTP_PORT}"  # SMTP server
     environment:
       MP_MAX_MESSAGES: 5000
-      MP_DATABASE: /data/mailpit.db
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      MP_UI_AUTH_USER: "${MAILPIT_USER}"
+      MP_UI_AUTH_PASS: "${MAILPIT_PASSWORD}"
+    networks:
+      - springboot-network
+
+  caddy:
+    image: caddy:latest
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - springboot-network
+
+networks:
+  springboot-network:
+    driver: bridge

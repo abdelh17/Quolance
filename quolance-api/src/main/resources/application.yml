@@ -1,0 +1,62 @@
+app:
+  application-name: Quolance
+  base-url: "http://localhost,http://localhost:3000"
+  allowed-origins: "http://localhost"
+  login-page-url: "${app.base-url}/auth/login"
+  login-success-url: "${app.base-url}/auth/login-success"
+
+spring:
+  config:
+    import: "optional:file:../.env[.properties]"
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: "${GITHUB_CLIENT_ID}"
+            client-secret: "${GITHUB_CLIENT_SECRET}"
+          google:
+            client-id: "${GOOGLE_CLIENT_ID}"
+            client-secret: "${GOOGLE_CLIENT_SECRET}"
+
+  application:
+    name: quolance-api
+
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO}
+    show-sql: false
+    properties:
+      hibernate.format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: localhost
+    port: ${MAILPIT_SMTP_PORT}
+    username: ${MAILPIT_USER}
+    password: ${MAILPIT_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+org:
+  jobrunr:
+    background-job-server:
+      enabled: true
+    dashboard:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+server:
+  port: 8081

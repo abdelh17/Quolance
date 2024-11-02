@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.util;
+package com.quolance.quolance_api.util.exceptions;
 
 import java.util.List;
 import java.util.Map;
