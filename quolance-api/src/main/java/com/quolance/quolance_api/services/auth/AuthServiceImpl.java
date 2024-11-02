@@ -1,14 +1,12 @@
 package com.quolance.quolance_api.services.auth;
 
+import com.quolance.quolance_api.dtos.LoginRequestDto;
+import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.AuthService;
 import com.quolance.quolance_api.util.SecurityUtil;
-import com.quolance.quolance_api.dtos.LoginRequestDto;
-import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.dtos.UserResponseDto;
-import com.quolance.quolance_api.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,12 +23,13 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();

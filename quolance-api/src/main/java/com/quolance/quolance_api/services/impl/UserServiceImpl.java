@@ -1,13 +1,12 @@
 package com.quolance.quolance_api.services.impl;
 
+import com.quolance.quolance_api.dtos.CreateUserRequestDto;
 import com.quolance.quolance_api.dtos.UpdateUserPasswordRequestDto;
 import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
 import com.quolance.quolance_api.dtos.UserResponseDto;
-import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.entities.PasswordResetToken;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.VerificationCode;
-import com.quolance.quolance_api.dtos.CreateUserRequestDto;
 import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
 import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
@@ -15,15 +14,13 @@ import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.VerificationCodeRepository;
 import com.quolance.quolance_api.services.UserService;
 import com.quolance.quolance_api.util.ApiException;
-import jakarta.validation.Valid;
+import com.quolance.quolance_api.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.scheduling.BackgroundJobRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -39,24 +36,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto create(@Valid CreateUserRequestDto request) {
+    public UserResponseDto create(CreateUserRequestDto request) {
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw ApiException.builder()
+                    .status(400)
+                    .message("User with this email already exists")
+                    .build();
+        }
         User user = new User(request);
         user = userRepository.save(user);
         sendVerificationEmail(user);
         return new UserResponseDto(user);
-    }
-
-    @Override
-    public User createUser(User user) {
-        if (findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("User with email already exists");
-        }
-        return userRepository.save(user);
-    }
-
-    @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -111,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto update(UpdateUserRequestDto request) {
+    public UserResponseDto updateUser(UpdateUserRequestDto request) {
         User user = SecurityUtil.getAuthenticatedUser();
         user = userRepository.getReferenceById(user.getId());
         user.update(request);
