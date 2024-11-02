@@ -27,6 +27,16 @@ services:
     networks:
       - springboot-network
 
+  caddy:
+    image: caddy:latest
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - springboot-network
+
 networks:
   springboot-network:
     driver: bridge

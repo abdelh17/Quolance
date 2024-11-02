@@ -27,7 +27,7 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-username/Quolance.git
+   git clone [https://github.com/your-username/Quolance.git](https://github.com/abdelh17/Quolance.git)
    ```
 
 ---
@@ -69,10 +69,16 @@ Before running the script, ensure the following:
    POSTGRES_DB=quolance-postgres-db
    POSTGRES_PASSWORD=your_postgres_password
    POSTGRES_HOST_PORT=5434
+   DATASOURCE_URL=jdbc:postgresql://localhost:5434/quolance-postgres-db
    POSTGRES_CONTAINER_PORT=5432
    POSTGRES_USER=postgres
    MAILPIT_USER=mailpit
    MAILPIT_PASSWORD=mailpit
+
+   GITHUB_CLIENT_ID=github_id
+   GITHUB_CLIENT_SECRET=github_secret
+   GOOGLE_CLIENT_ID=google_id
+   GOOGLE_CLIENT_SECRET=google_secret
    ```
 
 ---
