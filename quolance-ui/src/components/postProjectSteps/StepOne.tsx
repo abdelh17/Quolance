@@ -7,7 +7,9 @@ import { useSteps } from '@/context/StepsContext';
 function StepOne() {
   const { formData, setFormData } = useSteps();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -18,8 +20,12 @@ function StepOne() {
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         Project Category <span className='text-red-500'>* </span>
       </p>
-      <BusinessCategoryDropDown name='projectCategory' value={formData.projectCategory || ''} onChange={handleChange} />
-      
+      <BusinessCategoryDropDown
+        name='projectCategory'
+        value={formData.projectCategory || ''}
+        onChange={handleChange}
+      />
+
       <p className='pb-4 pt-6 lg:pt-10'>
         Project Title <span className='text-red-500'>* </span>
       </p>
@@ -30,7 +36,7 @@ function StepOne() {
         value={formData.projectTitle || ''}
         onChange={handleChange}
       />
-      
+
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         Detailed Project Description <span className='text-red-500'>* </span>
       </p>
