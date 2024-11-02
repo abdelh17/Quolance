@@ -1,6 +1,18 @@
 'use client';
 
+import { useSteps } from '@/context/StepsContext';
+
+import {
+  BUDGET_OPTIONS,
+  BUSINESS_CATEGORY_OPTIONS,
+  EXPECTED_DELIVERY_OPTIONS,
+  EXPERIENCE_LEVEL_OPTIONS,
+  getLabelFromValue,
+} from '@/types/formTypes';
+
 function StepFour() {
+  const { formData } = useSteps();
+
   return (
     <div className=''>
       <h4 className='heading-4'>Review & Submit</h4>
@@ -13,40 +25,40 @@ function StepFour() {
         <div className='mt-6 border-t border-gray-100'>
           <dl className='divide-y divide-gray-100'>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-              <dt className='text-sm/6 font-medium text-gray-900'>Title</dt>
+              <dt className='text-sm/6 font-medium text-gray-900'>
+                Project Category
+              </dt>
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                Need wordpress developer for my personal business
+                {getLabelFromValue(
+                  BUSINESS_CATEGORY_OPTIONS,
+                  formData.projectCategory
+                )}
+              </dd>
+            </div>
+            <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+              <dt className='text-sm/6 font-medium text-gray-900'>Title</dt>
+              <dd className='mt-1 whitespace-pre-wrap break-words text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                {formData.projectTitle}
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
               <dt className='text-sm/6 font-medium text-gray-900'>
                 Description
               </dt>
-              <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Excepturi magnam ullam dolore odit saepe nam explicabo
-                laboriosam odio unde, temporibus ab cumque expedita molestiae,
-                corporis sed natus reiciendis aliquid suscipit?
-              </dd>
-            </div>
-            <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-              <dt className='text-sm/6 font-medium text-gray-900'>
-                Project Category
-              </dt>
-              <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                Web Development
+              <dd className='mt-1 whitespace-pre-wrap break-words text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                {formData.projectDescription}
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
               <dt className='text-sm/6 font-medium text-gray-900'>Location</dt>
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                Montreal
+                {formData.location}
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
               <dt className='text-sm/6 font-medium text-gray-900'>Budget</dt>
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                $500 to $1,000
+                {getLabelFromValue(BUDGET_OPTIONS, formData.budget)}
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -54,7 +66,10 @@ function StepFour() {
                 Experience Level
               </dt>
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                Beginner ($)
+                {getLabelFromValue(
+                  EXPERIENCE_LEVEL_OPTIONS,
+                  formData.experienceLevel
+                )}
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -62,7 +77,10 @@ function StepFour() {
                 Expected Delivery
               </dt>
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                This Month
+                {getLabelFromValue(
+                  EXPECTED_DELIVERY_OPTIONS,
+                  formData.expectedDelivery
+                )}
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -70,7 +88,7 @@ function StepFour() {
                 Delivery Date
               </dt>
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                05/24/2025
+                {formData.deliveryDate}
               </dd>
             </div>
           </dl>

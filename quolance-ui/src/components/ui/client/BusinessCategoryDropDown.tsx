@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Listbox,
   ListboxButton,
@@ -8,26 +7,42 @@ import {
   ListboxOptions,
 } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { useEffect, useState } from 'react';
+import { BUSINESS_CATEGORY_OPTIONS, FormFieldOption } from '@/types/formTypes';
 
-export const categoryDropDownMenu = [
-  { id: 1, label: 'Web Development' },
-  { id: 2, label: 'Graphic Design' },
-  { id: 3, label: 'Content Writing' },
-  { id: 4, label: 'Digital Marketing' },
-  { id: 5, label: 'App Development' },
-  { id: 6, label: 'Video Editing' },
-  { id: 7, label: 'Animation' },
-  { id: 8, label: 'UI/UX Design' },
-  { id: 9, label: 'Data Entry' },
-  { id: 10, label: 'Virtual Assistant' },
-  { id: 11, label: 'E-commerce' },
-];
+interface DropDownProps {
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
-export default function DropDown() {
-  const [selected, setSelected] = useState(categoryDropDownMenu[0]);
+export default function BusinessCategoryDropDown({ name, value, onChange }: DropDownProps) {
+  const [selected, setSelected] = useState(
+    BUSINESS_CATEGORY_OPTIONS.find((item) => item.value === value) || BUSINESS_CATEGORY_OPTIONS[0]
+  );
 
+  useEffect(() => {
+    if (!value) {
+      // Set default value if no value is selected
+      onChange({
+        target: { 
+          name, 
+          value: BUSINESS_CATEGORY_OPTIONS[0].value 
+        }
+      } as React.ChangeEvent<HTMLInputElement>);
+    }
+  }, []);
+
+  useEffect(() => {
+    setSelected(BUSINESS_CATEGORY_OPTIONS.find((item) => item.value === value) || BUSINESS_CATEGORY_OPTIONS[0]);
+  }, [value]);
+
+  const handleChange = (item: FormFieldOption) => {
+    setSelected(item);
+    onChange({ target: { name, value: item.value } } as React.ChangeEvent<HTMLInputElement>);
+  };
   return (
-    <Listbox value={selected} onChange={setSelected}>
+    <Listbox value={selected} onChange={handleChange}>
       <div className='relative mt-2'>
         <ListboxButton className='relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm/6'>
           <span className='block truncate'>{selected.label}</span>
@@ -43,7 +58,7 @@ export default function DropDown() {
           transition
           className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm'
         >
-          {categoryDropDownMenu.map((item) => (
+          {BUSINESS_CATEGORY_OPTIONS.map((item) => (
             <ListboxOption
               key={item.id}
               value={item}

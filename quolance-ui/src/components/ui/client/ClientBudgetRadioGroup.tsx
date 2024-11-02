@@ -1,25 +1,45 @@
-export default function ClientBudgetRadioGroup() {
-  const clientBudget = [
-    { id: 'budget-1', label: 'Less than $500' },
-    { id: 'budget-2', label: '$500 to $1,000' },
-    { id: 'budget-3', label: '$1,000 to $5,000' },
-    { id: 'budget-4', label: '$5,000 to $10,000' },
-    { id: 'budget-5', label: '$10,000 and above' },
-  ];  
+import { useEffect } from 'react';
+import { BUDGET_OPTIONS } from '@/types/formTypes';
+
+interface ClientBudgetRadioGroupProps {
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default function ClientBudgetRadioGroup({ name, value, onChange }: ClientBudgetRadioGroupProps) {
+  useEffect(() => {
+    // Only set default if value is empty/undefined and we have options
+    if (!value && BUDGET_OPTIONS.length > 0) {
+      try {
+        onChange({
+          target: {
+            name,
+            value: BUDGET_OPTIONS[0].value
+          }
+        } as React.ChangeEvent<HTMLInputElement>);
+      } catch (error) {
+        console.error('Error setting default budget value:', error);
+      }
+    }
+  }, [name, onChange, value]); // Added dependencies
+
   return (
     <fieldset>
       <div className='space-y-6'>
-        {clientBudget.map((budget) => (
+        {BUDGET_OPTIONS.map((budget) => (
           <div key={budget.id} className='flex items-center'>
             <input
-              defaultChecked={budget.id === 'budget-1'}
               id={budget.id}
               type='radio'
-              name='clientBudget'
+              name={name}
+              value={budget.value}
+              checked={value === budget.value}
+              onChange={onChange}
               className='h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600'
             />
             <label
-              htmlFor={budget.label}
+              htmlFor={budget.id}
               className='ml-3 block text-sm/6 font-medium text-gray-900'
             >
               {budget.label}

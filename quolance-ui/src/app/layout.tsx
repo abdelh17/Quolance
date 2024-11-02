@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
 import Footer from '@/components/global/Footer';
+import { StepsProvider } from '@/context/StepsContext';
+
 
 import './globals.css';
 
@@ -29,8 +31,10 @@ export default function RootLayout({
         className={`${monsterratFont.variable} ${monsterratFont.className}`}
       >
         <Providers>
+          <StepsProvider>
           <main>{children}</main>
           <Footer/>
+          </StepsProvider>
         </Providers>
       </body>
     </html>
