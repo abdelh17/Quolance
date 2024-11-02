@@ -63,7 +63,6 @@ Before running the script, ensure the following:
 
    ```plaintext
    DB_DDL_AUTO=create-drop
-   JWT_SECRET_KEY=your_jwt_secret_key
    MAILPIT_SMTP_PORT=1025
    MAILPIT_UI_PORT=8025
    POSTGRES_DB=quolance-postgres-db
