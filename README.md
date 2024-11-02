@@ -69,6 +69,7 @@ Before running the script, ensure the following:
    POSTGRES_DB=quolance-postgres-db
    POSTGRES_PASSWORD=your_postgres_password
    POSTGRES_HOST_PORT=5434
+   DATASOURCE_URL=jdbc:postgresql://localhost:5434/quolance-postgres-db
    POSTGRES_CONTAINER_PORT=5432
    POSTGRES_USER=postgres
    MAILPIT_USER=mailpit
