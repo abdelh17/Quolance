@@ -10,9 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const registerSchema = z.object({
+  firstName: z.string().min(4).max(30),
+  lastName: z.string().min(4).max(30),
   email: z.string().email(),
   password: z.string().min(8),
   passwordConfirmation: z.string().min(8),
+  role: z.enum(["FREELANCER", "CLIENT"]),
 }).refine((data) => data.password === data.passwordConfirmation, {
   message: "Passwords do not match",
   path: ["passwordConfirmation"],
@@ -29,7 +32,7 @@ export function UserRegisterForm() {
   async function onSubmit(data: Schema) {
     setIsLoading(true);
     try {
-      await httpClient.post("/api/users", data);
+      await httpClient.post("http://localhost:8080/api/users", data);
       toast.success("Account created successfully");
     } catch (error) {
       toast.error("Error creating account");
@@ -40,6 +43,27 @@ export function UserRegisterForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Input
+        placeholder="First Name"
+        disabled={isLoading}
+        {...register("firstName")}
+      />
+
+      <Input
+        placeholder="Last Name"
+        disabled={isLoading}
+        {...register("lastName")}
+      />
+
+      {/* Ask user if he wants to be a freelancer or a client NOTE THIS IS JUST A SIMPLE EXAMPLE, TO FIX THE CORS ISSUE */}
+      <select
+        {...register("role")}
+        className="w-full p-2 rounded-md border border-gray-300"
+      >
+        <option value="FREELANCER">Freelancer</option>
+        <option value="CLIENT">Client</option>
+      </select>
+
       <Input
         placeholder="Email"
         type="email"
