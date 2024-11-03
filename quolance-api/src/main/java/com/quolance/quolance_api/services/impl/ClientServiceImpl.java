@@ -4,10 +4,8 @@ import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.ClientService;
 import com.quolance.quolance_api.services.ProjectService;
-import com.quolance.quolance_api.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
     private final ProjectService projectService;
-    private final ApplicationService applicationService;
 
     @Override
     public ProjectDto createProject(ProjectDto projectDto, User client) {
@@ -34,8 +31,13 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ApplicationDto> getApplicationsToMyProject(Long projectId) {
-        List<ApplicationDto> applications = applicationService.getApplicationsByProjectId(projectId);
-        return applications;
+    public List<ApplicationDto> getApplicationsByProjectId(Long projectId, Long clientId) {
+        List<ProjectDto> clientProjects = getProjectsByClientId(clientId);
+        for (ProjectDto project : clientProjects) {
+            if (project.getId().equals(projectId)) {
+                return projectService.getApplicationsToProject(projectId);
+            }
+        }
+        return List.of();
     }
 }

@@ -3,7 +3,6 @@ package com.quolance.quolance_api.controllers;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.ClientService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientController {
     private final ClientService clientService;
-    private final ApplicationService applicationService;
 
     @PostMapping("/create-project")
     @Operation(
@@ -32,10 +30,7 @@ public class ClientController {
     }
 
     @GetMapping("/projects")
-    @Operation(
-            summary = "Get all projects of a client",
-            description = "Get all projects of a client by passing the client ID"
-    )
+    @Operation(summary = "Get all projects of a client")
     public ResponseEntity<List<ProjectDto>> getAllMyProjects() {
         User user = SecurityUtil.getAuthenticatedUser();
         List<ProjectDto> projects = clientService.getProjectsByClientId(user.getId());
@@ -48,7 +43,8 @@ public class ClientController {
             description = "Get all applications on a project by passing the project ID"
     )
     public ResponseEntity<List<ApplicationDto>> getAllApplicationsToProject(@PathVariable(name = "projectId") Long projectId) {
-        List<ApplicationDto> applications = applicationService.getApplicationsByProjectId(projectId);
+        User user = SecurityUtil.getAuthenticatedUser();
+        List<ApplicationDto> applications = clientService.getApplicationsByProjectId(projectId, user.getId());
         return ResponseEntity.ok(applications);
     }
 }

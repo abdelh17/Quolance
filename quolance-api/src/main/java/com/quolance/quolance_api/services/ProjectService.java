@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.services;
 
 
+import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Project;
 
@@ -13,4 +14,6 @@ public interface ProjectService {
     List<ProjectDto> getAllProjects();
     ProjectDto getProjectById(Long id);
     Optional<Project> getProjectEntityById(Long id);
+
+    List<ApplicationDto> getApplicationsToProject(Long projectId);
 }

@@ -11,5 +11,5 @@ public interface ClientService {
 
     List<ProjectDto> getProjectsByClientId(Long clientId);
 
-    List<ApplicationDto> getApplicationsToMyProject(Long projectId);
+    List<ApplicationDto> getApplicationsByProjectId(Long projectId, Long clientId);
 }

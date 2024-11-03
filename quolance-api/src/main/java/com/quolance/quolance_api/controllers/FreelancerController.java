@@ -2,8 +2,9 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.FreelancerService;
-import com.quolance.quolance_api.services.ProjectService;
+import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FreelancerController {
     private final FreelancerService freelancerService;
-    private final ProjectService projectService;
 
     @PostMapping("/submit-application")
     @Operation(
             summary = "Create a new application on a project.",
             description = "Create a new application on a project by passing an ApplicationDto"
     )
-    public ResponseEntity<ApplicationDto> createProject(@RequestBody ApplicationDto applicationDto) {
-        ApplicationDto application = freelancerService.submitApplication(applicationDto);
+    public ResponseEntity<ApplicationDto> applyToProject(@RequestBody ApplicationDto applicationDto) {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        ApplicationDto application = freelancerService.submitApplication(applicationDto, freelancer);
         return ResponseEntity.ok(application);
     }
 

@@ -16,13 +16,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FreelancerServiceImpl implements FreelancerService {
-    private final UserService userService;
     private final ApplicationService applicationService;
     private final ProjectService projectService;
 
     @Override
-    public ApplicationDto submitApplication(ApplicationDto applicationDto) {
-        User freelancer = userService.findById(applicationDto.getUserId()).orElseThrow();
+    public ApplicationDto submitApplication(ApplicationDto applicationDto, User freelancer) {
         Project project = projectService.getProjectEntityById(applicationDto.getProjectId()).orElseThrow();
 
         Application applicationToSave = ApplicationDto.toEntity(applicationDto);
