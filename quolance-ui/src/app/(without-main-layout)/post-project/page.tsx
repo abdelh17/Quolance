@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 
@@ -10,7 +9,6 @@ import StepThree from '@/components/postProjectSteps/StepThree';
 import StepTwo from '@/components/postProjectSteps/StepTwo';
 
 import { useSteps } from '@/context/StepsContext';
-import stepIcon from '@/public/images/steps_icon.png';
 
 const stepsComponents = [StepOne, StepTwo, StepThree, StepFour];
 
@@ -109,37 +107,11 @@ function PostsTasksSteps() {
 
             <div className='col-span-12 md:col-span-8 xl:col-span-6 xl:col-start-6'>
               <div className='border-n30 rounded-3xl border p-6 sm:p-8'>
-                <StepComponent />
-
-                <div
-                  className={`stp-15 flex items-center ${
-                    currentStep > 0 ? 'justify-between gap-6' : 'justify-end'
-                  }`}
-                >
-                  {currentStep > 0 && (
-                    <button
-                      onClick={handleBack}
-                      className='bg-n30 hover:text-n900 relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
-                    >
-                      <span className='relative z-10'>Back</span>
-                    </button>
-                  )}
-                  {currentStep < stepsComponents.length - 1 ? (
-                    <button
-                      onClick={handleNext}
-                      className='bg-b300 hover:text-n900 relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
-                    >
-                      <span className='relative z-10'>Next</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={submitForm}
-                      className='bg-b300 hover:text-n900 relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
-                    >
-                      <span className='relative z-10'>Submit</span>
-                    </button>
-                  )}
-                </div>
+                <StepComponent
+                  handleNext={handleNext}
+                  handleBack={handleBack}
+                  submitForm={submitForm}
+                />
               </div>
             </div>
           </div>

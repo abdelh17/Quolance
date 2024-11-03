@@ -1,10 +1,11 @@
 'use client';
 
 import BusinessCategoryDropDown from '@/components/ui/client/BusinessCategoryDropDown';
-
 import { useSteps } from '@/context/StepsContext';
+import LinkButton from '../ui/LinkButton';
 
-function StepOne() {
+
+function StepOne({ handleNext }: { handleNext: () => void }) {
   const { formData, setFormData } = useSteps();
 
   const handleChange = (
@@ -46,6 +47,16 @@ function StepOne() {
         value={formData.projectDescription || ''}
         onChange={handleChange}
       ></textarea>
+
+
+      <div className='flex justify-center mt-8'>
+        <button
+          onClick={handleNext}
+          className='bg-b300 w-1/2 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
+        >
+          <span className='relative z-10'>Next</span>
+        </button>
+      </div>
     </div>
   );
 }
