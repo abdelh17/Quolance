@@ -22,8 +22,8 @@ export const useAuthGuard = ({
     data: user,
     error,
     mutate,
-  } = useSWR("/api/auth/me", () =>
-    httpClient.get<UserResponse>("/api/auth/me").then((res) => res.data)
+  } = useSWR("http://localhost:8080/api/auth/me", () =>
+    httpClient.get<UserResponse>("http://localhost:8080/api/auth/me").then((res) => res.data)
   );
 
   const login = async ({
@@ -34,9 +34,9 @@ export const useAuthGuard = ({
     props: any;
   }) => {
     onError(undefined);
-    await csrf();
+    // await csrf(); temporarly commented out to make the form work
     httpClient
-      .post<HttpErrorResponse>("/api/auth/login", {
+      .post<HttpErrorResponse>("http://localhost:8080/api/auth/login", {
         email: props.email,
         password: props.password,
       })
@@ -47,13 +47,13 @@ export const useAuthGuard = ({
       });
   };
 
-  const csrf = async () => {
-    await httpClient.get("/api/auth/csrf")
-  }
+  // const csrf = async () => {
+  //   await httpClient.get("/api/auth/csrf")
+  // }
 
   const logout = async () => {
     if (!error) {
-      await httpClient.post("/api/auth/logout").then(() => mutate());
+      await httpClient.post("http://localhost:8080/api/auth/logout").then(() => mutate());
     }
 
     window.location.pathname = "/auth/login";

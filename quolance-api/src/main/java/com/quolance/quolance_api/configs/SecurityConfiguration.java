@@ -8,6 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler
 import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
@@ -46,6 +49,8 @@ public class SecurityConfiguration {
             "/api/auth/**",
             "/api/client/**",
             "/api/freelancer/**",
+            "http://localhost:8080/api/**",
+            "http://localhost:8080/api/users/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -106,20 +111,19 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    private CorsConfigurationSource corsConfigurationSource() {
-        return new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(applicationProperties.getAllowedOrigins());
-                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                config.setAllowedHeaders(List.of("*"));
-                config.setAllowCredentials(true);
-                return config;
-            }
-        };
-    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:3000", "http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Headers", "X-Requested-With"));
+        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+        configuration.setAllowCredentials(true);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager() {

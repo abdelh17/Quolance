@@ -1,5 +1,4 @@
 'use client';
-import BreadCrumb from '@/components/global/BreadCrumb';
 import Link from 'next/link';
 import { useState } from 'react';
 import {
@@ -8,7 +7,10 @@ import {
   PiPaperPlaneTilt,
   PiStarFill,
 } from 'react-icons/pi';
+
+import BreadCrumb from '@/components/global/BreadCrumb';
 import ProjectCard from '@/components/ui/projects/ProjectCard';
+
 import { freelancerServices } from '@/app/(with-main-layout)/projects/ClientProjectsView';
 
 const tabButton = ['Projects', 'Works'];
