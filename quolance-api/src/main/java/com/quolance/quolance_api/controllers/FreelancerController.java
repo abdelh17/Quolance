@@ -29,21 +29,16 @@ public class FreelancerController {
         return ResponseEntity.ok(application);
     }
 
-    @GetMapping("/{freelancerId}/applications")
-    @Operation(
-            summary = "View all the application of a freelancer.",
-            description = "View all the application of a freelancer by passing the freelancer id."
-    )
-    public ResponseEntity<List<ApplicationDto>> getAllMyApplications(@PathVariable(name = "freelancerId") Long freelancerId) {
-        List<ApplicationDto> applications = freelancerService.getMyApplications(freelancerId);
+    @GetMapping("/applications")
+    @Operation(summary = "View all the application of a freelancer.")
+    public ResponseEntity<List<ApplicationDto>> getAllMyApplications() {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        List<ApplicationDto> applications = freelancerService.getMyApplications(freelancer.getId());
         return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/projects")
-    @Operation(
-            summary = "View all projects.",
-            description = "View all projects."
-    )
+    @Operation(summary = "View all projects.")
     public ResponseEntity<List<ProjectDto>> getAllProjects() {
         List<ProjectDto> projects = freelancerService.getAllAvailableProjects();
         return ResponseEntity.ok(projects);

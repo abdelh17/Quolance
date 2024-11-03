@@ -21,7 +21,7 @@ public interface UserService {
 
     void resetPassword(UpdateUserPasswordRequestDto request);
 
-    UserResponseDto updateUser(UpdateUserRequestDto request);
+    UserResponseDto updateUser(UpdateUserRequestDto request, User user);
 
-    UserResponseDto updatePassword(UpdateUserPasswordRequestDto request);
+    UserResponseDto updatePassword(UpdateUserPasswordRequestDto request, User user);
 }

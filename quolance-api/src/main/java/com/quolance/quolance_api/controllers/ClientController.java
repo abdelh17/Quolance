@@ -32,8 +32,8 @@ public class ClientController {
     @GetMapping("/projects")
     @Operation(summary = "Get all projects of a client")
     public ResponseEntity<List<ProjectDto>> getAllMyProjects() {
-        User user = SecurityUtil.getAuthenticatedUser();
-        List<ProjectDto> projects = clientService.getProjectsByClientId(user.getId());
+        User client = SecurityUtil.getAuthenticatedUser();
+        List<ProjectDto> projects = clientService.getProjectsByClientId(client.getId());
         return ResponseEntity.ok(projects);
     }
 
@@ -43,8 +43,8 @@ public class ClientController {
             description = "Get all applications on a project by passing the project ID"
     )
     public ResponseEntity<List<ApplicationDto>> getAllApplicationsToProject(@PathVariable(name = "projectId") Long projectId) {
-        User user = SecurityUtil.getAuthenticatedUser();
-        List<ApplicationDto> applications = clientService.getApplicationsByProjectId(projectId, user.getId());
+        User client = SecurityUtil.getAuthenticatedUser();
+        List<ApplicationDto> applications = clientService.getApplicationsByProjectId(projectId, client.getId());
         return ResponseEntity.ok(applications);
     }
 }
