@@ -39,10 +39,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
-    host: smtp-relay.brevo.com
-    port: 587
-    username: wizard101hackerzz@gmail.com
-    password: KndmxL1BY58PUHw3
+    host: localhost
+    port: ${MAILPIT_SMTP_PORT}
+    username: ${MAILPIT_USER}
+    password: ${MAILPIT_PASSWORD}
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
