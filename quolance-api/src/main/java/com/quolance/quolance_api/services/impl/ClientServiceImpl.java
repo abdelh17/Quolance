@@ -30,7 +30,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ProjectDto> getMyProjects(Long clientId) {
+    public List<ProjectDto> getProjectsByClientId(Long clientId) {
         List<ProjectDto> projects = projectService.getProjectsByClientId(clientId);
         return projects;
     }

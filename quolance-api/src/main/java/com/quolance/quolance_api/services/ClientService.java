@@ -8,7 +8,7 @@ import java.util.List;
 public interface ClientService {
     ProjectDto createProject(ProjectDto projectDto);
 
-    List<ProjectDto> getMyProjects(Long clientId);
+    List<ProjectDto> getProjectsByClientId(Long clientId);
 
     List<ApplicationDto> getApplicationsToMyProject(Long projectId);
 }

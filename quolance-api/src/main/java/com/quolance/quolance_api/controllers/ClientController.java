@@ -2,8 +2,10 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.ClientService;
+import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +30,14 @@ public class ClientController {
         return ResponseEntity.ok(project);
     }
 
-    @GetMapping("/{clientId}/projects")
+    @GetMapping("/projects")
     @Operation(
             summary = "Get all projects of a client",
             description = "Get all projects of a client by passing the client ID"
     )
-    public ResponseEntity<List<ProjectDto>> getAllMyProjects(@PathVariable(name = "clientId") Long clientId) {
-        List<ProjectDto> projects = clientService.getMyProjects(clientId);
+    public ResponseEntity<List<ProjectDto>> getAllMyProjects() {
+        User user = SecurityUtil.getAuthenticatedUser();
+        List<ProjectDto> projects = clientService.getProjectsByClientId(user.getId());
         return ResponseEntity.ok(projects);
     }
 
