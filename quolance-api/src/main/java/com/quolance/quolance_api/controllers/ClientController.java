@@ -26,7 +26,8 @@ public class ClientController {
             description = "Create a project by passing a project dto"
     )
     public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectDto projectDto) {
-        ProjectDto project = clientService.createProject(projectDto);
+        User client = SecurityUtil.getAuthenticatedUser();
+        ProjectDto project = clientService.createProject(projectDto, client);
         return ResponseEntity.ok(project);
     }
 

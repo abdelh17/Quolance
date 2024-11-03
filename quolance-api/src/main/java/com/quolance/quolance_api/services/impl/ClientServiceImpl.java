@@ -17,12 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
     private final ProjectService projectService;
-    private final UserService userService;
     private final ApplicationService applicationService;
 
     @Override
-    public ProjectDto createProject(ProjectDto projectDto) {
-        User client = userService.findById(projectDto.getClientId()).orElseThrow();
+    public ProjectDto createProject(ProjectDto projectDto, User client) {
         Project projectToSave = ProjectDto.toEntity(projectDto);
         projectToSave.setClient(client);
         ProjectDto savedProject = projectService.createProject(projectToSave);
