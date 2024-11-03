@@ -1,17 +1,10 @@
 package com.quolance.quolance_api.configs;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.services.auth.OAuth2LoginSuccessHandlerImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
@@ -40,6 +31,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.function.Supplier;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
@@ -47,8 +45,6 @@ public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {
             "/api/auth/**",
-            "/api/client/**",
-            "/api/freelancer/**",
             "http://localhost:8080/api/**",
             "http://localhost:8080/api/users/**",
             "/v2/api-docs",
@@ -80,6 +76,8 @@ public class SecurityConfiguration {
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate")).hasRole("ADMIN")
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
+                    .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
+                    .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
                     .anyRequest().authenticated();
         });
 

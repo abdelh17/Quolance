@@ -2,7 +2,9 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.dtos.*;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.UserService;
+import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -65,8 +67,9 @@ public class UsersController {
             summary = "Update an existing user",
             description = "Update an existing user by passing the UpdateUserRequestDto. Only allowed to self.")
     public ResponseEntity<UserResponseDto> update(@Valid @RequestBody UpdateUserRequestDto request) {
-        UserResponseDto user = userService.updateUser(request);
-        return ResponseEntity.ok(user);
+        User user = SecurityUtil.getAuthenticatedUser();
+        UserResponseDto userResponse = userService.updateUser(request, user);
+        return ResponseEntity.ok(userResponse);
     }
 
     @PatchMapping("/password")
@@ -75,8 +78,9 @@ public class UsersController {
             description = "Update the password of an existing user by passing the UpdateUserPasswordRequestDto. Only allowed with the correct old password.")
     public ResponseEntity<UserResponseDto> updatePassword(
             @Valid @RequestBody UpdateUserPasswordRequestDto requestDTO) {
-        UserResponseDto user = userService.updatePassword(requestDTO);
-        return ResponseEntity.ok(user);
+        User user = SecurityUtil.getAuthenticatedUser();
+        UserResponseDto userResponseDto = userService.updatePassword(requestDTO, user);
+        return ResponseEntity.ok(userResponseDto);
     }
 
 }

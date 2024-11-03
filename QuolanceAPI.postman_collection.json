@@ -25,12 +25,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/users",
+							"raw": "http://localhost:8081/api/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"users"
@@ -54,12 +54,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/users/forgot-password",
+							"raw": "http://localhost:8081/api/users/forgot-password",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"users",
@@ -84,12 +84,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/users/reset-password",
+							"raw": "http://localhost:8081/api/users/reset-password",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"users",
@@ -114,12 +114,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/users",
+							"raw": "http://localhost:8081/api/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"users"
@@ -143,12 +143,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/users/password",
+							"raw": "http://localhost:8081/api/users/password",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"users",
@@ -174,12 +174,12 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/users/:id/profile-picture",
+							"raw": "http://localhost:8081/api/users/:id/profile-picture",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"users",
@@ -223,12 +223,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/auth/login",
+							"raw": "http://localhost:8081/api/auth/login",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"auth",
@@ -253,12 +253,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/auth/logout",
+							"raw": "http://localhost:8081/api/auth/logout",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"auth",
@@ -279,12 +279,12 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/api/auth/me",
+							"raw": "http://localhost:8081/api/auth/me",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"auth",
@@ -296,22 +296,6 @@
 				},
 				{
 					"name": "csrf",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": ""
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "AdminUsersController",
-			"item": [
-				{
-					"name": "getUsers",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -336,7 +320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectDescription\": \"string\",\n  \"clientId\": 1\n}",
+							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectDescription\": \"string\"\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -344,12 +328,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/client/create-project",
+							"raw": "http://localhost:8081/api/client/create-project",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"client",
@@ -375,12 +359,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/client/projects/client/1",
+							"raw": "http://localhost:8081/api/client/projects/client/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"client",
@@ -398,16 +382,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/client/1/projects",
+							"raw": "http://localhost:8081/api/client/projects",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"client",
-								"1",
 								"projects"
 							]
 						}
@@ -426,7 +409,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"applicationStatus\": \"IN_PROGRESS\",\n  \"projectId\": 1,\n  \"userId\": 2\n}",
+							"raw": "{\n  \"applicationStatus\": \"IN_PROGRESS\",\n  \"projectId\": 1\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -434,12 +417,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/freelancer/submit-application",
+							"raw": "http://localhost:8081/api/freelancer/submit-application",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"freelancer",
@@ -455,16 +438,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/freelancer/2/applications",
+							"raw": "http://localhost:8081/api/freelancer/applications",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"freelancer",
-								"2",
 								"applications"
 							]
 						}
@@ -477,12 +459,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/freelancer/projects",
+							"raw": "http://localhost:8081/api/freelancer/projects",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"freelancer",
@@ -498,12 +480,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/freelancer/projects/2",
+							"raw": "http://localhost:8081/api/freelancer/projects/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8081",
 							"path": [
 								"api",
 								"freelancer",

@@ -14,7 +14,6 @@ import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.VerificationCodeRepository;
 import com.quolance.quolance_api.services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
-import com.quolance.quolance_api.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.scheduling.BackgroundJobRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -98,9 +97,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto updateUser(UpdateUserRequestDto request) {
-        User user = SecurityUtil.getAuthenticatedUser();
-        user = userRepository.getReferenceById(user.getId());
+    public UserResponseDto updateUser(UpdateUserRequestDto request, User user) {
         user.update(request);
         user = userRepository.save(user);
         return new UserResponseDto(user);
@@ -108,8 +105,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto updatePassword(UpdateUserPasswordRequestDto request) {
-        User user = SecurityUtil.getAuthenticatedUser();
+    public UserResponseDto updatePassword(UpdateUserPasswordRequestDto request, User user) {
         if (user.getPassword() != null && !passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw ApiException.builder().status(400).message("Wrong password").build();
         }
