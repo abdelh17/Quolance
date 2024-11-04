@@ -38,7 +38,7 @@ function Header() {
 
   const { scrolled } = useScroll();
   return (
-    <header className=''>
+    <header className='h-24'>
       <div
         className={`left-0 right-0 top-0 z-50 ${scrolled
           ? 'animationOne fixed bg-white shadow-md'
@@ -144,6 +144,8 @@ function Header() {
       <MobileMenu
         showMobileMenu={showMobileMenu}
         setShowMobileMenu={setShowMobileMenu}
+        user={user}
+        logout={logout}
       />
     </header>
   );

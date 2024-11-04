@@ -34,7 +34,7 @@ export default function ProfilePage() {
   if (!user) return <Loading />;
 
   return (
-    <Container size="sm">
+    <Container size="sm" className="flex justify-center items-top p-4">
       <div className="flex flex-col gap-y-4">
         <h1 className="text-2xl font-semibold">Welcome back, {user.firstName}</h1>
 

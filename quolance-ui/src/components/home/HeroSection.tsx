@@ -16,7 +16,7 @@ const sliderImages = [sliderImg1];
 
 function HeroSection() {
   return (
-    <section className='pt-[100px]'>
+    <section className=''>
       <div className='bg relative z-10 h-[650px] sm:h-[600px] md:h-[700px] lg:h-[800px]'>
         <div className='bg-n900/80 absolute inset-0 z-20'></div>
         <Swiper
