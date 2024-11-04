@@ -1,104 +1,176 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+
 import httpClient from "@/lib/httpClient";
+import { cn } from "@/lib/utils";
+
+import ErrorFeedback from "@/components/error-feedback";
+import SuccessFeedback from "@/components/success-feedback";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-const registerSchema = z.object({
-  firstName: z.string().min(4).max(30),
-  lastName: z.string().min(4).max(30),
-  email: z.string().email(),
-  password: z.string().min(8),
-  passwordConfirmation: z.string().min(8),
-  role: z.enum(["FREELANCER", "CLIENT"]),
-}).refine((data) => data.password === data.passwordConfirmation, {
-  message: "Passwords do not match",
-  path: ["passwordConfirmation"],
-});
+import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
 
-type Schema = z.infer<typeof registerSchema>;
+type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>
 
-export function UserRegisterForm() {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { register, handleSubmit, formState } = useForm<Schema>({
-    resolver: zodResolver(registerSchema),
+const registerSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    passwordConfirmation: z.string().min(8),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    role: z.string().optional(),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: "Passwords do not match",
+    path: ["passwordConfirmation"],
   });
 
+type Schema = z.infer<typeof registerSchema>;
+export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [success, setSuccess] = React.useState<boolean>(false);
+  const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
+    undefined
+  );
+
   async function onSubmit(data: Schema) {
+    setErrors(undefined);
+    setSuccess(false);
     setIsLoading(true);
-    try {
-      await httpClient.post("http://localhost:8080/api/users", data);
-      toast.success("Account created successfully");
-    } catch (error) {
-      toast.error("Error creating account");
-    } finally {
-      setIsLoading(false);
-    }
+    httpClient
+      .post("/api/users", data)
+      .then(() => {
+        toast.success("Account created successfully");
+        setSuccess(true);
+      })
+      .catch((error) => {
+        const errData = error.response.data as HttpErrorResponse;
+        setErrors(errData);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
+  const { register, handleSubmit, formState } = useForm<Schema>({
+    resolver: zodResolver(registerSchema),
+    reValidateMode: "onSubmit"
+  });
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input
-        placeholder="First Name"
-        disabled={isLoading}
-        {...register("firstName")}
+    <div className={cn("grid gap-6", className)} {...props}>
+      <SuccessFeedback
+        show={success}
+        message="Account created"
+        description="Verfication email will be sent to your inbox, please click the link in the email to verify your account"
+        action={
+          <Link href="/auth/login" className="underline">
+            Login
+          </Link>
+        }
       />
 
-      <Input
-        placeholder="Last Name"
-        disabled={isLoading}
-        {...register("lastName")}
-      />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid gap-2">
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              placeholder="name@example.com"
+              type="text"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register("email")}
+            />
+            {formState.errors.email && (
+              <small className="text-red-600">
+                {formState.errors.email.message}
+              </small>
+            )}
 
-      {/* Ask user if he wants to be a freelancer or a client NOTE THIS IS JUST A SIMPLE EXAMPLE, TO FIX THE CORS ISSUE */}
-      <select
-        {...register("role")}
-        className="w-full p-2 rounded-md border border-gray-300"
-      >
-        <option value="FREELANCER">Freelancer</option>
-        <option value="CLIENT">Client</option>
-      </select>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              autoCapitalize="none"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register("password")}
+            />
+            {formState.errors.password && (
+              <small className="text-red-600">
+                {formState.errors.password.message}
+              </small>
+            )}
 
-      <Input
-        placeholder="Email"
-        type="email"
-        disabled={isLoading}
-        {...register("email")}
-      />
-      {formState.errors.email && (
-        <small className="text-red-600">{formState.errors.email.message}</small>
-      )}
+            <Label htmlFor="passwordConfirmation">Confirm password</Label>
+            <Input
+              id="passwordConfirmation"
+              type="password"
+              disabled={isLoading}
+              {...register("passwordConfirmation")}
+            />
+            {formState.errors.passwordConfirmation && (
+              <small className="text-red-600">
+                {formState.errors.passwordConfirmation.message}
+              </small>
+            )}
 
-      <Input
-        placeholder="Password"
-        type="password"
-        disabled={isLoading}
-        {...register("password")}
-      />
-      {formState.errors.password && (
-        <small className="text-red-600">{formState.errors.password.message}</small>
-      )}
+            <Label htmlFor="firstName">First name</Label>
+            <Input
+              id="firstName"
+              type="text"
+              autoCapitalize="none"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register("firstName")}
+            />
 
-      <Input
-        placeholder="Confirm Password"
-        type="password"
-        disabled={isLoading}
-        {...register("passwordConfirmation")}
-      />
-      {formState.errors.passwordConfirmation && (
-        <small className="text-red-600">
-          {formState.errors.passwordConfirmation.message}
-        </small>
-      )}
+            <Label htmlFor="lastName">Last name</Label>
+            <Input
+              id="lastName"
+              type="text"
+              autoCapitalize="none"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register("lastName")}
+            />
 
-      <Button disabled={isLoading} type="submit">
-        {isLoading ? "Creating account..." : "Register"}
-      </Button>
-    </form>
+            <Label htmlFor="role">Role</Label>
+            <select
+              id="role"
+              disabled={isLoading}
+              {...register("role")}
+              className="border border-gray-300 rounded p-2"
+            >
+              <option value="">Select Role</option>
+              <option value="CLIENT">CLIENT</option>
+              <option value="FREELANCER">FREELANCER</option>
+            </select>
+
+          </div>
+
+
+
+          <ErrorFeedback data={errors} />
+
+          <Button disabled={isLoading} type="submit">
+            {isLoading && 'Creating account...'}
+            Register
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
