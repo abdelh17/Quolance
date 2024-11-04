@@ -15,6 +15,7 @@ interface ConnectedAccount {
 }
 
 export enum Role {
-  USER = "USER",
+  CLIENT = "CLIENT",
+  FREELANCER = "FREELANCER",
   ADMIN = "ADMIN"
 }
