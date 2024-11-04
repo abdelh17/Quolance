@@ -72,6 +72,7 @@ public class SecurityConfiguration {
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/users/verify-email")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-password")).permitAll()
+                    .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate")).hasRole("ADMIN")
