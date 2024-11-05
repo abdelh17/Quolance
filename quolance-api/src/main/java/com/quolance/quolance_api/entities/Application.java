@@ -13,7 +13,11 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@Table(name = "application")
+@Table(name = "application",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"projectId", "freelancerId"},
+                name = "unique_freelancer_project_application"
+        ))
 public class Application extends  AbstractEntity{
 
     @Enumerated(EnumType.STRING)

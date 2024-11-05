@@ -21,7 +21,12 @@ public class FreelancerServiceImpl implements FreelancerService {
 
     @Override
     public ApplicationDto submitApplication(ApplicationDto applicationDto, User freelancer) {
-        Project project = projectService.getProjectEntityById(applicationDto.getProjectId()).orElseThrow();
+        Project project = projectService.getProjectEntityById(applicationDto.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        if (applicationService.hasFreelancerAppliedToProject(freelancer.getId(), project.getId())) {
+            throw new RuntimeException("You have already applied to this project");
+        }
 
         Application applicationToSave = ApplicationDto.toEntity(applicationDto);
 
