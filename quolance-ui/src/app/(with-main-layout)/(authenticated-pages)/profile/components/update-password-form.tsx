@@ -109,7 +109,7 @@ export default function UpdatePasswordForm() {
             )}
           ></FormField>
 
-          <Button type="submit">Update password</Button>
+          <Button type="submit" variant={'footerColor'}>Update password</Button>
         </form>
       </Form>
 

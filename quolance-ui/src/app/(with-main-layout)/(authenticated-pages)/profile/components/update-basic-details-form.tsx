@@ -98,7 +98,7 @@ export default function UpdateBasicDetailsForm() {
             )}
           ></FormField>
 
-          <Button type="submit">Update profile</Button>
+          <Button type="submit" variant={'footerColor'}>Update profile</Button>
         </form>
       </Form>
 

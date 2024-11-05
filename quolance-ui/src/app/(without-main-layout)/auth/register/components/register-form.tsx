@@ -165,7 +165,7 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
 
           <ErrorFeedback data={errors} />
 
-          <Button disabled={isLoading} type="submit">
+          <Button disabled={isLoading} type="submit" variant={'footerColor'}>
             {isLoading && 'Creating account...'}
             Register
           </Button>
