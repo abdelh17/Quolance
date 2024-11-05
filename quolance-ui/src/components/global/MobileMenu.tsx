@@ -3,34 +3,38 @@ import { SetStateAction } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { PiCaretRight, PiX } from 'react-icons/pi';
 
+import { UserResponse } from '@/models/user/UserResponse';
+
 import { headerMenu } from '../../data/data';
 import useToggle from '../../hooks/useToggle';
 
 function MobileMenu({
   showMobileMenu,
   setShowMobileMenu,
+  user,
+  logout,
 }: {
   showMobileMenu: boolean;
   setShowMobileMenu: React.Dispatch<SetStateAction<boolean>>;
+  user: UserResponse | undefined;
+  logout: () => Promise<void>;
 }) {
   const { menuToggle, handleToggle } = useToggle();
   return (
     <nav className=''>
       <div
-        className={`${
-          showMobileMenu
+        className={`${showMobileMenu
             ? 'translate-y-0  opacity-30 '
             : ' translate-y-[-100%] opacity-0 delay-500 '
-        } bg-r50 fixed top-0 z-[998] h-full w-full duration-700 lg:hidden ltr:left-0 rtl:right-0`}
+          } bg-r50 fixed top-0 z-[998] h-full w-full duration-700 lg:hidden ltr:left-0 rtl:right-0`}
         onClick={() => setShowMobileMenu(false)}
       ></div>
 
       <div
-        className={`bg-r300 fixed top-0 z-[999] flex h-full w-3/4 flex-col items-start justify-start gap-8 text-white/80 duration-700 min-[500px]:w-1/2 lg:hidden lg:gap-20 ltr:left-0 rtl:right-0 ${
-          showMobileMenu
+        className={`bg-r300 fixed top-0 z-[999] flex h-full w-3/4 flex-col items-start justify-start gap-8 text-white/80 duration-700 min-[500px]:w-1/2 lg:hidden lg:gap-20 ltr:left-0 rtl:right-0 ${showMobileMenu
             ? 'visible translate-y-0 opacity-100  delay-500'
             : ' invisible translate-y-[100%] opacity-50'
-        }`}
+          }`}
       >
         <div className='bg-r300 fixed top-0 flex w-full items-center justify-between p-4 sm:p-8'>
           <Link href='/' className='text-2xl font-bold'>
@@ -56,9 +60,8 @@ function MobileMenu({
                     <span className='mobileSubMenuTitle'>{menu.name}</span>
 
                     <span
-                      className={`pl-1 pt-1 !text-xl duration-500 ${
-                        menuToggle === menu.id ? 'rotate-[90deg]' : ''
-                      }`}
+                      className={`pl-1 pt-1 !text-xl duration-500 ${menuToggle === menu.id ? 'rotate-[90deg]' : ''
+                        }`}
                     >
                       <PiCaretRight />
                     </span>
@@ -86,16 +89,34 @@ function MobileMenu({
             </li>
           ))}
 
-          <li className='hover:text-b500 duration-500'>
-            <Link href='/sign-up' className='rounded-lg px-2 py-3 '>
-              Sign up
-            </Link>
-          </li>
-          <li className='hover:text-b500 duration-500'>
-            <Link href='/sign-in' className='rounded-lg px-2 py-3'>
-              Sign in
-            </Link>
-          </li>
+          {
+            user?.email ? (
+              <>
+
+                <li className='hover:text-b500 duration-500'>
+                  <Link href='/profile'>
+                    Profile
+                  </Link>
+                </li>
+                <li className='hover:text-b500 cursor-pointer duration-500' onClick={() => logout()}>
+                  Logout
+                </li>
+              </>
+            )
+              :
+              <>
+                <li className='hover:text-b500 duration-500'>
+                  <Link href='/auth/register' className='rounded-lg px-2 py-3 '>
+                    Sign up
+                  </Link>
+                </li>
+                <li className='hover:text-b500 duration-500'>
+                  <Link href='/auth/login' className='rounded-lg px-2 py-3'>
+                    Sign in
+                  </Link>
+                </li>
+              </>
+          }
         </ul>
 
         <Link

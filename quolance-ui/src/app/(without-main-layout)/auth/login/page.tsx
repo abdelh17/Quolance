@@ -6,7 +6,7 @@ import { UserAuthForm } from "./components/user-auth-form";
 
 export default function LoginPage() {
   return (
-    <div className="mt-4 md:mt-0 space-y-6 flex flex-col justify-center h-full max-w-screen-sm mx-auto">
+    <div className="mt-4 md:mt-0 space-y-6 flex flex-col justify-center h-full min-w-52 max-w-screen-sm mx-auto pt-24">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Login to your account

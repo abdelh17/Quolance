@@ -91,7 +91,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
           <ErrorFeedback data={errors} />
           
-          <Button disabled={isLoading} type="submit">
+          <Button disabled={isLoading} type="submit" variant={'footerColor'}>
             {isLoading && 'Logging in...'}
             Sign In with Email
           </Button>

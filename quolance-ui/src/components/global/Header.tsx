@@ -4,11 +4,14 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { PiCaretDown, PiListBold, PiPlusBold } from 'react-icons/pi';
 
+import { useAuthGuard } from '@/lib/auth/use-auth';
+
 import MobileMenu from './MobileMenu';
 import { headerMenu } from '../../data/data';
 import useScroll from '../../hooks/useScroll';
 
 function Header() {
+  const { user, logout } = useAuthGuard({ middleware: "auth" });
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const path = usePathname();
 
@@ -35,13 +38,12 @@ function Header() {
 
   const { scrolled } = useScroll();
   return (
-    <header className=''>
+    <header className='h-24'>
       <div
-        className={`left-0 right-0 top-0 z-50 ${
-          scrolled
-            ? 'animationOne fixed bg-white shadow-md'
-            : 'animationTwo absolute'
-        }`}
+        className={`left-0 right-0 top-0 z-50 ${scrolled
+          ? 'animationOne fixed bg-white shadow-md'
+          : 'animationTwo absolute'
+          }`}
       >
         <div className='max-xxl:container xxl:px-25'>
           <div className='text-s1 flex items-center justify-between py-6'>
@@ -64,9 +66,8 @@ function Header() {
                     {menu.isSubmenu && (
                       <div className='group relative cursor-pointer'>
                         <div
-                          className={`subMenuTitle hover:text-b500 relative flex items-center justify-center gap-1 px-2 py-3 ${
-                            isMenuActive(menu) ? 'text-b500' : ''
-                          }`}
+                          className={`subMenuTitle hover:text-b500 relative flex items-center justify-center gap-1 px-2 py-3 ${isMenuActive(menu) ? 'text-b500' : ''
+                            }`}
                         >
                           {menu.name}
                           <PiCaretDown className='block pt-0.5 duration-700 group-hover:rotate-180' />
@@ -76,9 +77,8 @@ function Header() {
                             <li key={id}>
                               <Link
                                 href={link}
-                                className={`subMenuItem hover:text-y200 px-6 duration-500 hover:ml-2 ${
-                                  path === link && 'text-y200'
-                                }`}
+                                className={`subMenuItem hover:text-y200 px-6 duration-500 hover:ml-2 ${path === link && 'text-y200'
+                                  }`}
                               >
                                 {name}
                               </Link>
@@ -89,16 +89,35 @@ function Header() {
                     )}
                   </li>
                 ))}
-                <li className='hover:text-b500 duration-500'>
-                  <Link href='/sign-up' className='rounded-lg px-2 py-3 '>
-                    Sign up
-                  </Link>
-                </li>
-                <li className='hover:text-b500 duration-500'>
-                  <Link href='/sign-in' className='rounded-lg px-2 py-3'>
-                    Sign in
-                  </Link>
-                </li>
+                {
+                  user?.email ? (
+                    <>
+
+                      <li className='hover:text-b500 duration-500'>
+                        <Link href='/profile'>
+                          Profile
+                        </Link>
+                      </li>
+                      <li className='hover:text-b500 cursor-pointer duration-500' onClick={() => logout()}>
+                        Logout
+                      </li>
+                    </>
+                  )
+                    :
+                    <>
+                      <li className='hover:text-b500 duration-500'>
+                        <Link href='/auth/register' className='rounded-lg px-2 py-3 '>
+                          Sign up
+                        </Link>
+                      </li>
+                      <li className='hover:text-b500 duration-500'>
+                        <Link href='/auth/login' className='rounded-lg px-2 py-3'>
+                          Sign in
+                        </Link>
+                      </li>
+                    </>
+                }
+
               </ul>
               <div className='flex items-center justify-between gap-3 font-semibold'>
                 <Link
@@ -125,6 +144,8 @@ function Header() {
       <MobileMenu
         showMobileMenu={showMobileMenu}
         setShowMobileMenu={setShowMobileMenu}
+        user={user}
+        logout={logout}
       />
     </header>
   );

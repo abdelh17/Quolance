@@ -5,10 +5,10 @@ import { UserRegisterForm } from "./components/register-form";
 
 export default function RegisterPage() {
   return (
-    <div className="flex flex-col items-center h-full max-w-sm mx-auto mt-4 space-y-6">
+    <div className="mt-4 md:mt-0 space-y-6 flex flex-col justify-center h-full min-w-52 max-w-screen-sm mx-auto pt-24">
       <h1 className="text-2xl font-semibold">Create a new account</h1>
       <UserRegisterForm />
-      <p>
+      <p className="text-center">
         Already have an account?
         <Link href="/auth/login" className="underline ml-1">Login</Link>
       </p>
