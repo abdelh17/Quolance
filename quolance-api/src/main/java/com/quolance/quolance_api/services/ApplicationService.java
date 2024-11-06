@@ -10,6 +10,8 @@ public interface ApplicationService {
 
     ApplicationDto createApplication(Application Application);
 
+    boolean hasFreelancerAppliedToProject(Long freelancerId, Long projectId);
+
     List<ApplicationDto> getApplicationByFreelancerId(Long freelancerId); //TODO Applications with s not Application
 
     List<ApplicationDto> getApplicationsByProjectId(Long projectId);

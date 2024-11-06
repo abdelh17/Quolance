@@ -8,7 +8,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.FreelancerService;
 import com.quolance.quolance_api.services.ProjectService;
-import com.quolance.quolance_api.services.UserService;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -21,7 +21,12 @@ public class FreelancerServiceImpl implements FreelancerService {
 
     @Override
     public ApplicationDto submitApplication(ApplicationDto applicationDto, User freelancer) {
-        Project project = projectService.getProjectEntityById(applicationDto.getProjectId()).orElseThrow();
+        Project project = projectService.getProjectEntityById(applicationDto.getProjectId())
+                .orElseThrow(() -> new ApiException("Project not found"));
+
+        if (applicationService.hasFreelancerAppliedToProject(freelancer.getId(), project.getId())) {
+            throw new ApiException("You have already applied to this project");
+        }
 
         Application applicationToSave = ApplicationDto.toEntity(applicationDto);
 
