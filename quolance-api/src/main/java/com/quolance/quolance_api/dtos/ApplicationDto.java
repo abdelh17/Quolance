@@ -22,8 +22,8 @@ public class ApplicationDto {
     @JsonProperty("projectId")
     private Long projectId;
 
-    @JsonProperty("userId")
-    private Long userId;
+    @JsonProperty("freelancerId")
+    private Long freelancerId;
 
     public static Application toEntity(ApplicationDto applicationDto) {
         return Application.builder()
@@ -36,7 +36,7 @@ public class ApplicationDto {
                 .id(application.getId())
                 .status(application.getStatus())
                 .projectId(application.getProject() != null ? application.getProject().getId() : null)
-                .userId(application.getFreelancer() != null ? application.getFreelancer().getId() : null)
+                .freelancerId(application.getFreelancer() != null ? application.getFreelancer().getId() : null)
                 .build();
     }
 }

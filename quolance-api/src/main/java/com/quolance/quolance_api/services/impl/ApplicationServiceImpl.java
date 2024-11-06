@@ -20,10 +20,20 @@ public class ApplicationServiceImpl implements ApplicationService {
         return ApplicationDto.fromEntity(savedApplication);
     }
 
+    @Override
+    public boolean hasFreelancerAppliedToProject(Long freelancerId, Long projectId) {
+        return applicationRepository.existsByFreelancerIdAndProjectId(freelancerId, projectId);
+    }
 
     @Override
     public List<ApplicationDto> getApplicationByFreelancerId(Long freelancerId) {
         List<Application> applications = applicationRepository.findAllByFreelancerId(freelancerId);
+        return applications.stream().map(ApplicationDto::fromEntity).toList();
+    }
+
+    @Override
+    public List<ApplicationDto> getApplicationsByProjectId(Long projectId) {
+        List<Application> applications = applicationRepository.findAllByProjectId(projectId);
         return applications.stream().map(ApplicationDto::fromEntity).toList();
     }
 }

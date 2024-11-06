@@ -10,5 +10,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     Application save(Application application);
 
+    boolean existsByFreelancerIdAndProjectId(Long freelancerId, Long projectId);
+
     List<Application> findAllByFreelancerId(Long freelancerId);
+
+    List<Application> findAllByProjectId(Long projectId);
 }

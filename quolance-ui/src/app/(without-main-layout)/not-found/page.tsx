@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import LinkButton from '@/components/ui/LinkButton';
 
-import notFoundImage from '/public/images/404-img.png';
+import notFoundImage from '/src/public/images/404-img.png';
 
 function ErrorPage() {
   return (
