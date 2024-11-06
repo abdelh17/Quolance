@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.entities;
 
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Tag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,14 @@ public class Project extends AbstractEntity {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status = ProjectStatus.OPEN;
+
     @ManyToOne
     private User client;
+
+    @ManyToOne
+    private User selectedFreelancer;
 
     @OneToMany(mappedBy = "project")
     private List<Application> applications;
@@ -32,4 +39,8 @@ public class Project extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "tag")
     private List<Tag> tags;
+
+    @Version
+    private Long version;
+
 }
