@@ -14,13 +14,17 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class ProjectDto {
+
     @JsonProperty("projectId")
     private Long id;
+
     @JsonProperty("projectDescription")
     @NotBlank(message = "The description is required")
     private String description;
+
     @JsonProperty("clientId")
     private Long clientId;
+
     private List<Tag> tags;
 
     public static Project toEntity(ProjectDto projectDto) {
