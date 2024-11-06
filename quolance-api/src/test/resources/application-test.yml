@@ -1,19 +1,54 @@
-# src/test/resources/application-test.properties
-spring.application.name=quolance-api
+spring:
+  application:
+    name: quolance-api
 
-# Test Database Configuration
-spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
-spring.datasource.username=sa
-spring.datasource.password=
-spring.datasource.driver-class-name=org.h2.Driver
-spring.jpa.hibernate.ddl-auto=create-drop
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
-org.jobrunr.dashboard.port=0
-org.jobrunr.dashboard.enabled=false
-# Test JWT Configuration
-security.jwt.secret-key=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-security.jwt.expiration-time=86400000
-security.jwt.refresh-token.expiration=604800000
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO}
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+
+  mail:
+    host: localhost
+    port: ${MAILPIT_SMTP_PORT}
+    username: ${MAILPIT_USER}
+    password: ${MAILPIT_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+org:
+  jobrunr:
+    dashboard:
+      port: 0
+      enabled: false
+
+security:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    expiration-time: 86400000
+    refresh-token:
+      expiration: 604800000
