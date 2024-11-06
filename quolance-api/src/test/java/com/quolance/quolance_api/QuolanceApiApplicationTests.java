@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("test")  // This will make Spring use application-test.properties
+@ActiveProfiles("test")  // This will make Spring use application-test.yml
 class QuolanceApiApplicationTests {
 
     @Test
