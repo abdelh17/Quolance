@@ -3,9 +3,11 @@ package com.quolance.quolance_api.services.impl;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.ProjectService;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -52,5 +54,22 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ApplicationDto> getApplicationsToProject(Long projectId) {
         return applicationService.getApplicationsByProjectId(projectId);
+    }
+
+    @Override
+    public ProjectDto approveProject(Long projectId) {
+        Optional<Project> project = getProjectEntityById(projectId);
+        if (project.isEmpty()) {
+            throw new ApiException("Project not found with id: " + projectId);
+        }
+        Project projectToApprove = project.get();
+
+        if(projectToApprove.getProjectStatus() == ProjectStatus.PENDING) {
+            projectToApprove.setProjectStatus(ProjectStatus.APPROVED);
+            projectToApprove = projectRepository.save(projectToApprove);
+        } else {
+            throw new ApiException("Project cannot be approved at this stage.");
+        }
+        return ProjectDto.fromEntity(projectToApprove);
     }
 }

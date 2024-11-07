@@ -16,4 +16,6 @@ public interface ProjectService {
     Optional<Project> getProjectEntityById(Long id);
 
     List<ApplicationDto> getApplicationsToProject(Long projectId);
+
+    ProjectDto approveProject(Long projectId);
 }
