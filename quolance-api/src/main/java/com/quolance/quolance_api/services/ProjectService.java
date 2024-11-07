@@ -3,6 +3,7 @@ package com.quolance.quolance_api.services;
 
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
+import com.quolance.quolance_api.dtos.RejectProjectRequestDto;
 import com.quolance.quolance_api.entities.Project;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface ProjectService {
     List<ApplicationDto> getApplicationsToProject(Long projectId);
 
     ProjectDto approveProject(Long projectId);
+
+    ProjectDto rejectProject(RejectProjectRequestDto rejectProjectRequestDto);
 }

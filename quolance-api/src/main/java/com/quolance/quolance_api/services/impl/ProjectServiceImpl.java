@@ -2,6 +2,7 @@ package com.quolance.quolance_api.services.impl;
 
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
+import com.quolance.quolance_api.dtos.RejectProjectRequestDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.repositories.ProjectRepository;
@@ -72,4 +73,22 @@ public class ProjectServiceImpl implements ProjectService {
         }
         return ProjectDto.fromEntity(projectToApprove);
     }
+
+    @Override
+    public ProjectDto rejectProject(RejectProjectRequestDto rejectProjectRequestDto) {
+        Optional<Project> project = getProjectEntityById(rejectProjectRequestDto.getProjectId());
+        if (project.isEmpty()) {
+            throw new ApiException("Project not found with id: " + rejectProjectRequestDto.getProjectId());
+        }
+        Project projectToReject = project.get();
+
+        if(projectToReject.getProjectStatus() == ProjectStatus.PENDING) {
+            projectToReject.setProjectStatus(ProjectStatus.REJECTED);
+            projectToReject = projectRepository.save(projectToReject);
+        } else {
+            throw new ApiException("Project cannot be rejected at this stage.");
+        }
+        return ProjectDto.fromEntity(projectToReject);
+    }
+
 }
