@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { UserRoles } from '@/types/userTypes';
+import { useAuthGuard } from '@/lib/auth/use-auth';
+import { Role } from '@/models/user/UserResponse';
 
 function ProjectCard({
   id,
   name,
   tags,
-  view,
   datePosted,
   description,
   status,
@@ -14,12 +14,14 @@ function ProjectCard({
   id: number;
   name: string;
   tags: string[];
-  view: UserRoles;
   datePosted: string;
   description: string;
   status: string;
   applicants: number;
 }) {
+  const { user } = useAuthGuard({ middleware: 'auth' });
+  const view = user?.role;
+
   return (
     <div className='border-n30 flex w-full min-w-[200px] flex-col gap-3 rounded-2xl border p-5'>
       <div>
@@ -52,7 +54,7 @@ function ProjectCard({
           className='bg-b300 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-3 py-2 text-sm font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-4 lg:py-2'
         >
           <span className='relative z-10'>
-            {view === 'freelancer' ? 'View Details' : 'View Submissions'}
+            {view === Role.FREELANCER ? 'View Details' : 'View Submissions'}
           </span>
         </Link>
       </div>

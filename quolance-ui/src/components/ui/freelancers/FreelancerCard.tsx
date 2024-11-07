@@ -68,14 +68,14 @@ function FreelancerCard({
       </div>
 
       <div className='text-n400 flex flex-wrap gap-2 px-6'>
-        <p className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
+        <div className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
           <div className={'bg-gray-300'} />
           <span>Handyman</span>
-        </p>
-        <p className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
+        </div>
+        <div className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
           <div className={'bg-gray-300'} />
           <span>Plumber </span>
-        </p>
+        </div>
         <p className='bg-b50 rounded-xl px-3 py-2 font-medium'>+3</p>
       </div>
 

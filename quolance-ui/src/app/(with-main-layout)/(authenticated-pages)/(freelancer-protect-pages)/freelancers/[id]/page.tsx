@@ -11,7 +11,7 @@ import {
 import BreadCrumb from '@/components/global/BreadCrumb';
 import ProjectCard from '@/components/ui/projects/ProjectCard';
 
-import { freelancerServices } from '@/app/(with-main-layout)/projects/ClientProjectsView';
+import { freelancerServices } from '@/app/(with-main-layout)/(authenticated-pages)/(client-protected-pages)/my-projects/ClientProjectsView';
 
 const tabButton = ['Projects', 'Works'];
 
@@ -200,7 +200,6 @@ function WorkerDynamicProfile() {
                       key={worker.id}
                       id={worker.id}
                       name={worker.name}
-                      view={'client'}
                       tags={['Handyman', 'Cleaning', 'Plumber']}
                       datePosted='2021-09-23'
                       description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'

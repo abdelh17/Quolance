@@ -95,7 +95,7 @@ export const headerMenu = [
   },
 ];
 
-export const ProjectList: ProjectType[] = [
+export const DATA_ProjectList: ProjectType[] = [
   {
     id: 1,
     name: 'Real-Time Video Streaming Platform Development',
@@ -258,7 +258,7 @@ export const ProjectList: ProjectType[] = [
   },
 ];
 
-export const Users: UserType[] = [
+export const DATA_Users: UserType[] = [
   {
     id: '1',
     name: 'John Admin',
@@ -309,7 +309,7 @@ export const Users: UserType[] = [
   },
 ];
 
-export const submissioners = [
+export const DATA_Submissioners = [
   {
     id: uuidv4(),
     img: 'expertImg1',

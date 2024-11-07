@@ -3,11 +3,12 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import BreadCrumb from '@/components/global/BreadCrumb';
-import { ProjectList } from '@/data/data';
-import { useGetUserProfile } from '@/hooks/userHooks';
+import { DATA_ProjectList } from '@/data/data';
 import ProjectDetails from '@/app/(with-main-layout)/projects/[id]/ProjectDetails';
 import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
 import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
+import { useAuthGuard } from '@/lib/auth/use-auth';
+import { Role } from '@/models/user/UserResponse';
 
 type Project = {
   id: number;
@@ -21,41 +22,37 @@ type Project = {
 
 function ProjectPage() {
   const { id } = useParams();
-  const { data: user, isLoading } = useGetUserProfile();
+  const { user } = useAuthGuard({ middleware: 'auth' });
+  const role = user?.role;
   const [project, setProject] = useState<Project | null>(null);
 
   useEffect(() => {
     if (id) {
       const projectId = Number(id);
-      const fetchedProject = ProjectList.find((p) => p.id === projectId);
+      const fetchedProject = DATA_ProjectList.find((p) => p.id === projectId);
       setProject(fetchedProject || null);
     }
   }, [id]);
 
-  if (isLoading) {
-    return <div className={'mx-auto ml-10'}>Loading...</div>;
-  }
-
   if (!project) {
     return <p className='text-error mb-6'>No project found for ID: {id}</p>;
   }
-
+  // quolance-ui/src/app/(with-main-layout)/projects/[id]/page.tsx:
   return (
     <>
       <BreadCrumb pageName='Project Details' isSearchBoxShow={false} />
-
       <section className='container mt-14'>
         {/* Project Details - Visible to all users */}
         <ProjectDetails project={project} />
         <div className=''>
           <div className=''>
             {/* Application Form - Only visible to freelancers */}
-            {user?.role === 'freelancer' && (
+            {role === Role.FREELANCER && (
               <ProjectApplication projectId={project.id} />
             )}
 
-            {/* Proposals List - Only visible to clients */}
-            {user?.role === 'client' && (
+            {/* Submission List - Only visible to clients */}
+            {role === Role.CLIENT && (
               <ProjectSubmissions projectId={project.id} />
             )}
           </div>
