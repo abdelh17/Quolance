@@ -136,10 +136,6 @@
 			<version>3.14.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -154,6 +150,18 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>
+						-Xshare:off
+						-XX:+EnableDynamicAgentLoading
+						-Djdk.instrument.traceUsage=false
+					</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
