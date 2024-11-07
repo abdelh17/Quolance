@@ -1,18 +1,14 @@
 package com.quolance.quolance_api.services;
 
-import java.util.List;
-
+import com.quolance.quolance_api.dtos.PortfolioDto;
 import com.quolance.quolance_api.entities.Portfolio;
+import java.util.List;
 
 public interface PortfolioService {
 
-    Portfolio createPortfolio(Portfolio portfolio);
-    
-    Portfolio getPortfolioById(Long id);
-    
-    Portfolio updatePortfolio(Long id, Portfolio portfolio);
-    
+    PortfolioDto createPortfolio(PortfolioDto portfolioDTO, long userId);
+    PortfolioDto getPortfolioById(Long id);
+    PortfolioDto updatePortfolio(Long id, PortfolioDto portfolioDTO);
     void deletePortfolio(Long id);
-    
-    List<Portfolio> getAllPortfolios();
+    List<PortfolioDto> getAllPortfolios();
 }
