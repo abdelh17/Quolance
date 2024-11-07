@@ -68,7 +68,6 @@ function ClientProjectsView() {
                       key={worker.id}
                       id={worker.id}
                       name={worker.name}
-                      view={'client'}
                       tags={['Handyman', 'Cleaning', 'Plumber']}
                       datePosted='2021-09-23'
                       description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
