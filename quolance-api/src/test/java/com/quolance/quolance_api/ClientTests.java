@@ -137,7 +137,7 @@ public class ClientTests {
 
     @Test
     @Transactional
-    void testGetAllApplicationsToProject() throws InterruptedException {
+    void testGetAllApplicationsToProject(){
 
         loginClient();
 
