@@ -1,11 +1,9 @@
 package com.quolance.quolance_api.entities;
 
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Tag;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -20,6 +18,10 @@ import java.util.List;
 public class Project extends AbstractEntity {
 
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ProjectStatus projectStatus = ProjectStatus.PENDING;
 
     @ManyToOne
     private User client;
