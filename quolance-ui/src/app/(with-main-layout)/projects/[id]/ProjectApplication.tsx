@@ -1,70 +1,84 @@
 // components/projects/ApplicationForm.tsx
 'use client';
-import { useState } from 'react';
+import { useAuthGuard } from '@/lib/auth/use-auth';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useSubmitApplication } from '@/models/freelancer/freelancer-hooks';
+import { Button } from '@/components/ui/button';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import ResponseFeedback from '@/components/response-feedback';
 
 type ApplicationFormProps = {
   projectId: number;
 };
 
+type ApplicationFormFields = {
+  motivationalLetter: string;
+};
+
 export default function ProjectApplication({
   projectId,
 }: ApplicationFormProps) {
-  const [coverLetter, setCoverLetter] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const { register, formState, handleSubmit } =
+    useForm<ApplicationFormFields>();
+  const { user } = useAuthGuard({ middleware: 'auth' });
+  const {
+    mutateAsync: mutateApplication,
+    isSuccess,
+    error,
+  } = useSubmitApplication();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
+  const onSubmit: SubmitHandler<ApplicationFormFields> = async (data) => {
+    console.log('here', data);
+    if (!user) return;
 
-  const handleSubmit = async () => {
-    console.log('Submitting application:', { projectId, coverLetter, file });
-    // Add form submission logic here
+    await mutateApplication({
+      projectId: projectId,
+      freelancerId: user.id,
+    });
   };
+  console.log('error', error);
 
   return (
     <div className='box-shadow-1 mt-6 rounded-lg bg-white p-8 shadow-lg'>
       <h3 className='heading-3 text-primary mb-6'>Your Application</h3>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className='mb-6'>
+          <label
+            htmlFor='motivationalLetter'
+            className='mb-2 block text-lg font-medium'
+          >
+            Why you're a great fit for this project
+          </label>
+          <textarea
+            id='motivationalLetter'
+            className='focus:ring-primary mb-4 w-full rounded-lg border border-gray-300 p-4 focus:border-transparent focus:outline-none focus:ring-2'
+            placeholder="Introduce yourself and explain why you're a great fit for this project..."
+            {...register('motivationalLetter', {
+              validate: (value) => value.split(' ').length <= 500,
+            })}
+            rows={6}
+          />
+          <p className='text-sm text-gray-500'>Max 500 words</p>
+        </div>
 
-      <div className='mb-6'>
-        <label htmlFor='coverLetter' className='mb-2 block text-lg font-medium'>
-          Cover Letter
-        </label>
-        <textarea
-          id='coverLetter'
-          className='focus:ring-primary mb-4 w-full rounded-lg border border-gray-300 p-4 focus:border-transparent focus:outline-none focus:ring-2'
-          placeholder="Introduce yourself and explain why you're a great fit for this project..."
-          value={coverLetter}
-          onChange={(e) => setCoverLetter(e.target.value)}
-          rows={6}
-        />
-        <p className='text-sm text-gray-500'>Max 500 words</p>
-      </div>
-
-      <div className='mb-6'>
-        <label htmlFor='fileUpload' className='mb-2 block text-lg font-medium'>
-          Attach Your Portfolio
-        </label>
-        <input
-          id='fileUpload'
-          type='file'
-          className='focus:ring-primary w-full rounded-lg border border-gray-300 p-3 focus:border-transparent focus:outline-none focus:ring-2'
-          onChange={handleFileChange}
-        />
-        <p className='text-sm text-gray-500'>
-          Accepted formats: PDF, Docx, PNG
-        </p>
-      </div>
-
-      <div className='mt-8'>
-        <button
-          className='bg-primary hover:bg-primary-dark focus:ring-primary w-full rounded-lg py-4 font-medium text-white shadow-md transition-all focus:outline-none focus:ring-4 focus:ring-opacity-50'
-          onClick={handleSubmit}
-        >
-          Submit Application
-        </button>
-      </div>
+        <div className='mt-8'>
+          <Button
+            variant='default'
+            className={
+              'bg-b300 hover:text-n900 relative flex w-full items-center justify-center overflow-hidden rounded-full text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] xl:w-min xl:px-10'
+            }
+            type='submit'
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <span className='relative z-10 '> Submit Application </span>
+          </Button>
+          <ResponseFeedback
+            isSuccess={isSuccess}
+            successMessage='Your application was successfully submitted'
+            error={error?.response?.data as HttpErrorResponse}
+          />
+        </div>
+      </form>
     </div>
   );
 }
