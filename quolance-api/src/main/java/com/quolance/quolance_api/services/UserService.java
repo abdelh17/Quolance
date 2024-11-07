@@ -1,9 +1,6 @@
 package com.quolance.quolance_api.services;
 
-import com.quolance.quolance_api.dtos.CreateUserRequestDto;
-import com.quolance.quolance_api.dtos.UpdateUserPasswordRequestDto;
-import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
-import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.User;
 import jakarta.validation.Valid;
 
@@ -24,4 +21,6 @@ public interface UserService {
     UserResponseDto updateUser(UpdateUserRequestDto request, User user);
 
     UserResponseDto updatePassword(UpdateUserPasswordRequestDto request, User user);
+
+    UserResponseDto createAdmin(@Valid CreateAdminRequestDto request);
 }
