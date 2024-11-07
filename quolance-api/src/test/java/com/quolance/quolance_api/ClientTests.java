@@ -56,9 +56,9 @@ public class ClientTests {
     @BeforeEach
     void setUp() {
         //reset info
-        userRepository.deleteAll();
-        projectRepository.deleteAll();
         logoutClient();
+        projectRepository.deleteAll();
+        userRepository.deleteAll();
 
         //test client
         client = new User();
