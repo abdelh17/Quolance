@@ -11,9 +11,13 @@ import java.util.Optional;
 
 public interface ProjectService {
     ProjectDto createProject(Project project);
+
     List<ProjectDto> getProjectsByClientId(Long clientId);
+
     List<ProjectDto> getAllProjects();
+
     ProjectDto getProjectById(Long id);
+
     Optional<Project> getProjectEntityById(Long id);
 
     List<ApplicationDto> getApplicationsToProject(Long projectId);
@@ -21,4 +25,6 @@ public interface ProjectService {
     ProjectDto approveProject(Long projectId);
 
     ProjectDto rejectProject(RejectProjectRequestDto rejectProjectRequestDto);
+
+    List<ProjectDto> getAllPendingProjects();
 }

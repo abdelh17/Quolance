@@ -8,11 +8,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminService adminService;
+
     @Operation(
             summary = "Approve a pending project"
     )
@@ -23,12 +26,20 @@ public class AdminController {
     }
 
     @Operation(
-            summary = "Approve a pending project"
+            summary = "Reject a pending project"
     )
     @PostMapping("/pending-projects/reject")
     public ResponseEntity<ProjectDto> rejectProject(@RequestBody RejectProjectRequestDto rejectProjectRequestDto) {
 
         return ResponseEntity.ok(adminService.rejectProject(rejectProjectRequestDto));
+    }
+
+    @Operation(
+            summary = "Get all pending projects"
+    )
+    @GetMapping("/pending-projects")
+    public ResponseEntity<List<ProjectDto>> getAllPendingProjects() {
+        return ResponseEntity.ok(adminService.getAllPendingProjects());
     }
 
 }

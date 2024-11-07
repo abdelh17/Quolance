@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.repositories;
 
 import com.quolance.quolance_api.entities.Project;
-import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +15,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByClientId(Long clientId);
 
     Optional<Project> findById(Long id);
+
+    List<Project> findByProjectStatus(ProjectStatus projectStatus);
 }

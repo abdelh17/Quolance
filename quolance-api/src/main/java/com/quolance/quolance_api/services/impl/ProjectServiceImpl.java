@@ -65,7 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         Project projectToApprove = project.get();
 
-        if(projectToApprove.getProjectStatus() == ProjectStatus.PENDING) {
+        if (projectToApprove.getProjectStatus() == ProjectStatus.PENDING) {
             projectToApprove.setProjectStatus(ProjectStatus.APPROVED);
             projectToApprove = projectRepository.save(projectToApprove);
         } else {
@@ -82,13 +82,21 @@ public class ProjectServiceImpl implements ProjectService {
         }
         Project projectToReject = project.get();
 
-        if(projectToReject.getProjectStatus() == ProjectStatus.PENDING) {
+        if (projectToReject.getProjectStatus() == ProjectStatus.PENDING) {
             projectToReject.setProjectStatus(ProjectStatus.REJECTED);
             projectToReject = projectRepository.save(projectToReject);
         } else {
             throw new ApiException("Project cannot be rejected at this stage.");
         }
         return ProjectDto.fromEntity(projectToReject);
+    }
+
+    @Override
+    public List<ProjectDto> getAllPendingProjects() {
+        return projectRepository.findByProjectStatus(ProjectStatus.PENDING)
+                .stream()
+                .map(ProjectDto::fromEntity)
+                .toList();
     }
 
 }
