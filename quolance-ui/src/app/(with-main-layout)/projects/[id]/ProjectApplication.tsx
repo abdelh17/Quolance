@@ -28,7 +28,6 @@ export default function ProjectApplication({
   } = useSubmitApplication();
 
   const onSubmit: SubmitHandler<ApplicationFormFields> = async (data) => {
-    console.log('here', data);
     if (!user) return;
 
     await mutateApplication({
@@ -36,7 +35,6 @@ export default function ProjectApplication({
       freelancerId: user.id,
     });
   };
-  console.log('error', error);
 
   return (
     <div className='box-shadow-1 mt-6 rounded-lg bg-white p-8 shadow-lg'>
