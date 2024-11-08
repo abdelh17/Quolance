@@ -20,8 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
-import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 const schema = z
   .object({

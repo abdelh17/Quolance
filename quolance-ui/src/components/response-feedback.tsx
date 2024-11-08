@@ -1,7 +1,8 @@
 // Component that wraps the ErrorFeedback and SuccessFeedback components
-import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 interface ResponseFeedbackProps {
   error?: HttpErrorResponse;

@@ -8,7 +8,7 @@ import ProjectDetails from '@/app/(with-main-layout)/projects/[id]/ProjectDetail
 import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
 import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
 import { useAuthGuard } from '@/api/auth-api';
-import { Role } from '@/models/user/UserResponse';
+import { Role } from '@/constants/models/user/UserResponse';
 
 type Project = {
   id: number;

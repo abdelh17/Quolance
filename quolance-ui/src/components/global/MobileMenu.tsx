@@ -3,10 +3,9 @@ import { SetStateAction } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { PiCaretRight, PiX } from 'react-icons/pi';
 
-import { UserResponse } from '@/models/user/UserResponse';
-
 import { headerMenu } from '@/constants/data';
 import useToggle from '@/util/hooks/useToggle';
+import { UserResponse } from '@/constants/models/user/UserResponse';
 
 function MobileMenu({
   showMobileMenu,

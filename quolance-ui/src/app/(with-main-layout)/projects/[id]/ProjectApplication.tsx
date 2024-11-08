@@ -4,8 +4,8 @@ import { useAuthGuard } from '@/api/auth-api';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSubmitApplication } from '@/api/freelancer-api';
 import { Button } from '@/components/ui/button';
-import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import ResponseFeedback from '@/components/response-feedback';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 type ApplicationFormProps = {
   projectId: number;
