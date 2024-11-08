@@ -43,11 +43,11 @@ export const useAuthGuard = ({
   redirectIfAuthenticated,
 }: AuthProps) => {
   const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
+  const [isClientComponent, setIsClientComponent] = useState(false);
 
   // Set isClient to true once component mounts
   useEffect(() => {
-    setIsClient(true);
+    setIsClientComponent(true);
   }, []);
 
   const getSessionUserData = () => {
@@ -65,9 +65,9 @@ export const useAuthGuard = ({
     queryFn: () => httpClient.get('/api/auth/me'),
     staleTime: 1000 * 60 * 60 * 4, // 4 hours
     gcTime: 1000 * 60 * 60 * 24, // 24 hours
-    initialData: isClient ? getSessionUserData() : undefined,
+    initialData: isClientComponent ? getSessionUserData() : undefined,
     retry: false,
-    enabled: isClient, // Only run query on client side
+    enabled: isClientComponent, // Only run query on client side
   });
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export const useAuthGuard = ({
   });
 
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClientComponent) return;
 
     // If middleware is 'guest' and we have a user, redirect
     if (middleware === 'guest' && redirectIfAuthenticated && userData) {
@@ -118,7 +118,7 @@ export const useAuthGuard = ({
   }, [
     userData,
     error,
-    isClient,
+    isClientComponent,
     middleware,
     redirectIfAuthenticated,
     router,
