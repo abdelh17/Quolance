@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import React from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import httpClient from "@/lib/httpClient";
+import ErrorFeedback from '@/components/error-feedback';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import {useRouter } from 'next/navigation';
 
 import { PiEnvelopeSimple, PiLock, PiUser } from "react-icons/pi";
 
@@ -28,18 +32,26 @@ export function CreateAdminForm() {
     resolver: zodResolver(createAdminSchema),
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
+    undefined
+  );
+  const router = useRouter();
 
   const onSubmit = async (data: CreateAdminSchema) => {
+    setErrors(undefined);
     setIsLoading(true);
-    try {
-      await httpClient.post("/api/users/admin", data);
-      alert("Admin created successfully!");
-    } catch (error) {
-      console.error("Error creating admin:", error);
-      alert("Failed to create admin.");
-    } finally {
+    httpClient
+    .post('/api/users/admin', data)
+    .then(() => {
+        router.push(`/adminDashboard/adminToastPage?message=Creating+Admin...&successMessage=Admin+Successfully+Created`);
+    })
+    .catch((error) => {
+      const errData = error.response.data as HttpErrorResponse;
+      setErrors(errData);
+    })
+    .finally(() => {
       setIsLoading(false);
-    }
+    });
   };
 
   return (
@@ -130,12 +142,14 @@ export function CreateAdminForm() {
             </div>
           </div>
 
+          <ErrorFeedback data={errors} />
+
           <button
             type="submit"
             className="mt-6 w-full rounded-2xl bg-blue-500 py-3 text-white font-semibold hover:bg-blue-600"
             disabled={isLoading}
           >
-            {isLoading ? "Creating Admin..." : "Create Admin"}
+            Create Admin
           </button>
         </div>
       </form>
