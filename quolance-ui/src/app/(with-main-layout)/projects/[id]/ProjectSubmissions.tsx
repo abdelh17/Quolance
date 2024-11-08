@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PiSliders } from 'react-icons/pi';
-import { submissioners } from '@/data/data';
+import { DATA_Submissioners } from '@/constants/data';
 import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
 
@@ -39,7 +39,7 @@ export default function ProjectSubmissions({
           </div>
         </div>
         <div className='flex w-full flex-row flex-wrap gap-6'>
-          {submissioners.map(({ id, ...props }) => (
+          {DATA_Submissioners.map(({ id, ...props }) => (
             <FreelancerCard key={id} {...props} />
           ))}
         </div>

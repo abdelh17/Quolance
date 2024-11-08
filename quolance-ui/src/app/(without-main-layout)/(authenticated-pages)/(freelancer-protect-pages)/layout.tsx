@@ -1,29 +1,26 @@
-"use client";
+'use client';
 
-import { useAuthGuard } from "@/lib/auth/use-auth";
+import { useAuthGuard } from '@/api/auth-api';
 
-import Loading from "@/components/loading";
-import PermissionGuard from "@/components/permission-guard";
-import RoleGuard from "@/components/role-guard";
+import Loading from '@/components/loading';
+import PermissionGuard from '@/components/permission-guard';
+import RoleGuard from '@/components/role-guard';
 
-import { Role } from "@/models/user/UserResponse";
-
+import { Role } from '@/constants/models/user/UserResponse';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuthGuard({ middleware: "auth" });
+  const { user } = useAuthGuard({ middleware: 'auth' });
 
   if (!user) return <Loading />;
 
   return (
     <>
       <PermissionGuard rolesAllowed={[Role.FREELANCER]}></PermissionGuard>
-      <RoleGuard rolesAllowed={[Role.FREELANCER]}>
-        {children}
-      </RoleGuard>
+      <RoleGuard rolesAllowed={[Role.FREELANCER]}>{children}</RoleGuard>
     </>
   );
 }

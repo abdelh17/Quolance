@@ -1,8 +1,19 @@
 'use client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { useState } from 'react';
+import { AxiosError } from 'axios';
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+declare module '@tanstack/react-query' {
+  interface Register {
+    defaultError: AxiosError;
+  }
+}
+
+export default function ReactQueryProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [queryClient] = useState(() => new QueryClient({}));
 
   return (

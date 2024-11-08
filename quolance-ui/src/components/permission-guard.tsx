@@ -1,9 +1,9 @@
-"use client"
-import React from 'react'
+'use client';
+import React from 'react';
 
-import { useAuthGuard } from '@/lib/auth/use-auth'
+import { useAuthGuard } from '@/api/auth-api';
 
-import { Role } from '@/models/user/UserResponse'
+import { Role } from '@/constants/models/user/UserResponse';
 
 /**
  * Component to show a permission denied message if the user does not have the required roles
@@ -12,23 +12,27 @@ import { Role } from '@/models/user/UserResponse'
  * you want to show a message to the user that they neeed specific permissions, you can use this component.
  */
 interface PermissionDeniedProps {
-  rolesAllowed: Role[]
+  rolesAllowed: Role[];
 }
-export default function PermissionGuard({rolesAllowed}: PermissionDeniedProps) {
-  const {user} = useAuthGuard({middleware: 'auth'})
-  const isAllowed = rolesAllowed.includes(user?.role as Role)
+export default function PermissionGuard({
+  rolesAllowed,
+}: PermissionDeniedProps) {
+  const { user } = useAuthGuard({ middleware: 'auth' });
+  const isAllowed = rolesAllowed.includes(user?.role as Role);
 
-  if (isAllowed) return null
-  
+  if (isAllowed) return null;
+
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <h1 className="text-4xl font-semibold">Permission Denied</h1>
-      <p className="text-lg">You need to have one of the following roles to access this resource:</p>
-      <ul className="text-lg">
-        {rolesAllowed.map(role => (
+    <div className='flex h-full flex-col items-center justify-center'>
+      <h1 className='text-4xl font-semibold'>Permission Denied</h1>
+      <p className='text-lg'>
+        You need to have one of the following roles to access this resource:
+      </p>
+      <ul className='text-lg'>
+        {rolesAllowed.map((role) => (
           <li key={role}>{role}</li>
         ))}
       </ul>
     </div>
-  )
+  );
 }
