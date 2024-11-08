@@ -8,6 +8,14 @@ spring:
     password: password
     driver-class-name: org.h2.Driver
 
+  mail:
+    host: localhost
+    port: 1025
+    username: mailpit
+    password: mailpit
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
   jpa:
     hibernate:
       ddl-auto: create-drop
