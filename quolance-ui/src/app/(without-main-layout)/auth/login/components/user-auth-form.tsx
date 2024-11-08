@@ -5,15 +5,15 @@ import Link from 'next/link';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaGithub, FaGoogle } from 'react-icons/fa';
+import { toast } from 'sonner';
 import * as z from 'zod';
-
-import { useAuthGuard } from '@/api/auth-api';
 
 import ErrorFeedback from '@/components/error-feedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { useAuthGuard } from '@/api/auth-api';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -34,19 +34,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   );
 
   async function onSubmit(data: Schema) {
-    login.mutate(data, {
-      onError: (error) => {
-        if (error && error.response && error.response.data) {
-          const serverError = error.response.data as HttpErrorResponse;
-          setErrors(serverError);
+    login({
+      onError: (errors) => {
+        setErrors(errors);
+        if (errors) {
+          toast.error('Authentication failed');
         }
       },
-      onSettled: () => {
-        setIsLoading(false);
-      },
-      onSuccess: () => {
-        setIsLoading(true);
-      },
+      props: data,
     });
   }
 

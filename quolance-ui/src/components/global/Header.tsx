@@ -99,7 +99,7 @@ function Header() {
                     </li>
                     <li
                       className='hover:text-b500 cursor-pointer duration-500'
-                      onClick={() => logout.mutate()}
+                      onClick={() => logout()}
                     >
                       Logout
                     </li>
@@ -148,7 +148,7 @@ function Header() {
         showMobileMenu={showMobileMenu}
         setShowMobileMenu={setShowMobileMenu}
         user={user}
-        logout={logout.mutate}
+        logout={logout}
       />
     </header>
   );
