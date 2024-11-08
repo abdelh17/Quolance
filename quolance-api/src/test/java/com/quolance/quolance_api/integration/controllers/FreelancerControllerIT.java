@@ -1,8 +1,9 @@
-package com.quolance.quolance_api;
+package com.quolance.quolance_api.integration.controllers;
 
 import com.quolance.quolance_api.controllers.AuthController;
 import com.quolance.quolance_api.controllers.ClientController;
 import com.quolance.quolance_api.controllers.FreelancerController;
+import com.quolance.quolance_api.dtos.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
@@ -48,7 +49,7 @@ public class FreelancerControllerIT {
     private FreelancerController freelancerController;
 
     public ProjectDto testProjectDto;
-    public ApplicationDto testApplicationDto;
+    public ApplicationCreateDto testApplicationCreateDto;
     private User freelancer;
 
     @BeforeEach
@@ -73,10 +74,8 @@ public class FreelancerControllerIT {
         createClientAndProject();
 
         //test application
-        testApplicationDto = ApplicationDto.builder()
+        testApplicationCreateDto = ApplicationCreateDto.builder()
                 .projectId(testProjectDto.getId())
-                .id(1L)
-                .status(ApplicationStatus.IN_PROGRESS)
                 .build();
 
     }
@@ -101,11 +100,11 @@ public class FreelancerControllerIT {
     @Test
     void testSubmitApplication(){
         loginFreelancer();
-        ResponseEntity<ApplicationDto> submitApplicationResponse = freelancerController.applyToProject(testApplicationDto);
+        ResponseEntity<ApplicationDto> submitApplicationResponse = freelancerController.applyToProject(testApplicationCreateDto);
 
         assertEquals(HttpStatus.OK, submitApplicationResponse.getStatusCode());
 
-        assertEquals(ApplicationStatus.IN_PROGRESS, submitApplicationResponse.getBody().getStatus());
+        assertEquals(ApplicationStatus.APPLIED, submitApplicationResponse.getBody().getStatus());
         assertEquals(testProjectDto.getId(), submitApplicationResponse.getBody().getProjectId());
         assertEquals(freelancer.getId(), submitApplicationResponse.getBody().getFreelancerId());
 
@@ -115,14 +114,14 @@ public class FreelancerControllerIT {
     @Test
     void testGetAllMyApplications(){
         loginFreelancer();
-        freelancerController.applyToProject(testApplicationDto);
+        freelancerController.applyToProject(testApplicationCreateDto);
 
         ResponseEntity<List<ApplicationDto>> applicationsResponse = freelancerController.getAllMyApplications();
 
         assertEquals(HttpStatus.OK, applicationsResponse.getStatusCode());
 
         assertEquals(1, applicationsResponse.getBody().size());
-        assertEquals(ApplicationStatus.IN_PROGRESS, applicationsResponse.getBody().get(0).getStatus());
+        assertEquals(ApplicationStatus.APPLIED, applicationsResponse.getBody().get(0).getStatus());
         assertEquals(testProjectDto.getId(), applicationsResponse.getBody().get(0).getProjectId());
         assertEquals(freelancer.getId(), applicationsResponse.getBody().get(0).getFreelancerId());
     }
