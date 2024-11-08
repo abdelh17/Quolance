@@ -1,9 +1,6 @@
 package com.quolance.quolance_api.services.impl;
 
-import com.quolance.quolance_api.dtos.CreateUserRequestDto;
-import com.quolance.quolance_api.dtos.UpdateUserPasswordRequestDto;
-import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
-import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.PasswordResetToken;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.VerificationCode;
@@ -42,6 +39,17 @@ public class UserServiceImpl implements UserService {
         User user = new User(request);
         user = userRepository.save(user);
         sendVerificationEmail(user);
+        return new UserResponseDto(user);
+    }
+
+    @Override
+    @Transactional
+    public UserResponseDto createAdmin(CreateAdminRequestDto request) {
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new ApiException("A user with this email already exists.");
+        }
+        User user = new User(request);
+        user = userRepository.save(user);
         return new UserResponseDto(user);
     }
 

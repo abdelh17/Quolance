@@ -1,6 +1,8 @@
 package com.quolance.quolance_api.entities.enums;
 
 public enum ProjectStatus {
-    OPEN,
-    CLOSED,
+    PENDING,
+    REJECTED_AUTOMATICALLY,
+    APPROVED,
+    REJECTED
 }

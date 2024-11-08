@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.entities;
 
+import com.quolance.quolance_api.dtos.CreateAdminRequestDto;
 import com.quolance.quolance_api.dtos.CreateUserRequestDto;
 import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
 import com.quolance.quolance_api.entities.enums.Role;
@@ -79,6 +80,19 @@ public class User extends AbstractEntity implements UserDetails {
         this.lastName = data.getLastName();
         this.role = Role.valueOf(data.getRole());
     }
+
+    /**
+     * Constructor to create an Admin User from a CreateAdminRequestDto.
+     */
+    public User(CreateAdminRequestDto data) {
+        PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
+        this.email = data.getEmail();
+        this.password = passwordEncoder.encode(data.getTemporaryPassword());
+        this.firstName = data.getFirstName();
+        this.lastName = data.getLastName();
+        this.role = Role.ADMIN;
+    }
+
 
     /**
      * Constructor to create a User from an OAuth2User (e.g., social login).
