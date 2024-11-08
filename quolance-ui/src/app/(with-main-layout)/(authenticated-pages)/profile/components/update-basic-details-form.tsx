@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -29,9 +29,11 @@ const schema = z.object({
 });
 
 type Schema = z.infer<typeof schema>;
+
 export default function UpdateBasicDetailsForm() {
   const { user, mutate } = useAuthGuard({ middleware: "auth" });
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(undefined);
+  const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
 
   const onSubmit = (data: Schema) => {
     setErrors(undefined);
@@ -39,6 +41,7 @@ export default function UpdateBasicDetailsForm() {
       .put("/api/users", data)
       .then(() => {
         toast.success("Profile updated successfully");
+        setSuccessMessage("Your profile has been updated successfully.");
         mutate();
       })
       .catch((error) => {
@@ -54,6 +57,13 @@ export default function UpdateBasicDetailsForm() {
     }
   }, [user])
 
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(undefined), 3000); // 5000ms
+      return () => clearTimeout(timer); // Clear timeout if component unmounts or message changes
+    }
+  }, [successMessage]);
+
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
     reValidateMode: "onSubmit",
@@ -64,11 +74,11 @@ export default function UpdateBasicDetailsForm() {
   });
 
   return (
-    <div className="max-w-screen-sm">
+    <div className="max-w-screen-sm animationOne">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-y-2"
+          className="flex flex-col gap-y-4 p-4 bg-white rounded-lg shadow-lg transition duration-500 ease-in-out transform hover:shadow-2xl"
         >
           <FormField
             control={form.control}
@@ -77,12 +87,15 @@ export default function UpdateBasicDetailsForm() {
               <FormItem>
                 <FormLabel>First name</FormLabel>
                 <FormControl>
-                  <Input {...field}></Input>
+                  <Input
+                    {...field}
+                    className="border-b500 border rounded-md p-2 transition-all duration-300 ease-in-out focus:ring-2 focus:ring-b500 focus:ring-opacity-50 focus:border-b500"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
-          ></FormField>
+          />
 
           <FormField
             control={form.control}
@@ -91,18 +104,33 @@ export default function UpdateBasicDetailsForm() {
               <FormItem>
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
-                  <Input {...field}></Input>
+                  <Input
+                    {...field}
+                    className="border-b500 border rounded-md p-2 transition-all duration-300 ease-in-out focus:ring-2 focus:ring-b500 focus:ring-opacity-50 focus:border-b500"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
-          ></FormField>
+          />
 
-          <Button type="submit" variant={'footerColor'}>Update profile</Button>
+          <Button
+            type="submit"
+            variant="footerColor"
+            className="mt-4 bg-b300 text-white py-2 px-4 max-w-xs mx-auto rounded-full transition-transform duration-300 ease-in-out hover:scale-105 active:scale-95 focus:outline-none"
+          >
+            Update profile
+          </Button>
         </form>
       </Form>
-
+      
       <ErrorFeedback data={errors} />
+      {/* Success message */}
+      {successMessage && (
+        <div className="mt-4 text-green-600">
+          {successMessage}
+        </div>
+      )}
     </div>
   );
 }
