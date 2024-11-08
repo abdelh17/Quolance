@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { DATA_ProjectList } from '@/data/data';
+import { DATA_ProjectList } from '@/constants/data';
 
 import BreadCrumb from '@/components/global/BreadCrumb';
 import Pagination from '@/components/ui/Pagination';
@@ -10,7 +10,7 @@ import ProjectFilter from '@/components/ui/projects/ProjectFilter';
 import {
   ProjectFilterOptions,
   ProjectFilterOptionsDefault,
-} from '@/types/projectTypes';
+} from '@/constants/types/projectTypes';
 
 const ITEMS_PER_PAGE = 4; // Number of services per page
 

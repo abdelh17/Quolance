@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PiSliders } from 'react-icons/pi';
-import { DATA_Submissioners } from '@/data/data';
+import { DATA_Submissioners } from '@/constants/data';
 import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
 

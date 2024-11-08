@@ -1,7 +1,7 @@
 'use client';
 
 import BusinessCategoryDropDown from '@/components/ui/client/BusinessCategoryDropDown';
-import { useSteps } from '@/context/StepsContext';
+import { useSteps } from '@/util/context/StepsContext';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

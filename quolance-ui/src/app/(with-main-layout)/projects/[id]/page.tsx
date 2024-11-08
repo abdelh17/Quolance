@@ -3,11 +3,11 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import BreadCrumb from '@/components/global/BreadCrumb';
-import { DATA_ProjectList } from '@/data/data';
+import { DATA_ProjectList } from '@/constants/data';
 import ProjectDetails from '@/app/(with-main-layout)/projects/[id]/ProjectDetails';
 import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
 import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
-import { useAuthGuard } from '@/lib/auth/use-auth';
+import { useAuthGuard } from '@/api/auth-api';
 import { Role } from '@/models/user/UserResponse';
 
 type Project = {
