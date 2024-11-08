@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "443b275e-112b-4608-a4a2-ffe820a48380",
+		"_postman_id": "ed6ba8be-b86e-48e4-a717-eb51c1982419",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39151315",
-		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-443b275e-112b-4608-a4a2-ffe820a48380?action=share&source=collection_link&creator=39151315"
+		"_exporter_id": "39178284"
 	},
 	"item": [
 		{
@@ -392,6 +391,28 @@
 								"api",
 								"client",
 								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Select Freelancer for Project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/1/select-freelancer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"1",
+								"select-freelancer"
 							]
 						}
 					},
