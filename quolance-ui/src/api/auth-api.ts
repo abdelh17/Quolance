@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import httpClient from '../lib/httpClient';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -18,14 +18,40 @@ interface LoginProps {
 
 const USER_STORAGE_KEY = 'userData';
 
+// Safe storage helper
+const safeStorage = {
+  getItem: (key: string): string | null => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem(key);
+    }
+    return null;
+  },
+  setItem: (key: string, value: string): void => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(key, value);
+    }
+  },
+  removeItem: (key: string): void => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem(key);
+    }
+  },
+};
+
 export const useAuthGuard = ({
   middleware,
   redirectIfAuthenticated,
 }: AuthProps) => {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  // Set isClient to true once component mounts
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const getSessionUserData = () => {
-    const storedData = sessionStorage.getItem(USER_STORAGE_KEY);
+    const storedData = safeStorage.getItem(USER_STORAGE_KEY);
     return storedData ? JSON.parse(storedData) : undefined;
   };
 
@@ -39,13 +65,14 @@ export const useAuthGuard = ({
     queryFn: () => httpClient.get('/api/auth/me'),
     staleTime: 1000 * 60 * 60 * 4, // 4 hours
     gcTime: 1000 * 60 * 60 * 24, // 24 hours
-    initialData: getSessionUserData(),
+    initialData: isClient ? getSessionUserData() : undefined,
     retry: false,
+    enabled: isClient, // Only run query on client side
   });
 
   useEffect(() => {
     if (isSuccess && userData) {
-      sessionStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+      safeStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
     }
   }, [isSuccess, userData]);
 
@@ -56,7 +83,7 @@ export const useAuthGuard = ({
       refetch();
     },
     onError: (error) => {
-      if (error && error.response && error.response.data) {
+      if (error?.response?.data) {
         const serverError = error.response.data as HttpErrorResponse;
         toast.error(serverError.message);
       } else {
@@ -69,12 +96,16 @@ export const useAuthGuard = ({
     mutationFn: () => httpClient.post('/api/auth/logout'),
     onSuccess: () => {
       toast.success('Logged out successfully');
-      sessionStorage.removeItem(USER_STORAGE_KEY);
-      window.location.pathname = '/auth/login';
+      safeStorage.removeItem(USER_STORAGE_KEY);
+      if (typeof window !== 'undefined') {
+        window.location.pathname = '/auth/login';
+      }
     },
   });
 
   useEffect(() => {
+    if (!isClient) return;
+
     // If middleware is 'guest' and we have a user, redirect
     if (middleware === 'guest' && redirectIfAuthenticated && userData) {
       router.push(redirectIfAuthenticated);
@@ -84,7 +115,15 @@ export const useAuthGuard = ({
     if (middleware === 'auth' && error) {
       logoutMutation.mutate();
     }
-  }, [userData, error]);
+  }, [
+    userData,
+    error,
+    isClient,
+    middleware,
+    redirectIfAuthenticated,
+    router,
+    logoutMutation,
+  ]);
 
   return {
     user: userData?.data,
