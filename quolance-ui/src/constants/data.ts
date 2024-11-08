@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-
 import { ProjectType } from '@/constants/types/projectTypes';
 import { UserType } from '@/constants/types/userTypes';
 
@@ -313,7 +312,7 @@ export const DATA_Submissioners = [
   {
     id: uuidv4(),
     img: 'expertImg1',
-    freelancerName: 'Juan Mullins',
+    freelancerName: 'Free Lancer1',
     location: 'Brooklyn, NY, USA',
     features: ['$50 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
     services: ['Handyman', 'Gardening'],
@@ -321,7 +320,7 @@ export const DATA_Submissioners = [
   {
     id: uuidv4(),
     img: 'expertImg2',
-    freelancerName: 'Ronald Higgins',
+    freelancerName: 'Free Lancer2',
     location: 'Brooklyn, NY, USA',
     features: ['$45 - &80/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
     services: ['Plumber', 'Handyman'],

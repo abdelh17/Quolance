@@ -20,7 +20,7 @@ function FreelancerCard({
   location: string;
 }) {
   return (
-    <div className='border-n40 bg-n10 flex min-w-[414px] max-w-[414px] flex-col gap-6 rounded-3xl border py-6 '>
+    <div className='border-n40 bg-n10 flex min-w-[414px] flex-1 flex-col gap-6 rounded-3xl border py-6 '>
       <div className='flex items-center justify-start gap-3 px-3 sm:px-6'>
         <div className='relative max-md:overflow-hidden'>
           <div className='hexagon-styles bg-b50 my-[calc(100px*0.5/2)] h-[calc(100px*0.57736720554273)] w-[100px] rounded-[calc(100px/36.75)] before:rounded-[calc(100px/18.75)] after:rounded-[calc(100px/18.75)]'>

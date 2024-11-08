@@ -9,7 +9,7 @@ export const useSubmitApplication = () => {
   });
 };
 
-/*--- Fetching functions ---*/
+/*--- Query functions ---*/
 // Hardcoded for now
 const submitApplication = async ({
   freelancerId,
