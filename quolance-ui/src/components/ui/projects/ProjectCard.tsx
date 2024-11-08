@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useAuthGuard } from '@/lib/auth/use-auth';
+import { useAuthGuard } from '@/api/auth-api';
 import { Role } from '@/models/user/UserResponse';
 
 function ProjectCard({

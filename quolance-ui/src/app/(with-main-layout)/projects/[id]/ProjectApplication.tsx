@@ -1,8 +1,8 @@
 // components/projects/ApplicationForm.tsx
 'use client';
-import { useAuthGuard } from '@/lib/auth/use-auth';
+import { useAuthGuard } from '@/api/auth-api';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useSubmitApplication } from '@/models/freelancer/freelancer-hooks';
+import { useSubmitApplication } from '@/api/freelancer-api';
 import { Button } from '@/components/ui/button';
 import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import ResponseFeedback from '@/components/response-feedback';

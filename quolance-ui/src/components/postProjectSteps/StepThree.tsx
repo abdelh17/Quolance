@@ -1,7 +1,7 @@
 'use client';
 
 import ExpectedDeliveryRadioGroup from '@/components/ui/client/ExpectedDeliveryRadioGroup';
-import { useSteps } from '@/context/StepsContext';
+import { useSteps } from '@/util/context/StepsContext';
 
 function StepThree({
   handleNext,
@@ -46,13 +46,13 @@ function StepThree({
       <div className='mt-8 flex justify-center space-x-3'>
         <button
           onClick={handleBack}
-          className='bg-n30 w-1/2 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
+          className='bg-n30 hover:text-n900 relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
         >
           <span className='relative z-10'>Back</span>
         </button>
         <button
           onClick={handleNext}
-          className='bg-b300 w-1/2 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
+          className='bg-b300 hover:text-n900 relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
         >
           <span className='relative z-10'>Next</span>
         </button>

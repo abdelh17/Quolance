@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { ProjectType } from '@/types/projectTypes';
-import { UserType } from '@/types/userTypes';
+import { ProjectType } from '@/constants/types/projectTypes';
+import { UserType } from '@/constants/types/userTypes';
 
 export const expertiseNeeded = [
   'Frontend Developer',

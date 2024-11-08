@@ -8,7 +8,7 @@ import StepOne from '@/components/postProjectSteps/StepOne';
 import StepThree from '@/components/postProjectSteps/StepThree';
 import StepTwo from '@/components/postProjectSteps/StepTwo';
 
-import { useSteps } from '@/context/StepsContext';
+import { useSteps } from '@/util/context/StepsContext';
 
 const stepsComponents = [StepOne, StepTwo, StepThree, StepFour];
 
