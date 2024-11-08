@@ -2,6 +2,7 @@ package com.quolance.quolance_api.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,8 @@ public class ProjectDto {
     @JsonProperty("projectDescription")
     @NotBlank(message = "The description is required")
     private String description;
+    @JsonProperty("projectStatus")
+    private ProjectStatus projectStatus;
     @JsonProperty("clientId")
     private Long clientId;
     private List<Tag> tags;
@@ -33,6 +36,7 @@ public class ProjectDto {
     public static ProjectDto fromEntity(Project project) {
         return ProjectDto.builder()
                 .id(project.getId())
+                .projectStatus(project.getProjectStatus())
                 .description(project.getDescription())
                 .clientId(project.getClient().getId())
                 .tags(project.getTags())
