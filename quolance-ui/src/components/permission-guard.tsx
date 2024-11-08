@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useAuthGuard } from '@/api/auth-api';
 
-import { Role } from '@/models/user/UserResponse';
+import { Role } from '@/constants/models/user/UserResponse';
 
 /**
  * Component to show a permission denied message if the user does not have the required roles

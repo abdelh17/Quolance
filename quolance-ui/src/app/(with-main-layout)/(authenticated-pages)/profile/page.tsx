@@ -48,7 +48,7 @@ export default function ProfilePage() {
 
         <h2 className='mb-2 text-lg font-semibold'>Connected Accounts</h2>
         <div className='flex flex-col gap-y-2'>
-          {(user?.connectedAccounts ?? []).map((account, index) => (
+          {(user?.connectedAccounts ?? []).map((account: any, index: any) => (
             <div
               className='flex w-full max-w-screen-sm justify-between'
               key={index}
