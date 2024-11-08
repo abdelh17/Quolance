@@ -1,8 +1,9 @@
-package com.quolance.quolance_api;
+package com.quolance.quolance_api.integration.controllers;
 
 import com.quolance.quolance_api.controllers.AuthController;
 import com.quolance.quolance_api.controllers.ClientController;
 import com.quolance.quolance_api.controllers.FreelancerController;
+import com.quolance.quolance_api.dtos.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
@@ -146,15 +147,13 @@ public class ClientControllerIT {
         ProjectDto savedProject = clientService.createProject(testProjectDto, client);
 
         //Application Creation
-        ApplicationDto applicationDto = ApplicationDto.builder()
-                .status(ApplicationStatus.IN_PROGRESS)
+        ApplicationCreateDto applicationCreateDto = ApplicationCreateDto.builder()
                 .projectId(savedProject.getId())
-                .freelancerId(freelancer.getId())
                 .build();
 
         //Application Submission
         FreelancerController freelancerController = new FreelancerController(freelancerService);
-        freelancerController.applyToProject(applicationDto);
+        freelancerController.applyToProject(applicationCreateDto);
 
         //Request
         ResponseEntity<List<ApplicationDto>> request = clientController.getAllApplicationsToProject(savedProject.getId());
@@ -165,7 +164,7 @@ public class ClientControllerIT {
         List<ApplicationDto> applications = request.getBody();
         assertNotNull(applications);
         assertEquals(1, applications.size());
-        assertEquals(applicationDto.getProjectId(), applications.get(0).getProjectId());
+        assertEquals(applicationCreateDto.getProjectId(), applications.get(0).getProjectId());
 
     }
 
