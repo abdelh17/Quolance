@@ -8,6 +8,8 @@ import RoleGuard from "@/components/role-guard";
 
 import { Role } from "@/models/user/UserResponse";
 
+import { ProjectProvider } from './AdminContext/ProjectContext'
+
 
 export default function DashboardLayout({
   children,
@@ -20,10 +22,12 @@ export default function DashboardLayout({
 
   return (
     <>
+      <ProjectProvider>
       <PermissionGuard rolesAllowed={[Role.ADMIN]}></PermissionGuard>
       <RoleGuard rolesAllowed={[Role.ADMIN]}>
         {children}
       </RoleGuard>
+      </ProjectProvider>
     </>
   );
 }
