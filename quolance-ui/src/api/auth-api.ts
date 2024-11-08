@@ -1,19 +1,15 @@
-'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import httpClient from '../lib/httpClient';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import useSWR from 'swr';
+
+import httpClient from '@/lib/httpClient';
+
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { UserResponse } from '@/constants/models/user/UserResponse';
 
 interface AuthProps {
   middleware?: 'auth' | 'guest';
   redirectIfAuthenticated?: string;
-}
-
-interface LoginProps {
-  email: string;
-  password: string;
 }
 
 export const useAuthGuard = ({
@@ -23,68 +19,62 @@ export const useAuthGuard = ({
   const router = useRouter();
 
   const {
-    data: userData,
+    data: user,
     error,
-    refetch,
-    isLoading: isUserLoading,
-  } = useQuery({
-    queryKey: ['auth-me'],
-    queryFn: () => httpClient.get('/api/auth/me'),
-    staleTime: 1000 * 60 * 60 * 4, // 4 hours
-    gcTime: 1000 * 60 * 60 * 24, // 24 hours
-    retry: false,
-  });
+    mutate,
+  } = useSWR('/api/auth/me', () =>
+    httpClient.get<UserResponse>('/api/auth/me').then((res) => res.data)
+  );
 
-  const loginMutation = useMutation({
-    mutationFn: (props: LoginProps) =>
-      httpClient.post('/api/auth/login', props),
-    onSuccess: () => {
-      refetch();
-    },
-    onError: (error) => {
-      if (error?.response?.data) {
-        const serverError = error.response.data as HttpErrorResponse;
-        toast.error(serverError.message);
-      } else {
-        toast.error('An unknown error occurred');
-      }
-    },
-  });
+  const login = async ({
+    onError,
+    props,
+  }: {
+    onError: (errors: HttpErrorResponse | undefined) => void;
+    props: any;
+  }) => {
+    onError(undefined);
+    // await csrf(); temporarly commented out to make the form work
+    httpClient
+      .post<HttpErrorResponse>('/api/auth/login', {
+        email: props.email,
+        password: props.password,
+      })
+      .then(() => mutate())
+      .catch((err) => {
+        const errors = err.response.data as HttpErrorResponse;
+        onError(errors);
+      });
+  };
 
-  const logoutMutation = useMutation({
-    mutationFn: () => httpClient.post('/api/auth/logout'),
-    onSuccess: () => {
-      toast.success('Logged out successfully');
-      if (typeof window !== 'undefined') {
-        window.location.pathname = '/auth/login';
-      }
-    },
-  });
+  // const csrf = async () => {
+  //   await httpClient.get("/api/auth/csrf")
+  // }
+
+  const logout = async () => {
+    if (!error) {
+      await httpClient.post('/api/auth/logout').then(() => mutate());
+    }
+
+    window.location.pathname = '/auth/login';
+  };
 
   useEffect(() => {
     // If middleware is 'guest' and we have a user, redirect
-    if (middleware === 'guest' && redirectIfAuthenticated && userData) {
+    if (middleware === 'guest' && redirectIfAuthenticated && user) {
       router.push(redirectIfAuthenticated);
     }
 
     // If middleware is 'auth' and we have an error, logout
     if (middleware === 'auth' && error) {
-      logoutMutation.mutate();
+      logout();
     }
-  }, [
-    userData,
-    error,
-    middleware,
-    redirectIfAuthenticated,
-    router,
-    logoutMutation,
-  ]);
+  }, [user, error]);
 
   return {
-    user: userData?.data,
-    isUserLoading,
-    login: loginMutation,
-    logout: logoutMutation,
-    mutate: refetch,
+    user,
+    login,
+    logout,
+    mutate,
   };
 };
