@@ -34,7 +34,7 @@ public class Project extends AbstractEntity {
     @ManyToOne
     private User selectedFreelancer;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true) // TODO: Check if orphanRemoval is necessary, consider not deleting entities
     private List<Application> applications;
 
     @ElementCollection(targetClass = Tag.class)
