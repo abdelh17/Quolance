@@ -1,22 +1,17 @@
-"use client";
+'use client';
 
-import { useAuthGuard } from "@/lib/auth/use-auth";
+import { useAuthGuard } from '@/api/auth-api';
 
-import Loading from "@/components/loading";
-
+import Loading from '@/components/loading';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuthGuard({ middleware: "auth" });
+  const { user } = useAuthGuard({ middleware: 'auth' });
 
   if (!user) return <Loading />;
 
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
-import { useAuthGuard } from "@/lib/auth/use-auth";
-import httpClient from "@/lib/httpClient";
+import { useAuthGuard } from '@/api/auth-api';
+import httpClient from '@/lib/httpClient';
 
-import ErrorFeedback from "@/components/error-feedback";
-import { Button } from "@/components/ui/button";
+import ErrorFeedback from '@/components/error-feedback';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,10 +18,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 const schema = z
   .object({
@@ -30,13 +29,13 @@ const schema = z
     confirmPassword: z.string().min(8),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
   });
 
 type Schema = z.infer<typeof schema>;
 export default function UpdatePasswordForm() {
-  const { user, mutate } = useAuthGuard({ middleware: "auth" });
+  const { user, mutate } = useAuthGuard({ middleware: 'auth' });
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
     undefined
   );
@@ -44,9 +43,9 @@ export default function UpdatePasswordForm() {
   const onSubmit = (data: Schema) => {
     setErrors(undefined);
     httpClient
-      .patch("/api/users/password", data)
+      .patch('/api/users/password', data)
       .then(() => {
-        toast.success("Password updated successfully");
+        toast.success('Password updated successfully');
         mutate();
       })
       .catch((error) => {
@@ -57,24 +56,26 @@ export default function UpdatePasswordForm() {
 
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
-    reValidateMode: "onSubmit",
+    reValidateMode: 'onSubmit',
   });
 
   return (
-    <div className="max-w-screen-sm">
+    <div className='max-w-screen-sm'>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-y-2"
+          className='flex flex-col gap-y-2'
         >
           <FormField
             control={form.control}
-            name="oldPassword"
+            name='oldPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Your current password (leave empty if you didn't set it)</FormLabel>
+                <FormLabel>
+                  Your current password (leave empty if you didn't set it)
+                </FormLabel>
                 <FormControl>
-                  <Input type="password" {...field}></Input>
+                  <Input type='password' {...field}></Input>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -83,12 +84,12 @@ export default function UpdatePasswordForm() {
 
           <FormField
             control={form.control}
-            name="password"
+            name='password'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>New password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field}></Input>
+                  <Input type='password' {...field}></Input>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -97,23 +98,25 @@ export default function UpdatePasswordForm() {
 
           <FormField
             control={form.control}
-            name="confirmPassword"
+            name='confirmPassword'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field}></Input>
+                  <Input type='password' {...field}></Input>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           ></FormField>
 
-          <Button type="submit" variant={'footerColor'}>Update password</Button>
+          <Button type='submit' variant={'footerColor'}>
+            Update password
+          </Button>
         </form>
       </Form>
 
-      <ErrorFeedback data={errors} className="mt-2"/>
+      <ErrorFeedback data={errors} className='mt-2' />
     </div>
   );
 }

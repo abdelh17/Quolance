@@ -1,7 +1,9 @@
 package com.quolance.quolance_api.entities.enums;
 
 public enum ApplicationStatus {
-    IN_PROGRESS,
+    APPLIED,
+    REJECTED,
+    PENDING_CONFIRMATION,
     ACCEPTED,
-    REJECTED
+    CANCELLED,
 }
