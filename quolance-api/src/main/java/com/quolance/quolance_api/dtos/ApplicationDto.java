@@ -7,16 +7,17 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ApplicationDto {
     @JsonProperty("applicationId")
     private Long id;
 
     @JsonProperty("applicationStatus")
-    @NotNull(message = "The status is required")
     private ApplicationStatus status;
 
     @JsonProperty("projectId")
@@ -24,12 +25,6 @@ public class ApplicationDto {
 
     @JsonProperty("freelancerId")
     private Long freelancerId;
-
-    public static Application toEntity(ApplicationDto applicationDto) {
-        return Application.builder()
-                .status(applicationDto.getStatus())
-                .build();
-    }
 
     public static ApplicationDto fromEntity(Application application) {
         return ApplicationDto.builder()

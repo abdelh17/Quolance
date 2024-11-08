@@ -6,11 +6,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useAuthGuard } from "@/lib/auth/use-auth";
-import httpClient from "@/lib/httpClient";
+import { useAuthGuard } from '@/api/auth-api';
+import httpClient from '@/lib/httpClient';
 
-import ErrorFeedback from "@/components/error-feedback";
-import { Button } from "@/components/ui/button";
+import ErrorFeedback from '@/components/error-feedback';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,14 +18,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 const schema = z.object({
   firstName: z.string().min(2),
-  lastName: z.string().min(2)
+  lastName: z.string().min(2),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -38,7 +37,7 @@ export default function UpdateBasicDetailsForm() {
   const onSubmit = (data: Schema) => {
     setErrors(undefined);
     httpClient
-      .put("/api/users", data)
+      .put('/api/users', data)
       .then(() => {
         toast.success("Profile updated successfully");
         setSuccessMessage("Your profile has been updated successfully.");
@@ -52,10 +51,10 @@ export default function UpdateBasicDetailsForm() {
 
   useEffect(() => {
     if (user) {
-      form.setValue("firstName", user.firstName || '');
-      form.setValue("lastName", user.lastName || '');
+      form.setValue('firstName', user.firstName || '');
+      form.setValue('lastName', user.lastName || '');
     }
-  }, [user])
+  }, [user]);
 
   useEffect(() => {
     if (successMessage) {
@@ -66,11 +65,11 @@ export default function UpdateBasicDetailsForm() {
 
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
-    reValidateMode: "onSubmit",
+    reValidateMode: 'onSubmit',
     defaultValues: {
       firstName: user?.firstName,
-      lastName: user?.lastName
-    }
+      lastName: user?.lastName,
+    },
   });
 
   return (
@@ -82,7 +81,7 @@ export default function UpdateBasicDetailsForm() {
         >
           <FormField
             control={form.control}
-            name="firstName"
+            name='firstName'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>First name</FormLabel>
@@ -99,7 +98,7 @@ export default function UpdateBasicDetailsForm() {
 
           <FormField
             control={form.control}
-            name="lastName"
+            name='lastName'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Last name</FormLabel>

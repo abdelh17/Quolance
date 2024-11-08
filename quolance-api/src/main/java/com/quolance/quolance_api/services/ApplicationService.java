@@ -5,6 +5,7 @@ import com.quolance.quolance_api.entities.Application;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ApplicationService {
 
@@ -15,6 +16,10 @@ public interface ApplicationService {
     List<ApplicationDto> getApplicationByFreelancerId(Long freelancerId); //TODO Applications with s not Application
 
     List<ApplicationDto> getApplicationsByProjectId(Long projectId);
+
+    Optional<Application> getApplicationEntityById(Long applicationId);
+
+    ApplicationDto updateApplication(Application application);
 
 
 }

@@ -413,28 +413,6 @@ input[type='number'] {
   transform: skewX(-30deg) rotate(-90deg);
   content: '';
 }
-.expertImg1::before {
-  background: url(/images/expert_img_1.png);
-}
-.expertImg2::before {
-  background: url(/images/expert_img_2.png);
-}
-.expertImg3::before {
-  background: url(/images/expert_img_3.png);
-}
-.expertImg4::before {
-  background: url(/images/expert_img_4.png);
-}
-.expertImg5::before {
-  background: url(/images/expert_img_5.png);
-}
-.expertImg6::before {
-  background: url(/images/expert_img_6.png);
-}
-.expertImgBig::before {
-  background: url(/images/people13.png);
-}
-
 /* Calendar style */
 .current-date {
   font-size: 1.45rem;

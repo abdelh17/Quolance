@@ -8,7 +8,10 @@ import {
 } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useEffect, useState } from 'react';
-import { BUSINESS_CATEGORY_OPTIONS, FormFieldOption } from '@/types/formTypes';
+import {
+  BUSINESS_CATEGORY_OPTIONS,
+  FormFieldOption,
+} from '@/constants/types/formTypes';
 
 interface DropDownProps {
   name: string;
@@ -16,30 +19,40 @@ interface DropDownProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function BusinessCategoryDropDown({ name, value, onChange }: DropDownProps) {
+export default function BusinessCategoryDropDown({
+  name,
+  value,
+  onChange,
+}: DropDownProps) {
   const [selected, setSelected] = useState(
-    BUSINESS_CATEGORY_OPTIONS.find((item) => item.value === value) || BUSINESS_CATEGORY_OPTIONS[0]
+    BUSINESS_CATEGORY_OPTIONS.find((item) => item.value === value) ||
+      BUSINESS_CATEGORY_OPTIONS[0]
   );
 
   useEffect(() => {
     if (!value) {
       // Set default value if no value is selected
       onChange({
-        target: { 
-          name, 
-          value: BUSINESS_CATEGORY_OPTIONS[0].value 
-        }
+        target: {
+          name,
+          value: BUSINESS_CATEGORY_OPTIONS[0].value,
+        },
       } as React.ChangeEvent<HTMLInputElement>);
     }
   }, []);
 
   useEffect(() => {
-    setSelected(BUSINESS_CATEGORY_OPTIONS.find((item) => item.value === value) || BUSINESS_CATEGORY_OPTIONS[0]);
+    setSelected(
+      BUSINESS_CATEGORY_OPTIONS.find((item) => item.value === value) ||
+        BUSINESS_CATEGORY_OPTIONS[0]
+    );
   }, [value]);
 
   const handleChange = (item: FormFieldOption) => {
     setSelected(item);
-    onChange({ target: { name, value: item.value } } as React.ChangeEvent<HTMLInputElement>);
+    onChange({
+      target: { name, value: item.value },
+    } as React.ChangeEvent<HTMLInputElement>);
   };
   return (
     <Listbox value={selected} onChange={handleChange}>

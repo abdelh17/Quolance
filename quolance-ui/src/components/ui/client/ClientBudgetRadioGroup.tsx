@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BUDGET_OPTIONS } from '@/types/formTypes';
+import { BUDGET_OPTIONS } from '@/constants/types/formTypes';
 
 interface ClientBudgetRadioGroupProps {
   name: string;
@@ -7,7 +7,11 @@ interface ClientBudgetRadioGroupProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function ClientBudgetRadioGroup({ name, value, onChange }: ClientBudgetRadioGroupProps) {
+export default function ClientBudgetRadioGroup({
+  name,
+  value,
+  onChange,
+}: ClientBudgetRadioGroupProps) {
   useEffect(() => {
     // Only set default if value is empty/undefined and we have options
     if (!value && BUDGET_OPTIONS.length > 0) {
@@ -15,8 +19,8 @@ export default function ClientBudgetRadioGroup({ name, value, onChange }: Client
         onChange({
           target: {
             name,
-            value: BUDGET_OPTIONS[0].value
-          }
+            value: BUDGET_OPTIONS[0].value,
+          },
         } as React.ChangeEvent<HTMLInputElement>);
       } catch (error) {
         console.error('Error setting default budget value:', error);

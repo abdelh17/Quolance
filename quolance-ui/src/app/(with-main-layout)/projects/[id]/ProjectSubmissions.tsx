@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { PiSliders } from 'react-icons/pi';
-import { submissioners } from '@/data/data';
-import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
+import { useGetProjectSubmissions } from '@/api/client-api';
+import Loading from '@/components/loading';
+import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
+import { DATA_Submissioners } from '@/constants/data';
+import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
 
 type ProjectSubmissionsProps = {
   projectId: number;
@@ -12,6 +15,8 @@ export default function ProjectSubmissions({
   projectId,
 }: ProjectSubmissionsProps) {
   const [filterModal, setFilterModal] = useState(false);
+  const { data, isLoading } = useGetProjectSubmissions(projectId);
+  const submissions = data?.data;
 
   return (
     <section className='sbp-30 stp-30'>
@@ -38,10 +43,18 @@ export default function ProjectSubmissions({
             </div>
           </div>
         </div>
-        <div className='flex w-full flex-row flex-wrap gap-6'>
-          {submissioners.map(({ id, ...props }) => (
-            <FreelancerCard key={id} {...props} />
-          ))}
+        <div className='mx-auto flex flex-row flex-wrap justify-center gap-6'>
+          {!isLoading &&
+            submissions &&
+            submissions.length > 0 &&
+            submissions.map((submission: ApplicationResponse, idx: number) => (
+              <FreelancerCard
+                key={submission.applicationId}
+                {...DATA_Submissioners[idx]}
+              />
+            ))}
+
+          {isLoading && <Loading />}
         </div>
         {/*<Pagination />*/}
       </div>

@@ -3,6 +3,7 @@ package com.quolance.quolance_api.controllers;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.services.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.ClientService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientController {
     private final ClientService clientService;
+    private final ApplicationProcessWorkflow applicationProcessWorkflow;
 
     @PostMapping("/create-project")
     @Operation(
@@ -47,4 +49,16 @@ public class ClientController {
         List<ApplicationDto> applications = clientService.getApplicationsByProjectId(projectId, client.getId());
         return ResponseEntity.ok(applications);
     }
+
+    @PostMapping("/{applicationId}/select-freelancer")
+    @Operation(
+            summary = "Select a freelancer for a project",
+            description = "Select a freelancer for a project by passing the application ID"
+    )
+    public ResponseEntity<?> selectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
+        User client = SecurityUtil.getAuthenticatedUser();
+        applicationProcessWorkflow.selectFreelancer(applicationId, client.getId());
+        return ResponseEntity.ok().build();
+    }
+
 }

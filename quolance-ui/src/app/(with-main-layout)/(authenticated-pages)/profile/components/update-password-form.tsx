@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
@@ -6,11 +6,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useAuthGuard } from "@/lib/auth/use-auth";
-import httpClient from "@/lib/httpClient";
+import { useAuthGuard } from '@/api/auth-api';
+import httpClient from '@/lib/httpClient';
 
-import ErrorFeedback from "@/components/error-feedback";
-import { Button } from "@/components/ui/button";
+import ErrorFeedback from '@/components/error-feedback';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -40,7 +40,7 @@ export default function UpdatePasswordForm() {
 
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
-    reValidateMode: "onSubmit",
+    reValidateMode: 'onSubmit',
   });
 
   const onSubmit = (data: Schema) => {
@@ -94,7 +94,7 @@ export default function UpdatePasswordForm() {
           {/* Old Password Field */}
           <FormField
             control={form.control}
-            name="oldPassword"
+            name='oldPassword'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Your current password</FormLabel>
@@ -112,7 +112,7 @@ export default function UpdatePasswordForm() {
           {/* New Password Field */}
           <FormField
             control={form.control}
-            name="password"
+            name='password'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>New password</FormLabel>
@@ -130,7 +130,7 @@ export default function UpdatePasswordForm() {
           {/* Confirm Password Field */}
           <FormField
             control={form.control}
-            name="confirmPassword"
+            name='confirmPassword'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>

@@ -14,10 +14,11 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @Table(name = "application")
-public class Application extends  AbstractEntity{
+public class Application extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
-    private ApplicationStatus status;
+    @Builder.Default
+    private ApplicationStatus status = ApplicationStatus.APPLIED;
 
     @ManyToOne
     @JoinColumn(name = "projectId")
@@ -26,4 +27,7 @@ public class Application extends  AbstractEntity{
     @ManyToOne
     @JoinColumn(name = "freelancerId")
     private User freelancer;
+
+    @Version
+    private Long version;
 }
