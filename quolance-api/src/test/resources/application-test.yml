@@ -3,7 +3,7 @@ spring:
     name: quolance-api
 
   datasource:
-    url: jdbc:h2:mem:testdb;
+    url: jdbc:h2:mem:testdb
     username: sa
     password: password
     driver-class-name: org.h2.Driver
