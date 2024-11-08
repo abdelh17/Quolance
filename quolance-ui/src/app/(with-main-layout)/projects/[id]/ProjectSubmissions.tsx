@@ -18,7 +18,6 @@ export default function ProjectSubmissions({
   const { data, isLoading } = useGetProjectSubmissions(projectId);
   const submissions = data?.data;
 
-  console.log(submissions);
   return (
     <section className='sbp-30 stp-30'>
       <div className='container'>
