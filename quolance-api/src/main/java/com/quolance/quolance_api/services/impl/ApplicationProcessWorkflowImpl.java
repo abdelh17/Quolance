@@ -51,6 +51,9 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
 
             // TODO: Send notification to the freelancer
 
+            // FIXME: The project's selected freelancer id is purposely not updated here,
+            //  as the freelancer needs to confirm the offer first
+
         } catch (OptimisticLockException e) {
             throw ApiException.builder().status(409).message("Application has been updated by another user. " +
                     "Please try again or refresh the page.").build();
@@ -71,6 +74,8 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     @Override
     public void confirmOffer(Long applicationId, Long freelancerId) {
         // TODO: Implement this method
+        // FIXME: The project's selected freelancer id is purposely not updated here,
+        //  as the freelancer needs to confirm the offer first
     }
 
     @Override
