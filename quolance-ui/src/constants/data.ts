@@ -94,7 +94,7 @@ export const headerMenu = [
   },
 ];
 
-export const DATA_ProjectList: ProjectType[] = [
+export const DATA_ProjectList = [
   {
     id: 1,
     name: 'Real-Time Video Streaming Platform Development',
