@@ -6,17 +6,6 @@ import {
 import { SubmissionFilters } from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
 import { Dispatch, SetStateAction } from 'react';
 
-// Interface for the filter management functions
-interface FilterManagementParams {
-  setTempFilters: Dispatch<SetStateAction<SubmissionFilters>>;
-  setActiveFilters: Dispatch<SetStateAction<SubmissionFilters>>;
-  setFilterModal: Dispatch<SetStateAction<boolean>>;
-}
-
-interface SelectionManagementParams {
-  setSelectedSubmissions: Dispatch<SetStateAction<number[]>>;
-}
-
 // Filter logic function that will be used to filter submissions
 export const applySubmissionFilters = (
   submissions: ApplicationResponse[],
@@ -39,51 +28,45 @@ export const applySubmissionFilters = (
   });
 };
 
-export const createFilterHandlers = ({
-  setTempFilters,
-  setActiveFilters,
-  setFilterModal,
-}: FilterManagementParams) => {
-  const handleFilterChange = <K extends keyof SubmissionFilters>(
-    filterType: K,
-    value: SubmissionFilters[K]
-  ) => {
-    setTempFilters((prevFilters) => ({
-      ...prevFilters,
-      [filterType]: value,
-    }));
-  };
-
-  const handleApplyFilters = (tempFilters: SubmissionFilters) => {
-    setActiveFilters(tempFilters);
-    setFilterModal(false);
-  };
-
-  const handleResetFilters = (initialFilters: SubmissionFilters) => {
-    setTempFilters(initialFilters);
-    setActiveFilters(initialFilters);
-    setFilterModal(false);
-  };
-
-  return {
-    handleFilterChange,
-    handleApplyFilters,
-    handleResetFilters,
-  };
+export const handleFilterChange = (
+  setTempFilters: Dispatch<SetStateAction<SubmissionFilters>>,
+  filterType: keyof SubmissionFilters,
+  value: boolean
+) => {
+  setTempFilters((prevFilters) => ({
+    ...prevFilters,
+    [filterType]: value,
+  }));
 };
 
-export const createSelectionHandlers = ({
-  setSelectedSubmissions,
-}: SelectionManagementParams) => {
-  const handleSelectSubmission = (submissionId: number, selected: boolean) => {
-    setSelectedSubmissions((prev) =>
-      selected
-        ? [...prev, submissionId]
-        : prev.filter((id) => id !== submissionId)
-    );
-  };
+export const handleApplyFilters = (
+  tempFilters: SubmissionFilters,
+  setActiveFilters: Dispatch<SetStateAction<SubmissionFilters>>,
+  setFilterModal: Dispatch<SetStateAction<boolean>>
+) => {
+  setActiveFilters(tempFilters);
+  setFilterModal(false);
+};
 
-  return {
-    handleSelectSubmission,
-  };
+export const handleResetFilters = (
+  initialFilters: SubmissionFilters,
+  setTempFilters: Dispatch<SetStateAction<SubmissionFilters>>,
+  setActiveFilters: Dispatch<SetStateAction<SubmissionFilters>>,
+  setFilterModal: Dispatch<SetStateAction<boolean>>
+) => {
+  setTempFilters(initialFilters);
+  setActiveFilters(initialFilters);
+  setFilterModal(false);
+};
+
+export const handleSelectSubmission = (
+  submissionId: number,
+  selected: boolean,
+  setSelectedSubmissions: Dispatch<SetStateAction<number[]>>
+) => {
+  setSelectedSubmissions((prev) =>
+    selected
+      ? [...prev, submissionId]
+      : prev.filter((id) => id !== submissionId)
+  );
 };

@@ -1,17 +1,25 @@
 import { useMemo, useState } from 'react';
 import { PiSliders, PiX } from 'react-icons/pi';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
-import { useGetProjectSubmissions } from '@/api/client-api';
+import {
+  useApproveSubmission,
+  useGetProjectSubmissions,
+} from '@/api/client-api';
 import Loading from '@/components/loading';
 import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
 import { DATA_Submissioners } from '@/constants/data';
 import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
 import {
   applySubmissionFilters,
-  createFilterHandlers,
-  createSelectionHandlers,
+  handleApplyFilters,
+  handleFilterChange,
+  handleResetFilters,
+  handleSelectSubmission,
 } from '@/util/CandidateSelectionUtils';
 import RefuseSubmissionsModal from '@/components/ui/freelancers/RefuseSubmissionsModal';
+import ResponseFeedback from '@/components/response-feedback';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { useQueryClient } from '@tanstack/react-query';
 
 type ProjectSubmissionsProps = {
   projectId: number;
@@ -38,21 +46,17 @@ export default function ProjectSubmissions({
   // Filter state that is used specifically for the filter modal popup
   const [tempFilters, setTempFilters] =
     useState<SubmissionFilters>(initialFilters);
-  const { data, isLoading } = useGetProjectSubmissions(projectId);
-  const submissions = data?.data;
+
   const [selectedSubmissions, setSelectedSubmissions] = useState<number[]>([]);
-
-  // Functions from util/CandidateSelectionUtils.tsx
-  const { handleSelectSubmission } = createSelectionHandlers({
-    setSelectedSubmissions,
-  });
-
-  const { handleFilterChange, handleApplyFilters, handleResetFilters } =
-    createFilterHandlers({
-      setTempFilters,
-      setActiveFilters,
-      setFilterModal,
-    });
+  // Query hooks
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useGetProjectSubmissions(projectId);
+  const {
+    mutateAsync: approveSubmission,
+    error,
+    isSuccess,
+  } = useApproveSubmission();
+  const submissions = data?.data;
 
   // Filtered submissions that will be displayed
   const filteredSubmissions = useMemo(() => {
@@ -66,8 +70,22 @@ export default function ProjectSubmissions({
     return applySubmissionFilters(submissions, tempFilters).length;
   }, [submissions, tempFilters]);
 
+  const hasPendingConfirmation = useMemo(() => {
+    return (
+      submissions?.some(
+        (submission: ApplicationResponse) =>
+          submission.applicationStatus === 'PENDING_CONFIRMATION'
+      ) ?? false
+    );
+  }, [submissions]);
+
   const handleApproveSubmission = (applicationId: number) => {
-    // Call API to approve submission
+    approveSubmission(applicationId).then(() => {
+      // Ensure that the project submissions are refetched after approving a submission
+      queryClient.invalidateQueries({
+        queryKey: ['project-submissions', projectId],
+      });
+    });
   };
 
   const handleRefuseSelected = async () => {
@@ -138,7 +156,7 @@ export default function ProjectSubmissions({
         {/** END of Refuse/Clear selections Modal **/}
 
         {/** List of submissions **/}
-        <div className='submissions-container mx-auto mt-6 flex flex-row flex-wrap  gap-6'>
+        <div className='submissions-container mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
           {!isLoading &&
             filteredSubmissions &&
             filteredSubmissions.length > 0 &&
@@ -153,8 +171,13 @@ export default function ProjectSubmissions({
                     submission.applicationId
                   )}
                   status={submission.applicationStatus}
+                  isApproveDisabled={hasPendingConfirmation} // Pass the disable state
                   onSelect={(selected) =>
-                    handleSelectSubmission(submission.applicationId, selected)
+                    handleSelectSubmission(
+                      submission.applicationId,
+                      selected,
+                      setSelectedSubmissions
+                    )
                   }
                   {...DATA_Submissioners[idx]}
                 />
@@ -163,6 +186,11 @@ export default function ProjectSubmissions({
 
           {isLoading && <Loading />}
         </div>
+        <ResponseFeedback
+          isSuccess={isSuccess}
+          successMessage={'Submission approved successfully'}
+          error={error?.response?.data as HttpErrorResponse}
+        />
         {/*<Pagination />*/}
       </div>
 
@@ -170,9 +198,20 @@ export default function ProjectSubmissions({
         filterModal={filterModal}
         setFilterModal={setFilterModal}
         filters={tempFilters}
-        onFilterChange={handleFilterChange}
-        onApplyFilters={() => handleApplyFilters(tempFilters)}
-        onResetFilters={() => handleResetFilters(initialFilters)}
+        onFilterChange={(filterType, value) =>
+          handleFilterChange(setTempFilters, filterType, value)
+        }
+        onApplyFilters={() =>
+          handleApplyFilters(tempFilters, setActiveFilters, setFilterModal)
+        }
+        onResetFilters={() =>
+          handleResetFilters(
+            initialFilters,
+            setTempFilters,
+            setActiveFilters,
+            setFilterModal
+          )
+        }
         filteredResults={filteredResultsCount}
       />
 
