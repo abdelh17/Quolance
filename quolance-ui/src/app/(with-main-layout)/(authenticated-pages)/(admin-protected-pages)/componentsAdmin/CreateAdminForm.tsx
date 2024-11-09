@@ -66,7 +66,7 @@ export function CreateAdminForm() {
               </span>
               <input
                 type="text"
-                placeholder="Enter Your Email"
+                placeholder="Enter Admin's Email"
                 className="w-full text-sm text-gray-700 outline-none"
                 {...register("email")}
               />
@@ -84,7 +84,7 @@ export function CreateAdminForm() {
               </span>
               <input
                 type="password"
-                placeholder="Enter Temporary Password"
+                placeholder="Enter Admin's Temporary Password"
                 className="w-full text-sm text-gray-700 outline-none"
                 {...register("temporaryPassword")}
               />
@@ -95,14 +95,14 @@ export function CreateAdminForm() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">Confirm Password</label>
+            <label className="text-sm font-semibold text-gray-700">Confirm Temporary Password</label>
             <div className="flex w-full items-center gap-3 rounded-2xl border px-4 py-3">
               <span className="text-2xl">
                 <PiLock />
               </span>
               <input
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Confirm Admin's Temporary Password"
                 className="w-full text-sm text-gray-700 outline-none"
                 {...register("passwordConfirmation")}
               />
@@ -120,7 +120,7 @@ export function CreateAdminForm() {
               </span>
               <input
                 type="text"
-                placeholder="Enter Your First Name"
+                placeholder="Enter Admin's First Name"
                 className="w-full text-sm text-gray-700 outline-none"
                 {...register("firstName")}
               />
@@ -135,7 +135,7 @@ export function CreateAdminForm() {
               </span>
               <input
                 type="text"
-                placeholder="Enter Your Last Name"
+                placeholder="Enter Admin's Last Name"
                 className="w-full text-sm text-gray-700 outline-none"
                 {...register("lastName")}
               />
