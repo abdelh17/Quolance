@@ -1,9 +1,12 @@
 package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.ApplicationDto;
+import com.quolance.quolance_api.dtos.PortfolioDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
+import com.quolance.quolance_api.entities.Portfolio;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.FreelancerService;
+import com.quolance.quolance_api.services.PortfolioService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FreelancerController {
     private final FreelancerService freelancerService;
-
+    
     @PostMapping("/submit-application")
     @Operation(
             summary = "Create a new application on a project.",
@@ -53,4 +56,37 @@ public class FreelancerController {
         ProjectDto project = freelancerService.getProjectById(id);
         return ResponseEntity.ok(project);
     }
+
+     @PostMapping("/create-portfolio")
+    @Operation(summary = "Create a new portfolio item for the freelancer.")
+    public ResponseEntity<PortfolioDto> createPortfolio(@RequestBody PortfolioDto portfolioDto) {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        PortfolioDto createdPortfolio = freelancerService.createPortfolio(portfolioDto, freelancer);
+        return ResponseEntity.ok(createdPortfolio);
+    }
+
+    @GetMapping("/get-all-portfolio")
+    @Operation(summary = "Get all portfolio items of the freelancer.")
+    public ResponseEntity<List<PortfolioDto>> getAllPortfolios() {
+        User freelancer = SecurityUtil.getAuthenticatedUser();  // Get the authenticated user (freelancer)
+        List<PortfolioDto> portfolios = freelancerService.getAllPortfoliosByFreelancer(freelancer.getId());
+        return ResponseEntity.ok(portfolios);
+    }
+
+    @PutMapping("/portfolio/{id}")
+    @Operation(summary = "Update a portfolio item.")
+    public ResponseEntity<PortfolioDto> updatePortfolio(@PathVariable Long id, @RequestBody PortfolioDto portfolioDto) {
+        User freelancer = SecurityUtil.getAuthenticatedUser();  // Get the authenticated user (freelancer)
+        PortfolioDto updatedPortfolio = freelancerService.updatePortfolio(id, portfolioDto, freelancer);
+        return ResponseEntity.ok(updatedPortfolio);
+    }
+
+    @DeleteMapping("/portfolio")
+    @Operation(summary = "Delete a portfolio item.")
+    public ResponseEntity<Void> deletePortfolio() {
+         User freelancer = SecurityUtil.getAuthenticatedUser();  // Get the authenticated user
+         freelancerService.deletePortfolioByFreelancerId(freelancer.getId());  // Delete the portfolio by the user's ID
+         return ResponseEntity.noContent().build();
+    }
+
 }

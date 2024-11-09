@@ -1,7 +1,9 @@
 package com.quolance.quolance_api.services.impl;
 
 import com.quolance.quolance_api.dtos.PortfolioDto;
+import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Portfolio;
+import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.PortfolioRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
@@ -28,29 +30,20 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     
     @Override
-    public PortfolioDto createPortfolio(PortfolioDto portfolioDto, long userId) {
-        User user = userRepository.findById(portfolioDto.getUserId())
-    .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + portfolioDto.getUserId()));
-        Portfolio portfolio = portfolioDto.toEntity(user);
+    public PortfolioDto createPortfolio(Portfolio portfolio) {
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
         return PortfolioDto.fromEntity(savedPortfolio);
     }
 
-    @Override
-    public PortfolioDto getPortfolioById(Long id) {
-        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(() -> 
-            new IllegalArgumentException("Portfolio not found with ID: " + id));
-        return PortfolioDto.fromEntity(portfolio);
-    }
 
     @Override
     public PortfolioDto updatePortfolio(Long id, PortfolioDto portfolioDto) {
         Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(() -> 
             new IllegalArgumentException("Portfolio not found with ID: " + id));
-        User user = userRepository.findById(portfolioDto.getUserId()).orElseThrow(() -> 
-            new IllegalArgumentException("User not found with ID: " + portfolioDto.getUserId()));
+        User freelancer = userRepository.findById(portfolioDto.getId()).orElseThrow(() -> 
+            new IllegalArgumentException("User not found with ID: " + portfolioDto.getId()));
         portfolio.setName(portfolioDto.getName());
-        portfolio.setUser(user);
+        portfolio.setUser(freelancer);
         Portfolio updatedPortfolio = portfolioRepository.save(portfolio);
         return PortfolioDto.fromEntity(updatedPortfolio);
     }
@@ -62,7 +55,22 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioDto> getAllPortfolios() {
-        return portfolioRepository.findAll().stream().map(PortfolioDto::fromEntity).collect(Collectors.toList());
+        List<Portfolio> portfolio = portfolioRepository.findAll();
+        return portfolio.stream().map(PortfolioDto::fromEntity).toList();
     }
-   
+
+    @Override
+    public List<PortfolioDto> getPortfolioByFreelancerId(long userId) {
+        return portfolioRepository.findById(userId).stream()
+        .map(PortfolioDto::fromEntity)
+        .toList();
+    }
+
+    @Override
+    public PortfolioDto getPortfolioByUserId(long userId) {
+        Portfolio portfolio = portfolioRepository.findByUserId(userId)
+        .orElseThrow(() -> new IllegalArgumentException("Portfolio not found for user with ID: " + userId));
+    
+    return PortfolioDto.fromEntity(portfolio);
+    }
 }
