@@ -31,8 +31,8 @@ export default function HeroSection() {
                 >
                   <span className='relative z-10'>Sign Up For Free</span>
                 </Link>
-                <Link href='/about-us' className='text-sm/6 font-semibold text-gray-900'>
-                  Learn more <span aria-hidden='true'>→</span>
+                <Link href='/projects' className='text-sm/6 font-semibold text-gray-900'>
+                  Projects Catalog <span aria-hidden='true'>→</span>
                 </Link>
               </div>
             </div>
