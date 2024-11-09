@@ -1,3 +1,5 @@
+// This file should be deleted soon, instead use UserResponse.ts
+
 export type UserType = {
   id: string;
   name: string;
