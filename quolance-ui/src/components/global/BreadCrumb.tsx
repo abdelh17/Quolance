@@ -19,7 +19,7 @@ function BreadCrumb({
 }: PropsType) {
   return (
     <>
-      <section className=" bg-n20 p-6">
+      <section className=" bg-white p-6">
         <div className="container">
           <ul className="flex items-center justify-start gap-2 pt-3 font-medium">
             <li>

@@ -1,74 +1,61 @@
-import { useState } from 'react';
-
-import { DATA_ProjectList } from '@/constants/data';
-
 import BreadCrumb from '@/components/global/BreadCrumb';
-import Pagination from '@/components/ui/Pagination';
+import { useGetAllProjects } from '@/api/projects-api';
+import { ProjectType } from '@/constants/types/projectTypes';
+import Loading from '@/components/loading';
 import ProjectCard from '@/components/ui/projects/ProjectCard';
 import ProjectFilter from '@/components/ui/projects/ProjectFilter';
 
-import {
-  ProjectFilterOptions,
-  ProjectFilterOptionsDefault,
-} from '@/constants/types/projectTypes';
-
-const ITEMS_PER_PAGE = 4; // Number of services per page
-
 function ProjectsContainer() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [projectFilter, setProjectFilter] = useState<ProjectFilterOptions>(
-    ProjectFilterOptionsDefault
-  );
+  const { data, isLoading, isSuccess } = useGetAllProjects();
 
-  // Handle filtering logic based on date and status
-  const filteredProjects = DATA_ProjectList.filter((project) =>
-    projectFilter.status === 'all'
-      ? true
-      : project.status === projectFilter.status
-  ).sort((a, b) => {
-    if (projectFilter.order === 'desc') {
-      return (
-        new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime()
-      );
-    } else {
-      return (
-        new Date(a.datePosted).getTime() - new Date(b.datePosted).getTime()
-      );
-    }
-  });
-
-  // Calculate total pages based on number of filtered items
-  const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
-
-  // Get the services to display for the current page
-  const currentProjects = filteredProjects.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
       <BreadCrumb pageName='Projects' isSearchBoxShow={true} />
+      <div className=' pb-6 text-center sm:px-6 lg:px-8'>
+        <h1 className='text-4xl font-bold tracking-tight text-gray-900'>
+          Contract Catalog
+        </h1>
+        <p className='mx-auto mt-4 max-w-xl text-base text-gray-500'>
+          {' '}
+          Explore a comprehensive list of available contracts tailored for
+          freelancers across various fields.
+        </p>
+      </div>
 
-      <section className='sbp-30 stp-30'>
-        <div className='container grid grid-cols-12 gap-6'>
-          <ProjectFilter filter={projectFilter} setFilter={setProjectFilter} />
-          <div className='border-n30 col-span-12 rounded-xl border px-3 py-4 sm:p-8 lg:col-span-8'>
-            <div className='flex flex-col gap-4'>
-              {currentProjects.map(({ id, ...props }) => (
-                <ProjectCard key={id} id={id} {...props} />
-              ))}
-            </div>
-            <div className='container pt-8'>
-              <Pagination
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
-                totalPages={totalPages}
+      <ProjectFilter />
+
+      <div className='container mt-8'>
+        {isSuccess && data && (
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+            {data.data.map((project: ProjectType) => (
+              <ProjectCard
+                key={project.projectId}
+                tags={project.tags}
+                projectId={project.projectId}
+                createdAt={project.createdAt}
+                projectCategory={project.projectCategory}
+                projectTitle={project.projectTitle}
+                projectDescription={project.projectDescription}
+                priceRange={project.priceRange}
+                experienceLevel={project.experienceLevel}
+                expectedDeliveryTime={project.expectedDeliveryTime}
+                deliveryDate={project.deliveryDate}
+                location={project.location}
+                projectStatus={project.projectStatus}
+                clientId={project.clientId}
               />
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
+        )}
+
+        {!isLoading && (!data || data.data.length === 0) && (
+          <div className='text-center text-gray-500'>No projects found</div>
+        )}
+      </div>
     </>
   );
 }
