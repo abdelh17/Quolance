@@ -2,7 +2,6 @@
 import heroImage1 from '@/public/images/freelancer-hero-img-1.jpg';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PiPlusBold } from 'react-icons/pi';
 
 export default function HeroSection() {
   return (

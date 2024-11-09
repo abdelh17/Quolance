@@ -1,4 +1,3 @@
-import BreadCrumb from '@/components/global/BreadCrumb';
 import { useGetAllProjects } from '@/api/projects-api';
 import { ProjectType } from '@/constants/types/projectTypes';
 import Loading from '@/components/loading';

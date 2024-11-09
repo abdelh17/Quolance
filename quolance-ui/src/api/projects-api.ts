@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-
+import { PostProjectType } from '@/constants/types/projectTypes';
 /*--- Hooks ---*/
 // export const useGetProjectInfo = (projectId: number) => {
 //   return useQuery({
@@ -15,7 +15,13 @@ export const useGetAllProjects = () => {
     queryKey: ['all-projects'],
     queryFn: () => getAllProjects(),
   });
-}
+};
+
+export const usePostProject = () => {
+  return useMutation({
+    mutationFn: postProject,
+  });
+};
 
 // /*--- Query functions ---*/
 // const getProjectInfo = async (projectId: number) => {
@@ -24,4 +30,8 @@ export const useGetAllProjects = () => {
 
 const getAllProjects = async () => {
   return httpClient.get('/api/public/projects/all');
-}
+};
+
+const postProject = async (project: PostProjectType) => {
+  return httpClient.post('/api/client/create-project', project);
+};

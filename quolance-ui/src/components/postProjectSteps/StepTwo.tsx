@@ -23,11 +23,11 @@ function StepTwo({
   return (
     <div className=''>
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
-        What is your budget?*
+        What is your priceRange?*
       </p>
       <ClientBudgetRadioGroup
-        name='budget'
-        value={formData.budget || ''}
+        name='priceRange'
+        value={formData.priceRange || ''}
         onChange={handleChange}
       />
 

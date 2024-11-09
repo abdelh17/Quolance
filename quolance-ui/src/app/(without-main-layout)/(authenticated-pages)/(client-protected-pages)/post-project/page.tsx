@@ -10,6 +10,9 @@ import StepTwo from '@/components/postProjectSteps/StepTwo';
 
 import { useSteps } from '@/util/context/StepsContext';
 
+import { usePostProject } from '@/api/projects-api';
+import { PostProjectType } from '@/constants/types/projectTypes';
+
 const stepsComponents = [StepOne, StepTwo, StepThree, StepFour];
 
 const stepsName = [
@@ -24,9 +27,22 @@ function PostsTasksSteps() {
 
   const StepComponent = stepsComponents[currentStep];
 
-  const submitForm = () => {
+  const { mutateAsync: mutateProject, isSuccess, error } = usePostProject();
+
+  const submitForm = async () => {
     console.log('Form submitted:', formData);
-    // Add your form submission logic here
+
+    const project: PostProjectType = formData;
+
+    await mutateProject({
+      ...project,
+    });
+
+    if (isSuccess) {
+      console.log('Project created successfully');
+    } else {
+      console.log('Project creation failed');
+    }
   };
 
   const handleNext = () => {

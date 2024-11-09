@@ -8,10 +8,11 @@ interface FormData {
   projectDescription: string;
   isRemote: boolean;
   location: string;
-  budget: string;
+  tags: string[];
+  priceRange: string;
   experienceLevel: string;
-  expectedDelivery: string;
-  deliveryDate: number;
+  expectedDeliveryTime: string;
+  deliveryDate: string; // ISO date format (e.g., "2024-11-09")
 }
 
 const DEFAULT_FORM_DATA: FormData = {
@@ -20,10 +21,11 @@ const DEFAULT_FORM_DATA: FormData = {
   projectDescription: '',
   isRemote: false,
   location: '',
-  budget: '',
+  tags: [],
+  priceRange: '',
   experienceLevel: '',
-  expectedDelivery: '',
-  deliveryDate: Date.now(),
+  expectedDeliveryTime: '',
+  deliveryDate: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD
 };
 
 interface StepsContextProps {
