@@ -67,14 +67,12 @@ export default function ProjectSubmissions({
   }, [submissions, tempFilters]);
 
   const handleApproveSubmission = (applicationId: number) => {
-    console.log('Approving submission for freelancer:', applicationId);
     // Call API to approve submission
   };
 
   const handleRefuseSelected = async () => {
     setSelectedSubmissions([]);
     setIsRefuseModalOpen(false);
-    console.log('Refusing selected submissions:', selectedSubmissions);
     // Call API to refuse selected submissions
   };
 
