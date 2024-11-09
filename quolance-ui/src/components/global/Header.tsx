@@ -50,7 +50,7 @@ function Header() {
           <div className='text-s1 flex items-center justify-between py-6'>
             <div className='flex items-center justify-start gap-3 pb-1'>
               <button
-                className='text-4xl !leading-none lg:hidden'
+                className='text-4xl !leading-none 4xl:hidden'
                 onClick={() => setShowMobileMenu(true)}
               >
                 <PiListBold className='text-b500 pt-2' />
@@ -60,7 +60,7 @@ function Header() {
               </Link>
             </div>
 
-            <div className='flex items-center justify-between gap-6 max-lg:hidden'>
+            <div className='flex items-center justify-between gap-6 max-lg:hidden max-4xl:hidden'>
               <ul className='xxl:gap-6 flex items-center justify-start gap-2 font-medium max-sm:hidden'>
                 {headerMenu.map((menu) => (
                   <li key={menu.id}>

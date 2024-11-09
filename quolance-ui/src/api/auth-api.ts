@@ -66,7 +66,7 @@ export const useAuthGuard = ({
     }
 
     // If middleware is 'auth' and we have an error, logout
-    if (middleware === 'auth' && error) {
+    if (middleware === 'auth' && error && user) {
       logout();
     }
   }, [user, error]);
