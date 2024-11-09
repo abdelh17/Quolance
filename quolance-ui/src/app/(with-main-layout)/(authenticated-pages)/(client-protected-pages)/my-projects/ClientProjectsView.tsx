@@ -61,7 +61,7 @@ function ClientProjectsView() {
                 ))}
               </ul>
               {/** Hardcoding Inactive to show no services */}
-              {activeTab !== 'Inactive' && (
+              {/* {activeTab !== 'Inactive' && (
                 <div className='flex flex-col gap-5'>
                   {freelancerServices.map((worker) => (
                     <ProjectCard
@@ -76,7 +76,7 @@ function ClientProjectsView() {
                     />
                   ))}
                 </div>
-              )}
+              )} */}
               {/** Hardcoding Inactive to show no services */}
               {activeTab === 'Inactive' && (
                 <div>
