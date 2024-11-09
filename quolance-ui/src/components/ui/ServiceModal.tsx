@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { PiCaretDown } from 'react-icons/pi';
 
-import useClickOutside from '../../hooks/useClickOutside';
+import useClickOutside from '@/util/hooks/useClickOutside';
 
 const serviceList = ['Photography', 'Renovation', 'Cleaning', 'Handyman'];
 
@@ -12,7 +12,10 @@ function ServiceModal() {
 
   const [service, setService] = useState<null | string>(null);
   return (
-    <div className='relative flex cursor-pointer items-center justify-between gap-2 border border-gray-300 rounded-lg p-2 w-1/2' onClick={() => setModal((prev) => !prev)}>
+    <div
+      className='relative flex w-1/2 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gray-300 p-2'
+      onClick={() => setModal((prev) => !prev)}
+    >
       <span className='serviceText'>
         {service === null ? (
           <>

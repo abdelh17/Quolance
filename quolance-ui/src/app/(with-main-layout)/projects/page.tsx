@@ -1,18 +1,12 @@
 'use client';
-import { useGetUserProfile } from '@/hooks/userHooks';
-import FreelancerProjectsView from '@/app/(with-main-layout)/projects/FreelancerProjectsView';
-import ClientProjectsView from '@/app/(with-main-layout)/projects/ClientProjectsView';
+import ProjectsContainer from '@/app/(with-main-layout)/projects/ProjectsContainer';
 
-function Projects() {
-  const { data: user, isLoading } = useGetUserProfile();
-
+function ProjectsPage() {
   return (
     <>
-      {user?.role === 'freelancer' && <FreelancerProjectsView />}
-      {user?.role === 'client' && <ClientProjectsView />}
-      {isLoading && <div className={'mx-auto ml-10'}>Loading...</div>}
+      <ProjectsContainer />
     </>
   );
 }
 
-export default Projects;
+export default ProjectsPage;

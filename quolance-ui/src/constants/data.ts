@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-
-import { ProjectType } from '@/types/projectTypes';
-import { UserType } from '@/types/userTypes';
+import { ProjectType } from '@/constants/types/projectTypes';
+import { UserType } from '@/constants/types/userTypes';
 
 export const expertiseNeeded = [
   'Frontend Developer',
@@ -95,7 +94,7 @@ export const headerMenu = [
   },
 ];
 
-export const ProjectList: ProjectType[] = [
+export const DATA_ProjectList: ProjectType[] = [
   {
     id: 1,
     name: 'Real-Time Video Streaming Platform Development',
@@ -258,7 +257,7 @@ export const ProjectList: ProjectType[] = [
   },
 ];
 
-export const Users: UserType[] = [
+export const DATA_Users: UserType[] = [
   {
     id: '1',
     name: 'John Admin',
@@ -309,11 +308,11 @@ export const Users: UserType[] = [
   },
 ];
 
-export const submissioners = [
+export const DATA_Submissioners = [
   {
     id: uuidv4(),
     img: 'expertImg1',
-    freelancerName: 'Juan Mullins',
+    freelancerName: 'Free Lancer1',
     location: 'Brooklyn, NY, USA',
     features: ['$50 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
     services: ['Handyman', 'Gardening'],
@@ -321,7 +320,7 @@ export const submissioners = [
   {
     id: uuidv4(),
     img: 'expertImg2',
-    freelancerName: 'Ronald Higgins',
+    freelancerName: 'Free Lancer2',
     location: 'Brooklyn, NY, USA',
     features: ['$45 - &80/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
     services: ['Plumber', 'Handyman'],

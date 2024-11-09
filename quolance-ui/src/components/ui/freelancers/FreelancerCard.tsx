@@ -20,7 +20,7 @@ function FreelancerCard({
   location: string;
 }) {
   return (
-    <div className='border-n40 bg-n10 flex min-w-[414px] max-w-[414px] flex-col gap-6 rounded-3xl border py-6 '>
+    <div className='border-n40 bg-n10 flex min-w-[414px] flex-1 flex-col gap-6 rounded-3xl border py-6 '>
       <div className='flex items-center justify-start gap-3 px-3 sm:px-6'>
         <div className='relative max-md:overflow-hidden'>
           <div className='hexagon-styles bg-b50 my-[calc(100px*0.5/2)] h-[calc(100px*0.57736720554273)] w-[100px] rounded-[calc(100px/36.75)] before:rounded-[calc(100px/18.75)] after:rounded-[calc(100px/18.75)]'>
@@ -68,14 +68,14 @@ function FreelancerCard({
       </div>
 
       <div className='text-n400 flex flex-wrap gap-2 px-6'>
-        <p className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
+        <div className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
           <div className={'bg-gray-300'} />
           <span>Handyman</span>
-        </p>
-        <p className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
+        </div>
+        <div className='bg-b50 flex items-center justify-center gap-2 rounded-xl px-3 py-2 font-medium'>
           <div className={'bg-gray-300'} />
           <span>Plumber </span>
-        </p>
+        </div>
         <p className='bg-b50 rounded-xl px-3 py-2 font-medium'>+3</p>
       </div>
 

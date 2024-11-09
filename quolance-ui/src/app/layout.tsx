@@ -5,8 +5,8 @@ import './globals.css';
 
 import Footer from '@/components/global/Footer';
 
-import { StepsProvider } from '@/context/StepsContext';
-import Providers from '@/util/Providers';
+import { StepsProvider } from '@/util/context/StepsContext';
+import ReactQueryProvider from '@/util/context/ReactQueryProvider';
 
 const monsterratFont = Montserrat({
   subsets: ['latin'],
@@ -27,14 +27,14 @@ export default function RootLayout({
   return (
     <html lang='en' dir='ltr'>
       <body
-        className={`${monsterratFont.variable} ${monsterratFont.className} flex flex-col min-h-screen`}
+        className={`${monsterratFont.variable} ${monsterratFont.className} flex min-h-screen flex-col`}
       >
-        <Providers>
+        <ReactQueryProvider>
           <StepsProvider>
-            <main className="flex-grow">{children}</main>
+            <main className='flex-grow'>{children}</main>
             <Footer />
           </StepsProvider>
-        </Providers>
+        </ReactQueryProvider>
       </body>
     </html>
   );
