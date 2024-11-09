@@ -55,7 +55,7 @@ public class FreelancerController {
         return ResponseEntity.ok(project);
     }
 
-     @PostMapping("/create-portfolio")
+    @PostMapping("/portfolios")
     @Operation(summary = "Create a new portfolio item for the freelancer.")
     public ResponseEntity<PortfolioDto> createPortfolio(@RequestBody PortfolioDto portfolioDto) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
@@ -63,28 +63,28 @@ public class FreelancerController {
         return ResponseEntity.ok(createdPortfolio);
     }
 
-    @GetMapping("/get-all-portfolio")
-    @Operation(summary = "Get all portfolio items of the freelancer.")
+    @GetMapping("/portfolios")
+    @Operation(summary = "Get all portfolios of a freelancer.")
     public ResponseEntity<List<PortfolioDto>> getAllPortfolios() {
-        User freelancer = SecurityUtil.getAuthenticatedUser();  // Get the authenticated user (freelancer)
+        User freelancer = SecurityUtil.getAuthenticatedUser();
         List<PortfolioDto> portfolios = freelancerService.getAllPortfoliosByFreelancer(freelancer.getId());
         return ResponseEntity.ok(portfolios);
     }
 
     @PutMapping("/portfolio/{id}")
-    @Operation(summary = "Update a portfolio item.")
+    @Operation(summary = "Update a portfolio.")
     public ResponseEntity<PortfolioDto> updatePortfolio(@PathVariable Long id, @RequestBody PortfolioDto portfolioDto) {
-        User freelancer = SecurityUtil.getAuthenticatedUser();  // Get the authenticated user (freelancer)
+        User freelancer = SecurityUtil.getAuthenticatedUser();
         PortfolioDto updatedPortfolio = freelancerService.updatePortfolio(id, portfolioDto, freelancer);
         return ResponseEntity.ok(updatedPortfolio);
     }
 
     @DeleteMapping("/portfolio")
-    @Operation(summary = "Delete a portfolio item.")
-    public ResponseEntity<Void> deletePortfolio() {
-         User freelancer = SecurityUtil.getAuthenticatedUser();  // Get the authenticated user
-         freelancerService.deletePortfolioByFreelancerId(freelancer.getId());  // Delete the portfolio by the user's ID
-         return ResponseEntity.noContent().build();
+    @Operation(summary = "Delete a portfolio.")
+    public ResponseEntity<String> deletePortfolio() {
+         User freelancer = SecurityUtil.getAuthenticatedUser();
+         freelancerService.deletePortfolioByFreelancerId(freelancer.getId());
+         return ResponseEntity.ok("Portfolio deleted successfully");
     }
 
 }

@@ -13,8 +13,8 @@ import com.quolance.quolance_api.services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import com.quolance.quolance_api.entities.Portfolio;
 
 @Service
 @RequiredArgsConstructor
@@ -58,10 +58,8 @@ public class FreelancerServiceImpl implements FreelancerService {
     }
 
     @Override
-    public PortfolioDto createPortfolio(PortfolioDto portfolioDto,  User freelancer) {
-        Portfolio portfolioToSave = PortfolioDto.toEntity(portfolioDto);
-        portfolioToSave.setUser(freelancer);
-        PortfolioDto savedPorfolioDto = portfolioService.createPortfolio(portfolioToSave);
+    public PortfolioDto createPortfolio(PortfolioDto portfolioDto, User freelancer) {
+        PortfolioDto savedPorfolioDto = portfolioService.createPortfolio(portfolioDto, freelancer);
         return savedPorfolioDto;
     }
 
@@ -72,21 +70,13 @@ public class FreelancerServiceImpl implements FreelancerService {
     }
 
     @Override
-    public void deletePortfolio(Long portfolioId) {
-        portfolioService.deletePortfolio(portfolioId);
-    }
-
-    @Override
     public List<PortfolioDto> getAllPortfoliosByFreelancer(Long clientId) {
         List<PortfolioDto> projects = portfolioService.getPortfolioByFreelancerId(clientId);
         return projects;
     }
 
     public void deletePortfolioByFreelancerId(Long freelancerId) {
-    PortfolioDto portfolio = portfolioService.getPortfolioByUserId(freelancerId);
-    if (portfolio != null) {
-        portfolioService.deletePortfolio(portfolio.getId());
+        portfolioService.deletePortfolioByFreelancerId(freelancerId);
     }
-}
 
 }

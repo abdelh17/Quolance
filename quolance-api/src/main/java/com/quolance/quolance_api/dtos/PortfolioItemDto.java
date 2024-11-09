@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.dtos;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.quolance.quolance_api.entities.PortfolioItem;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -20,15 +20,14 @@ public class PortfolioItemDto {
 
     public static PortfolioItem toEntity(PortfolioItemDto portfolioItemDto) {
         return PortfolioItem.builder()
-        .id(portfolioItemDto.getId())
-        .name(portfolioItemDto.getName())
-        .build();
+                .name(portfolioItemDto.getName())
+                .build();
     }
 
     public static PortfolioItemDto fromEntity(PortfolioItem portfolioItem) {
         return PortfolioItemDto.builder()
-        .id(portfolioItem.getId())
-        .name(portfolioItem.getName())
-        .build();
+                .id(portfolioItem.getId())
+                .name(portfolioItem.getName())
+                .build();
     }
 }
