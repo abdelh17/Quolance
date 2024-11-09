@@ -19,8 +19,8 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { HttpErrorResponse } from "@/constants/models/http/HttpErrorResponse";
 
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
 
 
 
