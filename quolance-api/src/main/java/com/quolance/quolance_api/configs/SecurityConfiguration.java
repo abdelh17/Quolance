@@ -75,6 +75,7 @@ public class SecurityConfiguration {
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
+                    .requestMatchers(antMatcher(HttpMethod.GET, "/api/public/**")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate")).hasRole("ADMIN")
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
                     .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")

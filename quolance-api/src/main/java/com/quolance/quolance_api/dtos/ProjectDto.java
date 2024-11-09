@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,6 +19,9 @@ public class ProjectDto {
 
     @JsonProperty("projectId")
     private Long id;
+
+    @JsonProperty("createdDate")
+    private LocalDateTime creationDate;
 
     @JsonProperty("projectCategory")
     @NotBlank(message = "The category is required")
@@ -71,6 +75,7 @@ public class ProjectDto {
     public static ProjectDto fromEntity(Project project) {
         return ProjectDto.builder()
                 .id(project.getId())
+                .creationDate(project.getCreationDate())
                 .projectStatus(project.getProjectStatus())
                 .category(project.getCategory())
                 .title(project.getTitle())

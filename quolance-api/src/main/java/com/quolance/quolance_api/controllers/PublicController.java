@@ -1,13 +1,7 @@
 package com.quolance.quolance_api.controllers;
 
-import com.quolance.quolance_api.dtos.ApplicationCreateDto;
-import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
-import com.quolance.quolance_api.entities.Application;
-import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.services.FreelancerService;
 import com.quolance.quolance_api.services.ProjectService;
-import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,3 +25,4 @@ public class PublicController {
     }
 
 }
+
