@@ -10,7 +10,7 @@ import ProjectFilter from '@/components/ui/projects/ProjectFilter';
 import {
   ProjectFilterOptions,
   ProjectFilterOptionsDefault,
-} from '@/constants/types/projectTypes';
+} from '@/constants/types/project-types';
 
 const ITEMS_PER_PAGE = 4; // Number of services per page
 

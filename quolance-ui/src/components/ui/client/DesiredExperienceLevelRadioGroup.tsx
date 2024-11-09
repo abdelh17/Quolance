@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { EXPERIENCE_LEVEL_OPTIONS } from '@/constants/types/formTypes';
+import { EXPERIENCE_LEVEL_OPTIONS } from '@/constants/types/form-types';
 
 interface DesiredExperienceLevelRadioGroupProps {
   name: string;

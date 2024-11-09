@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { EXPECTED_DELIVERY_OPTIONS } from '@/constants/types/formTypes';
+import { EXPECTED_DELIVERY_OPTIONS } from '@/constants/types/form-types';
 
 interface ExpectedDeliveryRadioGroupProps {
   name: string;

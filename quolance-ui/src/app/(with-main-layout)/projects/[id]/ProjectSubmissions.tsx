@@ -11,10 +11,16 @@ type ProjectSubmissionsProps = {
   projectId: number;
 };
 
+interface SubmissionFilters {
+  viewRejected: boolean;
+  viewCancelled: boolean;
+}
+
 export default function ProjectSubmissions({
   projectId,
 }: ProjectSubmissionsProps) {
   const [filterModal, setFilterModal] = useState(false);
+  // const  [filters, setFilters] = useState({
   const { data, isLoading } = useGetProjectSubmissions(projectId);
   const submissions = data?.data;
 
@@ -43,7 +49,7 @@ export default function ProjectSubmissions({
             </div>
           </div>
         </div>
-        <div className='mx-auto flex flex-row flex-wrap justify-center gap-6'>
+        <div className='mx-auto flex flex-row flex-wrap  gap-6'>
           {!isLoading &&
             submissions &&
             submissions.length > 0 &&

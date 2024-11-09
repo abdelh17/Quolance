@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProjectFilterOptions } from '@/constants/types/projectTypes';
+import { ProjectFilterOptions } from '@/constants/types/project-types';
 
 type ProjectFilterProps = {
   filter: ProjectFilterOptions;
