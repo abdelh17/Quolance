@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { Users } from '@/data/data';
-import { UserType } from '@/types/userTypes';
+import { DATA_Users } from '@/constants/data';
+import { UserType } from '@/constants/types/userTypes';
 
 /*--- Hooks ---*/
 // Switch between number '2' and number '3' to see the different user roles
@@ -18,8 +18,8 @@ export const useGetUserProfile = (userId = '2') => {
   });
 };
 
-/*--- Fetching functions ---*/
+/*--- Query functions ---*/
 // Hardcoded for now
 const fetchUserType = async (userId: string): Promise<UserType> => {
-  return Users.find((user) => user.id === userId) as UserType;
+  return DATA_Users.find((user) => user.id === userId) as UserType;
 };

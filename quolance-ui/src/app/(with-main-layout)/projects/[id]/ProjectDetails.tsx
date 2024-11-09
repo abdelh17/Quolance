@@ -1,4 +1,4 @@
-import { ProjectType } from '@/types/projectTypes';
+import { ProjectType } from '@/constants/types/projectTypes';
 
 type ProjectDetailsProps = {
   project: ProjectType;

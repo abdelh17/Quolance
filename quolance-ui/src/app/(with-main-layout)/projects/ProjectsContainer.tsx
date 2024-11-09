@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { ProjectList } from '@/data/data';
+import { DATA_ProjectList } from '@/constants/data';
 
 import BreadCrumb from '@/components/global/BreadCrumb';
 import Pagination from '@/components/ui/Pagination';
@@ -10,18 +10,18 @@ import ProjectFilter from '@/components/ui/projects/ProjectFilter';
 import {
   ProjectFilterOptions,
   ProjectFilterOptionsDefault,
-} from '@/types/projectTypes';
+} from '@/constants/types/projectTypes';
 
 const ITEMS_PER_PAGE = 4; // Number of services per page
 
-function FreelancerProjectsView() {
+function ProjectsContainer() {
   const [currentPage, setCurrentPage] = useState(1);
   const [projectFilter, setProjectFilter] = useState<ProjectFilterOptions>(
     ProjectFilterOptionsDefault
   );
 
   // Handle filtering logic based on date and status
-  const filteredServices = ProjectList.filter((project) =>
+  const filteredProjects = DATA_ProjectList.filter((project) =>
     projectFilter.status === 'all'
       ? true
       : project.status === projectFilter.status
@@ -38,10 +38,10 @@ function FreelancerProjectsView() {
   });
 
   // Calculate total pages based on number of filtered items
-  const totalPages = Math.ceil(filteredServices.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
 
   // Get the services to display for the current page
-  const currentServices = filteredServices.slice(
+  const currentProjects = filteredProjects.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -55,8 +55,8 @@ function FreelancerProjectsView() {
           <ProjectFilter filter={projectFilter} setFilter={setProjectFilter} />
           <div className='border-n30 col-span-12 rounded-xl border px-3 py-4 sm:p-8 lg:col-span-8'>
             <div className='flex flex-col gap-4'>
-              {currentServices.map(({ id, ...props }) => (
-                <ProjectCard key={id} id={id} {...props} view={'freelancer'} />
+              {currentProjects.map(({ id, ...props }) => (
+                <ProjectCard key={id} id={id} {...props} />
               ))}
             </div>
             <div className='container pt-8'>
@@ -73,4 +73,4 @@ function FreelancerProjectsView() {
   );
 }
 
-export default FreelancerProjectsView;
+export default ProjectsContainer;

@@ -1,8 +1,10 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.PortfolioDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
+import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.FreelancerService;
 import com.quolance.quolance_api.util.SecurityUtil;
@@ -22,12 +24,12 @@ public class FreelancerController {
     @PostMapping("/submit-application")
     @Operation(
             summary = "Create a new application on a project.",
-            description = "Create a new application on a project by passing an ApplicationDto"
+            description = "Create a new application on a project by passing an ApplicationCreateDto"
     )
-    public ResponseEntity<ApplicationDto> applyToProject(@RequestBody ApplicationDto applicationDto) {
+    public ResponseEntity<ApplicationDto> applyToProject(@RequestBody ApplicationCreateDto applicationCreateDto) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
-        ApplicationDto application = freelancerService.submitApplication(applicationDto, freelancer);
-        return ResponseEntity.ok(application);
+        ApplicationDto applicationDto = freelancerService.submitApplication(applicationCreateDto, freelancer);
+        return ResponseEntity.ok(applicationDto);
     }
 
     @GetMapping("/applications")

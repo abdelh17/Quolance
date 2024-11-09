@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "7f576fc9-bd39-4ed6-a61b-0b8f862e82d0",
+		"_postman_id": "c90c9617-d429-4fff-81dc-8bdc92bea019",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39151315",
-		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/19023668-7f576fc9-bd39-4ed6-a61b-0b8f862e82d0?action=share&source=collection_link&creator=39151315"
+		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-c90c9617-d429-4fff-81dc-8bdc92bea019?action=share&source=collection_link&creator=39151315"
 	},
 	"item": [
 		{
@@ -320,7 +320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectDescription\": \"string\"\n  }",
+							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectCategory\": \"WEB_DEVELOPMENT\",\n  \"projectTitle\": \"New project\",\n  \"projectDescription\": \"New project description\",\n  \"priceRange\": \"LESS_500\",\n  \"experienceLevel\": \"JUNIOR\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\",\n  \"deliveryDate\": \"2024-11-09\",\n  \"location\": \"Montreal\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -392,6 +392,28 @@
 								"api",
 								"client",
 								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Select Freelancer for Project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/1/select-freelancer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"1",
+								"select-freelancer"
 							]
 						}
 					},
@@ -491,6 +513,86 @@
 								"freelancer",
 								"projects",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AdminController",
+			"item": [
+				{
+					"name": "Approve a project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/admin/pending-projects/303/approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"admin",
+								"pending-projects",
+								"303",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get pending projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/admin/pending-projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"admin",
+								"pending-projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\": 102,\n  \"message\": \"Rejected message\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/admin/pending-projects/reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"admin",
+								"pending-projects",
+								"reject"
 							]
 						}
 					},

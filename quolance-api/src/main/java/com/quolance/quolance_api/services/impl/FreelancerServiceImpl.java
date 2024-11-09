@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.impl;
 
+import com.quolance.quolance_api.dtos.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.PortfolioDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
@@ -24,18 +25,21 @@ public class FreelancerServiceImpl implements FreelancerService {
     private final PortfolioService portfolioService;
 
     @Override
-    public ApplicationDto submitApplication(ApplicationDto applicationDto, User freelancer) {
-        Project project = projectService.getProjectEntityById(applicationDto.getProjectId())
+    public ApplicationDto submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
+        // Retrieve the project entity
+        Project project = projectService.getProjectEntityById(applicationCreateDto.getProjectId())
                 .orElseThrow(() -> new ApiException("Project not found"));
 
+        // Check if the freelancer has already applied to this project
         if (applicationService.hasFreelancerAppliedToProject(freelancer.getId(), project.getId())) {
             throw new ApiException("You have already applied to this project");
         }
 
-        Application applicationToSave = ApplicationDto.toEntity(applicationDto);
-
-        applicationToSave.setFreelancer(freelancer);
-        applicationToSave.setProject(project);
+        // Create a new Application (status is default to APPLIED)
+        Application applicationToSave = Application.builder()
+                .freelancer(freelancer)
+                .project(project)
+                .build();
 
         ApplicationDto savedApplication = applicationService.createApplication(applicationToSave);
         return savedApplication;

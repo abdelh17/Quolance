@@ -36,6 +36,16 @@ public class UsersController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("/admin")
+    @Operation(
+            summary = "Create an admin",
+            description = "Create a new user with admin role. Only available to authenticated admins."
+    )
+    @ApiResponse(responseCode = "200", description = "Admin created successfully")
+    public ResponseEntity<UserResponseDto> createAdmin(@Valid @RequestBody CreateAdminRequestDto request) {
+        UserResponseDto user = userService.createAdmin(request);
+        return ResponseEntity.ok(user);
+    }
     @GetMapping("/verify-email")
     @Operation(
             summary = "Verify the email of the user",
@@ -75,7 +85,7 @@ public class UsersController {
     @PatchMapping("/password")
     @Operation(
             summary = "Update the password of an existing user",
-            description = "Update the password of an existing user by passing the UpdateUserPasswordRequestDto. Only allowed with the correct old password.")
+            description = "Update the password of an existing user by passing the UpdateUserPasswordRequestDto. Only allowed with the correct old password. The field passwordResetToken is not required.")
     public ResponseEntity<UserResponseDto> updatePassword(
             @Valid @RequestBody UpdateUserPasswordRequestDto requestDTO) {
         User user = SecurityUtil.getAuthenticatedUser();
