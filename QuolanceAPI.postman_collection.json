@@ -320,7 +320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectCategory\": \"WEB_DEVELOPMENT\",\n  \"projectTitle\": \"New project\",\n  \"projectDescription\": \"New project description\",\n  \"priceRange\": \"LESS_500\",\n  \"experienceLevel\": \"JUNIOR\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\",\n  \"deliveryDate\": \"2024-11-09\",\n  \"location\": \"Montreal\",\n  \"projectStatus\": \"PENDING\"\n}",
+							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectCategory\": \"WEB_DEVELOPMENT\",\n  \"projectTitle\": \"New project\",\n  \"projectDescription\": \"New project description\",\n  \"priceRange\": \"LESS_500\",\n  \"experienceLevel\": \"JUNIOR\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\",\n  \"deliveryDate\": \"2024-11-09\",\n  \"location\": \"Montreal\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
