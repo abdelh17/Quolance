@@ -1,6 +1,8 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 
 import StepFour from '@/components/postProjectSteps/StepFour';
@@ -13,6 +15,9 @@ import { useSteps } from '@/util/context/StepsContext';
 import { usePostProject } from '@/api/projects-api';
 import { PostProjectType } from '@/constants/types/projectTypes';
 
+import { showToast } from '@/util/context/ToastProvider';
+
+
 const stepsComponents = [StepOne, StepTwo, StepThree, StepFour];
 
 const stepsName = [
@@ -23,25 +28,33 @@ const stepsName = [
 ];
 
 function PostsTasksSteps() {
+  const router = useRouter();
+
   const { currentStep, setCurrentStep, formData } = useSteps();
 
   const StepComponent = stepsComponents[currentStep];
 
-  const { mutateAsync: mutateProject, isSuccess, error } = usePostProject();
+  const { mutateAsync: mutateProject } = usePostProject({
+    onSuccess: () => {
+      console.log('Project created successfully');
+      showToast('Project created successfully', 'success');
+    },
+    onError: (error) => {
+      console.log('Error creating project:', error);
+      showToast('Error creating project', 'error');
+    },
+  });
 
   const submitForm = async () => {
-    console.log('Form submitted:', formData);
+    try {
+      console.log('Form submitted:', formData);
+      const project: PostProjectType = formData;
+      await mutateProject({ ...project });
 
-    const project: PostProjectType = formData;
-
-    await mutateProject({
-      ...project,
-    });
-
-    if (isSuccess) {
-      console.log('Project created successfully');
-    } else {
-      console.log('Project creation failed');
+      // push to home page
+      router.push('/projects');
+    } catch (err) {
+      console.log('Error in submitForm:', err);
     }
   };
 

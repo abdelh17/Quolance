@@ -17,9 +17,14 @@ export const useGetAllProjects = () => {
   });
 };
 
-export const usePostProject = () => {
+export const usePostProject = (options?: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}) => {
   return useMutation({
     mutationFn: postProject,
+    onSuccess: options?.onSuccess,
+    onError: options?.onError
   });
 };
 
