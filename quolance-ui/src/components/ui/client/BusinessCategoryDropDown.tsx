@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import {
   BUSINESS_CATEGORY_OPTIONS,
   FormFieldOption,
-} from '@/constants/types/formTypes';
+} from '@/constants/types/form-types';
 
 interface DropDownProps {
   name: string;

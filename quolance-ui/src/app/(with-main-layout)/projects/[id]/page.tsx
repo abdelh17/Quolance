@@ -1,60 +1,53 @@
 'use client';
 
-// import { useParams } from 'next/navigation';
 import BreadCrumb from '@/components/global/BreadCrumb';
-// import ProjectDetails from '@/app/(with-main-layout)/projects/[id]/ProjectDetails';
-// import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
-// import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
-// import { useAuthGuard } from '@/api/auth-api';
-// import { Role } from '@/constants/models/user/UserResponse';
-// import { useGetProjectInfo } from '@/api/projects-api';
-
-// type Project = {
-//   id: number;
-//   name: string;
-//   description: string;
-//   tags: string[];
-//   datePosted: string;
-//   status: string;
-//   applicants: number;
-// };
+import { useParams } from 'next/navigation';
+import { useAuthGuard } from '@/api/auth-api';
+import { useGetProjectInfo } from '@/api/projects-api';
+import ProjectDetailsHeader from '@/components/ui/projects/ProjectDetailsHeader';
+import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
+import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
+import { Role } from '@/constants/models/user/UserResponse';
+import { ProjectType } from '@/constants/types/project-types';
+import ProjectDetailsView from '@/components/ui/projects/ProjectDetailsView';
 
 function ProjectPage() {
-  // const { id } = useParams();
-  // const { user } = useAuthGuard({ middleware: 'auth' });
-  // const role = user?.role;
+  const { id } = useParams();
+  const { user } = useAuthGuard({ middleware: 'auth' });
+  const role = user?.role;
 
-  // const projectId = Array.isArray(id) ? id[0] : id;
-  // const { data: project } = useGetProjectInfo(parseInt(projectId));
+  const projectId = Array.isArray(id) ? id[0] : id;
+  const { data, isLoading } = useGetProjectInfo(parseInt(projectId));
+  const project = data?.data as ProjectType;
 
-  //   return (
-  //     <>
-  //       <BreadCrumb pageName='Project Details' isSearchBoxShow={false} />
-  //       <section className='container mt-14'>
-  //         Project Details - Visible to all users
-  //         {project && (
-  //           <>
-  //             <ProjectDetails project={project} />
-  //             <div className=''>
-  //               <div className=''>
-  //                 {/* Application Form - Only visible to freelancers */}
-  //                 {role === Role.FREELANCER && (
-  //                   <ProjectApplication projectId={project.id} />
-  //                 )}
+  return (
+    <>
+      <section className='container mt-12'>
+        <BreadCrumb pageName='Project Details' />
 
-  //                 {/* Submission List - Only visible to clients */}
-  //                 {role === Role.CLIENT && (
-  //                   <ProjectSubmissions projectId={project.id} />
-  //                 )}
-  //               </div>
-  //             </div>
-  //           </>
-  //         )}
-  //       </section>
-  //     </>
-  //   );
-  // }
+        {project && (
+          <>
+            <ProjectDetailsHeader project={project} />
+            <ProjectDetailsView project={project} />
+            <div className='mt-8'>
+              {/* Application Form - Only visible to freelancers */}
+              {role === Role.FREELANCER && (
+                <ProjectApplication projectId={project.projectId} />
+              )}
 
-  return <div>Temporary fix</div>;
+              {/* Submission List - Only visible to clients */}
+              {role === Role.CLIENT && (
+                <ProjectSubmissions projectId={project.projectId} />
+              )}
+            </div>
+          </>
+        )}
+      </section>
+      {!isLoading && !project && (
+        <div className='text-center text-gray-500'>No projects found</div>
+      )}
+    </>
+  );
 }
+
 export default ProjectPage;

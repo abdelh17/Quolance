@@ -1,5 +1,5 @@
 import { useGetAllProjects } from '@/api/projects-api';
-import { ProjectType } from '@/constants/types/projectTypes';
+import { ProjectType } from '@/constants/types/project-types';
 import Loading from '@/components/loading';
 import ProjectCard from '@/components/ui/projects/ProjectCard';
 import ProjectFilter from '@/components/ui/projects/ProjectFilter';
@@ -23,7 +23,6 @@ function ProjectsContainer() {
             src={heroImage2}
             className='h-full w-full object-cover'
           />
-        
         </div>
         <div className='relative mx-auto max-w-7xl py-24 sm:py-32 lg:px-8 lg:py-40'>
           <div className='pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32'>

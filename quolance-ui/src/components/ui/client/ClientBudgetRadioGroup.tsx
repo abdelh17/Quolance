@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BUDGET_OPTIONS } from '@/constants/types/formTypes';
+import { BUDGET_OPTIONS } from '@/constants/types/form-types';
 
 interface ClientBudgetRadioGroupProps {
   name: string;

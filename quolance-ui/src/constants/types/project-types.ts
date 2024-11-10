@@ -96,3 +96,20 @@ export type PostProjectType = {
   deliveryDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
 };
+
+export const formatPriceRange = (priceRange: string) => {
+  switch (priceRange) {
+    case 'LESS_500':
+      return `$0 – $500`;
+    case 'BETWEEN_500_AND_1000':
+      return '$500 – $1000';
+    case 'BETWEEN_1000_5000':
+      return '$1000 – $5000';
+    case 'BETWEEN_5000_10000':
+      return '$5000 – $10000';
+    case 'MORE_10000':
+      return '$10000+';
+    default:
+      return priceRange;
+  }
+};

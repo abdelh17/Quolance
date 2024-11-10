@@ -18,7 +18,8 @@ type ApplicationFormFields = {
 export default function ProjectApplication({
   projectId,
 }: ApplicationFormProps) {
-  const { register, formState, handleSubmit } = useForm<ApplicationFormFields>();
+  const { register, formState, handleSubmit } =
+    useForm<ApplicationFormFields>();
   const { user } = useAuthGuard({ middleware: 'auth' });
   const {
     mutateAsync: mutateApplication,
@@ -36,7 +37,7 @@ export default function ProjectApplication({
   };
 
   return (
-    <div className='box-shadow-1 mt-6 rounded-lg bg-white p-8 shadow-lg'>
+    <div className='box-shadow-1 rounded-lg bg-white p-8 shadow-lg'>
       <h3 className='heading-3 text-primary mb-6'>Your Application</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='mb-6'>
@@ -61,7 +62,7 @@ export default function ProjectApplication({
         <div className='mt-8'>
           <Button
             variant='default'
-            className="bg-b300 hover:text-n900 relative flex w-full items-center justify-center overflow-hidden rounded-full text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] xl:w-min xl:px-10"
+            className='bg-b300 hover:text-n900 relative flex w-full items-center justify-center overflow-hidden rounded-full text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] xl:w-min xl:px-10'
             type='submit'
             onSubmit={handleSubmit(onSubmit)}
           >

@@ -1,18 +1,24 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import { PostProjectType } from '@/constants/types/projectTypes';
+import { PostProjectType } from '@/constants/types/project-types';
+
+//
+// /projects/ => query key: ['projects']
+// /projects/:id => query key: ['project', projectId]
+// /projects?status=APPROVED => query key: ['projects, {status: 'APPROVED'}]
+
 /*--- Hooks ---*/
-// export const useGetProjectInfo = (projectId: number) => {
-//   return useQuery({
-//     queryKey: ['project-info', projectId], // Add projectId to queryKey, important for caching
-//     queryFn: () => getProjectInfo(projectId),
-//     enabled: !!projectId,
-//   });
-// };
+export const useGetProjectInfo = (projectId: number) => {
+  return useQuery({
+    queryKey: ['projects', projectId],
+    queryFn: () => getProjectInfo(projectId),
+    enabled: !!projectId,
+  });
+};
 
 export const useGetAllProjects = () => {
   return useQuery({
-    queryKey: ['all-projects'],
+    queryKey: ['projects'],
     queryFn: () => getAllProjects(),
   });
 };
@@ -24,14 +30,14 @@ export const usePostProject = (options?: {
   return useMutation({
     mutationFn: postProject,
     onSuccess: options?.onSuccess,
-    onError: options?.onError
+    onError: options?.onError,
   });
 };
 
 // /*--- Query functions ---*/
-// const getProjectInfo = async (projectId: number) => {
-//   return DATA_ProjectList.find((project) => project.id === projectId);
-// };
+const getProjectInfo = async (projectId: number) => {
+  return httpClient.get(`/api/public/projects/${projectId}`);
+};
 
 const getAllProjects = async () => {
   return httpClient.get('/api/public/projects/all');

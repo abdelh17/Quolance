@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -13,10 +13,9 @@ import StepTwo from '@/components/postProjectSteps/StepTwo';
 import { useSteps } from '@/util/context/StepsContext';
 
 import { usePostProject } from '@/api/projects-api';
-import { PostProjectType } from '@/constants/types/projectTypes';
+import { PostProjectType } from '@/constants/types/project-types';
 
 import { showToast } from '@/util/context/ToastProvider';
-
 
 const stepsComponents = [StepOne, StepTwo, StepThree, StepFour];
 

@@ -7,7 +7,7 @@ import {
   EXPECTED_DELIVERY_OPTIONS,
   EXPERIENCE_LEVEL_OPTIONS,
   getLabelFromValue,
-} from '@/constants/types/formTypes';
+} from '@/constants/types/form-types';
 
 function StepFour({
   handleBack,
