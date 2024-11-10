@@ -27,7 +27,7 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 
 1. Clone the repository:
    ```sh
-   git clone [https://github.com/your-username/Quolance.git](https://github.com/abdelh17/Quolance.git)
+   git clone https://github.com/abdelh17/Quolance.git
    ```
 
 ---
@@ -42,6 +42,15 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 2. Install dependencies:
    ```sh
    npm install
+   ```
+3. Add `.env.local` file under the `quolance-ui` directory.
+   It should contain the following:
+   ```plaintext
+   NEXT_PUBLIC_BASE_URL=http://localhost:8080
+   ```
+4. Run the frontend:
+   ```sh
+   npm run dev
    ```
 
 ---
