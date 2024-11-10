@@ -154,4 +154,6 @@ cd quolance-api
 - [Infrastructure and tools](https://github.com/abdelh17/Quolance/wiki/Infrastructure-and-tools)
 - [Name Conventions](https://github.com/abdelh17/Quolance/wiki/Name-Conventions)
 - [Testing Plan and Continuous Integration](https://github.com/abdelh17/Quolance/wiki/Testing-Plan-and-Continuous-Integration)
+- [Performance](https://github.com/abdelh17/Quolance/wiki/Performance)
+- [Security](https://github.com/abdelh17/Quolance/wiki/Security)
 - [Deployment Plan and Infrastructure ](https://github.com/abdelh17/Quolance/wiki/Deployment-Plan-and-Infrastructure)
