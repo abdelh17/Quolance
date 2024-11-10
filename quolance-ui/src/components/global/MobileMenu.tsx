@@ -26,12 +26,12 @@ function MobileMenu({
           showMobileMenu
             ? 'translate-y-0  opacity-30 '
             : ' translate-y-[-100%] opacity-0 delay-500 '
-        } bg-r50 fixed top-0 z-[998] h-full w-full duration-700 lg:hidden ltr:left-0 rtl:right-0`}
+        } bg-r50 fixed top-0 z-[998] h-full w-full duration-700 4xl:hidden ltr:left-0 rtl:right-0`}
         onClick={() => setShowMobileMenu(false)}
       ></div>
 
       <div
-        className={`bg-r300 fixed top-0 z-[999] flex h-full w-3/4 flex-col items-start justify-start gap-8 text-white/80 duration-700 min-[500px]:w-1/2 lg:hidden lg:gap-20 ltr:left-0 rtl:right-0 ${
+        className={`bg-r300 fixed top-0 z-[999] flex h-full w-3/4 flex-col items-start justify-start gap-8 text-white/80 duration-700 min-[500px]:w-1/2 4xl:hidden lg:gap-20 ltr:left-0 rtl:right-0 ${
           showMobileMenu
             ? 'visible translate-y-0 opacity-100  delay-500'
             : ' invisible translate-y-[100%] opacity-50'

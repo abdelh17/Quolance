@@ -2,7 +2,7 @@ package com.quolance.quolance_api.entities.enums;
 
 public enum ExpectedDeliveryTime {
     IMMEDIATELY,
-    THIS_MONTH,
-    NEXT_FEW_MONTHS,
+    WITHIN_A_WEEK,
+    WITHIN_A_MONTH,
     FLEXIBLE
 }

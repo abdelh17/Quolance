@@ -12,6 +12,7 @@ const schema = z.object({
     .string()
     .min(1, 'Project Description is required')
     .max(500),
+  location: z.string().min(1, 'Location is required').max(255),
 });
 
 function StepOne({ handleNext }: { handleNext: () => void }) {
@@ -65,6 +66,18 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
       ></textarea>
       {errors.projectDescription && (
         <p className='text-red-500'>{errors.projectDescription.message}</p>
+      )}
+
+      <p className='pb-4 pt-6 lg:pt-10'>
+        Location <span className='text-red-500'>* </span>
+      </p>
+      <input
+        type='text'
+        {...register('location')}
+        className='bg-n30 w-full rounded-lg p-3 outline-none'
+      />
+      {errors.location && (
+        <p className='text-red-500'>{errors.location.message}</p>
       )}
 
       <div className='mt-8 flex justify-center'>

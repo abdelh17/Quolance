@@ -3,6 +3,7 @@
 import ExpectedDeliveryRadioGroup from '@/components/ui/client/ExpectedDeliveryRadioGroup';
 import { useSteps } from '@/util/context/StepsContext';
 
+
 function StepThree({
   handleNext,
   handleBack,
@@ -26,8 +27,8 @@ function StepThree({
         Expected Delivery <span className='text-red-500'>* </span>
       </p>
       <ExpectedDeliveryRadioGroup
-        name='expectedDelivery'
-        value={formData.expectedDelivery || ''}
+        name='expectedDeliveryTime'
+        value={formData.expectedDeliveryTime || ''}
         onChange={handleChange}
       />
       <p className='pb-4 pt-6 lg:pt-10'>
