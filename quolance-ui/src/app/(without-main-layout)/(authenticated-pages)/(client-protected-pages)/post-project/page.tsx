@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 
 import StepFour from '@/components/postProjectSteps/StepFour';
@@ -9,6 +11,11 @@ import StepThree from '@/components/postProjectSteps/StepThree';
 import StepTwo from '@/components/postProjectSteps/StepTwo';
 
 import { useSteps } from '@/util/context/StepsContext';
+
+import { usePostProject } from '@/api/projects-api';
+import { PostProjectType } from '@/constants/types/project-types';
+
+import { showToast } from '@/util/context/ToastProvider';
 
 const stepsComponents = [StepOne, StepTwo, StepThree, StepFour];
 
@@ -20,13 +27,34 @@ const stepsName = [
 ];
 
 function PostsTasksSteps() {
+  const router = useRouter();
+
   const { currentStep, setCurrentStep, formData } = useSteps();
 
   const StepComponent = stepsComponents[currentStep];
 
-  const submitForm = () => {
-    console.log('Form submitted:', formData);
-    // Add your form submission logic here
+  const { mutateAsync: mutateProject } = usePostProject({
+    onSuccess: () => {
+      console.log('Project created successfully');
+      showToast('Project created successfully', 'success');
+    },
+    onError: (error) => {
+      console.log('Error creating project:', error);
+      showToast('Error creating project', 'error');
+    },
+  });
+
+  const submitForm = async () => {
+    try {
+      console.log('Form submitted:', formData);
+      const project: PostProjectType = formData;
+      await mutateProject({ ...project });
+
+      // push to home page
+      router.push('/projects');
+    } catch (err) {
+      console.log('Error in submitForm:', err);
+    }
   };
 
   const handleNext = () => {

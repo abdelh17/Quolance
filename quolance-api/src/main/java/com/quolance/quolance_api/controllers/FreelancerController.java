@@ -2,6 +2,7 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.ApplicationDto;
+import com.quolance.quolance_api.dtos.PortfolioDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.User;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FreelancerController {
     private final FreelancerService freelancerService;
-
+    
     @PostMapping("/submit-application")
     @Operation(
             summary = "Create a new application on a project.",
@@ -55,4 +56,37 @@ public class FreelancerController {
         ProjectDto project = freelancerService.getProjectById(id);
         return ResponseEntity.ok(project);
     }
+
+    @PostMapping("/portfolios")
+    @Operation(summary = "Create a new portfolio item for the freelancer.")
+    public ResponseEntity<PortfolioDto> createPortfolio(@RequestBody PortfolioDto portfolioDto) {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        PortfolioDto createdPortfolio = freelancerService.createPortfolio(portfolioDto, freelancer);
+        return ResponseEntity.ok(createdPortfolio);
+    }
+
+    @GetMapping("/portfolios")
+    @Operation(summary = "Get all portfolios of a freelancer.")
+    public ResponseEntity<List<PortfolioDto>> getAllPortfolios() {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        List<PortfolioDto> portfolios = freelancerService.getAllPortfoliosByFreelancer(freelancer.getId());
+        return ResponseEntity.ok(portfolios);
+    }
+
+    @PutMapping("/portfolio/{id}")
+    @Operation(summary = "Update a portfolio.")
+    public ResponseEntity<PortfolioDto> updatePortfolio(@PathVariable Long id, @RequestBody PortfolioDto portfolioDto) {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        PortfolioDto updatedPortfolio = freelancerService.updatePortfolio(id, portfolioDto, freelancer);
+        return ResponseEntity.ok(updatedPortfolio);
+    }
+
+    @DeleteMapping("/portfolio")
+    @Operation(summary = "Delete a portfolio.")
+    public ResponseEntity<String> deletePortfolio() {
+         User freelancer = SecurityUtil.getAuthenticatedUser();
+         freelancerService.deletePortfolioByFreelancerId(freelancer.getId());
+         return ResponseEntity.ok("Portfolio deleted successfully");
+    }
+
 }

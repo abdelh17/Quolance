@@ -2,16 +2,19 @@ package com.quolance.quolance_api.services.impl;
 
 import com.quolance.quolance_api.dtos.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.ApplicationDto;
+import com.quolance.quolance_api.dtos.PortfolioDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.ApplicationService;
 import com.quolance.quolance_api.services.FreelancerService;
+import com.quolance.quolance_api.services.PortfolioService;
 import com.quolance.quolance_api.services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -19,6 +22,7 @@ import java.util.List;
 public class FreelancerServiceImpl implements FreelancerService {
     private final ApplicationService applicationService;
     private final ProjectService projectService;
+    private final PortfolioService portfolioService;
 
     @Override
     public ApplicationDto submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
@@ -56,4 +60,27 @@ public class FreelancerServiceImpl implements FreelancerService {
     public ProjectDto getProjectById(Long id) {
         return projectService.getProjectById(id);
     }
+
+    @Override
+    public PortfolioDto createPortfolio(PortfolioDto portfolioDto, User freelancer) {
+        PortfolioDto savedPorfolioDto = portfolioService.createPortfolio(portfolioDto, freelancer);
+        return savedPorfolioDto;
+    }
+
+    @Override
+    public PortfolioDto updatePortfolio(Long portfolioId, PortfolioDto portfolioDto, User freelancer) {
+        PortfolioDto updatedPortfolioDto = portfolioService.updatePortfolio(portfolioId, portfolioDto);
+        return updatedPortfolioDto;
+    }
+
+    @Override
+    public List<PortfolioDto> getAllPortfoliosByFreelancer(Long clientId) {
+        List<PortfolioDto> projects = portfolioService.getPortfolioByFreelancerId(clientId);
+        return projects;
+    }
+
+    public void deletePortfolioByFreelancerId(Long freelancerId) {
+        portfolioService.deletePortfolioByFreelancerId(freelancerId);
+    }
+
 }

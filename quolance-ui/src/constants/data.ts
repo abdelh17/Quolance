@@ -1,6 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ProjectType } from '@/constants/types/project-types';
-import { UserType } from '@/constants/types/user-types';
 
 export const expertiseNeeded = [
   'Frontend Developer',
@@ -94,7 +92,7 @@ export const headerMenu = [
   },
 ];
 
-export const DATA_ProjectList: ProjectType[] = [
+export const DATA_ProjectList = [
   {
     id: 1,
     name: 'Real-Time Video Streaming Platform Development',
@@ -254,57 +252,6 @@ export const DATA_ProjectList: ProjectType[] = [
     datePosted: '2024-10-10',
     status: 'closed',
     applicants: 10,
-  },
-];
-
-export const DATA_Users: UserType[] = [
-  {
-    id: '1',
-    name: 'John Admin',
-    email: 'john.admin@quolance.com',
-    role: 'admin',
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'David Client',
-    email: 'david.client@gmail.com',
-    role: 'client',
-    createdAt: '2024-01-15T00:00:00Z',
-    updatedAt: '2024-01-15T00:00:00Z',
-  },
-  {
-    id: '3',
-    name: 'Mike Freelancer',
-    email: 'mike.freelancer@gmail.com',
-    role: 'freelancer',
-    createdAt: '2024-02-01T00:00:00Z',
-    updatedAt: '2024-02-01T00:00:00Z',
-  },
-  {
-    id: '4',
-    name: 'Sarah Johnson',
-    email: 'sarah.j@gmail.com',
-    role: 'freelancer',
-    createdAt: '2024-02-05T00:00:00Z',
-    updatedAt: '2024-02-05T00:00:00Z',
-  },
-  {
-    id: '5',
-    name: 'Alex Chen',
-    email: 'alex.chen@gmail.com',
-    role: 'freelancer',
-    createdAt: '2024-02-10T00:00:00Z',
-    updatedAt: '2024-02-10T00:00:00Z',
-  },
-  {
-    id: '6',
-    name: 'Emma Wilson',
-    email: 'emma.w@gmail.com',
-    role: 'freelancer',
-    createdAt: '2024-02-15T00:00:00Z',
-    updatedAt: '2024-02-15T00:00:00Z',
   },
 ];
 

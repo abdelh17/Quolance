@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "ed6ba8be-b86e-48e4-a717-eb51c1982419",
+		"_postman_id": "c90c9617-d429-4fff-81dc-8bdc92bea019",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39178284"
+		"_exporter_id": "39151315",
+		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-c90c9617-d429-4fff-81dc-8bdc92bea019?action=share&source=collection_link&creator=39151315"
 	},
 	"item": [
 		{
@@ -319,7 +320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectDescription\": \"string\"\n  }",
+							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectCategory\": \"WEB_DEVELOPMENT\",\n  \"projectTitle\": \"New project\",\n  \"projectDescription\": \"New project description\",\n  \"priceRange\": \"LESS_500\",\n  \"experienceLevel\": \"JUNIOR\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\",\n  \"deliveryDate\": \"2024-11-09\",\n  \"location\": \"Montreal\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

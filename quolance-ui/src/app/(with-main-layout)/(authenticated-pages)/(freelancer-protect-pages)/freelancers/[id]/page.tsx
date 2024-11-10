@@ -193,7 +193,7 @@ function WorkerDynamicProfile() {
                   </li>
                 ))}
               </ul>
-              {activeTab === 'Projects' && (
+              {/* {activeTab === 'Projects' && (
                 <div className='flex flex-col gap-5'>
                   {freelancerServices.map((worker) => (
                     <ProjectCard
@@ -208,7 +208,7 @@ function WorkerDynamicProfile() {
                     />
                   ))}
                 </div>
-              )}
+              )} */}
 
               {activeTab === 'Works' && (
                 <div className='flex flex-col gap-4 pt-8'>

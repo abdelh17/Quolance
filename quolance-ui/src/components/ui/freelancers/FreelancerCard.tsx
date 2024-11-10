@@ -93,7 +93,11 @@ function FreelancerCard({
                       <div className='r-hex3 absolute -left-0.5 -top-[19px] z-30 inline-block w-[86px] overflow-hidden'>
                         <div className='r-hex-inner3'>
                           <div
-                            className={`${img} r-hex-inner-3 before:h-[86px] before:bg-cover`}
+                            className='r-hex-inner-3 before:h-[86px] before:bg-cover'
+                            style={{
+                              backgroundImage: `url('/images/freelancer_default_icon.png')`,
+                              height: '86px',
+                            }}
                           ></div>
                         </div>
                       </div>

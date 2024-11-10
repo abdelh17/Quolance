@@ -95,7 +95,7 @@ export default function ProjectSubmissions({
   };
 
   return (
-    <section className='sbp-30 stp-30'>
+    <section className='sbp-30'>
       <div className='container'>
         <div className='flex items-center justify-between'>
           <div>
