@@ -20,6 +20,12 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 | Sathurthikan Saththyvel    | 40213455   | SSathu           | sathuow@gmail.com              |
 | Zakaria El Manar El Bouanani| 40190432   | Zakaria0907      | zakaria.elmanar@gmail.com      |
 
+## Diversity Statement
+Quolance is designed to be inclusive and accessible to everyone, regardless of their background, race, gender, age or abilities. We firmly believe that diversity makes our platform stronger and helps us create better solutions for a wide range of users. By embracing and showing that different perspectives and experiences are encouraged, we can ensure that Quolance serves a variety of needs and remains fair to all individuals.
+
+Our system will be user-friendly and accessible to everyone that might want to use the services of Quolance, aiming to break down barriers that might exclude certain groups.
+
+Ultimately, our goal is to build a platform that promotes equality, respect, and positive impact while fostering a community where all users feel valued and supported.
 
 ## Developer Guide
 
