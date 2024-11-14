@@ -9,7 +9,7 @@ const aboutUsData = [
   },
   {
     question: "What is the platform?",
-    answer: "Quolance leverages advanced technology, including machine learning and AI-driven moderation, to dynamically match freelancers and projects based on skills, past performance, and other key metrics. We aim to provide:\n- Intelligent project matching for freelancers and clients.\n- Profile optimization and career growth tools for freelancers.\n- Built-in tools for communication, project management, and collaboration.\n- Transparent ratings to foster trust and long-term partnerships.\n- Cost-effective, commission-free transactions to support freelancers directly."
+    answer: "Quolance leverages advanced technology, including machine learning and AI-driven moderation, to dynamically match freelancers and projects based on skills, past performance, and other key metrics. We aim to provide: Intelligent project matching for freelancers and clients. Profile optimization and career growth tools for freelancers. Built-in tools for communication, project management, and collaboration. Transparent ratings to foster trust and long-term partnerships. Cost-effective, commission-free transactions to support freelancers directly."
   },
   {
     question: "What is our impact and innovation?",
