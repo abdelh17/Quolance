@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 interface AccordionProps {
   question: string;
-  answer: string;
+  answer: string | JSX.Element;
 }
 
 const FAQAccordion: React.FC<AccordionProps> = ({ question, answer }) => {

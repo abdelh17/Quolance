@@ -1,6 +1,7 @@
 // pages/faq/index.tsx
 import React from 'react';
-import FAQList from '@/components/ui/faqList';
+import FAQList from '@/components/ui/CollapsibleList';
+import CollapsibleList from '@/components/ui/CollapsibleList';
 
 const faqs = [
   {
@@ -27,7 +28,9 @@ const FAQPage: React.FC = () => {
     <div className="flex justify-center p-8">
       <div className="w-[80%] max-w-3xl">
         <h1 className="heading-2 mb-6 text-center">Frequently Asked Questions</h1>
-        <FAQList faqs={faqs} />
+        
+        {/* Collapsible Section */}
+          <CollapsibleList items={faqs} />
       </div>
     </div>
   );
