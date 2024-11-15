@@ -5,6 +5,7 @@ import com.quolance.quolance_api.dtos.ApplicationDto;
 import com.quolance.quolance_api.dtos.ProjectDto;
 import com.quolance.quolance_api.dtos.RejectProjectRequestDto;
 import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +19,11 @@ public interface ProjectService {
 
     ProjectDto getProjectById(Long id);
 
-    Optional<Project> getProjectEntityById(Long id);
-
-    List<ApplicationDto> getApplicationsToProject(Long projectId);
+    Project getProjectEntityById(Long projectId);
 
     ProjectDto approveProject(Long projectId);
+
+    void updateProjectStatus(Long projectId, ProjectStatus newStatus);
 
     ProjectDto rejectProject(RejectProjectRequestDto rejectProjectRequestDto);
 

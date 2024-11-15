@@ -12,6 +12,8 @@ import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,10 +21,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
-    private final ApplicationService applicationService;
 
     @Override
     public ProjectDto createProject(Project project) {
+
         Project savedProject = projectRepository.save(project);
         return ProjectDto.fromEntity(savedProject);
     }
@@ -41,32 +43,83 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDto getProjectById(Long id) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+    public ProjectDto getProjectById(Long projectId) {
+        Project project = getProjectEntityById(projectId);
         return ProjectDto.fromEntity(project);
     }
 
     @Override
-    public Optional<Project> getProjectEntityById(Long id) {
-        return projectRepository.findById(id);
+    public Project getProjectEntityById(Long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() ->
+                ApiException.builder()
+                        .status(404)
+                        .message("No Project found with ID: " + projectId)
+                        .build());
+        return project;
     }
 
     @Override
-    public List<ApplicationDto> getApplicationsToProject(Long projectId) {
-        return applicationService.getApplicationsByProjectId(projectId);
+    public void updateProjectStatus(Long projectId, ProjectStatus newStatus) {
+        Project project = getProjectEntityById(projectId);
+
+        if (project.getProjectStatus() == ProjectStatus.CLOSED) {
+            throw ApiException.builder()
+                    .status(423)
+                    .message("Project is closed and cannot be updated.")
+                    .build();
+        }
+
+        if (project.getProjectStatus() == newStatus) {
+            throw ApiException.builder()
+                    .status(409)
+                    .message("Project is already in status: " + newStatus)
+                    .build();
+        }
+
+        switch (newStatus) {
+            case OPEN:
+                if (project.getProjectStatus() == ProjectStatus.PENDING) {
+                    project.setProjectStatus(ProjectStatus.OPEN);
+                    projectRepository.save(project);
+                }
+                break;
+
+            case CLOSED:
+                if (project.getProjectStatus() == ProjectStatus.PENDING) {
+                    project.setProjectStatus(ProjectStatus.CLOSED);
+                    project.setVisibilityExpirationDate(LocalDate.now().plusDays(3));
+                    projectRepository.save(project);
+
+                }
+                break;
+
+            case REJECTED:
+                if (project.getProjectStatus() == ProjectStatus.PENDING) {
+                    project.setProjectStatus(ProjectStatus.REJECTED);
+                    projectRepository.save(project);
+                }
+                break;
+
+            default:
+                throw ApiException.builder()
+                        .status(400)
+                        .message("Invalid status update request.")
+                        .build();
+        }
+
+        throw ApiException.builder()
+                .status(422)
+                .message("Project cannot be updated to the requested status.")
+                .build();
     }
 
     @Override
     public ProjectDto approveProject(Long projectId) {
-        Optional<Project> project = getProjectEntityById(projectId);
-        if (project.isEmpty()) {
-            throw new ApiException("Project not found with id: " + projectId);
-        }
-        Project projectToApprove = project.get();
+
+        Project projectToApprove = getProjectEntityById(projectId);
 
         if (projectToApprove.getProjectStatus() == ProjectStatus.PENDING) {
-            projectToApprove.setProjectStatus(ProjectStatus.APPROVED);
+            projectToApprove.setProjectStatus(ProjectStatus.OPEN);
             projectToApprove = projectRepository.save(projectToApprove);
         } else {
             throw new ApiException("Project cannot be approved at this stage.");
@@ -76,11 +129,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto rejectProject(RejectProjectRequestDto rejectProjectRequestDto) {
-        Optional<Project> project = getProjectEntityById(rejectProjectRequestDto.getProjectId());
-        if (project.isEmpty()) {
-            throw new ApiException("Project not found with id: " + rejectProjectRequestDto.getProjectId());
-        }
-        Project projectToReject = project.get();
+        Project projectToReject = getProjectEntityById(rejectProjectRequestDto.getProjectId());
 
         if (projectToReject.getProjectStatus() == ProjectStatus.PENDING) {
             projectToReject.setProjectStatus(ProjectStatus.REJECTED);

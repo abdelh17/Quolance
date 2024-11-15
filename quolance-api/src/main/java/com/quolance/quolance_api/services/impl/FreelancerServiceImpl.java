@@ -20,15 +20,15 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FreelancerServiceImpl implements FreelancerService {
-    private final ApplicationService applicationService;
     private final ProjectService projectService;
+    private final ApplicationService applicationService;
+
     private final PortfolioService portfolioService;
 
     @Override
     public ApplicationDto submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
         // Retrieve the project entity
-        Project project = projectService.getProjectEntityById(applicationCreateDto.getProjectId())
-                .orElseThrow(() -> new ApiException("Project not found"));
+        Project project = projectService.getProjectEntityById(applicationCreateDto.getProjectId());
 
         // Check if the freelancer has already applied to this project
         if (applicationService.hasFreelancerAppliedToProject(freelancer.getId(), project.getId())) {

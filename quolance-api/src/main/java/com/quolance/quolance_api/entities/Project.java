@@ -40,6 +40,10 @@ public class Project extends AbstractEntity {
     @Builder.Default
     private ProjectStatus projectStatus = ProjectStatus.PENDING;
 
+    private LocalDate expirationDate;
+
+    private LocalDate visibilityExpirationDate;
+
     @ManyToOne
     private User client;
 
@@ -47,7 +51,6 @@ public class Project extends AbstractEntity {
     private User selectedFreelancer;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    // TODO: Check if orphanRemoval is necessary, consider not deleting entities
     private List<Application> applications;
 
     @ElementCollection(targetClass = Tag.class)
@@ -58,5 +61,24 @@ public class Project extends AbstractEntity {
 
     @Version
     private Long version;
+
+    /**
+     * Checks if the project is owned by a particular client.
+     *
+     * @param clientId the ID of the client to check ownership for
+     * @return true if the project is owned by the client, false otherwise
+     */
+    public boolean isOwnedBy(Long clientId) {
+        return client != null && client.getId().equals(clientId);
+    }
+
+    /**
+     * Checks if the project is in a state that allows selecting a freelancer.
+     *
+     * @return true if the project is approved and no freelancer is selected, false otherwise
+     */
+    public boolean isProjectApproved() {
+        return this.projectStatus == ProjectStatus.OPEN;
+    }
 
 }
