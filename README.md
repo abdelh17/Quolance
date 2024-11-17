@@ -1,5 +1,26 @@
 # Quolance
 
+## Release Demos
+[Release 1](https://drive.google.com/file/d/1nvuJNa7pkpi7503dfrbAA316UC9RhYdX/view?usp=sharing)
+
+## Important files
+| File                                                                                                                                                                                                                              | Purpose                                                                                                                                |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| [quolance-ui/src/api/auth-api.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/api/auth-api.ts)                                                                                                                 | This code provides an authentication guard that manages user login status, redirects, and handles login/logout actions.                |
+| [quolance-ui/src/components/role-guard.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/components/role-guard.tsx)                                                                                              | This component provides a role-based access guard that renders child content only if the user's role matches one of the allowed roles. |
+| [quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java)                         | This file is used to recover the authenticated user, in the controllers.                                                               |
+| [quolance-api/src/main/java/com/quolance/quolance_api/services/auth/AuthServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/auth/AuthServiceImpl.java) | Provides session-based authentication.                                                                                                 |
+| [quolance-api/src/main/java/com/quolance/quolance_api/services/impl/UserServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/impl/UserServiceImpl.java)                                                                                                                                       | User creation as well as password reset and core email sending on registration.                                                        |
+
+## Important tests
+|Test|Purpose|
+|----|-------|
+|[contextLoads](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/QuolanceApiApplicationTests.java)|Verifies that system correctly initializes|
+|[testCreateProject](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/ClientControllerIT.java)|Validates clients can create new projects|
+|[testSubmitApplication](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/FreelancerControllerIT.java)|Ensures freelancers can submit applications to projects|
+|[testClientLogin](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/ClientControllerIT.java)|Verifies client authentication and session works correctly|
+|[testFreelancerLogin](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/FreelancerControllerIT.java)|Verifies freelancer authentication and session works correctly|
+
 
 ## Description
 
