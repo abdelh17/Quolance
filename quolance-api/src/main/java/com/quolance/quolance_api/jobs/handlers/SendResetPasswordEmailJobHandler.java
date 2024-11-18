@@ -1,14 +1,13 @@
 package com.quolance.quolance_api.jobs.handlers;
 
 import com.quolance.quolance_api.configs.ApplicationProperties;
-import com.quolance.quolance_api.services.EmailService;
 import com.quolance.quolance_api.entities.PasswordResetToken;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
 import java.util.List;
 
-import com.quolance.quolance_api.services.auth.EmailServiceImpl;
+import com.quolance.quolance_api.services.auth.impl.EmailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.jobs.lambdas.JobRequestHandler;
 import org.springframework.stereotype.Component;

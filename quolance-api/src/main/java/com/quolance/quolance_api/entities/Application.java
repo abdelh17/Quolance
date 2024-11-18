@@ -18,7 +18,7 @@ public class Application extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private ApplicationStatus status = ApplicationStatus.APPLIED;
+    private ApplicationStatus applicationStatus = ApplicationStatus.APPLIED;
 
     @ManyToOne
     @JoinColumn(name = "projectId")
@@ -30,4 +30,14 @@ public class Application extends AbstractEntity {
 
     @Version
     private Long version;
+
+    /**
+     * Checks if the application is owned by a particular freelancer.
+     *
+     * @param freelancerId the ID of the client to check ownership for
+     * @return true if the application is owned by the freelancer, false otherwise
+     */
+    public boolean isOwnedBy(Long freelancerId) {
+        return freelancer != null && freelancer.getId().equals(freelancerId);
+    }
 }

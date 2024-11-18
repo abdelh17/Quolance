@@ -3,7 +3,7 @@ package com.quolance.quolance_api.controllers;
 import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.services.UserService;
+import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -46,6 +46,7 @@ public class UsersController {
         UserResponseDto user = userService.createAdmin(request);
         return ResponseEntity.ok(user);
     }
+
     @GetMapping("/verify-email")
     @Operation(
             summary = "Verify the email of the user",

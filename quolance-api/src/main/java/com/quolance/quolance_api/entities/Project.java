@@ -16,12 +16,17 @@ import java.util.List;
 @Setter
 @Table(name = "project")
 public class Project extends AbstractEntity {
-    @Enumerated(EnumType.STRING)
-    private ProjectCategory category;
 
     private String title;
 
     private String description;
+
+    private LocalDate expirationDate;
+
+    private LocalDate visibilityExpirationDate;
+
+    @Enumerated(EnumType.STRING)
+    private ProjectCategory category;
 
     @Enumerated(EnumType.STRING)
     private PriceRange priceRange;
@@ -32,17 +37,15 @@ public class Project extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private ExpectedDeliveryTime expectedDeliveryTime;
 
-    private LocalDate deliveryDate;
-
-    private String location;
-
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ProjectStatus projectStatus = ProjectStatus.PENDING;
 
-    private LocalDate expirationDate;
-
-    private LocalDate visibilityExpirationDate;
+    @ElementCollection(targetClass = Tag.class)
+    @CollectionTable(name = "projectTags", joinColumns = @JoinColumn(name = "projectId"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tag")
+    private List<Tag> tags;
 
     @ManyToOne
     private User client;
@@ -53,11 +56,6 @@ public class Project extends AbstractEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Application> applications;
 
-    @ElementCollection(targetClass = Tag.class)
-    @CollectionTable(name = "projectTags", joinColumns = @JoinColumn(name = "projectId"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tag")
-    private List<Tag> tags;
 
     @Version
     private Long version;
@@ -75,10 +73,19 @@ public class Project extends AbstractEntity {
     /**
      * Checks if the project is in a state that allows selecting a freelancer.
      *
-     * @return true if the project is approved and no freelancer is selected, false otherwise
+     * @return true if the project is approved, false otherwise
      */
     public boolean isProjectApproved() {
         return this.projectStatus == ProjectStatus.OPEN;
+    }
+
+    /**
+     * Checks if a freelancer has already been selected for this project.
+     *
+     * @return true if a freelancer has been selected, false otherwise
+     */
+    public boolean hasSelectedFreelancer() {
+        return this.selectedFreelancer != null;
     }
 
 }

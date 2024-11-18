@@ -58,10 +58,6 @@ public class User extends AbstractEntity implements UserDetails {
     @JoinColumn(name = "profileId")
     private Profile profile;
 
-    @OneToOne
-    @JoinColumn(name = "portfolioId")
-    private Portfolio portfolio;
-
     @Setter
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationCode verificationCode;
