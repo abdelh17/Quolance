@@ -1,77 +1,64 @@
 #!/bin/bash
 
-# Define color codes
-RED='\033[0;31m'
-NC='\033[0m' # No color
+# Determine the script's directory and project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Menu options
-options=("Manage Containers" "Exit")
-options_desc=("Create, start, stop, or destroy containers" "Exit the script")
+# Define paths for .env and docker-compose.yml
+ENV_FILE="$PROJECT_ROOT/.env"
+DOCKER_COMPOSE_FILE="$PROJECT_ROOT/infrastructure/docker-compose.yaml"
 
-# Variables for menu navigation
-selected=0
-num_options=${#options[@]}
+# Define options
+options=("Create and start container" "Stop container" "Destroy container (down)" "Exit")
 
+# ASCII Art Header
 header() {
   clear
-  echo "=================================="
+  echo "============================"
+  echo "  Quolance Internal Script  "
+  echo "============================"
   echo
-  echo "     Quolance Internal Script     "
-  echo
-  echo "=================================="
-  echo
-  echo "Main Menu"
-  echo
-  echo "Choose an option (↑ or ↓ + Enter):"
+  echo "Choose an option for the Docker Compose container:"
   echo
 }
 
 # Function to print the menu
 print_menu() {
-    header
-    for i in "${!options[@]}"; do
-        if [ "$i" -eq "$selected" ]; then
-            echo -e " ${RED}>  ${options[$i]}${NC} — (${options_desc[$i]})"
-        else
-            echo "   ${options[$i]}"
-        fi
-    done
+  header
+  for i in "${!options[@]}"; do
+    echo "$((i+1)). ${options[i]}"
+  done
+  echo
 }
 
-# Main loop
+# Main loop to display the menu and handle input
 while true; do
-    print_menu
+  print_menu
+  read -p "Enter your choice (1-${#options[@]}): " choice
 
-    # Capture user input for navigation
-    read -rsn1 input
-    case "$input" in
-        A) # Up arrow
-            ((selected--))
-            if [ "$selected" -lt 0 ]; then
-                selected=$((num_options - 1))
-            fi
-            ;;
-        B) # Down arrow
-            ((selected++))
-            if [ "$selected" -ge "$num_options" ]; then
-                selected=0
-            fi
-            ;;
-        "") # Enter key
-            case "$selected" in
-                0)
-                    echo
-                    echo "Navigating to Manage Containers..."
-                    sleep 0.2
-                    ./container_manager.sh
-                    ;;
-                1)
-                    echo
-                    echo "Exiting..."
-                    sleep 0.5
-                    exit 0
-                    ;;
-            esac
-            ;;
-    esac
+  case $choice in
+    1)
+      echo "Creating and starting the container..."
+      docker-compose --env-file "$ENV_FILE" -f "$DOCKER_COMPOSE_FILE" up -d
+      read -p "Press any key to return to the menu..."
+      ;;
+    2)
+      echo "Stopping the container..."
+      docker-compose --env-file "$ENV_FILE" -f "$DOCKER_COMPOSE_FILE" stop
+      read -p "Press any key to return to the menu..."
+      ;;
+    3)
+      echo "Destroying and removing the container..."
+      docker-compose --env-file "$ENV_FILE" -f "$DOCKER_COMPOSE_FILE" down
+      read -p "Press any key to return to the menu..."
+      ;;
+    4)
+      echo "Exiting..."
+      exit 0
+      ;;
+    *)
+      echo "Invalid choice. Please enter a number between 1 and ${#options[@]}."
+      read -p "Press any key to try again..."
+      ;;
+  esac
 done
