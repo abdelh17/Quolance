@@ -10,11 +10,11 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuthGuard({ middleware: 'auth' });
+  const { user, logout } = useAuthGuard({ middleware: 'auth' });
 
   if (!user) return <Loading />;
 
-  if (!user?.verified) return <VerificationNotice />;
+  if (!user?.verified) return <VerificationNotice logout={logout}/>;
 
   return <>{children}</>;
 }
