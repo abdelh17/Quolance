@@ -474,6 +474,38 @@
 					"response": []
 				},
 				{
+					"name": "Reject Freelancer for Project BULK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[1, 2, 3]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/client/applications/bulk/reject-freelancer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"applications",
+								"bulk",
+								"reject-freelancer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete a project",
 					"request": {
 						"method": "DELETE",
@@ -803,6 +835,41 @@
 		{
 			"name": "Blog",
 			"item": []
+		},
+		{
+			"name": "Pending",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"Test@123\",\r\n    \"password\": \"Test1234\",\r\n    \"confirmPassword\": \"Test1234\",\r\n    \"role\": \"CLIENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/pending/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"pending",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

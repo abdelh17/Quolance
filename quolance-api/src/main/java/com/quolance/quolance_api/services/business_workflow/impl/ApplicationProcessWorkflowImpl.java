@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
@@ -14,9 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.Map;
 
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -36,7 +36,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
 
             validateClientProjectOwnership(project, client.getId());
             validateProjectForFreelancerSelection(project);
-            validateApplicationStatus(application, ApplicationStatus.APPLIED);
+            validateProjectForConfirmation(project);
 
             applicationService.updateApplicationStatus(application, ApplicationStatus.ACCEPTED);
             projectService.updateProjectStatus(project, ProjectStatus.CLOSED);
@@ -56,7 +56,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
 
             validateClientProjectOwnership(project, client.getId());
             validateProjectForFreelancerSelection(project);
-            validateApplicationStatus(application, ApplicationStatus.APPLIED);
+            validateProjectForConfirmation(project);
 
             applicationService.updateApplicationStatus(application, ApplicationStatus.REJECTED);
 
@@ -66,16 +66,44 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     }
 
     @Override
-    public void rejectManyApplications(List<Long> applicationId, Long clientId) {
-        // TODO: Implement this method
+    public void rejectManyApplications(List<Long> applicationIds, User client) {
+        Map<String, String> combinedResults = new LinkedHashMap<>();
+
+        for (int i = 0; i < applicationIds.size(); i++) {
+            Long applicationId = applicationIds.get(i);
+            try {
+                rejectApplication(applicationId, client);
+                combinedResults.put("[Request " + (i + 1) + "] Rejecting application with ID " + applicationId + ": ",
+                        "successful");
+            } catch (ApiException e) {
+                combinedResults.put("[Request " + (i + 1) + "] Rejecting application with ID " + applicationId + ": ",
+                        e.getMessage());
+            }
+        }
+
+        if (!combinedResults.isEmpty()) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_PARTIAL_CONTENT)
+                    .message("Some rejection requests could not be processed.")
+                    .errors(combinedResults)
+                    .build();
+        }
     }
+
+
+
 
     @Override
     public void cancelApplication(Long applicationId, User freelancer) {
-        try{
+        try {
             Application application = applicationService.getApplicationById(applicationId);
             validateFreelancerApplicationOwnership(application, freelancer.getId());
-            validateApplicationStatus(application, ApplicationStatus.APPLIED, ApplicationStatus.REJECTED);
+            if (application.getApplicationStatus() == ApplicationStatus.ACCEPTED) {
+                throw ApiException.builder()
+                        .status(HttpServletResponse.SC_CONFLICT)
+                        .message("You cannot cancel an application that has been accepted")
+                        .build();
+            }
             applicationService.deleteApplication(application);
 
         } catch (OptimisticLockException e) {
@@ -104,13 +132,6 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     }
 
     private void validateProjectForFreelancerSelection(Project project) {
-        if (!project.isProjectApproved()) {
-            throw ApiException.builder()
-                    .status(HttpServletResponse.SC_CONFLICT)
-                    .message("Project is not approved for freelancer selection")
-                    .build();
-        }
-
         if (project.hasSelectedFreelancer()) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_CONFLICT)
@@ -122,27 +143,27 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     private void validateProjectForConfirmation(Project project) {
         if (!project.isProjectApproved()) {
             throw ApiException.builder()
-                    .status(409)
-                    .message("Project is not approved for confirmation")
+                    .status(HttpServletResponse.SC_CONFLICT)
+                    .message("Cannot perform this action, project is either pending or rejected")
                     .build();
         }
     }
 
-    private void validateApplicationStatus(Application application, ApplicationStatus... validStatuses) {
-        for (ApplicationStatus status : validStatuses) {
-            if (application.getApplicationStatus() == status) {
-                return;
-            }
-        }
-        throw ApiException.builder()
-                .status(409)
-                .message("Invalid application status for this action")
-                .build();
-    }
+//    private void validateApplicationStatus(Application application, ApplicationStatus... validStatuses) {
+//        for (ApplicationStatus status : validStatuses) {
+//            if (application.getApplicationStatus() == status) {
+//                return;
+//            }
+//        }
+//        throw ApiException.builder()
+//                .status(HttpServletResponse.SC_CONFLICT)
+//                .message("Invalid application status for this action")
+//                .build();
+//    }
 
     private void handleOptimisticLockException(Exception e) {
         throw ApiException.builder()
-                .status(409)
+                .status(HttpServletResponse.SC_CONFLICT)
                 .message("The resource was modified by another user. Please refresh the page and try again.")
                 .errors(Map.of("optimisticLock", e.getMessage()))
                 .build();
