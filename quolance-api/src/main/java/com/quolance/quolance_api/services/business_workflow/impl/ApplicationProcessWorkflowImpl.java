@@ -48,8 +48,21 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     }
 
     @Override
-    public void rejectApplication(Long applicationId, Long clientId) {
-        // TODO: Implement this method
+    public void rejectApplication(Long applicationId, User client) {
+        try {
+            // Fetch the application
+            Application application = applicationService.getApplicationById(applicationId);
+            Project project = application.getProject();
+
+            validateClientProjectOwnership(project, client.getId());
+            validateProjectForFreelancerSelection(project);
+            validateApplicationStatus(application, ApplicationStatus.APPLIED);
+
+            applicationService.updateApplicationStatus(application, ApplicationStatus.REJECTED);
+
+        } catch (OptimisticLockException e) {
+            handleOptimisticLockException(e);
+        }
     }
 
     @Override
