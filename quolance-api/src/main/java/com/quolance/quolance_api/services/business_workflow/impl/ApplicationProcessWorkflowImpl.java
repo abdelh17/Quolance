@@ -58,16 +58,18 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     }
 
     @Override
-    public void confirmOffer(Long applicationId, Long freelancerId) {
-        // TODO: Implement this method
-        // FIXME: The project's selected freelancer id is purposely not updated here,
-        //  as the freelancer needs to confirm the offer first
+    public void cancelApplication(Long applicationId, User freelancer) {
+        try{
+            Application application = applicationService.getApplicationById(applicationId);
+            validateFreelancerApplicationOwnership(application, freelancer.getId());
+            validateApplicationStatus(application, ApplicationStatus.APPLIED, ApplicationStatus.REJECTED);
+            applicationService.deleteApplication(application);
+
+        } catch (OptimisticLockException e) {
+            handleOptimisticLockException(e);
+        }
     }
 
-    @Override
-    public void cancelApplication(Long applicationId, Long freelancerId) {
-        // TODO: Implement this method
-    }
 
     // ==================== Utility Methods ====================
     private void validateClientProjectOwnership(Project project, Long clientId) {
@@ -83,7 +85,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
         if (!application.isOwnedBy(freelancerId)) {
             throw ApiException.builder()
                     .status(403)
-                    .message("You are not authorized to perform this action")
+                    .message("You are not authorized to perform this action on that application")
                     .build();
         }
     }
