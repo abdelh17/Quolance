@@ -57,7 +57,6 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/webjars/**",
             "/swagger-ui.html",
-            "/api/admin/**",
     };
 
     private final ApplicationProperties applicationProperties;
