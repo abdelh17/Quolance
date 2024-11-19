@@ -4,6 +4,7 @@ import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import java.util.List;
 public class FreelancerController {
 
     private final FreelancerWorkflowService freelancerWorkflowService;
+    private final ApplicationProcessWorkflow applicationProcessWorkflow;
     
     @PostMapping("/submit-application")
     @Operation(
@@ -48,7 +50,7 @@ public class FreelancerController {
     )
     public void deleteApplication(@PathVariable(name = "applicationId") Long applicationId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
-        freelancerWorkflowService.deleteApplication(applicationId, freelancer);
+        applicationProcessWorkflow.cancelApplication(applicationId, freelancer);
     }
 
     @GetMapping("/applications/all")

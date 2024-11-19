@@ -9,6 +9,5 @@ public interface ApplicationProcessWorkflow {
     void rejectApplication(Long applicationId, Long clientId); // used by client
     void rejectManyApplications(List<Long> applicationId, Long clientId); // used by client
 
-    void confirmOffer(Long applicationId, Long freelancerId); // used by freelancer
-    void cancelApplication(Long applicationId, Long freelancerId); // used by freelancer
+    void cancelApplication(Long applicationId, User freelancer); // used by freelancer
 }
