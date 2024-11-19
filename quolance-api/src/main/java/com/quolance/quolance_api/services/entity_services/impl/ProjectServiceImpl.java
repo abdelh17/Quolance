@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
                 break;
 
             case CLOSED:
-                if (project.getProjectStatus() == ProjectStatus.PENDING) {
+                if (project.getProjectStatus() == ProjectStatus.PENDING || project.getProjectStatus() == ProjectStatus.OPEN) {
                     project.setProjectStatus(ProjectStatus.CLOSED);
                     project.setVisibilityExpirationDate(LocalDate.now().plusDays(3));
                     projectRepository.save(project);
