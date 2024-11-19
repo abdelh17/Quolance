@@ -1,6 +1,6 @@
 app:
   application-name: Quolance
-  base-url: "http://localhost,http://localhost:3000"
+  base-url: "http://localhost:8080"
   allowed-origins: "http://localhost"
   login-page-url: "${app.base-url}/auth/login"
   login-success-url: "${app.base-url}/auth/login-success"
