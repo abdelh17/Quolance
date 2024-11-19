@@ -149,18 +149,6 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
         }
     }
 
-//    private void validateApplicationStatus(Application application, ApplicationStatus... validStatuses) {
-//        for (ApplicationStatus status : validStatuses) {
-//            if (application.getApplicationStatus() == status) {
-//                return;
-//            }
-//        }
-//        throw ApiException.builder()
-//                .status(HttpServletResponse.SC_CONFLICT)
-//                .message("Invalid application status for this action")
-//                .build();
-//    }
-
     private void handleOptimisticLockException(Exception e) {
         throw ApiException.builder()
                 .status(HttpServletResponse.SC_CONFLICT)
