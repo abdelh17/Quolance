@@ -21,6 +21,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
 
     @Override
+    @Transactional
     public void saveProject(Project project) {
         projectRepository.save(project);
     }

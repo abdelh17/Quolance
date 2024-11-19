@@ -5,6 +5,7 @@ import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
     public List<Application> getAllApplicationsByFreelancerId(Long freelancerId) {
         return applicationRepository.findApplicationsByFreelancerId(freelancerId);
     }
