@@ -1,23 +1,23 @@
 {
 	"info": {
-		"_postman_id": "c90c9617-d429-4fff-81dc-8bdc92bea019",
+		"_postman_id": "58a37ce2-2856-4b3e-877b-baa3897fc901",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39151315",
-		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-c90c9617-d429-4fff-81dc-8bdc92bea019?action=share&source=collection_link&creator=39151315"
+		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-58a37ce2-2856-4b3e-877b-baa3897fc901?action=share&source=collection_link&creator=39151315"
 	},
 	"item": [
 		{
-			"name": "UsersController",
+			"name": "Users",
 			"item": [
 				{
-					"name": "create",
+					"name": "Create user (CLIENT/FL)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"user3@gmail.com\",\r\n    \"password\": \"Password123!\",\r\n    \"passwordConfirmation\": \"Password123!\",\r\n    \"firstName\": \"Nermin\",\r\n    \"lastName\": \"Karapandzic\",\r\n    \"role\":\"CLIENT\"\r\n}",
+							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"Nermin\",\r\n    \"lastName\": \"Karapandzic\",\r\n    \"role\":\"CLIENT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -100,7 +100,7 @@
 					"response": []
 				},
 				{
-					"name": "update",
+					"name": "update user details",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -202,11 +202,41 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@admin.com\",\n  \"temporaryPassword\": \"Test1234\",\n  \"passwordConfirmation\": \"Test1234\",\n  \"firstName\": \"Admin\",\n  \"lastName\": \"Admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/users/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"users",
+								"admin"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "AuthController",
+			"name": "Auth",
 			"item": [
 				{
 					"name": "login",
@@ -215,7 +245,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"user1@gmail.com\",\r\n    \"password\": \"Passwords123!!\"\r\n}",
+							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"password\": \"Test1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -320,7 +350,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tags\": [\n    \"JAVA\"\n  ],\n  \"projectCategory\": \"WEB_DEVELOPMENT\",\n  \"projectTitle\": \"New project\",\n  \"projectDescription\": \"New project description\",\n  \"priceRange\": \"LESS_500\",\n  \"experienceLevel\": \"JUNIOR\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\",\n  \"deliveryDate\": \"2024-11-09\",\n  \"location\": \"Montreal\"\n}",
+							"raw": "{\n  \"projectTitle\": \"Project title\",\n  \"projectDescription\": \"Project description\",\n  \"projectExpirationDate\": \"2025-11-12\",\n  \"projectCategory\": \"WEB_DEVELOPMENT\",\n  \"priceRange\": \"LESS_500\",\n  \"experienceLevel\": \"JUNIOR\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\",\n  \"tags\": [\n    \"JAVA\"\n  ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -359,7 +389,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/client/projects/client/1",
+							"raw": "http://localhost:8081/api/client/projects/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -369,7 +399,6 @@
 								"api",
 								"client",
 								"projects",
-								"client",
 								"1"
 							]
 						}
@@ -382,7 +411,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/client/projects",
+							"raw": "http://localhost:8081/api/client/projects/all",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -391,7 +420,8 @@
 							"path": [
 								"api",
 								"client",
-								"projects"
+								"projects",
+								"all"
 							]
 						}
 					},
@@ -403,7 +433,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/client/1/select-freelancer",
+							"raw": "http://localhost:8081/api/client/applications/1/select-freelancer",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -412,8 +442,55 @@
 							"path": [
 								"api",
 								"client",
+								"applications",
 								"1",
 								"select-freelancer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a project",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/projects/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"projects",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all applications on a project",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/projects/1/applications/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"projects",
+								"1",
+								"applications",
+								"all"
 							]
 						}
 					},
@@ -431,7 +508,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"applicationStatus\": \"IN_PROGRESS\",\n  \"projectId\": 1\n  }",
+							"raw": "{\n  \"projectId\": 2\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -460,7 +537,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/freelancer/applications",
+							"raw": "http://localhost:8081/api/freelancer/applications/all",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -469,7 +546,8 @@
 							"path": [
 								"api",
 								"freelancer",
-								"applications"
+								"applications",
+								"all"
 							]
 						}
 					},
@@ -481,7 +559,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/freelancer/projects",
+							"raw": "http://localhost:8081/api/freelancer/projects/all",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -490,7 +568,8 @@
 							"path": [
 								"api",
 								"freelancer",
-								"projects"
+								"projects",
+								"all"
 							]
 						}
 					},
@@ -517,11 +596,55 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get an application by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/applications/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"applications",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an application",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/applications/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"applications",
+								"3"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "AdminController",
+			"name": "Admin",
 			"item": [
 				{
 					"name": "Approve a project",
@@ -529,7 +652,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/admin/pending-projects/303/approve",
+							"raw": "http://localhost:8081/api/admin/projects/pending/1/approve",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -538,8 +661,9 @@
 							"path": [
 								"api",
 								"admin",
-								"pending-projects",
-								"303",
+								"projects",
+								"pending",
+								"1",
 								"approve"
 							]
 						}
@@ -552,7 +676,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/admin/pending-projects",
+							"raw": "http://localhost:8081/api/admin/projects/pending/all",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -561,7 +685,9 @@
 							"path": [
 								"api",
 								"admin",
-								"pending-projects"
+								"projects",
+								"pending",
+								"all"
 							]
 						}
 					},
@@ -574,7 +700,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"projectId\": 102,\n  \"message\": \"Rejected message\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -582,7 +708,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/api/admin/pending-projects/reject",
+							"raw": "http://localhost:8081/api/admin/projects/pending/4/reject",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -591,7 +717,9 @@
 							"path": [
 								"api",
 								"admin",
-								"pending-projects",
+								"projects",
+								"pending",
+								"4",
 								"reject"
 							]
 						}
@@ -599,6 +727,59 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "View a project",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/public/projects/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"public",
+								"projects",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View all projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/public/projects/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"public",
+								"projects",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Blog",
+			"item": []
 		}
 	]
 }

@@ -1,6 +1,6 @@
 package com.quolance.quolance_api.configs;
 
-import com.quolance.quolance_api.services.auth.OAuth2LoginSuccessHandlerImpl;
+import com.quolance.quolance_api.services.auth.impl.OAuth2LoginSuccessHandlerImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +56,7 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
     };
 
     private final ApplicationProperties applicationProperties;
@@ -66,33 +66,45 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(customizer -> {
-            customizer
-                    .requestMatchers(WHITE_LIST_URL).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.POST, "/api/users")).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.GET, "/api/users/verify-email")).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password")).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-password")).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")
-                    .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.GET, "/api/public/**")).permitAll()
-                    .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate")).hasRole("ADMIN")
-                    .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
-                    .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
-                    .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
-                    .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
-                    .anyRequest().authenticated();
-        });
+                    customizer
+                            .requestMatchers(WHITE_LIST_URL).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/users/verify-email")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-password")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")
+                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/public/**")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate")).hasRole("ADMIN")
+                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
+                            .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
+                            .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
+                            .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
+                            .anyRequest().authenticated();
+                })
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            String path = request.getRequestURI();
+
+                            if (path.startsWith("/api/admin")) {
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "User is not a Admin");
+                            } else if (path.startsWith("/api/client")) {
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "User is not a Client");
+                            } else if (path.startsWith("/api/freelancer")) {
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "User is not a Freelancer");
+                            } else {
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Insufficient permissions");
+                            }
+                        })
+                        .authenticationEntryPoint(
+                                (request, response, authException) -> {
+                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, please login");
+                                })
+                );
 
         http.oauth2Login(customizer -> {
             customizer.successHandler(oauth2LoginSuccessHandler);
-        });
-
-        http.exceptionHandling(customizer -> {
-            customizer.authenticationEntryPoint(
-                    (request, response, authException) -> {
-                        response.sendError(401, "Unauthorized");
-                    });
         });
 
         http.addFilterBefore(new UsernamePasswordAuthenticationFilter(), LogoutFilter.class);
