@@ -4,6 +4,7 @@ export interface UserResponse {
   firstName?: string;
   lastName?: string;
   email: string;
+  verified: boolean;
   profileImageUrl?: string;
   connectedAccounts: ConnectedAccount[];
   authorities: string[]
