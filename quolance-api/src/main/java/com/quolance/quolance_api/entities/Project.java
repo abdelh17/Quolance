@@ -19,7 +19,6 @@ public class Project extends AbstractEntity {
 
     private String title;
 
-    @Lob
     private String description;
 
     private LocalDate expirationDate;

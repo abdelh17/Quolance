@@ -21,7 +21,6 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
 
     @Override
-    @Transactional
     public void saveProject(Project project) {
         projectRepository.save(project);
     }
@@ -32,7 +31,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Transactional
     public Project getProjectById(Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(() ->
                 ApiException.builder()
@@ -43,19 +41,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Transactional
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
     @Override
-    @Transactional
     public List<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses) {
         return projectRepository.findProjectsByProjectStatusIn(projectStatuses);
     }
 
     @Override
-    @Transactional
     public List<Project> getProjectsByClientId(Long clientId) {
         return projectRepository.findProjectsByClientId(clientId);
     }

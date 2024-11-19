@@ -49,7 +49,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    @Transactional
     public List<Application> getAllApplicationsByFreelancerId(Long freelancerId) {
         return applicationRepository.findApplicationsByFreelancerId(freelancerId);
     }
