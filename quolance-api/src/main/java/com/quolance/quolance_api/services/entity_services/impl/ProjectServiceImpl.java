@@ -7,6 +7,7 @@ import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public Project getProjectById(Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(() ->
                 ApiException.builder()
@@ -40,16 +42,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
     @Override
+    @Transactional
     public List<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses) {
         return projectRepository.findProjectsByProjectStatusIn(projectStatuses);
     }
 
     @Override
+    @Transactional
     public List<Project> getProjectsByClientId(Long clientId) {
         return projectRepository.findProjectsByClientId(clientId);
     }
