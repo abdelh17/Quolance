@@ -80,6 +80,7 @@ public class SecurityConfiguration {
                             .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
                             .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
                             .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
+                            .requestMatchers(antMatcher("api/pending/**")).hasRole("PENDING")
                             .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })
