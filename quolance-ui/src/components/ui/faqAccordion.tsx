@@ -21,9 +21,9 @@ const FAQAccordion: React.FC<AccordionProps> = ({ question, answer }) => {
         className="w-full text-left py-4 flex justify-between items-center focus:outline-none"
         onClick={toggleAccordion}
       >
-        <span className="text-lg font-medium text-gray-800">{question}</span>
+        <span className="text-lg font-medium text-gray-100">{question}</span>
         <svg
-          className={`w-6 h-6 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : ''}`}
+          className={`w-6 h-6 transition-transform text-gray-400 duration-300 ${isOpen ? 'transform rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -33,7 +33,7 @@ const FAQAccordion: React.FC<AccordionProps> = ({ question, answer }) => {
       </button>
       {isOpen && (
         <div className="pb-4">
-          <p className="text-gray-600">{answer}</p>
+          <p className="text-gray-400">{answer}</p>
         </div>
       )}
     </div>

@@ -21,7 +21,7 @@ const ContactUsPage: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center p-8">
+    <div className="flex justify-center p-8 bg-gray-800 dark:bg-gray-950">
       <div className="w-full max-w-xl bg-white shadow-lg p-6 rounded-md">
         <h2 className="heading-2 mb-4">Contact Us</h2>
         <p className="mb-6 text-gray-600">

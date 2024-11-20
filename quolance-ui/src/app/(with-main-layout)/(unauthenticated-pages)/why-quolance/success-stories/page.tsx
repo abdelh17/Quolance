@@ -33,37 +33,83 @@ const SuccessStoriesPage: React.FC = () => {
   const handlePageChange = (page: number) => setCurrentPage(page);
 
   return (
-    <div className="flex justify-center p-8">
-      <div className="w-[80%]">
-        <h2 className="heading-2 mb-2">Success Stories</h2>
-        <p className="mb-4 text-gray-600">Discover success stories from our users.</p>
-
-        {/* Display paginated success stories */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          {paginatedStories.map((story, index) => (
-            <CommentCard
-              key={index}
-              img={story.img}
-              name={story.name}
-              location={story.location}
-              comment={story.comment}
-            />
-          ))}
-        </div>
-
-        {/* Pagination Controls */}
-        <div className="flex justify-center space-x-2">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => handlePageChange(i + 1)}
-              className={`px-3 py-1 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
+    <div className=" px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto bg-gray-800 dark:bg-neutral-950">
+      {/* Title */}
+      <div className="max-w-2xl mb-10">
+        <h2 className="text-2xl font-bold md:text-4xl md:leading-tight text-gray-100">Customer stories</h2>
+        <p className="mt-1 text-gray-400 dark:text-neutral-400">
+          See how game-changing companies are making the most of every engagement with Quolance.
+        </p>
       </div>
+      {/* End Title */}
+
+      {/* Grid */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Card 1 */}
+        <a className="group block rounded-xl focus:outline-none" href="#">
+          <div className="aspect-w-16 aspect-h-9">
+            <img
+              className="w-full object-cover rounded-xl"
+              src="https://images.unsplash.com/photo-1668869713519-9bcbb0da7171?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+              alt="Unity’s inside sales team drives 80% of its revenue with Preline."
+            />
+          </div>
+          <h3 className="mt-2 text-lg font-medium text-white group-hover:text-blue-600 group-focus:text-blue-600 dark:text-neutral-300 dark:group-hover:text-white dark:group-focus:text-white">
+            Freelancer sign up interest doubles in size this month.
+          </h3>
+          <p className="mt-2 text-sm text-gray-400 dark:text-neutral-400"> November 18, 2024</p>
+        </a>
+        {/* End Card 1 */}
+
+        {/* Card 2 */}
+        <a className="group block rounded-xl focus:outline-none" href="#">
+          <div className="aspect-w-16 aspect-h-9">
+            <img
+              className="w-full object-cover rounded-xl"
+              src="https://images.unsplash.com/photo-1668584054035-f5ba7d426401?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+              alt="Living Spaces creates a unified experience across the customer journey."
+            />
+          </div>
+          <h3 className="mt-2 text-lg font-medium text-white group-hover:text-blue-600 group-focus:text-blue-600 dark:text-neutral-300 dark:group-hover:text-white dark:group-focus:text-white">
+            Learn about clients that succesfully used Quolance to meet their goal. 
+          </h3>
+          <p className="mt-2 text-sm text-gray-400 dark:text-neutral-400">September 12, 2024</p>
+        </a>
+        {/* End Card 2 */}
+
+        {/* Card 3 */}
+        <a className="group block rounded-xl focus:outline-none" href="#">
+          <div className="aspect-w-16 aspect-h-9">
+            <img
+              className="w-full object-cover rounded-xl"
+              src="https://images.unsplash.com/photo-1668863699009-1e3b4118675d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+              alt="Atlassian powers sales and support at scale with Preline."
+            />
+          </div>
+          <h3 className="mt-2 text-lg font-medium text-white group-hover:text-blue-600 group-focus:text-blue-600 dark:text-neutral-300 dark:group-hover:text-white dark:group-focus:text-white">
+            Apps created by Quolance freelancers emerge across the globe!
+          </h3>
+          <p className="mt-2 text-sm text-gray-400 dark:text-neutral-400">December 11, 2023</p>
+        </a>
+        {/* End Card 3 */}
+
+        {/* Card 4 */}
+        <a className="group block rounded-xl focus:outline-none" href="#">
+          <div className="aspect-w-16 aspect-h-9">
+            <img
+              className="w-full object-cover rounded-xl"
+              src="https://images.unsplash.com/photo-1668584054131-d5721c515211?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+              alt="Everything you need to know about Preline Pro."
+            />
+          </div>
+          <h3 className="mt-2 text-lg font-medium text-white group-hover:text-blue-600 group-focus:text-blue-600 dark:text-neutral-300 dark:group-hover:text-white dark:group-focus:text-white">
+            Big news coming from Quolance
+          </h3>
+          <p className="mt-2 text-sm text-gray-400 dark:text-neutral-400">November 30, 2024</p>
+        </a>
+        {/* End Card 4 */}
+      </div>
+      {/* End Grid */}
     </div>
   );
 };

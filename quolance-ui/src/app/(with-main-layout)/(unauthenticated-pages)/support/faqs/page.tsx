@@ -25,12 +25,29 @@ const faqs = [
 
 const FAQPage: React.FC = () => {
   return (
-    <div className="flex justify-center p-8">
-      <div className="w-[80%] max-w-3xl">
-        <h1 className="heading-2 mb-6 text-center">Frequently Asked Questions</h1>
-        
-        {/* Collapsible Section */}
-          <CollapsibleList items={faqs} />
+    <div className='min-h-[calc(100vh-10rem)] bg-gray-800 dark:bg-gray-950 '>
+      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto ">
+        {/* Grid */}
+        <div className="grid md:grid-cols-5 gap-10">
+          {/* Title Section */}
+          <div className="md:col-span-2">
+            <div className="max-w-xs">
+              <h2 className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">
+                Frequently<br />asked questions
+              </h2>
+              <p className="mt-1 hidden md:block text-gray-400 dark:text-neutral-400">
+                Answers to the most frequently asked questions.
+              </p>
+            </div>
+          </div>
+          {/* FAQ Section */}
+          <div className="md:col-span-3">
+            {/* Collapsible Section */}
+            <div className="divide-y divide-gray-200 dark:divide-neutral-700">
+              <CollapsibleList items={faqs} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

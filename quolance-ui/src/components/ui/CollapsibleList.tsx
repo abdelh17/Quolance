@@ -13,7 +13,7 @@ interface CollapsibleProps {
 
 const FAQList: React.FC<CollapsibleProps> = ({ items }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       {items.map((item, index) => (
         <Accordion key={index} question={item.question} answer={item.answer} />
       ))}
