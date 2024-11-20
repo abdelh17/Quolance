@@ -5,8 +5,10 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.UserConnectedAccount;
 import com.quolance.quolance_api.repositories.ConnectedAccountRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
+import com.quolance.quolance_api.services.auth.EmailService;
 import com.quolance.quolance_api.services.auth.OAuth2LoginSuccessHandler;
 import com.quolance.quolance_api.util.ApplicationContextProvider;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +19,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -107,8 +112,8 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
 
     /**
      * Creates a new user from the OAuth2 authentication token. The method extracts user
-     * information from the token and links the user to a new connected account. A default
-     * password ("oauth") is assigned to maintain non-null password integrity.
+     * information from the token, generates a random password, sends it to the user's email,
+     * and links the user to a new connected account.
      *
      * @param authentication the OAuth2 authentication token
      * @return the newly created user
@@ -120,8 +125,17 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
         // Initialize the user entity with attributes from the authentication token
         User user = new User(authentication.getPrincipal());
 
-        // Set the default "oauth" password, encoded
-        user.setPassword(passwordEncoder.encode("oauth"));
+        // Generate a random 10-character password
+        String randomPassword = generateRandomPassword(10);
+        user.setPassword(passwordEncoder.encode(randomPassword));
+
+        // Send the password to the user's email
+        try {
+            sendPasswordEmail(user, randomPassword); // Pass the User object directly
+        } catch (MessagingException e) {
+            log.error("Failed to send password email to {}", user.getEmail(), e);
+            throw new RuntimeException("Failed to send password email");
+        }
 
         String provider = authentication.getAuthorizedClientRegistrationId();
         String providerId = authentication.getName();
@@ -136,4 +150,46 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
 
         return user;
     }
+
+    /**
+     * Sends the generated password to the user's email address.
+     *
+     * @param user             the user object
+     * @param generatedPassword the generated password to send
+     * @throws MessagingException if sending the email fails
+     */
+    private void sendPasswordEmail(User user, String generatedPassword) throws MessagingException {
+        EmailService emailService = ApplicationContextProvider.bean(EmailService.class);
+        SpringTemplateEngine templateEngine = ApplicationContextProvider.bean(SpringTemplateEngine.class);
+
+        // Prepare dynamic variables for the email template
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariable("user", user);
+        thymeleafContext.setVariable("generatedPassword", generatedPassword);
+        thymeleafContext.setVariable("applicationName", ApplicationContextProvider.bean(ApplicationProperties.class).getApplicationName());
+
+        // Generate the email content from the template
+        String htmlBody = templateEngine.process("generated-password-email", thymeleafContext);
+
+        // Send the email
+        String subject = "Your Temporary Password for " + thymeleafContext.getVariable("applicationName");
+        emailService.sendHtmlMessage(List.of(user.getEmail()), subject, htmlBody);
+    }
+
+    /**
+     * Generates a random password with the given length.
+     *
+     * @param length the desired length of the password
+     * @return the generated password
+     */
+    private String generateRandomPassword(int length) {
+        String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder password = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = (int) (Math.random() * allowedChars.length());
+            password.append(allowedChars.charAt(randomIndex));
+        }
+        return password.toString();
+    }
+
 }
