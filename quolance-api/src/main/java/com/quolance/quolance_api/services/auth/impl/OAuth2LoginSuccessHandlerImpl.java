@@ -3,6 +3,7 @@ package com.quolance.quolance_api.services.auth.impl;
 import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.UserConnectedAccount;
+import com.quolance.quolance_api.jobs.SendTempPasswordEmailJob;
 import com.quolance.quolance_api.repositories.ConnectedAccountRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.auth.EmailService;
@@ -12,6 +13,8 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jobrunr.scheduling.BackgroundJobRequest;
+import org.jobrunr.scheduling.JobScheduler;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -119,7 +122,6 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
      * @return the newly created user
      */
     private User createUserFromOauth2User(OAuth2AuthenticationToken authentication) {
-        // Retrieve the PasswordEncoder from the application context
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
 
         // Initialize the user entity with attributes from the authentication token
@@ -129,51 +131,26 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
         String randomPassword = generateRandomPassword(10);
         user.setPassword(passwordEncoder.encode(randomPassword));
 
-        // Send the password to the user's email
-        try {
-            sendPasswordEmail(user, randomPassword); // Pass the User object directly
-        } catch (MessagingException e) {
-            log.error("Failed to send password email to {}", user.getEmail(), e);
-            throw new RuntimeException("Failed to send password email");
-        }
+        // Save the user to the database first
+        userRepository.save(user);
 
+        // Enqueue the job to send the temporary password email
+        enqueueTempPasswordEmailJob(user, randomPassword);
+
+        // Link the connected account
         String provider = authentication.getAuthorizedClientRegistrationId();
         String providerId = authentication.getName();
-
-        // Create and link the connected account
         UserConnectedAccount connectedAccount = new UserConnectedAccount(provider, providerId, user);
         user.addConnectedAccount(connectedAccount);
 
-        // Save the user and connected account to the database
-        userRepository.save(user);
         connectedAccountRepository.save(connectedAccount);
 
         return user;
     }
 
-    /**
-     * Sends the generated password to the user's email address.
-     *
-     * @param user             the user object
-     * @param generatedPassword the generated password to send
-     * @throws MessagingException if sending the email fails
-     */
-    private void sendPasswordEmail(User user, String generatedPassword) throws MessagingException {
-        EmailService emailService = ApplicationContextProvider.bean(EmailService.class);
-        SpringTemplateEngine templateEngine = ApplicationContextProvider.bean(SpringTemplateEngine.class);
-
-        // Prepare dynamic variables for the email template
-        Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("user", user);
-        thymeleafContext.setVariable("generatedPassword", generatedPassword);
-        thymeleafContext.setVariable("applicationName", ApplicationContextProvider.bean(ApplicationProperties.class).getApplicationName());
-
-        // Generate the email content from the template
-        String htmlBody = templateEngine.process("generated-password-email", thymeleafContext);
-
-        // Send the email
-        String subject = "Your Temporary Password for " + thymeleafContext.getVariable("applicationName");
-        emailService.sendHtmlMessage(List.of(user.getEmail()), subject, htmlBody);
+    private void enqueueTempPasswordEmailJob(User user, String tempPassword) {
+        SendTempPasswordEmailJob sendTempPasswordEmailJob = new SendTempPasswordEmailJob(user.getId(), tempPassword);
+        BackgroundJobRequest.enqueue(sendTempPasswordEmailJob);
     }
 
     /**
