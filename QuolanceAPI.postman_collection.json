@@ -780,6 +780,29 @@
 		{
 			"name": "Blog",
 			"item": []
+		},
+		{
+			"name": "Pending",
+			"item": [
+				{
+					"name": "Update Pending User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"oauth\",\r\n    \"password\": \"Test@1234\",\r\n    \"confirmPassword\": \"Test@1234\",\r\n    \"role\": \"CLIENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/pending/update"
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
