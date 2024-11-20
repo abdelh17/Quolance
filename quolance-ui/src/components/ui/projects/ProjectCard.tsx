@@ -8,7 +8,7 @@ const ProjectCard = ({
   tags,
   projectId,
   createdAt,
-  projectCategory,
+  category,
   projectTitle,
   projectDescription,
   priceRange,
@@ -75,7 +75,7 @@ const ProjectCard = ({
         {/* Category */}
         <div className='mb-3'>
           <span className='text-sm text-gray-500'>
-            {formatEnumString(projectCategory)}
+            {formatEnumString(category)}
           </span>
         </div>
 

@@ -59,7 +59,7 @@ function ProjectsContainer() {
                 tags={project.tags}
                 projectId={project.projectId}
                 createdAt={project.createdAt}
-                projectCategory={project.projectCategory}
+                category={project.category}
                 projectTitle={project.projectTitle}
                 projectDescription={project.projectDescription}
                 priceRange={project.priceRange}

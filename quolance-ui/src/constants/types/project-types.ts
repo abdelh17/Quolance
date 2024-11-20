@@ -15,7 +15,7 @@ export type ProjectType = {
   tags: string[]; // List of tag names as strings
   projectId: number; // Unique identifier for the project
   createdAt: string; // ISO date format (e.g., "2024-11-09")
-  projectCategory:
+  category:
     | 'WEB_DEVELOPMENT'
     | 'GRAPHIC_DESIGN'
     | 'CONTENT_WRITING'
@@ -61,7 +61,7 @@ export type ProjectType = {
 //This is the type that is sent to the API (used for POST)
 export type PostProjectType = {
   tags: string[]; // List of tag names as strings
-  projectCategory:
+  category:
     | 'WEB_DEVELOPMENT'
     | 'GRAPHIC_DESIGN'
     | 'CONTENT_WRITING'

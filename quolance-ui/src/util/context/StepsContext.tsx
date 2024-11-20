@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface FormData {
-  projectCategory: string;
+  category: string;
   projectTitle: string;
   projectDescription: string;
   isRemote: boolean;
@@ -16,7 +16,7 @@ interface FormData {
 }
 
 const DEFAULT_FORM_DATA: FormData = {
-  projectCategory: '',
+  category: '',
   projectTitle: '',
   projectDescription: '',
   isRemote: false,

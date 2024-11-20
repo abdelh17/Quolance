@@ -29,7 +29,7 @@ export default function ProjectDetailsHeader({ project }: ProjectDetailsProps) {
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
             />
-            {formatEnumString(project.projectCategory)}
+            {formatEnumString(project.category)}
           </div>
           <div className='mt-2 flex items-center text-sm text-gray-500'>
             <MapPinIcon

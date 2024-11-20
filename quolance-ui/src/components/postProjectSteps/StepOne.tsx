@@ -38,10 +38,10 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
         Project Category <span className='text-red-500'>* </span>
       </p>
       <BusinessCategoryDropDown
-        name='projectCategory'
-        value={formData.projectCategory || ''}
+        name='category'
+        value={formData.category || ''}
         onChange={(e) =>
-          setFormData({ ...formData, projectCategory: e.target.value })
+          setFormData({ ...formData, category: e.target.value })
         }
       />
 
