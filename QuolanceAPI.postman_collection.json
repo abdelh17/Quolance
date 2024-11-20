@@ -3,8 +3,8 @@
 		"_postman_id": "58a37ce2-2856-4b3e-877b-baa3897fc901",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39151315",
-		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-58a37ce2-2856-4b3e-877b-baa3897fc901?action=share&source=collection_link&creator=39151315"
+		"_exporter_id": "39178284",
+		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-58a37ce2-2856-4b3e-877b-baa3897fc901?action=share&source=collection_link&creator=39178284"
 	},
 	"item": [
 		{
@@ -445,6 +445,61 @@
 								"applications",
 								"1",
 								"select-freelancer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Freelancer for Project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/applications/1/reject-freelancer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"applications",
+								"1",
+								"reject-freelancer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Freelancer for Project BULK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[1, 2, 3]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/client/applications/bulk/reject-freelancer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"applications",
+								"bulk",
+								"reject-freelancer"
 							]
 						}
 					},

@@ -85,7 +85,31 @@ public class ClientController {
     public ResponseEntity<String> selectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.selectFreelancer(applicationId, client);
+        // TODO: When a notification/communication service is implemented, send a notification to the freelancer
         return ResponseEntity.ok("Freelancer selected successfully");
+    }
+
+    @PostMapping("/applications/{applicationId}/reject-freelancer")
+    @Operation(
+            summary = "Reject a freelancer for a project",
+            description = "Reject a freelancer for a project by passing the application ID"
+    )
+    public ResponseEntity<String> rejectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
+        User client = SecurityUtil.getAuthenticatedUser();
+        applicationProcessWorkflow.rejectApplication(applicationId, client);
+        // TODO: When a notification/communication service is implemented, send a notification to the freelancer
+        return ResponseEntity.ok("Freelancer rejected successfully");
+    }
+
+    @PostMapping("/applications/bulk/reject-freelancer")
+    @Operation(
+            summary = "Reject many freelancers for a project",
+            description = "Reject many freelancers for a project by passing a list of ids"
+    )
+    public ResponseEntity<String> rejectManyFreelancers(@RequestBody List<Long> applicationIds) {
+        User client = SecurityUtil.getAuthenticatedUser();
+        applicationProcessWorkflow.rejectManyApplications(applicationIds, client);
+        return ResponseEntity.ok("All selected freelancers rejected successfully");
     }
 
 }
