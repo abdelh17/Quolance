@@ -840,32 +840,20 @@
 			"name": "Pending",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Update Pending User",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"Test@123\",\r\n    \"password\": \"Test1234\",\r\n    \"confirmPassword\": \"Test1234\",\r\n    \"role\": \"CLIENT\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"oauth\",\r\n    \"password\": \"Test@1234\",\r\n    \"confirmPassword\": \"Test@1234\",\r\n    \"role\": \"CLIENT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8080/api/pending/update",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"pending",
-								"update"
-							]
-						}
+						"url": "http://localhost:8080/api/pending/update"
 					},
 					"response": []
 				}
