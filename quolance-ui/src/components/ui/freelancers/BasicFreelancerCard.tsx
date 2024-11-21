@@ -104,11 +104,11 @@ function BasicFreelancerCard({
             AVAILABLE
           </p>
         </div>
-        <div className='mt-5 flex items-center justify-end gap-2 px-6'>
+        {/* <div className='mt-5 flex items-center justify-end gap-2 px-6'>
           <button className='hover:bg-y300 relative flex items-center justify-center rounded-full border p-3 text-xl !leading-none duration-500'>
             <PiHeart />
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );
