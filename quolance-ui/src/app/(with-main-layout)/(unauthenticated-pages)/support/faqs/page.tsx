@@ -32,7 +32,7 @@ const FAQPage: React.FC = () => {
           {/* Title Section */}
           <div className="md:col-span-2">
             <div className="max-w-xs">
-              <h2 className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">
+              <h2 className="text-2xl font-bold md:text-4xl md:leading-tight text-white dark:text-white">
                 Frequently<br />asked questions
               </h2>
               <p className="mt-1 hidden md:block text-gray-400 dark:text-neutral-400">

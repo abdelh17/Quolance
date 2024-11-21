@@ -4,63 +4,45 @@ import React from 'react';
 import { ApplicationResponse, ApplicationStatus } from '@/constants/models/applications/ApplicationResponse';
 import { useQueryClient } from '@tanstack/react-query';
 import image1 from '@/public/images/freelancer-hero-img-1.jpg';
+import image2 from '@/public/images/freelancer-hero-img-2.jpg';
 import Image from 'next/image';
+import BasicFreelancerCard from '@/components/ui/freelancers/BasicFreelancerCard';
+
 
 // Mock data for top freelancers
 const topFreelancers = [
     {
-      img: '/images/freelancer1.jpg',
+      img: image1,
       freelancerName: 'Jane Doe',
       location: 'New York, USA',
-      status: ApplicationStatus.PENDING_CONFIRMATION,
-      isApproveDisabled: false,
     },
     {
-      img: '/images/freelancer2.jpg',
+      img: image1,
       freelancerName: 'John Smith',
       location: 'London, UK',
-      status: ApplicationStatus.PENDING_CONFIRMATION,
-      isApproveDisabled: true,
     },
     {
-      img: '/images/freelancer3.jpg',
+      img: image1,
       freelancerName: 'Sara Khan',
       location: 'Toronto, Canada',
-      status: ApplicationStatus.PENDING_CONFIRMATION,
-      isApproveDisabled: true,
     },
     {
-        img: '/images/freelancer1.jpg',
+        img: image1,
         freelancerName: 'Jane Doe',
         location: 'New York, USA',
-        status: ApplicationStatus.PENDING_CONFIRMATION,
-        isApproveDisabled: false,
       },
       {
         img: '/images/freelancer2.jpg',
         freelancerName: 'John Smith',
         location: 'London, UK',
-        status: ApplicationStatus.PENDING_CONFIRMATION,
-        isApproveDisabled: false,
       },
       {
         img: '/images/freelancer3.jpg',
         freelancerName: 'Sara Khan',
         location: 'Toronto, Canada',
-        status: ApplicationStatus.PENDING_CONFIRMATION,
-        isApproveDisabled: false,
       },
     // Add more freelancers as needed
   ];
-  
-  // Sample handler functions
-  const handleApproveSubmission = () => {
-    // Approve submission logic
-  };
-  
-  const handleRefuseSelected = async () => {
-    // Refuse submission logic
-  };
   
   function FindAFreelancerPage() {
     return (
@@ -72,7 +54,7 @@ const topFreelancers = [
             <div className="relative w-[1200px] lg:w-[500px] xl:w-[600px] -mb-10 lg:mb-0 lg:-ml-16">
               <Image
                 className="shadow-xl shadow-gray-600 rounded-xl dark:shadow-gray-900/20 object-cover h-[1000px] -mt-100"
-                src={image1}
+                src={image2}
                 alt="Features Image"
                 width={1000}
                 height={1200}
@@ -95,14 +77,10 @@ const topFreelancers = [
                   key={index}
                   className="bg-gray-100 p-6 rounded-lg shadow-lg dark:bg-neutral-800"
                 >
-                  <FreelancerCard
-                    img={freelancer.img}
+                  <BasicFreelancerCard
+                    img={image1.src}
                     freelancerName={freelancer.freelancerName}
-                    handleApproveSubmission={handleApproveSubmission}
                     location={freelancer.location}
-                    onSelect={handleRefuseSelected}
-                    status={freelancer.status}
-                    isApproveDisabled={freelancer.isApproveDisabled}
                   />
                 </div>
               ))}

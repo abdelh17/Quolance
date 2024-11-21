@@ -354,8 +354,7 @@ const AboutUsPage: React.FC = () => {
   return (
     <div className="min-h-[calc(100vh-10rem)] flex justify-center p-8 bg-gray-800 dark:bg-neutral-950">
       <div className="w-[80%] max-w-3xl">
-        <h1 className="heading-2 mb-6 text-center">About Quolance</h1>
-
+        <h1 className="heading-2 mb-6 text-center text-white"> About Quolance</h1>
         {/* Reusing FAQList component for About Us Sections */}
         <CollapsibleList items={aboutUsData} />
       </div>
