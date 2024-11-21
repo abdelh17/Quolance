@@ -50,10 +50,6 @@ function BasicFreelancerCard({
       <div
         className={`bg-n10 relative flex h-full flex-col rounded-3xl border pb-6 transition-all duration-200`}
       >
-        <div
-          className={`z-30 flex flex-row-reverse items-center justify-between rounded-t-3xl border-b bg-gray-100 p-[18px]`}
-        >
-        </div>
 
         <div className='mt-5 flex items-center justify-start gap-3 px-3 sm:px-6'>
           <div className='relative max-md:overflow-hidden'>
