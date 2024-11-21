@@ -5,10 +5,10 @@ import { format } from 'date-fns';
 import React from 'react';
 import { FaFacebook, FaGithub, FaGoogle } from 'react-icons/fa';
 
-import { useAuthGuard } from '@/api/auth-api';
-
 import Container from '@/components/container';
 import Loading from '@/components/loading';
+
+import { useAuthGuard } from '@/api/auth-api';
 
 import UpdateBasicDetailsForm from './components/update-basic-details-form';
 import UpdatePasswordForm from './components/update-password-form';

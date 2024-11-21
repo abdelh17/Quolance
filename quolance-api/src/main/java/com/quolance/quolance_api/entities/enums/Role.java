@@ -3,5 +3,6 @@ package com.quolance.quolance_api.entities.enums;
 public enum Role {
     CLIENT,
     FREELANCER,
-    ADMIN
+    ADMIN,
+    PENDING // Pending Role is used to Handle
 }

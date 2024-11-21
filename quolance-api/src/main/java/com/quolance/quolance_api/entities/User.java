@@ -58,10 +58,6 @@ public class User extends AbstractEntity implements UserDetails {
     @JoinColumn(name = "profileId")
     private Profile profile;
 
-    @OneToOne
-    @JoinColumn(name = "portfolioId")
-    private Portfolio portfolio;
-
     @Setter
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationCode verificationCode;
@@ -110,7 +106,7 @@ public class User extends AbstractEntity implements UserDetails {
             }
         }
         this.verified = true;
-        this.role = Role.CLIENT;
+        this.role = Role.PENDING;
     }
 
     /**
@@ -130,6 +126,7 @@ public class User extends AbstractEntity implements UserDetails {
 
     /**
      * Updates the user's password.
+     *
      */
     public void updatePassword(String newPassword) {
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);

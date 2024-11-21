@@ -1,7 +1,9 @@
 package com.quolance.quolance_api.controllers;
 
-import com.quolance.quolance_api.dtos.ProjectDto;
-import com.quolance.quolance_api.services.ProjectService;
+import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
+import com.quolance.quolance_api.services.entity_services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,22 +18,29 @@ import java.util.List;
 @RequestMapping("/api/public")
 @RequiredArgsConstructor
 public class PublicController {
-    private final ProjectService projectService;
 
+    // FIXME: Reusing FreelancerWorkflowService here since both public and freelancers can view projects THE SAME WAY.
+    //  In the future, separate this logic to avoid mixing responsibilities in the service.
+
+    private final FreelancerWorkflowService freelancerWorkflowService;
 
     @GetMapping("/projects/all")
-    @Operation(summary = "View all projects as a guest.")
-    public ResponseEntity<List<ProjectDto>> getAllProjects() {
-        //TO-DO (security) remove ClientId from ProjectDto (This is a public endpoint)
-        List<ProjectDto> projects = projectService.getAllProjects();
-        return ResponseEntity.ok(projects);
+    @Operation(
+            summary = "View all available projects.",
+            description = "View all projects (as a guest) that are open or closed and still in the visibility of the public."
+    )
+    public ResponseEntity<List<ProjectPublicDto>> getAllAvailableProjects() {
+        List<ProjectPublicDto> availableProjects = freelancerWorkflowService.getAllAvailableProjects();
+        return ResponseEntity.ok(availableProjects);
     }
 
     @GetMapping("/projects/{projectId}")
-    @Operation(summary = "View a project as a guest.")
-    public ResponseEntity<ProjectDto> getProject(@PathVariable Long projectId) {
-        //TO-DO (security) remove ClientId from ProjectDto (This is a public endpoint)
-        ProjectDto project = projectService.getProjectById(projectId);
+    @Operation(
+            summary = "View a project.",
+            description = "View a project (as a guest) by passing the project id."
+    )
+    public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") Long projectId) {
+        ProjectPublicDto project = freelancerWorkflowService.getProject(projectId);
         return ResponseEntity.ok(project);
     }
 

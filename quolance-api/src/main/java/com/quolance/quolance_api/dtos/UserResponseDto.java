@@ -21,6 +21,7 @@ public class UserResponseDto {
     private String lastName;
     private String email;
     private String profileImageUrl;
+    private Boolean verified;
     private List<ConnectedAccountResponse> connectedAccounts = new ArrayList<>();
     private List<String> authorities = new ArrayList<>();
 
@@ -30,6 +31,7 @@ public class UserResponseDto {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
         user.getConnectedAccounts().forEach((provider) -> {
             this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()));
@@ -42,6 +44,7 @@ public class UserResponseDto {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
         user.getConnectedAccounts().forEach((provider) -> {
             this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()));

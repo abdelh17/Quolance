@@ -5,16 +5,14 @@ import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    Project save(Project project);
 
-    List<Project> findAllByClientId(Long clientId);
+    List<Project> findProjectsByClientId(Long clientId);
 
-    Optional<Project> findById(Long id);
-
-    List<Project> findByProjectStatus(ProjectStatus projectStatus);
+    List<Project> findProjectsByProjectStatusIn(List<ProjectStatus> projectStatuses);
 }
