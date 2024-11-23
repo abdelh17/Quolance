@@ -5,11 +5,15 @@ import Link from 'next/link';
 
 interface ProjectDetailsProps {
   project: ProjectType;
+  editMode: boolean;
 }
 
-export default function ProjectDetailsView({ project }: ProjectDetailsProps) {
+export default function ProjectDetailsContent({
+  project,
+  editMode,
+}: ProjectDetailsProps) {
   const stats = [
-    { label: 'Expected Delivery', value: project.deliveryDate },
+    { label: 'Expected Delivery', value: project.expirationDate },
     { label: 'Budget', value: formatPriceRange(project.priceRange) },
     { label: 'Location', value: project.location },
   ];
@@ -23,10 +27,9 @@ export default function ProjectDetailsView({ project }: ProjectDetailsProps) {
               <Image
                 alt=''
                 src={freelancerImg}
-                className='saturate-20 absolute inset-0 h-full w-full object-cover brightness-125'
+                className='absolute inset-0 h-full w-full object-cover'
               />
-              <div className='absolute inset-0 bg-gray-400 opacity-70  mix-blend-multiply' />
-
+              <div className='absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/50 to-transparent' />
               <figure className='relative isolate'>
                 <blockquote className='mt-6 text-xl/8 font-semibold text-white'>
                   <p>
@@ -46,8 +49,8 @@ export default function ProjectDetailsView({ project }: ProjectDetailsProps) {
           </div>
           <div>
             <div className='text-base/7 text-gray-700 lg:max-w-lg'>
-              <h1 className='text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
-                {project.projectTitle}
+              <h1 className='text-pretty text-4xl font-semibold tracking-tight sm:text-5xl'>
+                {project.title}
               </h1>
               <div className='max-w-xl'>
                 <p className='mt-6'>
@@ -80,7 +83,7 @@ export default function ProjectDetailsView({ project }: ProjectDetailsProps) {
                   <dt className='text-sm/6 font-semibold text-gray-600'>
                     {stat.label}
                   </dt>
-                  <dd className='mt-2 text-xl font-semibold tracking-tight text-gray-900'>
+                  <dd className='mt-2 text-xl font-semibold tracking-tight'>
                     {stat.value}
                   </dd>
                 </div>

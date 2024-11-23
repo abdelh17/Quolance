@@ -13,9 +13,9 @@ export const ProjectFilterOptionsDefault: ProjectFilterOptions = {
 //This is the raw object that will be returned from the API (used for GET)
 export type ProjectType = {
   tags: string[]; // List of tag names as strings
-  projectId: number; // Unique identifier for the project
+  id: number; // Unique identifier for the project
   createdAt: string; // ISO date format (e.g., "2024-11-09")
-  projectCategory:
+  category:
     | 'WEB_DEVELOPMENT'
     | 'GRAPHIC_DESIGN'
     | 'CONTENT_WRITING'
@@ -31,8 +31,8 @@ export type ProjectType = {
     | 'DATA_SCIENCE'
     | 'DESIGN'
     | string;
-  projectTitle: string;
-  projectDescription: string;
+  title: string;
+  description: string;
   priceRange:
     | 'LESS_500'
     | 'BETWEEN_500_AND_1000'
@@ -47,7 +47,7 @@ export type ProjectType = {
     | 'WITHIN_A_MONTH'
     | 'FLEXIBLE'
     | string;
-  deliveryDate: string; // ISO date format (e.g., "2024-11-09")
+  expirationDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
   projectStatus:
     | 'PENDING'
@@ -112,4 +112,14 @@ export const formatPriceRange = (priceRange: string) => {
     default:
       return priceRange;
   }
+};
+
+export const formatDate = (date: string) => {
+  // Date format: "2024-11-09"
+  // Output format: "November 9, 2024"
+  const dateObj = new Date(date);
+  const month = dateObj.toLocaleString('default', { month: 'long' });
+  const day = dateObj.getDate();
+  const year = dateObj.getFullYear();
+  return `${month} ${day}, ${year}`;
 };

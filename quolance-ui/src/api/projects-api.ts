@@ -2,11 +2,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import { PostProjectType } from '@/constants/types/project-types';
 
-//
-// /projects/ => query key: ['projects']
-// /projects/:id => query key: ['project', projectId]
-// /projects?status=APPROVED => query key: ['projects, {status: 'APPROVED'}]
-
 /*--- Hooks ---*/
 export const useGetProjectInfo = (projectId: number) => {
   return useQuery({
