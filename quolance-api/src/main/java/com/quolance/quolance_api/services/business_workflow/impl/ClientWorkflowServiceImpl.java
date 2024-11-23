@@ -78,7 +78,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     public ProjectDto updateProject(Long projectId, ProjectUpdateDto projectUpdateDto, User client) {
         Project existingProject = projectService.getProjectById(projectId);
 
-        if (!existingProject.getClient().getId().equals(client.getId())) {
+        if (!existingProject.isOwnedBy(client.getId())) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
                     .message("You don't have permission to update this project")
