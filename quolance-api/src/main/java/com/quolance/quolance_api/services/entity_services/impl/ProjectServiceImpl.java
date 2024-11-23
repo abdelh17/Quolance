@@ -5,6 +5,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -110,4 +111,46 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(project);
     }
 
+    @Override
+    public void updateProject(Project existingProject, ProjectUpdateDto updateDto) {
+        if (updateDto == null) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Update data cannot be null")
+                    .build();
+        }
+
+        if (existingProject.getProjectStatus() == ProjectStatus.CLOSED ||
+                existingProject.getProjectStatus() == ProjectStatus.REJECTED) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_FORBIDDEN)
+                    .message("Cannot update a project that is closed or rejected")
+                    .build();
+        }
+
+        updateProjectFields(existingProject, updateDto);
+        projectRepository.save(existingProject);
+    }
+
+    private void updateProjectFields(Project project, ProjectUpdateDto updateDto) {
+        if (updateDto.getTitle() != null) {
+            project.setTitle(updateDto.getTitle());
+        }
+
+        if (updateDto.getDescription() != null) {
+            project.setDescription(updateDto.getDescription());
+        }
+
+        if (updateDto.getCategory() != null) {
+            project.setCategory(updateDto.getCategory());
+        }
+
+        if (updateDto.getPriceRange() != null) {
+            project.setPriceRange(updateDto.getPriceRange());
+        }
+
+        if (updateDto.getExpectedDeliveryTime() != null) {
+            project.setExpectedDeliveryTime(updateDto.getExpectedDeliveryTime());
+        }
+    }
 }
