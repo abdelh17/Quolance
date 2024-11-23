@@ -120,11 +120,10 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
         }
 
-        if (existingProject.getProjectStatus() == ProjectStatus.CLOSED ||
-                existingProject.getProjectStatus() == ProjectStatus.REJECTED) {
+        if (existingProject.getProjectStatus() != ProjectStatus.PENDING) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
-                    .message("Cannot update a project that is closed or rejected")
+                    .message("Project can only be updated when in PENDING state")
                     .build();
         }
 
