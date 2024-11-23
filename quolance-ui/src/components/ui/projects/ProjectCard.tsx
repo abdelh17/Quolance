@@ -1,6 +1,6 @@
-import { formatPriceRange, ProjectType } from '@/constants/types/project-types';
+import { ProjectType } from '@/constants/types/project-types';
 import Link from 'next/link';
-import { formatEnumString } from '@/util/stringUtils';
+import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
 
 type ProjectCardProps = ProjectType;
 

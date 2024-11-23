@@ -1,7 +1,8 @@
-import { formatPriceRange, ProjectType } from '@/constants/types/project-types';
+import { ProjectType } from '@/constants/types/project-types';
 import Image from 'next/image';
 import freelancerImg from '@/public/images/freelancer-hero-img-2.jpg';
 import Link from 'next/link';
+import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
 
 interface ProjectDetailsProps {
   project: ProjectType;
@@ -13,9 +14,9 @@ export default function ProjectDetailsContent({
   editMode,
 }: ProjectDetailsProps) {
   const stats = [
+    { label: 'Category', value: formatEnumString(project.category) },
     { label: 'Expected Delivery', value: project.expirationDate },
     { label: 'Budget', value: formatPriceRange(project.priceRange) },
-    { label: 'Location', value: project.location },
   ];
 
   return (
@@ -48,11 +49,11 @@ export default function ProjectDetailsContent({
             </div>
           </div>
           <div>
-            <div className='text-base/7 text-gray-700 lg:max-w-lg'>
+            <div className='text-base/7 lg:max-w-lg'>
               <h1 className='text-pretty text-4xl font-semibold tracking-tight sm:text-5xl'>
                 {project.title}
               </h1>
-              <div className='max-w-xl'>
+              <div className='max-w-xl text-gray-700 '>
                 <p className='mt-6'>
                   Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget
                   risus enim. Mattis mauris semper sed amet vitae sed turpis id.

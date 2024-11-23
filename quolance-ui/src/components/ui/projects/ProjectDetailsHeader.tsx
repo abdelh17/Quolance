@@ -6,12 +6,12 @@ import {
   LinkIcon,
   PencilIcon,
 } from '@heroicons/react/20/solid';
+import { ProjectType } from '@/constants/types/project-types';
 import {
   formatDate,
+  formatEnumString,
   formatPriceRange,
-  ProjectType,
-} from '@/constants/types/project-types';
-import { formatEnumString } from '@/util/stringUtils';
+} from '@/util/stringUtils';
 import { Button } from '@/components/ui/button';
 
 interface ProjectDetailsProps {
