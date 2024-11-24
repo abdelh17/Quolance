@@ -78,7 +78,7 @@ export default function ProjectDetailsContent({
             <dl
               className={`${
                 editMode ? '' : 'sm:flex-row'
-              } mt-10 flex flex-col gap-8 border-t border-gray-900/10 px-4 pt-10 sm:px-0`}
+              } mt-10 flex w-[calc(100%-20px)] flex-col gap-8 border-t border-gray-900/10 px-4 pt-10 sm:px-0 `}
             >
               {/* Project Category */}
               <ProjectDetailField
