@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import { PostProjectType } from '@/constants/types/project-types';
+import { PostProjectType, ProjectType } from '@/constants/types/project-types';
 
 /*--- Hooks ---*/
 export const useGetProjectInfo = (projectId: number) => {
@@ -29,6 +29,16 @@ export const usePostProject = (options?: {
   });
 };
 
+export const useUpdateProject = (project: ProjectType) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects', project.id] });
+    },
+  });
+};
+
 // /*--- Query functions ---*/
 const getProjectInfo = async (projectId: number) => {
   return httpClient.get(`/api/public/projects/${projectId}`);
@@ -40,4 +50,8 @@ const getAllProjects = async () => {
 
 const postProject = async (project: PostProjectType) => {
   return httpClient.post('/api/client/create-project', project);
+};
+
+const updateProject = async (project: ProjectType) => {
+  return httpClient.put(`/api/client/projects/${project.id}`, project);
 };
