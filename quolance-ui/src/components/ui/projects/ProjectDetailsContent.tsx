@@ -9,7 +9,11 @@ import {
   EXPERIENCE_LEVEL_OPTIONS,
 } from '@/constants/types/form-types';
 import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
-import RichTextEditor from '@/components/ui/RichTextEditor';
+import dynamic from 'next/dynamic';
+
+const RichTextEditor = dynamic(() => import('@/components/ui/RichTextEditor'), {
+  ssr: false,
+});
 
 interface ProjectDetailsProps {
   project: ProjectType;
