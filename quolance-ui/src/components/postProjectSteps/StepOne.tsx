@@ -3,15 +3,16 @@
 import BusinessCategoryDropDown from '@/components/ui/client/BusinessCategoryDropDown';
 import { useSteps } from '@/util/context/StepsContext';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 
 const schema = z.object({
   projectTitle: z.string().min(1, 'Project Title is required').max(255),
   projectDescription: z
     .string()
     .min(1, 'Project Description is required')
-    .max(500),
+    .max(5000),
   location: z.string().min(1, 'Location is required').max(255),
 });
 
@@ -19,6 +20,7 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
   const { formData, setFormData } = useSteps();
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -60,10 +62,21 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         Detailed Project Description <span className='text-red-500'>* </span>
       </p>
-      <textarea
-        {...register('projectDescription')}
-        className='bg-n30 mt-4 min-h-[130px] w-full rounded-lg p-4'
-      ></textarea>
+      <Controller
+        name='projectDescription'
+        control={control}
+        defaultValue=''
+        render={({ field: { onChange, value } }) => (
+          <RichTextEditor
+            value={value}
+            onChange={(name, value) => onChange(value)}
+            name='projectDescription'
+            placeholder=''
+            className=''
+            minHeight='130px'
+          />
+        )}
+      />
       {errors.projectDescription && (
         <p className='text-red-500'>{errors.projectDescription.message}</p>
       )}

@@ -1,13 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import dynamic from 'next/dynamic';
+import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-
-const ReactQuill = dynamic(() => import('react-quill-new'), {
-  ssr: false,
-  loading: () => (
-    <div className='min-h-[200px] rounded-md border border-gray-300' />
-  ),
-});
 
 interface RichTextEditorProps {
   value: string;
@@ -17,7 +10,7 @@ interface RichTextEditorProps {
   readOnly?: boolean;
   className?: string;
   minHeight?: string;
-  debounceMs?: number; // Optional debounce timing
+  debounceMs?: number;
 }
 
 const RichTextEditor = ({
@@ -91,7 +84,9 @@ const RichTextEditor = ({
   );
 
   return (
-    <div className={`relative ${className}`}>
+    <div
+      className={`relative ${className} ${readOnly ? 'read-only-editor' : ''}`}
+    >
       <style jsx global>{`
         .quill {
           height: 100%;
@@ -123,6 +118,23 @@ const RichTextEditor = ({
         .quill:focus-within {
           outline: 2px solid #2563eb;
           border-radius: 0.375rem;
+        }
+
+        /* Styles for readonly mode */
+        .read-only-editor .ql-toolbar {
+          display: none;
+        }
+
+        .read-only-editor .ql-container {
+          border: none;
+        }
+
+        .read-only-editor .ql-editor {
+          padding: 0;
+        }
+
+        .read-only-editor .quill:focus-within {
+          outline: none;
         }
       `}</style>
       <ReactQuill

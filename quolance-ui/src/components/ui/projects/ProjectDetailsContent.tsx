@@ -10,7 +10,6 @@ import {
 } from '@/constants/types/form-types';
 import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
 import RichTextEditor from '@/components/ui/RichTextEditor';
-import RichTextDisplay from '@/components/ui/RichTextDisplay';
 
 interface ProjectDetailsProps {
   project: ProjectType;
@@ -52,8 +51,8 @@ export default function ProjectDetailsContent({
               </figure>
             </div>
           </div>
-          <div>
-            <div className='text-base/7 lg:max-w-lg'>
+          <div className={'w-full flex-1'}>
+            <div className='w-[calc(100%-20px)] text-base/7'>
               <h1 className='text-pretty text-4xl font-semibold tracking-tight sm:text-5xl'>
                 <ViewEditField
                   isEditing={editMode}
@@ -63,20 +62,17 @@ export default function ProjectDetailsContent({
                   className={`${editMode && 'px-4 py-3 text-4xl'}`}
                 />
               </h1>
-              <div className='mt-3 max-w-xl text-gray-700'>
-                {editMode ? (
-                  <RichTextEditor
-                    name='description'
-                    value={project.description || ''}
-                    onChange={setDraftProject}
-                    placeholder='Enter project description...'
-                    debounceMs={200}
-                    minHeight='200px'
-                    className={'mt-6'}
-                  />
-                ) : (
-                  <RichTextDisplay content={project.description} />
-                )}
+              <div className='mt-3 w-full'>
+                <RichTextEditor
+                  name='description'
+                  value={project.description || ''}
+                  onChange={setDraftProject}
+                  placeholder='Enter project description...'
+                  debounceMs={200}
+                  minHeight='200px'
+                  readOnly={!editMode}
+                  className='mt-6'
+                />
               </div>
             </div>
             <dl
@@ -153,7 +149,7 @@ const ProjectDetailField = ({
   return (
     <div
       className={
-        editMode ? 'grid grid-cols-[140px_1fr] items-center' : 'flex flex-col'
+        editMode ? 'grid grid-cols-[190px_1fr] items-center' : 'flex flex-col'
       }
     >
       <dt className='text-sm/6 font-semibold text-gray-600'>{label}</dt>
@@ -171,7 +167,7 @@ const ProjectDetailField = ({
           onChange={onChange}
           options={options}
           placeholder={`Select a ${label.toLowerCase()}`}
-          className={`max-w-md ${editMode && 'sm:text-base'}`}
+          className={`${editMode && 'font-medium sm:text-base'}`}
         />
       </dd>
     </div>
