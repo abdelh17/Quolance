@@ -3,6 +3,7 @@ package com.quolance.quolance_api.controllers;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
@@ -53,6 +54,19 @@ public class ClientController {
         User client = SecurityUtil.getAuthenticatedUser();
         clientWorkflowService.deleteProject(projectId, client);
         return ResponseEntity.ok("Project deleted successfully");
+    }
+
+    @PutMapping("/projects/{projectId}")
+    @Operation(
+            summary = "Update a project",
+            description = "Update an existing project by passing the project details"
+    )
+    public ResponseEntity<ProjectDto> updateProject(
+            @PathVariable(name = "projectId") Long projectId,
+            @RequestBody ProjectUpdateDto projectUpdateDto) {
+        User client = SecurityUtil.getAuthenticatedUser();
+        ProjectDto updatedProject = clientWorkflowService.updateProject(projectId, projectUpdateDto, client);
+        return ResponseEntity.ok(updatedProject);
     }
 
     @GetMapping("/projects/all")
