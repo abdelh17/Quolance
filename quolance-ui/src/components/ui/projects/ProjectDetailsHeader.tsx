@@ -14,6 +14,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { XIcon } from 'lucide-react';
 import { RxReset } from 'react-icons/rx';
+import { useAuthGuard } from '@/api/auth-api';
+import { Role } from '@/constants/models/user/UserResponse';
 
 interface ProjectDetailsProps {
   project: ProjectType;
@@ -32,6 +34,9 @@ export default function ProjectDetailsHeader({
   resetDraftProject,
   updateProject,
 }: ProjectDetailsProps) {
+  const { user } = useAuthGuard({ middleware: 'auth' });
+  console.log('ProjectDetailsHeader', project);
+
   return (
     <div className='lg:flex lg:items-center lg:justify-between'>
       <div className='min-w-0 flex-1'>
@@ -63,7 +68,7 @@ export default function ProjectDetailsHeader({
         </div>
       </div>
       <div className='mt-5 flex lg:ml-4 lg:mt-0'>
-        {!editMode && (
+        {!editMode && user?.role == Role.CLIENT && (
           <span className=''>
             <Button
               variant='white'
