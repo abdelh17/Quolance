@@ -5,7 +5,11 @@ import { useSteps } from '@/util/context/StepsContext';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import RichTextEditor from '@/components/ui/RichTextEditor';
+import dynamic from 'next/dynamic';
+
+const RichTextEditor = dynamic(() => import('@/components/ui/RichTextEditor'), {
+  ssr: false,
+});
 
 const schema = z.object({
   projectTitle: z.string().min(1, 'Project Title is required').max(255),
