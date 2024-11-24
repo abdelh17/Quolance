@@ -40,7 +40,7 @@
 					"response": []
 				},
 				{
-					"name": "forgoPassword",
+					"name": "forgotPassword",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -368,6 +368,43 @@
 								"api",
 								"client",
 								"create-project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update project",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Project Title\",\n  \"description\": \"Updated project description\",\n  \"category\": \"WEB_DEVELOPMENT\",\n  \"priceRange\": \"LESS_500\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/client/projects/:projectId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"projects",
+								":projectId"
+							],
+							"variable": [
+								{
+									"key": "projectId",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -840,32 +877,20 @@
 			"name": "Pending",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Update Pending User",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"oldPassword\": \"Test@123\",\r\n    \"password\": \"Test1234\",\r\n    \"confirmPassword\": \"Test1234\",\r\n    \"role\": \"CLIENT\"\r\n}",
+							"raw": "{\r\n    \"oldPassword\": \"oauth\",\r\n    \"password\": \"Test@1234\",\r\n    \"confirmPassword\": \"Test@1234\",\r\n    \"role\": \"CLIENT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8080/api/pending/update",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"pending",
-								"update"
-							]
-						}
+						"url": "http://localhost:8080/api/pending/update"
 					},
 					"response": []
 				}

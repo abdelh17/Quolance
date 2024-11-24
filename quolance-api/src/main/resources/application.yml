@@ -6,6 +6,9 @@ app:
   login-success-url: "${app.base-url}/auth/login-success"
 
 spring:
+  profiles:
+    default: default
+
   config:
     import: "optional:file:../.env[.properties]"
 

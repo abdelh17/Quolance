@@ -3,6 +3,7 @@ package com.quolance.quolance_api.services.business_workflow.impl;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
@@ -31,6 +32,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         projectToSave.setClient(client);
         projectService.saveProject(projectToSave);
     }
+
 
     @Override
     public ProjectDto getProject(Long projectId, User client) {
@@ -70,5 +72,21 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         }
 
         return applicationService.getAllApplicationsByProjectId(projectId).stream().map(ApplicationDto::fromEntity).toList();
+    }
+
+    @Override
+    public ProjectDto updateProject(Long projectId, ProjectUpdateDto projectUpdateDto, User client) {
+        Project existingProject = projectService.getProjectById(projectId);
+
+        if (!existingProject.isOwnedBy(client.getId())) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_FORBIDDEN)
+                    .message("You don't have permission to update this project")
+                    .build();
+        }
+
+        projectService.updateProject(existingProject, projectUpdateDto);
+
+        return ProjectDto.fromEntity(existingProject);
     }
 }
