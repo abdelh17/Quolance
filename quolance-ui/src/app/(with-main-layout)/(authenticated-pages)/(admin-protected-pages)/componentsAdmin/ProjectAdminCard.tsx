@@ -1,58 +1,55 @@
 
 import Link from "next/link";
 
+
 function ProjectAdminCard({
-    id,
-    name,
-    tags,
-    clientId, 
-    status,
-  }: {
-    id: number;
-    name: string;
-    tags: string[];
-    clientId: number;
-    status: string;
-  }) {
-    return (
-      <div className='border-n30 flex w-full min-w-[200px] flex-col gap-3 rounded-2xl border p-5'>
-        <div>
-          <h5 className='heading-5'>{name}</h5>
-          <p className='text-n400 pt-2 text-sm'>Client ID: {clientId}</p> 
-              
-          <p
-            className={`mt-2 w-max rounded-xl px-3 py-2 font-medium ${
-              status === 'approved'
-                ? 'bg-green-500 text-white'
-                : status === 'rejected'
-                ? 'bg-red-500 text-white'
-                : 'bg-blue-500 text-white' 
-            }`}
-          >
-            {status}
-          </p>
-        </div>
-  
-        <div className='flex items-center justify-between'>
-          <div className='text-n400 flex flex-wrap gap-2 text-sm'>
-            {tags.map((tag, index) => (
-              <p key={index} className='bg-b50 rounded-xl px-3 py-2 font-medium'>
-                {tag}
-              </p>
-            ))}
-          </div>
-  
-          {status === "pending" && (
-            <Link
-              href={`./adminApproveProject/${id}`}
-              className="bg-yellow-500 hover:bg-blue-500 border flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium"
-            >
-              Update Status
-            </Link>
-          )}
-        </div>
-      </div>
-    );
-  }
-  
-  export default ProjectAdminCard;
+ id,
+ title,
+ projectStatus,
+ expirationDate,
+ clientId,
+}: {
+ id: number;
+ title: string;
+ projectStatus: string;
+ expirationDate: string;
+ clientId: number;
+}) {
+ return (
+   <div className=" flex flex-col sm:flex-row w-full items-start sm:items-center justify-between gap-y-4 sm:gap-x-6 py-5 border-b border-gray-300">
+    
+     <div className="min-w-0">
+       <div className="flex items-center gap-x-3">
+         <p className="text-sm font-semibold text-gray-900">{title}</p>
+         <p
+           className="text-gray-600 bg-gray-50 ring-gray-500/10 whitespace-nowrap rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset"
+         >
+           {projectStatus}
+         </p>
+       </div>
+       <div className="mt-1 flex items-center gap-x-2 text-xs text-gray-500">
+         <p className="whitespace-nowrap">
+           Expiration Date: <time dateTime={expirationDate}>{expirationDate}</time>
+         </p>
+         <svg viewBox="0 0 2 2" className="h-1 w-1 fill-current">
+           <circle r={1} cx={1} cy={1} />
+         </svg>
+         <p>Client ID: {clientId}</p>
+       </div>
+     </div>
+
+     <div className="flex w-full sm:w-auto flex-none items-center sm:justify-end gap-x-4">
+       <Link
+         href={`./adminApproveProject/${id}`}
+         className="rounded-md px-2.5 py-1.5 text-sm  shadow-sm ring-1 ring-inset ring-gray-300 bg-blue-500 hover:bg-yellow-500 text-white w-full sm:w-auto text-center"
+       >
+         Update Status
+       </Link>
+     </div>
+   </div>
+ );
+}
+
+
+export default ProjectAdminCard;
+

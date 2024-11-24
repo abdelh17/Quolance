@@ -1,76 +1,232 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+ Listbox,
+ ListboxButton,
+ ListboxOption,
+ ListboxOptions,
+} from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+
 
 interface Project {
-  id: number;
-  name: string;
-  description: string;
-  tags: string[];
-  clientId: number;
-  status: string;
+ id: number;
+ title: string;
+ description: string;
+ expirationDate: string; 
+ visibilityExpirationDate: string | null; 
+ category: string;
+ priceRange: string;
+ experienceLevel: string;
+ expectedDeliveryTime: string;
+ projectStatus: string;
+ tags?: string[]; 
+ clientId: number;
+ selectedFreelancerId: number | null;
+ applications: any[]; 
 }
+
 
 interface ProjectDetailsProps {
-  project: Project | null;
-  status: string;
-  onStatusChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSubmit: () => void;
+ project: Project | null;
+ status: string;
+ onStatusChange: (status: string) => void;
+ onSubmit: (reason?: string) => void;
 }
 
-export const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, status, onStatusChange, onSubmit }) => {
-  return (
-    <>
-      <div className="flex w-4/5 min-w-[200px] rounded border flex-col justify-self-center mt-10">
-        <h3 className="heading-3 text-center bg-gray-300 p-3 mb-3">{project?.name}</h3>
 
-        <div className="p-5 flex flex-col gap-6">
-          <div className="text-xl font-bold">Project Description</div>
-          <div className="text-justify">{project?.description}</div>
+const statuses = [
+ { id: "approved", name: "Approved" },
+ { id: "rejected", name: "Rejected" },
+];
 
-          <div className="text-xl font-bold">Client ID</div> 
-          <div>{project?.clientId}</div>
 
-          <div className="text-xl font-bold">Tags</div>
-          <div className="flex items-center justify-between">
-            <div className="text-n400 flex flex-wrap gap-2 text-sm">
-              {project?.tags.map((tag, index) => (
-                <p key={index} className="bg-b50 rounded-xl px-3 py-2 font-medium">
-                  {tag}
-                </p>
-              ))}
-            </div>
-          </div>
+export const ProjectDetails: React.FC<ProjectDetailsProps> = ({
+ project,
+ status,
+ onStatusChange,
+ onSubmit,
+}) => {
+ const [selectedStatus, setSelectedStatus] = useState(
+   statuses.find((s) => s.id === status) || statuses[0]
+ );
+ const [rejectionReason, setRejectionReason] = useState("");
+ const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
 
-          <div className="text-xl font-bold">Project Status</div>
-          <div className="rounded-xl w-max px-3 py-2 bg-blue-500 text-white">{project?.status}</div>
-        </div>
-      </div>
 
-      <div className="flex w-4/5 min-w-[200px] rounded border flex-col justify-self-center mt-10">
-        <h3 className="heading-3 text-center bg-gray-300 p-3">Change Status</h3>
+ const handleStatusChange = (status: { id: string; name: string }) => {
+   setSelectedStatus(status);
+   onStatusChange(status.id);
 
-        <div className="p-4 flex items-center justify-between">
-          <div>
-            <label htmlFor="status" className="font-bold pr-2">
-              New Status:
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={onStatusChange}
-              className="rounded-xl border px-4 py-2"
-            >
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-          <button
-            onClick={onSubmit}
-            className="border rounded px-3 py-2 bg-yellow-500 hover:bg-blue-500 text-white"
-          >
-            Submit
-          </button>
-        </div>
-      </div>
-    </>
-  );
+
+   if (status.id === "rejected") {
+     setIsSubmitDisabled(true);
+   } else {
+     setIsSubmitDisabled(false);
+   }
+ };
+
+
+ const handleReasonChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+   const value = event.target.value;
+   setRejectionReason(value);
+   setIsSubmitDisabled(value.trim().length === 0);
+ };
+
+
+ const handleSubmit = () => {
+   if (selectedStatus.id === "rejected") {
+     onSubmit(rejectionReason);
+   } else {
+     onSubmit();
+   }
+ };
+
+
+ return (
+   <>
+     <div className="max-w-screen-2xl mx-auto p-4">
+       <div className="grid px-4">
+         <div>
+           <h2 className="text-3xl font-bold text-gray-900 mt-20">
+             {project?.title || "Project Title"}
+           </h2>
+           <p className="mt-4 text-gray-500">
+             {project?.description || "No description provided"}
+           </p>
+
+
+           <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">Expiration Date</dt>
+               <dd className="mt-2 text-sm text-gray-500">
+                 {project?.expirationDate || "N/A"}
+               </dd>
+             </div>
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">
+                 Visibility Expiration Date
+               </dt>
+               <dd className="mt-2 text-sm text-gray-500">
+                 {project?.visibilityExpirationDate || "N/A"}
+               </dd>
+             </div>
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">Category</dt>
+               <dd className="mt-2 text-sm text-gray-500">
+                 {project?.category || "N/A"}
+               </dd>
+             </div>
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">Price Range</dt>
+               <dd className="mt-2 text-sm text-gray-500">
+                 {project?.priceRange || "N/A"}
+               </dd>
+             </div>
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">Experience Level</dt>
+               <dd className="mt-2 text-sm text-gray-500">
+                 {project?.experienceLevel || "N/A"}
+               </dd>
+             </div>
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">
+                 Expected Delivery Time
+               </dt>
+               <dd className="mt-2 text-sm text-gray-500">
+                 {project?.expectedDeliveryTime || "N/A"}
+               </dd>
+             </div>
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">Project Status</dt>
+               <dd className="mt-2 text-sm text-gray-500 capitalize">
+                 {project?.projectStatus || "N/A"}
+               </dd>
+             </div>
+             <div className="border-t border-gray-300 pt-4">
+               <dt className="font-medium text-gray-900">Client ID</dt>
+               <dd className="mt-2 text-sm text-gray-500">
+                 {project?.clientId || "N/A"}
+               </dd>
+             </div>
+           </dl>
+         </div>
+       </div>
+     </div>
+
+
+     <div className="max-w-screen-2xl mx-auto p-4">
+       <h2 className="text-3xl font-bold text-gray-900 p-4">Change Status</h2>
+
+
+       <div className="p-4 flex flex-col gap-6 mb-20">
+         <div>
+           <Listbox value={selectedStatus} onChange={handleStatusChange}>
+             <div className="relative">
+               <ListboxButton className="lg:w-96 rounded-xl border border-gray-300 p-2 flex items-center justify-between w-full">
+                 {selectedStatus.name}
+                 <ChevronDownIcon
+                   aria-hidden="true"
+                   className="h-5 w-5 text-gray-500"
+                 />
+               </ListboxButton>
+               <ListboxOptions className="absolute mt-1 lg:w-96 w-full rounded border bg-white shadow-md z-10">
+                 {statuses.map((statusOption) => (
+                   <ListboxOption
+                     key={statusOption.id}
+                     value={statusOption}
+                     className={({ active }: { active: boolean }) =>
+                       `cursor-pointer select-none px-4 py-2 ${
+                         active
+                           ? "bg-blue-100 text-blue-900"
+                           : "text-gray-900"
+                       }`
+                     }
+                   >
+                     {statusOption.name}
+                   </ListboxOption>
+                 ))}
+               </ListboxOptions>
+             </div>
+           </Listbox>
+         </div>
+
+
+         {selectedStatus.id === "rejected" && (
+           <div>
+             <h3 className="font-medium text-gray-900 mb-2">
+               Reason for Rejection
+             </h3>
+             <textarea
+               value={rejectionReason}
+               onChange={handleReasonChange}
+               className="w-full rounded-xl border border-gray-300 p-4"
+               rows={5}
+             />
+           </div>
+         )}
+
+
+        
+
+
+         <div className="flex justify-end ">
+               <button
+                 onClick={handleSubmit}
+                 className={`lg:w-48 w-full border rounded-xl px-3 py-2 text-white ${
+                   isSubmitDisabled
+                     ? "bg-gray-400 cursor-not-allowed"
+                     : "bg-blue-500 hover:bg-yellow-500"
+                 }`}
+                 disabled={isSubmitDisabled}
+               >
+                 Submit
+               </button>
+             </div>
+       </div>
+     </div>
+   </>
+ );
 };
+
+
+
