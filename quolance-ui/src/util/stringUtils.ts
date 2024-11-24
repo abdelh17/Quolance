@@ -17,7 +17,7 @@ export const formatPriceRange = (priceRange: string) => {
   switch (priceRange) {
     case 'LESS_500':
       return `$0 – $500`;
-    case 'BETWEEN_500_AND_1000':
+    case 'BETWEEN_500_1000':
       return '$500 – $1000';
     case 'BETWEEN_1000_5000':
       return '$1000 – $5000';

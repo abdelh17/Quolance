@@ -35,7 +35,7 @@ export type ProjectType = {
   description: string;
   priceRange:
     | 'LESS_500'
-    | 'BETWEEN_500_AND_1000'
+    | 'BETWEEN_500_1000'
     | 'BETWEEN_1000_5000'
     | 'BETWEEN_5000_10000'
     | 'MORE_10000'
@@ -81,7 +81,7 @@ export type PostProjectType = {
   projectDescription: string;
   priceRange:
     | 'LESS_500'
-    | 'BETWEEN_500_AND_1000'
+    | 'BETWEEN_500_1000'
     | 'BETWEEN_1000_5000'
     | 'BETWEEN_5000_10000'
     | 'MORE_10000'
