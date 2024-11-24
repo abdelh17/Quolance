@@ -110,6 +110,9 @@ Before running the script, ensure the following:
    MAILPIT_USER=mailpit
    MAILPIT_PASSWORD=mailpit
 
+   ADMIN_EMAIL=admin@quolance.com
+   ADMIN_PASSWORD=admin
+
    GITHUB_CLIENT_ID=github_id
    GITHUB_CLIENT_SECRET=github_secret
    GOOGLE_CLIENT_ID=google_id
@@ -124,11 +127,11 @@ To set up the backend environment, run the following command from the root direc
 
 - **Windows**:
   ```bash
-  ./scripts/quolance.sh
+  ./quolance-scripts/quolance.sh
   ```
 - **Mac/Linux**:
   ```bash
-  sh ./scripts/quolance.sh
+  sh ./quolance-scripts/quolance.sh
   ```
 
 #### Script Options
@@ -167,6 +170,18 @@ cd quolance-api
 ./mvnw clean install
 ./mvnw spring-boot:run
 ```
+
+### Using profile to create a default admin user while building the springboot App
+
+#### Admin credentials
+You can add a profile at your springboot configuration to create an admin user with these credentials
+   ```
+      ADMIN_EMAIL=admin@quolance.com
+      ADMIN_PASSWORD=admin
+   ```
+#### Running with the Profile
+- Option 1: Running the backend with this command ```mvn spring-boot:run -Dspring-boot.run.profiles=local```
+- Option 2: Add the **local** profile to your intellij config ![image](https://github.com/user-attachments/assets/415e6a76-6381-4e36-b70b-a70bda18eb8d)
 
 ---
 
