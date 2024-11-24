@@ -1,26 +1,58 @@
-spring:
-  application:
-    name: quolance-api
+#spring:
+#  application:
+#    name: quolance-api
+#
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    password: password
+#    driver-class-name: org.h2.Driver
+#
+#  mail:
+#    host: localhost
+#    port: 1025
+#    username: mailpit
+#    password: mailpit
+#    properties:
+#      mail.smtp.auth: true
+#      mail.smtp.starttls.enable: true
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        database-platform: org.hibernate.dialect.PostgreSQLDialect
+#
 
+
+org:
+  jobrunr:
+    dashboard:
+      enabled: false
+
+spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
     username: sa
     password: password
-    driver-class-name: org.h2.Driver
-
-  mail:
-    host: localhost
-    port: 1025
-    username: mailpit
-    password: mailpit
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
     properties:
       hibernate:
-        format_sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+
+#  mail:
+#    host: localhost
+#    port: 1025
+#    username: mailpit
+#    password: mailpit
+#    properties:
+#      mail.smtp.auth: true
+#      mail.smtp.starttls.enable: true
