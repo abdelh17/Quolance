@@ -3,7 +3,6 @@ import {
   CalendarIcon,
   CheckIcon,
   CurrencyDollarIcon,
-  LinkIcon,
   PencilIcon,
 } from '@heroicons/react/20/solid';
 import { ProjectType } from '@/constants/types/project-types';
@@ -13,19 +12,24 @@ import {
   formatPriceRange,
 } from '@/util/stringUtils';
 import { Button } from '@/components/ui/button';
+import { XIcon } from 'lucide-react';
+import { RxReset } from 'react-icons/rx';
 
 interface ProjectDetailsProps {
   project: ProjectType;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
+  isEdited: boolean;
+  resetDraftProject: () => void;
 }
 
 export default function ProjectDetailsHeader({
   project,
   editMode,
   setEditMode,
+  isEdited,
+  resetDraftProject,
 }: ProjectDetailsProps) {
-  console.log('project', project);
   return (
     <div className='lg:flex lg:items-center lg:justify-between'>
       <div className='min-w-0 flex-1'>
@@ -40,14 +44,6 @@ export default function ProjectDetailsHeader({
             />
             {formatEnumString(project.category)}
           </div>
-          {/* Removed location */}
-          {/*<div className='mt-2 flex items-center text-sm text-gray-500'>*/}
-          {/*  <MapPinIcon*/}
-          {/*    aria-hidden='true'*/}
-          {/*    className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'*/}
-          {/*  />*/}
-          {/*  {project.location}*/}
-          {/*</div>*/}
           <div className='mt-2 flex items-center text-sm text-gray-500'>
             <CurrencyDollarIcon
               aria-hidden='true'
@@ -65,40 +61,71 @@ export default function ProjectDetailsHeader({
         </div>
       </div>
       <div className='mt-5 flex lg:ml-4 lg:mt-0'>
-        <span className=''>
-          <Button variant='white' size='sm' icon={<PencilIcon />}>
-            <span className={'text-gray-800'}>Edit</span>
-          </Button>
-        </span>
+        {!editMode && (
+          <span className=''>
+            <Button
+              variant='white'
+              size='sm'
+              icon={<PencilIcon />}
+              onClick={() => setEditMode(true)}
+            >
+              <span className='text-gray-800'>Edit</span>
+            </Button>
+          </span>
+        )}
 
-        <span className='ml-3'>
-          <Button
-            variant='white'
-            size={'sm'}
-            icon={
-              <LinkIcon aria-hidden='true' className='-ml-0.5 mr-1.5 h-5 w-5' />
-            }
-          >
-            View
-          </Button>
-        </span>
+        {editMode && (
+          <span className=''>
+            <Button
+              variant='white'
+              size='sm'
+              icon={
+                <RxReset
+                  aria-hidden='true'
+                  className='-ml-0.5 mr-1.5 h-5 w-5'
+                />
+              }
+              onClick={resetDraftProject}
+              disabled={!isEdited}
+            >
+              Reset Changes
+            </Button>
+          </span>
+        )}
 
-        <span className='ml-3'>
-          <Button
-            variant='default'
-            animation='default'
-            size={'sm'}
-            disabled={false}
-            icon={
-              <CheckIcon
-                aria-hidden='true'
-                className='-ml-0.5 mr-1.5 h-5 w-5'
-              />
-            }
-          >
-            Update
-          </Button>
-        </span>
+        {editMode && (
+          <span className='ml-3'>
+            <Button
+              variant='white'
+              size={'sm'}
+              icon={
+                <XIcon aria-hidden='true' className='-ml-0.5 mr-1.5 h-5 w-5' />
+              }
+              onClick={() => setEditMode(false)}
+            >
+              Cancel
+            </Button>
+          </span>
+        )}
+
+        {editMode && (
+          <span className='ml-3'>
+            <Button
+              variant='default'
+              animation='default'
+              size={'sm'}
+              disabled={false}
+              icon={
+                <CheckIcon
+                  aria-hidden='true'
+                  className='-ml-0.5 mr-1.5 h-5 w-5'
+                />
+              }
+            >
+              Update
+            </Button>
+          </span>
+        )}
       </div>
     </div>
   );

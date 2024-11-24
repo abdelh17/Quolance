@@ -2,23 +2,27 @@ import { ProjectType } from '@/constants/types/project-types';
 import Image from 'next/image';
 import freelancerImg from '@/public/images/freelancer-hero-img-2.jpg';
 import Link from 'next/link';
+import ViewEditField from '@/components/ui/ViewEditField';
+import {
+  BUDGET_OPTIONS,
+  BUSINESS_CATEGORY_OPTIONS,
+  EXPERIENCE_LEVEL_OPTIONS,
+} from '@/constants/types/form-types';
 import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
+import RichTextEditor from '@/components/ui/RichTextEditor';
+import RichTextDisplay from '@/components/ui/RichTextDisplay';
 
 interface ProjectDetailsProps {
   project: ProjectType;
+  setDraftProject: (key: string, value: any) => void;
   editMode: boolean;
 }
 
 export default function ProjectDetailsContent({
   project,
+  setDraftProject,
   editMode,
 }: ProjectDetailsProps) {
-  const stats = [
-    { label: 'Category', value: formatEnumString(project.category) },
-    { label: 'Expected Delivery', value: project.expirationDate },
-    { label: 'Budget', value: formatPriceRange(project.priceRange) },
-  ];
-
   return (
     <div className='bg-white py-8 sm:py-12'>
       <div className='mx-auto max-w-7xl'>
@@ -51,44 +55,72 @@ export default function ProjectDetailsContent({
           <div>
             <div className='text-base/7 lg:max-w-lg'>
               <h1 className='text-pretty text-4xl font-semibold tracking-tight sm:text-5xl'>
-                {project.title}
+                <ViewEditField
+                  isEditing={editMode}
+                  value={project.title}
+                  name='title'
+                  onChange={setDraftProject}
+                  className={`${editMode && 'px-4 py-3 text-4xl'}`}
+                />
               </h1>
-              <div className='max-w-xl text-gray-700 '>
-                <p className='mt-6'>
-                  Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget
-                  risus enim. Mattis mauris semper sed amet vitae sed turpis id.
-                  Id dolor praesent donec est. Odio penatibus risus viverra
-                  tellus varius sit neque erat velit. Faucibus commodo massa
-                  rhoncus, volutpat. Dignissim sed eget risus enim. Mattis
-                  mauris semper sed amet vitae sed turpis id.
-                </p>
-                <p className='mt-8'>
-                  Et vitae blandit facilisi magna lacus commodo. Vitae sapien
-                  duis odio id et. Id blandit molestie auctor fermentum
-                  dignissim. Lacus diam tincidunt ac cursus in vel. Mauris
-                  varius vulputate et ultrices hac adipiscing egestas. Iaculis
-                  convallis ac tempor et ut. Ac lorem vel integer orci.
-                </p>
-                <p className='mt-8'>
-                  Et vitae blandit facilisi magna lacus commodo. Vitae sapien
-                  duis odio id et. Id blandit molestie auctor fermentum
-                  dignissim. Lacus diam tincidunt ac cursus in vel. Mauris
-                  varius vulputate et ultrices hac adipiscing egestas. Iaculis
-                  convallis ac tempor et ut. Ac lorem vel integer orci.
-                </p>
+              <div className='mt-3 max-w-xl text-gray-700'>
+                {editMode ? (
+                  <RichTextEditor
+                    name='description'
+                    value={project.description || ''}
+                    onChange={setDraftProject}
+                    placeholder='Enter project description...'
+                    debounceMs={200}
+                    minHeight='200px'
+                    className={'mt-6'}
+                  />
+                ) : (
+                  <RichTextDisplay content={project.description} />
+                )}
               </div>
             </div>
-            <dl className='mt-10 grid grid-cols-2 gap-8 border-t border-gray-900/10 pt-10 sm:grid-cols-3'>
-              {stats.map((stat, statIdx) => (
-                <div key={statIdx}>
-                  <dt className='text-sm/6 font-semibold text-gray-600'>
-                    {stat.label}
-                  </dt>
-                  <dd className='mt-2 text-xl font-semibold tracking-tight'>
-                    {stat.value}
-                  </dd>
-                </div>
-              ))}
+            <dl
+              className={`${
+                editMode ? '' : 'sm:flex-row'
+              } mt-10 flex flex-col gap-8 border-t border-gray-900/10 px-4 pt-10 sm:px-0`}
+            >
+              {/* Project Category */}
+              <ProjectDetailField
+                label='Project Category'
+                value={formatEnumString(project.category)}
+                editValue={project.category}
+                name='category'
+                editMode={editMode}
+                onChange={setDraftProject}
+                options={BUSINESS_CATEGORY_OPTIONS}
+                type='select'
+              />
+              {/* Budget */}
+              <ProjectDetailField
+                label='Budget'
+                value={formatPriceRange(project.priceRange)}
+                editValue={project.priceRange}
+                name='priceRange'
+                editMode={editMode}
+                onChange={setDraftProject}
+                options={BUDGET_OPTIONS}
+                type={'select'}
+              />
+              {/* Experience Level */}
+              <ProjectDetailField
+                label='Experience Level'
+                value={
+                  EXPERIENCE_LEVEL_OPTIONS.find(
+                    (option) => option.value === project.experienceLevel
+                  )?.label || ''
+                }
+                editValue={project.experienceLevel}
+                name='experienceLevel'
+                editMode={editMode}
+                onChange={setDraftProject}
+                options={EXPERIENCE_LEVEL_OPTIONS}
+                type={'select'}
+              />
             </dl>
           </div>
         </div>
@@ -96,3 +128,52 @@ export default function ProjectDetailsContent({
     </div>
   );
 }
+
+interface ProjectDetailFieldProps {
+  label: string;
+  value: string;
+  editValue: string;
+  name: string;
+  editMode: boolean;
+  onChange: (key: string, value: any) => void;
+  options?: { value: string; label: string }[];
+  type?: 'text' | 'select';
+}
+
+const ProjectDetailField = ({
+  label,
+  editValue,
+  value,
+  name,
+  editMode,
+  onChange,
+  options,
+  type = 'text',
+}: ProjectDetailFieldProps) => {
+  return (
+    <div
+      className={
+        editMode ? 'grid grid-cols-[140px_1fr] items-center' : 'flex flex-col'
+      }
+    >
+      <dt className='text-sm/6 font-semibold text-gray-600'>{label}</dt>
+      <dd
+        className={`${
+          !editMode && 'mt-2'
+        } w-full text-xl font-semibold tracking-tight`}
+      >
+        <ViewEditField
+          id={name}
+          name={name}
+          type={type}
+          isEditing={editMode}
+          value={editMode ? editValue : value}
+          onChange={onChange}
+          options={options}
+          placeholder={`Select a ${label.toLowerCase()}`}
+          className={`max-w-md ${editMode && 'sm:text-base'}`}
+        />
+      </dd>
+    </div>
+  );
+};
