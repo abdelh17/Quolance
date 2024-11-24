@@ -21,6 +21,7 @@ interface ProjectDetailsProps {
   setEditMode: (value: boolean) => void;
   isEdited: boolean;
   resetDraftProject: () => void;
+  updateProject: () => void;
 }
 
 export default function ProjectDetailsHeader({
@@ -29,6 +30,7 @@ export default function ProjectDetailsHeader({
   setEditMode,
   isEdited,
   resetDraftProject,
+  updateProject,
 }: ProjectDetailsProps) {
   return (
     <div className='lg:flex lg:items-center lg:justify-between'>
@@ -75,7 +77,22 @@ export default function ProjectDetailsHeader({
         )}
 
         {editMode && (
-          <span className=''>
+          <span className='ml-3'>
+            <Button
+              variant='white'
+              size={'sm'}
+              icon={
+                <XIcon aria-hidden='true' className='-ml-0.5 mr-1.5 h-5 w-5' />
+              }
+              onClick={() => setEditMode(false)}
+            >
+              Cancel
+            </Button>
+          </span>
+        )}
+
+        {editMode && (
+          <span className='ml-3'>
             <Button
               variant='white'
               size='sm'
@@ -96,31 +113,17 @@ export default function ProjectDetailsHeader({
         {editMode && (
           <span className='ml-3'>
             <Button
-              variant='white'
-              size={'sm'}
-              icon={
-                <XIcon aria-hidden='true' className='-ml-0.5 mr-1.5 h-5 w-5' />
-              }
-              onClick={() => setEditMode(false)}
-            >
-              Cancel
-            </Button>
-          </span>
-        )}
-
-        {editMode && (
-          <span className='ml-3'>
-            <Button
               variant='default'
               animation='default'
               size={'sm'}
-              disabled={false}
+              disabled={!isEdited}
               icon={
                 <CheckIcon
                   aria-hidden='true'
                   className='-ml-0.5 mr-1.5 h-5 w-5'
                 />
               }
+              onClick={updateProject}
             >
               Update
             </Button>

@@ -29,13 +29,21 @@ export const usePostProject = (options?: {
   });
 };
 
-export const useUpdateProject = (project: ProjectType) => {
+export const useUpdateProject = (
+  projectId: number,
+  options?: {
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+  }
+) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateProject,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects', project.id] });
+      queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
+      options?.onSuccess && options.onSuccess();
     },
+    onError: options?.onError,
   });
 };
 
