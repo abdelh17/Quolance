@@ -55,17 +55,17 @@ function ProjectsContainer() {
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
             {data.data.map((project: ProjectType) => (
               <ProjectCard
-                key={project.projectId}
+                key={project.id}
                 tags={project.tags}
-                projectId={project.projectId}
+                id={project.id}
                 createdAt={project.createdAt}
                 category={project.category}
-                projectTitle={project.projectTitle}
-                projectDescription={project.projectDescription}
+                title={project.title}
+                description={project.description}
                 priceRange={project.priceRange}
                 experienceLevel={project.experienceLevel}
                 expectedDeliveryTime={project.expectedDeliveryTime}
-                deliveryDate={project.deliveryDate}
+                expirationDate={project.expirationDate}
                 location={project.location}
                 projectStatus={project.projectStatus}
                 clientId={project.clientId}

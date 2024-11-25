@@ -17,7 +17,7 @@ export const useApproveSubmission = () => {
 
 /*--- Query functions ---*/
 const getProjectSubmissions = async (projectId: number) => {
-  return httpClient.get(`api/client/projects/${projectId}/applications`);
+  return httpClient.get(`api/client/projects/${projectId}/applications/all`);
 };
 
 const approveSubmission = async (applicationId: number) => {

@@ -23,7 +23,7 @@ function StepTwo({
   return (
     <div className=''>
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
-        What is your priceRange?*
+        What is your price range?*
       </p>
       <ClientBudgetRadioGroup
         name='priceRange'
