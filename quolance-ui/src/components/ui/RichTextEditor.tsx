@@ -44,7 +44,7 @@ const RichTextEditor = ({
         container: [
           [{ header: [1, 2, 3, false] }],
           ['bold', 'italic', 'underline', 'strike'],
-          [{ list: 'ordered' }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
           [{ align: [] }],
           ['blockquote', 'link'],
           ['clean'],
@@ -69,7 +69,6 @@ const RichTextEditor = ({
     'strike',
     'blockquote',
     'list',
-    'bullet',
     'align',
     'link',
   ];

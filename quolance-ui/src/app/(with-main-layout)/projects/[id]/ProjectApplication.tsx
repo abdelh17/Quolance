@@ -6,6 +6,7 @@ import { useSubmitApplication } from '@/api/freelancer-api';
 import { Button } from '@/components/ui/button';
 import ResponseFeedback from '@/components/response-feedback';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { showToast } from '@/util/context/ToastProvider';
 
 type ApplicationFormProps = {
   projectId: number;
@@ -18,14 +19,26 @@ type ApplicationFormFields = {
 export default function ProjectApplication({
   projectId,
 }: ApplicationFormProps) {
-  const { register, formState, handleSubmit } =
-    useForm<ApplicationFormFields>();
+  const { register, handleSubmit } = useForm<ApplicationFormFields>();
   const { user } = useAuthGuard({ middleware: 'auth' });
   const {
     mutateAsync: mutateApplication,
     isSuccess,
     error,
-  } = useSubmitApplication();
+  } = useSubmitApplication({
+    onSuccess: () => {
+      console.log('Application submitted successfully');
+      showToast('Application submitted successfully', 'success');
+    },
+    onError: (error) => {
+      console.log('Error submitting application:', error);
+      const ErrorResponse = error.response?.data as HttpErrorResponse;
+      showToast(
+        `Error submitting application: ${ErrorResponse?.message}`,
+        'error'
+      );
+    },
+  });
 
   const onSubmit: SubmitHandler<ApplicationFormFields> = async (data) => {
     if (!user) return;

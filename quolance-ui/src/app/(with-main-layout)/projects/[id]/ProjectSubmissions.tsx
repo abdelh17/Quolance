@@ -25,12 +25,12 @@ type ProjectSubmissionsProps = {
   projectId: number;
 };
 
-export interface SubmissionFilters {
+export interface ApplicationFilters {
   viewRejected: boolean;
   viewCancelled: boolean;
 }
 
-const initialFilters: SubmissionFilters = {
+const initialFilters: ApplicationFilters = {
   viewRejected: false,
   viewCancelled: false,
 };
@@ -42,10 +42,10 @@ export default function ProjectSubmissions({
   const [isRefuseModalOpen, setIsRefuseModalOpen] = useState(false);
   // Filter state that will actually be used to filter submissions
   const [activeFilters, setActiveFilters] =
-    useState<SubmissionFilters>(initialFilters);
+    useState<ApplicationFilters>(initialFilters);
   // Filter state that is used specifically for the filter modal popup
   const [tempFilters, setTempFilters] =
-    useState<SubmissionFilters>(initialFilters);
+    useState<ApplicationFilters>(initialFilters);
 
   const [selectedSubmissions, setSelectedSubmissions] = useState<number[]>([]);
   // Query hooks
@@ -74,7 +74,7 @@ export default function ProjectSubmissions({
     return (
       submissions?.some(
         (submission: ApplicationResponse) =>
-          submission.applicationStatus === 'PENDING_CONFIRMATION'
+          submission.status === 'PENDING_CONFIRMATION'
       ) ?? false
     );
   }, [submissions]);
@@ -93,6 +93,8 @@ export default function ProjectSubmissions({
     setIsRefuseModalOpen(false);
     // Call API to refuse selected submissions
   };
+
+  console.log(submissions);
 
   return (
     <section className='sbp-30'>
@@ -162,25 +164,26 @@ export default function ProjectSubmissions({
             filteredSubmissions.length > 0 &&
             filteredSubmissions.map(
               (submission: ApplicationResponse, idx: number) => (
-                <FreelancerCard
-                  key={submission.applicationId}
-                  handleApproveSubmission={() =>
-                    handleApproveSubmission(submission.applicationId)
-                  }
-                  selected={selectedSubmissions.includes(
-                    submission.applicationId
-                  )}
-                  status={submission.applicationStatus}
-                  isApproveDisabled={hasPendingConfirmation} // Pass the disable state
-                  onSelect={(selected) =>
-                    handleSelectSubmission(
-                      submission.applicationId,
-                      selected,
-                      setSelectedSubmissions
-                    )
-                  }
-                  {...DATA_Submissioners[idx]}
-                />
+                <div key={`submission-${idx}`}>
+                  <FreelancerCard
+                    handleApproveSubmission={() =>
+                      handleApproveSubmission(submission.applicationId)
+                    }
+                    selected={selectedSubmissions.includes(
+                      submission.applicationId
+                    )}
+                    status={submission.status}
+                    isApproveDisabled={hasPendingConfirmation} // Pass the disable state
+                    onSelect={(selected) =>
+                      handleSelectSubmission(
+                        submission.applicationId,
+                        selected,
+                        setSelectedSubmissions
+                      )
+                    }
+                    {...DATA_Submissioners[idx]}
+                  />
+                </div>
               )
             )}
 

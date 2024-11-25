@@ -1,6 +1,6 @@
 import React, { SetStateAction } from 'react';
 import { PiCaretDown, PiX } from 'react-icons/pi';
-import { SubmissionFilters } from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
+import { ApplicationFilters } from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
 
 function FreelancersFilterModal({
   filterModal,
@@ -13,10 +13,10 @@ function FreelancersFilterModal({
 }: {
   filterModal: boolean;
   setFilterModal: React.Dispatch<SetStateAction<boolean>>;
-  filters: SubmissionFilters;
-  onFilterChange: <K extends keyof SubmissionFilters>(
+  filters: ApplicationFilters;
+  onFilterChange: <K extends keyof ApplicationFilters>(
     filterType: K,
-    value: SubmissionFilters[K]
+    value: ApplicationFilters[K]
   ) => void;
   onApplyFilters: () => void;
   onResetFilters: () => void;

@@ -13,6 +13,7 @@ import Loading from '@/components/loading';
 import { useCallback, useEffect, useState } from 'react';
 import { isDeepEqual } from '@/util/objectUtils';
 import { showToast } from '@/util/context/ToastProvider';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 function ProjectPage() {
   const { id } = useParams();
@@ -35,7 +36,8 @@ function ProjectPage() {
     },
     onError: (error) => {
       console.log('Error updating project:', error);
-      showToast('Error updating project', 'error');
+      const ErrorResponse = error.response?.data as HttpErrorResponse;
+      showToast(`Error updating project: ${ErrorResponse?.message}`, 'error');
     },
   });
 
@@ -67,7 +69,7 @@ function ProjectPage() {
 
   return (
     <>
-      <section className='container mt-3'>
+      <section className='container mt-3 pb-16'>
         <BreadCrumb pageName='Project Details' />
         {project && (
           <>

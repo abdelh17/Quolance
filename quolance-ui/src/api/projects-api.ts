@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import { PostProjectType, ProjectType } from '@/constants/types/project-types';
+import { AxiosError } from 'axios';
 
 /*--- Hooks ---*/
 export const useGetProjectInfo = (projectId: number) => {
@@ -33,7 +34,7 @@ export const useUpdateProject = (
   projectId: number,
   options?: {
     onSuccess?: () => void;
-    onError?: (error: unknown) => void;
+    onError?: (error: AxiosError) => void;
   }
 ) => {
   const queryClient = useQueryClient();
