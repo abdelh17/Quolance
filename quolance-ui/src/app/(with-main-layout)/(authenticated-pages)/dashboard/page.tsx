@@ -20,7 +20,8 @@ export default function Dashboard() {
               sizes='50vw'
               quality={100}
             />
-
+            {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black bg-opacity-20" />
           </div>
           <header className='relative z-10'>
             <div className='mx-auto px-16 py-20 sm:px-12 lg:px-20'>
@@ -39,7 +40,7 @@ export default function Dashboard() {
         <main>
           <div className='mx-auto px-4 py-8 sm:px-6 lg:px-8'>
             <div className='mb-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
-              <div className='bg-white shadow sm:rounded-lg'>
+              <div className='bg-white shadow-md sm:rounded-lg '>
                 <div className='px-4 py-5 sm:p-6'>
                   <h3 className='text-base font-semibold text-gray-900'>
                     Create your project
@@ -60,7 +61,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              <div className='bg-white shadow sm:rounded-lg'>
+              <div className='bg-white shadow-md sm:rounded-lg'>
                 <div className='px-4 py-5 sm:p-6'>
                   <h3 className='text-base font-semibold text-gray-900'>
                     Browse candidats
