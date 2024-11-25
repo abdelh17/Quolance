@@ -19,6 +19,7 @@ public class Project extends AbstractEntity {
 
     private String title;
 
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     private LocalDate expirationDate;
