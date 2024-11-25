@@ -96,3 +96,10 @@ export type PostProjectType = {
   deliveryDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
 };
+
+export enum ProjectStatus {
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
+  OPEN = 'OPEN',
+  CLOSED = 'CLOSED',
+}

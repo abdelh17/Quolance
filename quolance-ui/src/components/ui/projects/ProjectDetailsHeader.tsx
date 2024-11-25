@@ -5,7 +5,7 @@ import {
   CurrencyDollarIcon,
   PencilIcon,
 } from '@heroicons/react/20/solid';
-import { ProjectType } from '@/constants/types/project-types';
+import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
 import {
   formatDate,
   formatEnumString,
@@ -17,6 +17,7 @@ import { RxReset } from 'react-icons/rx';
 import { useAuthGuard } from '@/api/auth-api';
 import { Role } from '@/constants/models/user/UserResponse';
 import Tooltip from '@/components/ui/Tooltip';
+import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
 
 interface ProjectDetailsProps {
   project: ProjectType;
@@ -36,7 +37,6 @@ export default function ProjectDetailsHeader({
   updateProject,
 }: ProjectDetailsProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
-  console.log('ProjectDetailsHeader', project);
 
   return (
     <div className='lg:flex lg:items-center lg:justify-between'>
@@ -44,22 +44,23 @@ export default function ProjectDetailsHeader({
         <h2 className='mt-2 text-2xl/7 font-bold sm:truncate sm:text-3xl sm:tracking-tight'>
           {project.title}
         </h2>
-        <div className='mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6'>
-          <div className='mt-2 flex items-center text-sm text-gray-500'>
+        <div className='mt-2 flex flex-col items-start gap-3 sm:flex-wrap md:flex-row md:items-center'>
+          <ProjectStatusBadge status={ProjectStatus.OPEN} />
+          <div className='flex items-center text-sm text-gray-500'>
             <BriefcaseIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
             />
             {formatEnumString(project.category)}
           </div>
-          <div className='mt-2 flex items-center text-sm text-gray-500'>
+          <div className='flex items-center text-sm text-gray-500'>
             <CurrencyDollarIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
             />
             {formatPriceRange(project.priceRange)}
           </div>
-          <div className='mt-2 flex items-center text-sm text-gray-500'>
+          <div className='flex items-center text-sm text-gray-500'>
             <CalendarIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
@@ -91,7 +92,7 @@ export default function ProjectDetailsHeader({
           <span className='ml-3'>
             <Button
               variant='white'
-              size={'sm'}
+              size='sm'
               icon={
                 <XIcon aria-hidden='true' className='-ml-0.5 mr-1.5 h-5 w-5' />
               }
@@ -126,7 +127,7 @@ export default function ProjectDetailsHeader({
             <Button
               variant='default'
               animation='default'
-              size={'sm'}
+              size='sm'
               disabled={!isEdited}
               icon={
                 <CheckIcon
