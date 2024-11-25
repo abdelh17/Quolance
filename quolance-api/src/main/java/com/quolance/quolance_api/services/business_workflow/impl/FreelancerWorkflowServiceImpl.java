@@ -123,6 +123,12 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
     @Override
     public ProjectPublicDto getProject(Long projectId) {
+        if(ProjectPublicDto.fromEntity(projectService.getProjectById(projectId)).getProjectStatus().equals(ProjectStatus.PENDING)){
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_CONFLICT)
+                    .message("Project is not available for viewing.")
+                    .build();
+        }
         return ProjectPublicDto.fromEntity(projectService.getProjectById(projectId));
     }
 
