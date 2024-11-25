@@ -4,6 +4,7 @@ import com.quolance.quolance_api.entities.enums.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,8 @@ public class Project extends AbstractEntity {
 
     private String title;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Length(max = 5000)
+    @Column(length = 5000)
     private String description;
 
     private LocalDate expirationDate;
