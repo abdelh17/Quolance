@@ -1,8 +1,19 @@
-import { Button } from '@/components/ui/button';
-import DashboardTable from './DashboardTable';
 import Image from 'next/image';
 
+import Loading from '@/components/loading';
+import { Button } from '@/components/ui/button';
+
+import { useGetAllClientProjects } from '@/api/client-api';
+
+import DashboardTable from './DashboardTable';
+
+
 export default function Dashboard() {
+  // const { data, isLoading, isSuccess } = useGetAllClientProjects();
+
+  // if (isLoading) {
+  //   return <Loading />;
+  // }  
   return (
     <>
       <div className='min-h-full'>

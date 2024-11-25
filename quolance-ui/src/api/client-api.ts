@@ -1,5 +1,6 @@
-import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery } from '@tanstack/react-query';
+
+import httpClient from '@/lib/httpClient';
 
 /*--- Hooks ---*/
 export const useGetProjectSubmissions = (projectId: number) => {
@@ -15,9 +16,20 @@ export const useApproveSubmission = () => {
   });
 };
 
+export const useGetAllClientProjects = () => {
+  return useQuery({
+    queryKey: ['all-client-projects'],
+    queryFn: () => getAllClientProjects(),
+  });
+};
+
 /*--- Query functions ---*/
 const getProjectSubmissions = async (projectId: number) => {
   return httpClient.get(`api/client/projects/${projectId}/applications/all`);
+};
+
+const getAllClientProjects = async () => {
+  return httpClient.get('/api/public/projects/all');
 };
 
 const approveSubmission = async (applicationId: number) => {
