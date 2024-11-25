@@ -10,6 +10,30 @@ import MobileMenu from './MobileMenu';
 import { headerMenu } from '@/constants/data';
 import useScroll from '@/util/hooks/useScroll';
 
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from '@headlessui/react';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+
+const dummyUser = {
+  name: 'Tom Cook',
+  email: 'tom@example.com',
+  imageUrl:
+    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+};
+
+const userNavigation = [
+  { name: 'Your Profile', href: '/profile' },
+  { name: 'Settings', href: '/settings' },
+  { name: 'Sign out', href: '/logout' },
+];
+
 function Header() {
   const { user, logout } = useAuthGuard({ middleware: 'auth' });
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -50,7 +74,7 @@ function Header() {
           <div className='text-s1 flex items-center justify-between py-6'>
             <div className='flex items-center justify-start gap-3 pb-1'>
               <button
-                className='text-4xl !leading-none 4xl:hidden'
+                className='4xl:hidden text-4xl !leading-none'
                 onClick={() => setShowMobileMenu(true)}
               >
                 <PiListBold className='text-b500 pt-2' />
@@ -60,7 +84,7 @@ function Header() {
               </Link>
             </div>
 
-            <div className='flex items-center justify-between gap-6 max-lg:hidden max-4xl:hidden'>
+            <div className='max-4xl:hidden flex items-center justify-between gap-6 max-lg:hidden'>
               <ul className='xxl:gap-6 flex items-center justify-start gap-2 font-medium max-sm:hidden'>
                 {headerMenu.map((menu) => (
                   <li key={menu.id}>
@@ -122,22 +146,73 @@ function Header() {
                   </>
                 )}
               </ul>
+              {user && (
+                <Disclosure as='nav' className='bg-white'>
+                  <div className='flex items-center'>
+                    <button
+                      type='button'
+                      className='relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                    >
+                      <span className='absolute -inset-1.5' />
+                      <span className='sr-only'>View notifications</span>
+                      <BellIcon aria-hidden='true' className='size-6' />
+                    </button>
+
+                    {/* Profile dropdown */}
+                    <Menu as='div' className='relative ml-3'>
+                      <div>
+                        <MenuButton className='relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
+                          <span className='absolute -inset-1.5' />
+                          <span className='sr-only'>Open user menu</span>
+                          <img
+                            alt=''
+                            src={dummyUser.imageUrl}
+                            className='size-8 rounded-full'
+                          />
+                        </MenuButton>
+                      </div>
+                      <MenuItems
+                        transition
+                        className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in'
+                      >
+                        {userNavigation.map((item) => (
+                          <MenuItem key={item.name}>
+                            <a
+                              href={item.href}
+                              className='block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none'
+                            >
+                              {item.name}
+                            </a>
+                          </MenuItem>
+                        ))}
+                      </MenuItems>
+                    </Menu>
+                  </div>
+                </Disclosure>
+              )}
               <div className='flex items-center justify-between gap-3 font-semibold'>
-                <Link
-                  href='/post-project'
-                  className='bg-b300 hover:text-n900 max-xxl:size-11 max-xxl:!leading-none xxl:px-8 xxl:py-3 relative flex items-center justify-center overflow-hidden rounded-full text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
-                >
-                  <span className='max-xxl:hidden relative z-10'>
-                    Post A Project
-                  </span>
-                  <PiPlusBold className=' xxl:hidden relative z-10 text-xl' />
-                </Link>
-                <Link
-                  href=''
-                  className='bg-b50 text-b300 hover:text-n900 relative overflow-hidden rounded-full px-8 py-3 duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] max-xl:hidden'
-                >
-                  <span className='relative z-10 '> Offer Your Services </span>
-                </Link>
+                {user?.role === 'CLIENT' && (
+                  <Link
+                    href='/post-project'
+                    className='bg-b300 hover:text-n900 max-xxl:size-11 max-xxl:!leading-none xxl:px-8 xxl:py-3 relative flex items-center justify-center overflow-hidden rounded-full text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
+                  >
+                    <span className='max-xxl:hidden relative z-10'>
+                      Post A Project
+                    </span>
+                    <PiPlusBold className=' xxl:hidden relative z-10 text-xl' />
+                  </Link>
+                )}
+                {user?.role === 'FREELANCER' && (
+                  <Link
+                    href=''
+                    className='bg-b50 text-b300 hover:text-n900 relative overflow-hidden rounded-full px-8 py-3 duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] max-xl:hidden'
+                  >
+                    <span className='relative z-10 '>
+                      {' '}
+                      Offer Your Services{' '}
+                    </span>
+                  </Link>
+                )}
               </div>
             </div>
           </div>
