@@ -13,21 +13,9 @@ export default function DashboardTable() {
   return (
     <div className='px-4 sm:px-6 lg:px-8'>
       <div className='sm:flex sm:items-center'>
-        <div className='sm:flex-auto'>
-          <h1 className='text-base font-semibold text-gray-900'>Users</h1>
-          <p className='mt-2 text-sm text-gray-700'>
-            A list of all the users in your account including their name, title,
-            email and role.
-          </p>
-        </div>
-        <div className='mt-4 sm:ml-16 sm:mt-0 sm:flex-none'>
-          <button
-            type='button'
-            className='block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-          >
-            Add user
-          </button>
-        </div>
+          <h2 className='mt-2 text-xl font-bold text-gray-700'>
+            My projects
+          </h2>
       </div>
       <div className='-mx-4 mt-8 sm:-mx-0'>
         <table className='min-w-full divide-y divide-gray-300'>
@@ -37,25 +25,25 @@ export default function DashboardTable() {
                 scope='col'
                 className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
               >
-                Name
+                Title
               </th>
               <th
                 scope='col'
                 className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
               >
-                Title
+                Budget
               </th>
               <th
                 scope='col'
                 className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
               >
-                Email
+                Date
               </th>
               <th
                 scope='col'
                 className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
               >
-                Role
+                Status
               </th>
               <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
                 <span className='sr-only'>Edit</span>
@@ -88,7 +76,7 @@ export default function DashboardTable() {
                   {person.role}
                 </td>
                 <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                  <a href='#' className='text-indigo-600 hover:text-indigo-900'>
+                  <a href='#' className='text-b300 hover:text-indigo-900'>
                     Edit<span className='sr-only'>, {person.name}</span>
                   </a>
                 </td>
