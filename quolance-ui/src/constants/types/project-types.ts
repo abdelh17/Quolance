@@ -13,9 +13,9 @@ export const ProjectFilterOptionsDefault: ProjectFilterOptions = {
 //This is the raw object that will be returned from the API (used for GET)
 export type ProjectType = {
   tags: string[]; // List of tag names as strings
-  projectId: number; // Unique identifier for the project
+  id: number; // Unique identifier for the project
   createdAt: string; // ISO date format (e.g., "2024-11-09")
-  projectCategory:
+  category:
     | 'WEB_DEVELOPMENT'
     | 'GRAPHIC_DESIGN'
     | 'CONTENT_WRITING'
@@ -31,11 +31,11 @@ export type ProjectType = {
     | 'DATA_SCIENCE'
     | 'DESIGN'
     | string;
-  projectTitle: string;
-  projectDescription: string;
+  title: string;
+  description: string;
   priceRange:
     | 'LESS_500'
-    | 'BETWEEN_500_AND_1000'
+    | 'BETWEEN_500_1000'
     | 'BETWEEN_1000_5000'
     | 'BETWEEN_5000_10000'
     | 'MORE_10000'
@@ -47,7 +47,7 @@ export type ProjectType = {
     | 'WITHIN_A_MONTH'
     | 'FLEXIBLE'
     | string;
-  deliveryDate: string; // ISO date format (e.g., "2024-11-09")
+  expirationDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
   projectStatus:
     | 'PENDING'
@@ -81,7 +81,7 @@ export type PostProjectType = {
   projectDescription: string;
   priceRange:
     | 'LESS_500'
-    | 'BETWEEN_500_AND_1000'
+    | 'BETWEEN_500_1000'
     | 'BETWEEN_1000_5000'
     | 'BETWEEN_5000_10000'
     | 'MORE_10000'
@@ -95,21 +95,4 @@ export type PostProjectType = {
     | string; // Define as needed
   deliveryDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
-};
-
-export const formatPriceRange = (priceRange: string) => {
-  switch (priceRange) {
-    case 'LESS_500':
-      return `$0 – $500`;
-    case 'BETWEEN_500_AND_1000':
-      return '$500 – $1000';
-    case 'BETWEEN_1000_5000':
-      return '$1000 – $5000';
-    case 'BETWEEN_5000_10000':
-      return '$5000 – $10000';
-    case 'MORE_10000':
-      return '$10000+';
-    default:
-      return priceRange;
-  }
 };

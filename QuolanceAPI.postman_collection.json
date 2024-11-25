@@ -380,7 +380,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Updated Project Title\",\n  \"description\": \"Updated project description\",\n  \"category\": \"WEB_DEVELOPMENT\",\n  \"priceRange\": \"LESS_500\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\"\n}",
+							"raw": "{\n  \"title\": \"Updated Project Title\",\n  \"description\": \"Updated project description\",\n  \"category\": \"WEB_DEVELOPMENT\",\n  \"priceRange\": \"LESS_500\",\n  \"expectedDeliveryTime\": \"IMMEDIATELY\",\n \"experienceLevel\": \"JUNIOR\" }",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -1,20 +1,20 @@
-import { formatPriceRange, ProjectType } from '@/constants/types/project-types';
+import { ProjectType } from '@/constants/types/project-types';
 import Link from 'next/link';
-import { formatEnumString } from '@/util/stringUtils';
+import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
 
 type ProjectCardProps = ProjectType;
 
 const ProjectCard = ({
   tags,
-  projectId,
+  id,
   createdAt,
-  projectCategory,
-  projectTitle,
-  projectDescription,
+  category,
+  title,
+  description,
   priceRange,
   experienceLevel,
   expectedDeliveryTime,
-  deliveryDate,
+  expirationDate,
   location,
   projectStatus,
   clientId,
@@ -30,7 +30,7 @@ const ProjectCard = ({
 
     // Check if project is expired
     const currentDate = new Date();
-    const deliveryDateTime = new Date(deliveryDate);
+    const deliveryDateTime = new Date(expirationDate);
     if (deliveryDateTime < currentDate) {
       return {
         text: 'Expired',
@@ -60,12 +60,12 @@ const ProjectCard = ({
   const statusTag = getProjectStatusTag();
 
   return (
-    <Link href={`/projects/${projectId}`}>
+    <Link href={`/projects/${id}`}>
       <div className='rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg'>
         {/* Header with Title and Status */}
         <div className='mb-4 flex items-start justify-between'>
           <h3 className='truncate text-xl font-semibold text-gray-900'>
-            {projectTitle}
+            {title}
           </h3>
           <span className={`rounded-full px-3 py-1 text-sm ${statusTag.color}`}>
             {statusTag.text}
@@ -75,12 +75,12 @@ const ProjectCard = ({
         {/* Category */}
         <div className='mb-3'>
           <span className='text-sm text-gray-500'>
-            {formatEnumString(projectCategory)}
+            {formatEnumString(category)}
           </span>
         </div>
 
         {/* Description */}
-        <p className='mb-4 line-clamp-2 text-gray-600'>{projectDescription}</p>
+        <p className='mb-4 line-clamp-2 text-gray-600'>{description}</p>
 
         {/* Tags */}
         <div className='mb-4 flex flex-wrap gap-2'>

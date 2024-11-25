@@ -1,16 +1,13 @@
 package com.quolance.quolance_api.dtos.project;
 
-import com.quolance.quolance_api.dtos.application.ApplicationDto;
-import com.quolance.quolance_api.entities.Project;
-import com.quolance.quolance_api.entities.enums.*;
+import com.quolance.quolance_api.entities.enums.ExpectedDeliveryTime;
+import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
+import com.quolance.quolance_api.entities.enums.PriceRange;
+import com.quolance.quolance_api.entities.enums.ProjectCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -23,5 +20,6 @@ public class ProjectUpdateDto {
     private ProjectCategory category;
     private PriceRange priceRange;
     private ExpectedDeliveryTime expectedDeliveryTime;
+    private FreelancerExperienceLevel experienceLevel;
 
 }

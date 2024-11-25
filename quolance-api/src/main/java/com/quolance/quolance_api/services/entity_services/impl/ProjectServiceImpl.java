@@ -1,14 +1,13 @@
 package com.quolance.quolance_api.services.entity_services.impl;
 
+import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
-import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -150,6 +149,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         if (updateDto.getExpectedDeliveryTime() != null) {
             project.setExpectedDeliveryTime(updateDto.getExpectedDeliveryTime());
+        }
+
+        if (updateDto.getExperienceLevel() != null) {
+            project.setExperienceLevel(updateDto.getExperienceLevel());
         }
     }
 }
