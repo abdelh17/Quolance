@@ -17,9 +17,8 @@ import {
   handleSelectSubmission,
 } from '@/util/CandidateSelectionUtils';
 import RefuseSubmissionsModal from '@/components/ui/freelancers/RefuseSubmissionsModal';
-import ResponseFeedback from '@/components/response-feedback';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { useQueryClient } from '@tanstack/react-query';
+import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 
 type ProjectSubmissionsProps = {
   projectId: number;
@@ -51,11 +50,7 @@ export default function ProjectSubmissions({
   // Query hooks
   const queryClient = useQueryClient();
   const { data, isLoading } = useGetProjectSubmissions(projectId);
-  const {
-    mutateAsync: approveSubmission,
-    error,
-    isSuccess,
-  } = useApproveSubmission();
+  const { mutateAsync: approveSubmission } = useApproveSubmission(projectId);
   const submissions = data?.data;
 
   // Filtered submissions that will be displayed
@@ -93,8 +88,6 @@ export default function ProjectSubmissions({
     setIsRefuseModalOpen(false);
     // Call API to refuse selected submissions
   };
-
-  console.log(submissions);
 
   return (
     <section className='sbp-30'>
@@ -167,20 +160,19 @@ export default function ProjectSubmissions({
                 <div key={`submission-${idx}`}>
                   <FreelancerCard
                     handleApproveSubmission={() =>
-                      handleApproveSubmission(submission.applicationId)
+                      handleApproveSubmission(submission.id)
                     }
-                    selected={selectedSubmissions.includes(
-                      submission.applicationId
-                    )}
+                    selected={selectedSubmissions.includes(submission.id)}
                     status={submission.status}
                     isApproveDisabled={hasPendingConfirmation} // Pass the disable state
                     onSelect={(selected) =>
                       handleSelectSubmission(
-                        submission.applicationId,
+                        submission.id,
                         selected,
                         setSelectedSubmissions
                       )
                     }
+                    img={FreelancerDefaultProfilePic.src}
                     {...DATA_Submissioners[idx]}
                   />
                 </div>
@@ -189,11 +181,6 @@ export default function ProjectSubmissions({
 
           {isLoading && <Loading />}
         </div>
-        <ResponseFeedback
-          isSuccess={isSuccess}
-          successMessage={'Submission approved successfully'}
-          error={error?.response?.data as HttpErrorResponse}
-        />
         {/*<Pagination />*/}
       </div>
 

@@ -258,7 +258,6 @@ export const DATA_ProjectList = [
 export const DATA_Submissioners = [
   {
     id: uuidv4(),
-    img: 'expertImg1',
     freelancerName: 'Free Lancer1',
     location: 'Brooklyn, NY, USA',
     features: ['$50 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -266,7 +265,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg2',
     freelancerName: 'Free Lancer2',
     location: 'Brooklyn, NY, USA',
     features: ['$45 - &80/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -274,14 +272,12 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg3',
     freelancerName: 'Leroy Curtis',
     location: 'Brooklyn, NY, USA',
     features: ['$75 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
   },
   {
     id: uuidv4(),
-    img: 'expertImg4',
     freelancerName: 'Kenneth Sims',
     location: 'Brooklyn, NY, USA',
     features: ['$25 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -289,7 +285,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg5',
     freelancerName: 'Sarah Bryan',
     location: 'Brooklyn, NY, USA',
     features: ['$75 - &200/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -297,7 +292,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg6',
     freelancerName: 'Todd Meyer',
     location: 'Brooklyn, NY, USA',
     features: ['$75 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -305,7 +299,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg1',
     freelancerName: 'Jeanette Alexander',
     location: 'Brooklyn, NY, USA',
     features: ['$50 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -313,7 +306,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg5',
     freelancerName: 'Beatrice Gill',
     location: 'Brooklyn, NY, USA',
     features: ['$75 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -330,7 +322,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg4',
     freelancerName: 'Marvin Perry',
     location: 'Brooklyn, NY, USA',
     features: ['$50 - &150/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -338,7 +329,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg2',
     freelancerName: 'Marvin Lamb',
     location: 'Brooklyn, NY, USA',
     features: ['$75 - &120/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -346,7 +336,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg6',
     freelancerName: 'Bradley Pittman',
     location: 'Brooklyn, NY, USA',
     features: ['$25 - &120/hr', 'TOP INDEPENDENT', 'AVAILABLE'],
@@ -354,7 +343,6 @@ export const DATA_Submissioners = [
   },
   {
     id: uuidv4(),
-    img: 'expertImg3',
     freelancerName: 'Alice Ortega',
     location: 'Brooklyn, NY, USA',
     features: ['$75 - &100/hr', 'TOP INDEPENDENT', 'AVAILABLE'],

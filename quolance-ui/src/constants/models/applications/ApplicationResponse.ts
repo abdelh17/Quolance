@@ -1,5 +1,5 @@
 export interface ApplicationResponse {
-  applicationId: number;
+  id: number;
   status: ApplicationStatus;
   projectId: number;
   freelancerId: number;

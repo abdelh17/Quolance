@@ -27,7 +27,7 @@ export default function ProjectDetailsContent({
   editMode,
 }: ProjectDetailsProps) {
   return (
-    <div className='bg-white py-8 sm:py-12'>
+    <div className='bg-white py-8 sm:pb-12 sm:pt-10'>
       <div className='mx-auto max-w-7xl'>
         <div className='mx-auto flex max-w-2xl flex-col items-start gap-8 lg:mx-0 lg:max-w-none lg:flex-row'>
           <div className='max-w-xl lg:pr-4'>

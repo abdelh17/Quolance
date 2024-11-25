@@ -4,7 +4,6 @@ import { useAuthGuard } from '@/api/auth-api';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSubmitApplication } from '@/api/freelancer-api';
 import { Button } from '@/components/ui/button';
-import ResponseFeedback from '@/components/response-feedback';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { showToast } from '@/util/context/ToastProvider';
 
@@ -21,11 +20,7 @@ export default function ProjectApplication({
 }: ApplicationFormProps) {
   const { register, handleSubmit } = useForm<ApplicationFormFields>();
   const { user } = useAuthGuard({ middleware: 'auth' });
-  const {
-    mutateAsync: mutateApplication,
-    isSuccess,
-    error,
-  } = useSubmitApplication({
+  const { mutateAsync: mutateApplication } = useSubmitApplication({
     onSuccess: () => {
       console.log('Application submitted successfully');
       showToast('Application submitted successfully', 'success');
@@ -81,11 +76,6 @@ export default function ProjectApplication({
           >
             <span className='relative z-10 '> Submit Application </span>
           </Button>
-          <ResponseFeedback
-            isSuccess={isSuccess}
-            successMessage='Your application was successfully submitted'
-            error={error?.response?.data as HttpErrorResponse}
-          />
         </div>
       </form>
     </div>

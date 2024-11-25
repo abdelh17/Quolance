@@ -1,5 +1,7 @@
 import httpClient from '@/lib/httpClient';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { showToast } from '@/util/context/ToastProvider';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 /*--- Hooks ---*/
 export const useGetProjectSubmissions = (projectId: number) => {
@@ -10,12 +12,24 @@ export const useGetProjectSubmissions = (projectId: number) => {
   });
 };
 
-export const useApproveSubmission = () => {
+export const useApproveSubmission = (projectId: number) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (applicationId: number) =>
       httpClient.post(
         `api/client/applications/${applicationId}/select-freelancer`
       ),
+    onSuccess: () => {
+      // Invalidate the cache to force a re-fetch
+      queryClient.invalidateQueries({
+        queryKey: ['project-submissions', projectId],
+      });
+      showToast('Freelancer selected successfully', 'success');
+    },
+    onError: (error) => {
+      const ErrorResponse = error.response?.data as HttpErrorResponse;
+      showToast(`Error: ${ErrorResponse.message}`, 'error');
+    },
   });
 };
 
