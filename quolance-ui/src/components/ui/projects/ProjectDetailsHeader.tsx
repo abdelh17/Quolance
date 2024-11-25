@@ -16,6 +16,7 @@ import { XIcon } from 'lucide-react';
 import { RxReset } from 'react-icons/rx';
 import { useAuthGuard } from '@/api/auth-api';
 import { Role } from '@/constants/models/user/UserResponse';
+import Tooltip from '@/components/ui/Tooltip';
 
 interface ProjectDetailsProps {
   project: ProjectType;
@@ -69,16 +70,21 @@ export default function ProjectDetailsHeader({
       </div>
       <div className='mt-5 flex lg:ml-4 lg:mt-0'>
         {!editMode && user?.role == Role.CLIENT && (
-          <span className=''>
+          <Tooltip
+            content='Cannot edit project after it is approved'
+            position='bottom-end'
+            disabled={project.projectStatus === 'PENDING'}
+          >
             <Button
               variant='white'
               size='sm'
               icon={<PencilIcon />}
               onClick={() => setEditMode(true)}
+              disabled={project.projectStatus !== 'PENDING'}
             >
               <span className='text-gray-800'>Edit</span>
             </Button>
-          </span>
+          </Tooltip>
         )}
 
         {editMode && (
