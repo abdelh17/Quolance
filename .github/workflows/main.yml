@@ -25,6 +25,13 @@ jobs:
       #   run: |
       #     cd quolance-ui
       #     npm test
+      - name: Set up environment variables
+        env:
+          MAILPIT_SMTP_PORT: 1025
+          MAILPIT_UI_PORT: 8025
+          MAILPIT_USER: mailpit
+          MAILPIT_PASSWORD: mailpit
+          
 
       # Step 3: Build Frontend Package
       - name: Build Frontend
