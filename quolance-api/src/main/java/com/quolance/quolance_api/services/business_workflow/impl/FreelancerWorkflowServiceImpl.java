@@ -123,7 +123,24 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
     @Override
     public ProjectPublicDto getProject(Long projectId) {
-        return ProjectPublicDto.fromEntity(projectService.getProjectById(projectId));
+
+        Project project = projectService.getProjectById(projectId);
+        LocalDate currentDate = LocalDate.now();
+
+        if(project.getProjectStatus().equals(ProjectStatus.PENDING)){
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_CONFLICT)
+                    .message("Project is not yet approved.")
+                    .build();
+        }
+        if (project.getVisibilityExpirationDate() != null &&
+                project.getVisibilityExpirationDate().isBefore(currentDate)) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_CONFLICT)
+                    .message("Project visibility has expired.")
+                    .build();
+        }
+        return ProjectPublicDto.fromEntity(project);
     }
 
     // Helper method to handle optimistic lock exception
