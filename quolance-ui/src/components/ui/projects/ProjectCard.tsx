@@ -1,6 +1,7 @@
 import { ProjectType } from '@/constants/types/project-types';
 import Link from 'next/link';
 import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
+import RichTextDisplay from '@/components/ui/RichTextDisplay';
 
 type ProjectCardProps = ProjectType;
 
@@ -80,7 +81,9 @@ const ProjectCard = ({
         </div>
 
         {/* Description */}
-        <p className='mb-4 line-clamp-2 text-gray-600'>{description}</p>
+        <div className={'my-3'}>
+          <RichTextDisplay htmlContent={description} maxHeight={72} />
+        </div>
 
         {/* Tags */}
         <div className='mb-4 flex flex-wrap gap-2'>
