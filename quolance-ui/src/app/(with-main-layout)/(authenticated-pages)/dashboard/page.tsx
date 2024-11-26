@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import ClientDashboardTable from './ClientDashboardTable';
 import { useAuthGuard } from '@/api/auth-api';
 import ClientDashboardActionButtons from './ClientDashboardActionButtons';
+import FreelancerDashboardActionButtons from './FreelancerDashboardActionButtons';
 
 export default function Dashboard() {
   const { user } = useAuthGuard({ middleware: 'auth' });
@@ -55,8 +56,18 @@ export default function Dashboard() {
 
         <main>
           <div className='mx-auto px-4 py-8 sm:px-6 lg:px-8'>
-            {user?.role === 'CLIENT' && <ClientDashboardActionButtons />}
-            <ClientDashboardTable />
+            {user?.role === 'CLIENT' && (
+              <div>
+                <ClientDashboardTable />
+                <ClientDashboardActionButtons />
+              </div>
+            )}
+
+            {user?.role === 'FREELANCER' && (
+              <div>
+                <FreelancerDashboardActionButtons />
+              </div>
+            )}
           </div>
         </main>
       </div>

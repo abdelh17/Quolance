@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
@@ -11,24 +10,23 @@ export default function ClientDashboardActionButtons() {
         <div className='bg-white shadow-md sm:rounded-lg '>
           <div className='px-4 py-5 sm:p-6'>
             <h3 className='text-base font-semibold text-gray-900'>
-              Create your project
+              View available projects
             </h3>
             <div className='mt-2 sm:flex sm:items-start sm:justify-between'>
               <div className='max-w-xl text-sm text-gray-500'>
                 <p>
-                  Create a project and get the best freelancers to work on it.
-                  You can also browse through the candidates and select the best
-                  one for your project.
+                  Browse through the list of available projects and apply to the
+                  ones that interest you.
                 </p>
               </div>
               <div className='mt-5 sm:ml-6 sm:mt-0 sm:flex sm:shrink-0 sm:items-center'>
                 <Button
-                  onClick={() => router.push('/post-project')}
+                  onClick={() => router.push('/projects')}
                   variant='default'
                   animation='default'
                   size='sm'
                 >
-                  Post a Project
+                  See all projects
                 </Button>
               </div>
             </div>
@@ -37,23 +35,24 @@ export default function ClientDashboardActionButtons() {
         <div className='bg-white shadow-md sm:rounded-lg'>
           <div className='px-4 py-5 sm:p-6'>
             <h3 className='text-base font-semibold text-gray-900'>
-              Browse candidats
+              Build my profile
             </h3>
             <div className='mt-2 sm:flex sm:items-start sm:justify-between'>
               <div className='max-w-xl text-sm text-gray-500'>
                 <p>
-                  Browse through the list of freelancers and contractors and
-                  select the best one for your project.
+                  Build your profile to showcase your skills and experience.
+                  This will help clients find you and hire you for their
+                  projects.
                 </p>
               </div>
               <div className='mt-5 sm:ml-6 sm:mt-0 sm:flex sm:shrink-0 sm:items-center'>
                 <Button
-                  onClick={() => router.push('/post-project')}
+                  onClick={() => router.push('/profile')}
                   variant='default'
                   animation='default'
                   size='sm'
                 >
-                  Check Repository
+                  Build profile
                 </Button>
               </div>
             </div>
