@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import Loading from '@/components/loading';
+
 import { Button } from '@/components/ui/button';
 
 import { useGetAllClientProjects } from '@/api/client-api';

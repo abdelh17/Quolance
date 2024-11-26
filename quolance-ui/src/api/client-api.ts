@@ -29,7 +29,7 @@ const getProjectSubmissions = async (projectId: number) => {
 };
 
 const getAllClientProjects = async () => {
-  return httpClient.get('/api/public/projects/all');
+  return httpClient.get('/api/client/projects/all');
 };
 
 const approveSubmission = async (applicationId: number) => {
