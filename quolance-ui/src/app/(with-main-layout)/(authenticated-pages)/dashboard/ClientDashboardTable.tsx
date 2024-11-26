@@ -3,9 +3,14 @@ import { useGetAllClientProjects } from '@/api/client-api';
 import { ProjectType } from '@/constants/types/project-types';
 import Loading from '@/components/loading';
 import Link from 'next/link';
+import {
+  formatDate,
+  formatEnumString,
+  formatPriceRange,
+} from '@/util/stringUtils';
 
 export default function ClientDashboardTable() {
-  const { data, isLoading, isSuccess } = useGetAllClientProjects();
+  const { data, isLoading } = useGetAllClientProjects();
   const projects = data?.data;
 
   if (isLoading) {
@@ -69,13 +74,13 @@ export default function ClientDashboardTable() {
                   {projects.title}
                 </td>
                 <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                  {projects.priceRange}
+                  {formatPriceRange(projects.priceRange)}
                 </td>
                 <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                  {projects.expirationDate}
+                  {formatDate(projects.expirationDate)}
                 </td>
                 <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                  {projects.category}
+                  {formatEnumString(projects.category)}
                 </td>
                 <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
                   {projects.experienceLevel}
