@@ -2,6 +2,7 @@
 import { useGetAllClientProjects } from '@/api/client-api';
 import { ProjectType } from '@/constants/types/project-types';
 import Loading from '@/components/loading';
+import Link from 'next/link';
 
 export default function ClientDashboardTable() {
   const { data, isLoading, isSuccess } = useGetAllClientProjects();
@@ -9,7 +10,7 @@ export default function ClientDashboardTable() {
 
   if (isLoading) {
     return <Loading />;
-  }  
+  }
 
   return (
     <div className='px-4 sm:px-6 lg:px-8'>
@@ -83,9 +84,12 @@ export default function ClientDashboardTable() {
                   {projects.projectStatus}
                 </td>
                 <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                  <a href='#' className='text-b300 hover:text-indigo-900'>
+                  <Link
+                    href={`/projects/${projects.id}?edit`}
+                    className='text-b300 hover:text-indigo-900'
+                  >
                     Edit<span className='sr-only'>, {projects.priceRange}</span>
-                  </a>
+                  </Link>
                 </td>
               </tr>
             ))}
