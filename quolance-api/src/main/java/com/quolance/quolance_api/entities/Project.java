@@ -22,6 +22,7 @@ public class Project extends AbstractEntity {
 
     @Length(max = 5000) //This is in the API level, before the data is sent to the DB (Verification)
     @Column(length = 5000) // This is in the DB level
+
     private String description;
 
     private LocalDate expirationDate;
