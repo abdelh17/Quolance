@@ -1,20 +1,15 @@
+'use client'
 import Image from 'next/image';
 
-import Loading from '@/components/loading';
 
 import { Button } from '@/components/ui/button';
 
-import { useGetAllClientProjects } from '@/api/client-api';
+import ClientDashboardTable from './ClientDashboardTable';
 
-import DashboardTable from './DashboardTable';
 
 
 export default function Dashboard() {
-  // const { data, isLoading, isSuccess } = useGetAllClientProjects();
-
-  // if (isLoading) {
-  //   return <Loading />;
-  // }  
+ 
   return (
     <>
       <div className='min-h-full'>
@@ -94,7 +89,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <DashboardTable />
+            <ClientDashboardTable />
           </div>
         </main>
       </div>
