@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import httpClient from '@/lib/httpClient';
+
 import { PostProjectType, ProjectType } from '@/constants/types/project-types';
 
 /*--- Hooks ---*/
@@ -11,10 +13,10 @@ export const useGetProjectInfo = (projectId: number) => {
   });
 };
 
-export const useGetAllProjects = () => {
+export const useGetAllPublicProjects = () => {
   return useQuery({
-    queryKey: ['projects'],
-    queryFn: () => getAllProjects(),
+    queryKey: ['all-public-projects'],
+    queryFn: () => getAllPublicProjects(),
   });
 };
 
@@ -52,7 +54,7 @@ const getProjectInfo = async (projectId: number) => {
   return httpClient.get(`/api/public/projects/${projectId}`);
 };
 
-const getAllProjects = async () => {
+const getAllPublicProjects = async () => {
   return httpClient.get('/api/public/projects/all');
 };
 

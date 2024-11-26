@@ -1,14 +1,20 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { PiSliders, PiX } from 'react-icons/pi';
+
+import Loading from '@/components/loading';
+import ResponseFeedback from '@/components/response-feedback';
+import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
+import RefuseSubmissionsModal from '@/components/ui/freelancers/RefuseSubmissionsModal';
+
 import {
   useApproveSubmission,
   useGetProjectSubmissions,
 } from '@/api/client-api';
-import Loading from '@/components/loading';
-import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
 import { DATA_Submissioners } from '@/constants/data';
 import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import {
   applySubmissionFilters,
   handleApplyFilters,
@@ -16,10 +22,6 @@ import {
   handleResetFilters,
   handleSelectSubmission,
 } from '@/util/CandidateSelectionUtils';
-import RefuseSubmissionsModal from '@/components/ui/freelancers/RefuseSubmissionsModal';
-import ResponseFeedback from '@/components/response-feedback';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
-import { useQueryClient } from '@tanstack/react-query';
 
 type ProjectSubmissionsProps = {
   projectId: number;

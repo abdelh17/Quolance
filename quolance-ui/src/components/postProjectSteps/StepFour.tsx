@@ -36,7 +36,7 @@ function StepFour({
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
                 {getLabelFromValue(
                   BUSINESS_CATEGORY_OPTIONS,
-                  formData.projectCategory
+                  formData.category
                 )}
               </dd>
             </div>

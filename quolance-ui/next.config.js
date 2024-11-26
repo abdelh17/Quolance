@@ -17,6 +17,17 @@ const nextConfig = {
   //   domains: ['res.cloudinary.com'],
   // },
 
+  // Configuration for image domains
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+        pathname: '**',
+      },
+    ],
+  },
+
   // Enable SVG handling with SVGR
   webpack(config) {
     config.module.rules.push({
