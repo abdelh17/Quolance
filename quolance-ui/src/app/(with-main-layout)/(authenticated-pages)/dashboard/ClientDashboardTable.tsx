@@ -8,10 +8,11 @@ import {
   formatEnumString,
   formatPriceRange,
 } from '@/util/stringUtils';
+import { Button } from '@/components/ui/button';
 
 export default function ClientDashboardTable() {
   const { data, isLoading } = useGetAllClientProjects();
-  const projects = data?.data;
+  const projects = data?.data || [];
 
   if (isLoading) {
     return <Loading />;
@@ -68,36 +69,56 @@ export default function ClientDashboardTable() {
             </tr>
           </thead>
           <tbody className='divide-y divide-gray-200 bg-white'>
-            {projects.map((projects: ProjectType) => (
-              <tr key={projects.id}>
-                <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
-                  {projects.title}
-                </td>
-                <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                  {formatPriceRange(projects.priceRange)}
-                </td>
-                <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                  {formatDate(projects.expirationDate)}
-                </td>
-                <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                  {formatEnumString(projects.category)}
-                </td>
-                <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                  {projects.experienceLevel}
-                </td>
-                <td className='px-3 py-4 text-sm text-gray-500'>
-                  {projects.projectStatus}
-                </td>
-                <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                  <Link
-                    href={`/projects/${projects.id}?edit`}
-                    className='text-b300 hover:text-indigo-900'
-                  >
-                    Edit<span className='sr-only'>, {projects.priceRange}</span>
-                  </Link>
+            {projects.length === 0 ? (
+              <tr>
+                <td colSpan={7} className='py-12 text-center'>
+                  <div className='flex flex-col items-center'>
+                    <p className='mb-4 text-center text-gray-600'>
+                      You haven't created any projects yet. Get started by
+                      creating your first project!
+                    </p>
+                    <Link
+                      href='/post-project'
+                      className='text-sm/6 font-semibold text-gray-900'
+                    >
+                      Create First Project<span aria-hidden='true'>→</span>
+                    </Link>
+                  </div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              projects.map((projects: ProjectType) => (
+                <tr key={projects.id}>
+                  <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
+                    {projects.title}
+                  </td>
+                  <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
+                    {formatPriceRange(projects.priceRange)}
+                  </td>
+                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
+                    {formatDate(projects.expirationDate)}
+                  </td>
+                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
+                    {formatEnumString(projects.category)}
+                  </td>
+                  <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
+                    {projects.experienceLevel}
+                  </td>
+                  <td className='px-3 py-4 text-sm text-gray-500'>
+                    {projects.projectStatus}
+                  </td>
+                  <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                    <Link
+                      href={`/projects/${projects.id}?edit`}
+                      className='text-b300 hover:text-indigo-900'
+                    >
+                      Edit
+                      <span className='sr-only'>, {projects.priceRange}</span>
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
