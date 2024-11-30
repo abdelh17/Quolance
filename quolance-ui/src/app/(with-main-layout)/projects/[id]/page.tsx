@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useAuthGuard } from '@/api/auth-api';
 import { useGetProjectInfo, useUpdateProject } from '@/api/projects-api';
 import ProjectDetailsHeader from '@/components/ui/projects/ProjectDetailsHeader';
-import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
+import FreelancerApplicationForm from '@/app/(with-main-layout)/projects/[id]/FreelancerApplicationForm';
 import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
 import { Role } from '@/constants/models/user/UserResponse';
 import { ProjectType } from '@/constants/types/project-types';
@@ -41,7 +41,7 @@ function ProjectPage() {
     },
   });
 
-  const [editMode, setEditMode] = useState(hasEdit);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     if (project) {
@@ -72,24 +72,26 @@ function ProjectPage() {
       <section className='container mt-3 pb-16'>
         <BreadCrumb pageName='Project Details' />
         {project && (
-          <>
-            <ProjectDetailsHeader
-              project={projectData as ProjectType}
-              editMode={editMode}
-              setEditMode={setEditMode}
-              isEdited={!isDeepEqual(project, draftProject)}
-              resetDraftProject={resetDraftProject}
-              updateProject={handleUpdateProject}
-            />
-            <ProjectDetailsContent
-              project={projectData as ProjectType}
-              editMode={editMode}
-              setDraftProject={updateDraftProject}
-            />
+          <div className={''}>
+            <div>
+              <ProjectDetailsHeader
+                project={projectData as ProjectType}
+                editMode={editMode}
+                setEditMode={setEditMode}
+                isEdited={!isDeepEqual(project, draftProject)}
+                resetDraftProject={resetDraftProject}
+                updateProject={handleUpdateProject}
+              />
+              <ProjectDetailsContent
+                project={projectData as ProjectType}
+                editMode={editMode}
+                setDraftProject={updateDraftProject}
+              />
+            </div>
             <div className='mt-8'>
               {/* Application Form - Only visible to freelancers */}
               {role === Role.FREELANCER && (
-                <ProjectApplication projectId={project.id} />
+                <FreelancerApplicationForm projectId={project.id} />
               )}
 
               {/* Submission List - Only visible to clients */}
@@ -97,7 +99,7 @@ function ProjectPage() {
                 <ProjectSubmissions projectId={project.id} />
               )}
             </div>
-          </>
+          </div>
         )}
         {isLoading && <Loading />}
       </section>

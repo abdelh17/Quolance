@@ -41,12 +41,6 @@ const statusConfigs: Record<ProjectStatus, StatusConfig> = {
   },
 };
 
-const strokeWidthStyles = `
-  .status-icon path {
-    stroke-width: 3 !important;
-  }
-`;
-
 const ProjectStatusBadge: React.FC<ProjectStatusBadgeProps> = ({
   status,
   className = '',
@@ -56,7 +50,6 @@ const ProjectStatusBadge: React.FC<ProjectStatusBadgeProps> = ({
 
   return (
     <>
-      <style>{strokeWidthStyles}</style>
       <span
         className={`inline-flex items-center rounded-full py-[7px] pl-[11px] pr-[13px] text-sm font-semibold text-white ${config.bgColor} ${className}`}
       >

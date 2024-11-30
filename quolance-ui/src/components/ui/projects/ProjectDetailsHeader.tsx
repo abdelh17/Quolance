@@ -45,7 +45,7 @@ export default function ProjectDetailsHeader({
           {project.title}
         </h2>
         <div className='mt-2 flex flex-col items-start gap-3 sm:flex-wrap md:flex-row md:items-center'>
-          <ProjectStatusBadge status={ProjectStatus.OPEN} />
+          <ProjectStatusBadge status={project.projectStatus as ProjectStatus} />
           <div className='flex items-center text-sm text-gray-500'>
             <BriefcaseIcon
               aria-hidden='true'
