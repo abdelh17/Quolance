@@ -1,0 +1,46 @@
+@keyframes wave {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.wave-bg {
+    background: linear-gradient(
+            90deg,
+            #22c55e 0%,
+            #16a34a 25%,
+            #15803d 50%,
+            #16a34a 75%,
+            #22c55e 100%
+    );
+    background-size: 200% 100%;
+    animation: wave 8s ease infinite;
+}
+
+.wave-border {
+    position: relative;
+}
+
+.wave-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+            90deg,
+            #22c55e 0%,
+            #16a34a 25%,
+            #15803d 50%,
+            #16a34a 75%,
+            #22c55e 100%
+    );
+    background-size: 200% 100%;
+    animation: wave 8s ease infinite;
+    border-radius: 1.5rem;
+    z-index: -1;
+}
