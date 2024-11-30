@@ -33,10 +33,20 @@ export const useApproveSubmission = (projectId: number) => {
   });
 };
 
-export const useRejectSubmission = () => {
+export const useRejectSubmissions = (projectId: number) => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (applicationId: number) =>
-      httpClient.post(`api/client/${applicationId}/reject-freelancer`),
+    mutationFn: (applicationIds: number[]) =>
+      httpClient.post(
+        `api/client/applications/bulk/reject-freelancer`,
+        applicationIds
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['project-submissions', projectId],
+      });
+      showToast('Freelancers rejected successfully', 'success');
+    },
   });
 };
 

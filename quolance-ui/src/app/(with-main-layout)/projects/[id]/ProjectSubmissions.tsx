@@ -4,6 +4,7 @@ import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilte
 import {
   useApproveSubmission,
   useGetProjectSubmissions,
+  useRejectSubmissions,
 } from '@/api/client-api';
 import Loading from '@/components/loading';
 import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
@@ -46,16 +47,36 @@ export default function ProjectSubmissions({
   const [tempFilters, setTempFilters] =
     useState<ApplicationFilters>(initialFilters);
 
-  const [selectedSubmissions, setSelectedSubmissions] = useState<number[]>([]);
   // Query hooks
   const queryClient = useQueryClient();
   const { data, isLoading } = useGetProjectSubmissions(projectId);
-  const { mutateAsync: approveSubmission } = useApproveSubmission(projectId);
   const submissions = data?.data;
+  const { mutateAsync: approveSubmission } = useApproveSubmission(projectId);
+  const { mutateAsync: rejectSubmissions } = useRejectSubmissions(projectId);
 
+  const [selectedSubmissions, setSelectedSubmissions] = useState<number[]>([]);
   // Filtered submissions that will be displayed
   const filteredSubmissions = useMemo(() => {
     if (!submissions) return [];
+    // Sort submissions by status in the following order: ACCEPTED, APPLIED, PENDING_CONFIRMATION, REJECTED, CANCELLED
+    submissions.sort(
+      (
+        a: { status: string; id: number },
+        b: { status: string; id: number }
+      ) => {
+        const statusOrder = [
+          'ACCEPTED',
+          'APPLIED',
+          'PENDING_CONFIRMATION',
+          'REJECTED',
+          'CANCELLED',
+        ];
+        return (
+          statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status) ||
+          a.id - b.id
+        );
+      }
+    );
     return applySubmissionFilters(submissions, activeFilters);
   }, [submissions, activeFilters]);
 
@@ -64,15 +85,6 @@ export default function ProjectSubmissions({
     if (!submissions) return 0;
     return applySubmissionFilters(submissions, tempFilters).length;
   }, [submissions, tempFilters]);
-
-  const hasPendingConfirmation = useMemo(() => {
-    return (
-      submissions?.some(
-        (submission: ApplicationResponse) =>
-          submission.status === 'PENDING_CONFIRMATION'
-      ) ?? false
-    );
-  }, [submissions]);
 
   const handleApproveSubmission = (applicationId: number) => {
     approveSubmission(applicationId).then(() => {
@@ -86,12 +98,12 @@ export default function ProjectSubmissions({
   const handleRefuseSelected = async () => {
     setSelectedSubmissions([]);
     setIsRefuseModalOpen(false);
-    // Call API to refuse selected submissions
+    await rejectSubmissions(selectedSubmissions);
   };
 
   return (
-    <section className='sbp-30'>
-      <div className='container'>
+    <section className='sbp-30 stp-15 container'>
+      <div>
         <div className='flex items-center justify-between'>
           <div>
             <h2 className='heading-2 pb-3'>Project Submissions</h2>
@@ -144,14 +156,14 @@ export default function ProjectSubmissions({
           >
             <span className='relative z-10 flex items-center gap-2'>
               <PiX className='text-xl' />
-              Refuse selected ({selectedSubmissions.length})
+              Reject selected ({selectedSubmissions.length})
             </span>
           </button>
         </div>
         {/** END of Refuse/Clear selections Modal **/}
 
         {/** List of submissions **/}
-        <div className='submissions-container mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
+        <div className='submissions-container mt-6 grid grid-cols-1 gap-7 gap-y-12 md:grid-cols-2 xl:grid-cols-3'>
           {!isLoading &&
             filteredSubmissions &&
             filteredSubmissions.length > 0 &&
@@ -164,7 +176,6 @@ export default function ProjectSubmissions({
                     }
                     selected={selectedSubmissions.includes(submission.id)}
                     status={submission.status}
-                    isApproveDisabled={hasPendingConfirmation} // Pass the disable state
                     onSelect={(selected) =>
                       handleSelectSubmission(
                         submission.id,
@@ -172,7 +183,15 @@ export default function ProjectSubmissions({
                         setSelectedSubmissions
                       )
                     }
-                    img={FreelancerDefaultProfilePic.src}
+                    freelancerName={`Freelancer ID: ${submission.id}`}
+                    canSelect={
+                      // Only allow selecting a submission if no application has been accepted and
+                      // the particular application is APPLIED
+                      !filteredSubmissions.some(
+                        (submission) => submission.status === 'ACCEPTED'
+                      ) && submission.status === 'APPLIED'
+                    }
+                    img={FreelancerDefaultProfilePic}
                     {...DATA_Submissioners[idx]}
                   />
                 </div>
