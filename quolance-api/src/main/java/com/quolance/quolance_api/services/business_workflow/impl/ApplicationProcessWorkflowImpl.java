@@ -42,6 +42,13 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
             projectService.updateProjectStatus(project, ProjectStatus.CLOSED);
             projectService.updateSelectedFreelancer(project, application.getFreelancer());
 
+            // Reject all other applications
+            applicationService.getAllApplicationsByProjectId(project.getId()).forEach(app -> {
+                if(!app.getId().equals(applicationId)){
+                    applicationService.updateApplicationStatus(app, ApplicationStatus.REJECTED);
+                }
+            });
+
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
         }
