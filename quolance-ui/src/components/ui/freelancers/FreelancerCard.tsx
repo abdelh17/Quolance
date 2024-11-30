@@ -103,12 +103,12 @@ function FreelancerCard({
 
   return (
     <div
-      className={`rounded-3xl transition-all duration-200 ${
+      className={`select-animation rounded-3xl transition-all duration-200 ${
         selected && '!ring-2 !ring-blue-500 !ring-offset-2'
       }`}
     >
       <div
-        className={`relative flex h-full flex-col rounded-3xl pb-6 shadow-md transition-all duration-300 hover:shadow-lg
+        className={`shadow-animation relative flex h-full flex-col rounded-3xl pb-6 shadow-md transition-all duration-300 ease-out hover:shadow-lg
         ${statusConfig.classes.container}
         ${status === 'ACCEPTED' ? 'wave-border bg-white' : 'bg-n40/10 '}`}
       >
