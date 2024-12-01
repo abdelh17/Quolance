@@ -1,21 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import { PostProjectType, ProjectType } from '@/constants/types/project-types';
+import { ProjectType } from '@/constants/types/project-types';
 import { AxiosError } from 'axios';
 
 /*--- Hooks ---*/
-export const useGetProjectInfo = (projectId: number) => {
+export const useGetProjectInfo = (
+  projectId: number,
+  role: 'client' | 'freelancer' | 'public',
+  isUserLoading: boolean
+) => {
   return useQuery({
     queryKey: ['projects', projectId],
-    queryFn: () => httpClient.get(`/api/public/projects/${projectId}`),
-    enabled: !!projectId,
+    queryFn: () => httpClient.get(`/api/${role}/projects/${projectId}`),
+    enabled: !!projectId && !!role && !isUserLoading,
   });
 };
 
 export const useGetAllPublicProjects = () => {
   return useQuery({
     queryKey: ['all-public-projects'],
-    queryFn: () => getAllPublicProjects(),
+    queryFn: () => httpClient.get('/api/public/projects/all'),
   });
 };
 
@@ -24,7 +28,8 @@ export const usePostProject = (options?: {
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: postProject,
+    mutationFn: (project) =>
+      httpClient.post('/api/client/create-project', project),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -49,11 +54,4 @@ export const useUpdateProject = (
   });
 };
 
-// /*--- Query functions ---*/
-const getAllPublicProjects = async () => {
-  return httpClient.get('/api/public/projects/all');
-};
-
-const postProject = async (project: PostProjectType) => {
-  return httpClient.post('/api/client/create-project', project);
-};
+/*--- Query functions ---*/
