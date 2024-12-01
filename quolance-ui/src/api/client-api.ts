@@ -50,4 +50,11 @@ export const useRejectSubmissions = (projectId: number) => {
   });
 };
 
+export const useGetAllClientProjects = () => {
+  return useQuery({
+    queryKey: ['all-client-projects'],
+    queryFn: (projectId) => httpClient.get(`api/client/projects/${projectId}/applications/all`),
+  });
+};
+
 /*--- Query functions ---*/

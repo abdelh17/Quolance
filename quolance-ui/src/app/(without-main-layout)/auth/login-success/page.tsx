@@ -13,7 +13,7 @@ export default function Page() {
     const interval = setInterval(() => {
       setCounter((prev) => prev - 1);
       if (counter === 1) {
-        router.push('/profile');
+        router.push('/dashboard');
       }
     }, 1000);
 

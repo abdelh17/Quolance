@@ -61,7 +61,7 @@ export type ProjectType = {
 //This is the type that is sent to the API (used for POST)
 export type PostProjectType = {
   tags: string[]; // List of tag names as strings
-  projectCategory:
+  category:
     | 'WEB_DEVELOPMENT'
     | 'GRAPHIC_DESIGN'
     | 'CONTENT_WRITING'

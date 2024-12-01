@@ -12,10 +12,10 @@ export const useGetProjectInfo = (projectId: number) => {
   });
 };
 
-export const useGetAllProjects = () => {
+export const useGetAllPublicProjects = () => {
   return useQuery({
-    queryKey: ['projects'],
-    queryFn: () => httpClient.get('/api/public/projects/all'),
+    queryKey: ['all-public-projects'],
+    queryFn: () => getAllPublicProjects(),
   });
 };
 
@@ -24,8 +24,7 @@ export const usePostProject = (options?: {
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: (project: PostProjectType) =>
-      httpClient.post('/api/client/create-project', project),
+    mutationFn: postProject,
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -50,4 +49,11 @@ export const useUpdateProject = (
   });
 };
 
-/*--- Query functions ---*/
+// /*--- Query functions ---*/
+const getAllPublicProjects = async () => {
+  return httpClient.get('/api/public/projects/all');
+};
+
+const postProject = async (project: PostProjectType) => {
+  return httpClient.post('/api/client/create-project', project);
+};

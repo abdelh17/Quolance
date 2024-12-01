@@ -1,4 +1,4 @@
-import { useGetAllProjects } from '@/api/projects-api';
+import { useGetAllPublicProjects } from '@/api/projects-api';
 import { ProjectType } from '@/constants/types/project-types';
 import Loading from '@/components/loading';
 import ProjectCard from '@/components/ui/projects/ProjectCard';
@@ -8,7 +8,7 @@ import Image from 'next/image';
 import heroImage2 from '@/public/images/freelancer-hero-img-2.jpg';
 
 function ProjectsContainer() {
-  const { data, isLoading, isSuccess } = useGetAllProjects();
+  const { data, isLoading, isSuccess } = useGetAllPublicProjects();
 
   if (isLoading) {
     return <Loading />;

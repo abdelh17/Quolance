@@ -43,6 +43,7 @@ public class AdminInitializer implements CommandLineRunner {
                                     .email(adminEmail)
                                     .password(passwordEncoder.encode(adminPassword))
                                     .role(Role.ADMIN)
+                                    .verified(true)
                                     .build()
                     );
                     logger.info("Admin user created with email (username): {}", adminEmail);

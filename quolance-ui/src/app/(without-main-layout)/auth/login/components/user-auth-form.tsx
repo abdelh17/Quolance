@@ -19,7 +19,7 @@ type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 const loginFormSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
+  password: z.string().min(1),
 });
 
 type Schema = z.infer<typeof loginFormSchema>;
@@ -27,7 +27,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { login } = useAuthGuard({
     middleware: 'guest',
-    redirectIfAuthenticated: '/profile',
+    redirectIfAuthenticated: '/dashboard',
   });
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
     undefined
