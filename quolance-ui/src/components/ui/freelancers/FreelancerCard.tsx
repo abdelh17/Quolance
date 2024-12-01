@@ -7,6 +7,7 @@ import Image, { StaticImageData } from 'next/image';
 import { useState } from 'react';
 import ApprovalConfirmationModal from '@/components/ui/freelancers/ApprovalConfirmationModal';
 import { ApplicationStatus } from '@/constants/models/applications/ApplicationResponse';
+import Link from 'next/link';
 
 interface FreelancerCardProps {
   img: ImageURL | StaticImageData;
@@ -102,13 +103,14 @@ function FreelancerCard({
       };
 
   return (
-    <div
+    <Link
+      href=''
       className={`select-animation rounded-3xl transition-all duration-200 ${
         selected && '!ring-2 !ring-blue-500 !ring-offset-2'
       }`}
     >
       <div
-        className={`shadow-animation relative flex h-full flex-col rounded-3xl pb-6 shadow-md transition-all duration-300 ease-out hover:shadow-lg
+        className={`shadow-animation relative flex h-full flex-col rounded-3xl pb-6 shadow-md transition-all duration-300 ease-out hover:shadow-[0_6px_10px_-2px_rgb(0_0_0_/0.13),_0_3px_5px_-3px_rgb(0_0_0_/0.13)]
         ${statusConfig.classes.container}
         ${status === 'ACCEPTED' ? 'wave-border bg-white' : 'bg-n40/10 '}`}
       >
@@ -236,7 +238,7 @@ function FreelancerCard({
         onConfirm={handleApproveSubmission}
         freelancerName={freelancerName}
       />
-    </div>
+    </Link>
   );
 }
 

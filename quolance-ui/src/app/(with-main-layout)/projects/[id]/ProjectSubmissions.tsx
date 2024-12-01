@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { PiSliders, PiX } from 'react-icons/pi';
+import { PiSliders, PiUsers, PiX } from 'react-icons/pi';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
 import {
   useApproveSubmission,
@@ -34,6 +34,21 @@ const initialFilters: ApplicationFilters = {
   viewRejected: false,
   viewCancelled: false,
 };
+
+const NoApplicationsFound = () => (
+  <div className='flex flex-col items-center justify-center px-4 py-16'>
+    <div className='bg-n30 mb-6 rounded-full p-6'>
+      <PiUsers className='text-n300 h-12 w-12' />
+    </div>
+    <h3 className='text-n700 mb-2 text-xl font-semibold'>
+      No Applications Yet
+    </h3>
+    <p className='text-n400 max-w-md text-center'>
+      Your project is waiting for its first applicants. Once freelancers apply,
+      their submissions will appear here.
+    </p>
+  </div>
+);
 
 export default function ProjectSubmissions({
   projectId,
@@ -160,47 +175,47 @@ export default function ProjectSubmissions({
             </span>
           </button>
         </div>
-        {/** END of Refuse/Clear selections Modal **/}
 
-        {/** List of submissions **/}
-        <div className='submissions-container mt-6 grid grid-cols-1 gap-7 gap-y-12 md:grid-cols-2 xl:grid-cols-3'>
-          {!isLoading &&
-            filteredSubmissions &&
-            filteredSubmissions.length > 0 &&
-            filteredSubmissions.map(
-              (submission: ApplicationResponse, idx: number) => (
-                <div key={`submission-${idx}`}>
-                  <FreelancerCard
-                    handleApproveSubmission={() =>
-                      handleApproveSubmission(submission.id)
-                    }
-                    selected={selectedSubmissions.includes(submission.id)}
-                    status={submission.status}
-                    onSelect={(selected) =>
-                      handleSelectSubmission(
-                        submission.id,
-                        selected,
-                        setSelectedSubmissions
-                      )
-                    }
-                    freelancerName={`Freelancer ID: ${submission.id}`}
-                    canSelect={
-                      // Only allow selecting a submission if no application has been accepted and
-                      // the particular application is APPLIED
-                      !filteredSubmissions.some(
-                        (submission) => submission.status === 'ACCEPTED'
-                      ) && submission.status === 'APPLIED'
-                    }
-                    img={FreelancerDefaultProfilePic}
-                    {...DATA_Submissioners[idx]}
-                  />
-                </div>
-              )
-            )}
-
-          {isLoading && <Loading />}
+        <div className='mt-6'>
+          {isLoading ? (
+            <Loading />
+          ) : filteredSubmissions && filteredSubmissions.length > 0 ? (
+            <div className='submissions-container grid grid-cols-1 gap-7 gap-y-12 md:grid-cols-2 xl:grid-cols-3'>
+              {filteredSubmissions.map(
+                (submission: ApplicationResponse, idx: number) => (
+                  <div key={`submission-${idx}`}>
+                    <FreelancerCard
+                      handleApproveSubmission={() =>
+                        handleApproveSubmission(submission.id)
+                      }
+                      selected={selectedSubmissions.includes(submission.id)}
+                      status={submission.status}
+                      onSelect={(selected) =>
+                        handleSelectSubmission(
+                          submission.id,
+                          selected,
+                          setSelectedSubmissions
+                        )
+                      }
+                      freelancerName={`Freelancer ID: ${submission.id}`}
+                      canSelect={
+                        !filteredSubmissions.some(
+                          (submission) => submission.status === 'ACCEPTED'
+                        ) && submission.status === 'APPLIED'
+                      }
+                      img={FreelancerDefaultProfilePic}
+                      {...DATA_Submissioners[idx]}
+                    />
+                  </div>
+                )
+              )}
+            </div>
+          ) : (
+            <div className='border-n40 rounded-2xl border-2 bg-white shadow-sm'>
+              <NoApplicationsFound />
+            </div>
+          )}
         </div>
-        {/*<Pagination />*/}
       </div>
 
       <FreelancersFilterModal
