@@ -48,7 +48,7 @@ function PostsTasksSteps() {
     try {
       console.log('Form submitted:', formData);
       const project: PostProjectType = formData;
-      await mutateProject({ ...project });
+      await mutateProject(project);
 
       // push to home page
       router.push('/projects');

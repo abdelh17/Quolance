@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import { ProjectType } from '@/constants/types/project-types';
+import { PostProjectType, ProjectType } from '@/constants/types/project-types';
 import { AxiosError } from 'axios';
 
 /*--- Hooks ---*/
@@ -28,7 +28,7 @@ export const usePostProject = (options?: {
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: (project) =>
+    mutationFn: (project: PostProjectType) =>
       httpClient.post('/api/client/create-project', project),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
