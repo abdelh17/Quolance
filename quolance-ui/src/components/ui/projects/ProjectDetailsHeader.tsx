@@ -70,23 +70,25 @@ export default function ProjectDetailsHeader({
         </div>
       </div>
       <div className='mt-5 flex lg:ml-4 lg:mt-0'>
-        {!editMode && user?.role == Role.CLIENT && (
-          <Tooltip
-            content='Cannot edit project after it is approved'
-            position='bottom-end'
-            disabled={project.projectStatus === 'PENDING'}
-          >
-            <Button
-              variant='white'
-              size='sm'
-              icon={<PencilIcon />}
-              onClick={() => setEditMode(true)}
-              disabled={project.projectStatus !== 'PENDING'}
+        {!editMode && // Visible only to the client who created the project
+          user?.role == Role.CLIENT &&
+          user?.id === project.clientId && (
+            <Tooltip
+              content='Cannot edit project after it is approved'
+              position='bottom-end'
+              disabled={project.projectStatus === 'PENDING'}
             >
-              <span className='text-gray-800'>Edit</span>
-            </Button>
-          </Tooltip>
-        )}
+              <Button
+                variant='white'
+                size='sm'
+                icon={<PencilIcon />}
+                onClick={() => setEditMode(true)}
+                disabled={project.projectStatus !== 'PENDING'}
+              >
+                <span className='text-gray-800'>Edit</span>
+              </Button>
+            </Tooltip>
+          )}
 
         {editMode && (
           <span className='ml-3'>

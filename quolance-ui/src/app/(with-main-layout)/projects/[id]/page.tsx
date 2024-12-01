@@ -14,15 +14,25 @@ import { useCallback, useEffect, useState } from 'react';
 import { isDeepEqual } from '@/util/objectUtils';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { getUserRoleForAPI } from '@/util/utils';
 
 function ProjectPage() {
   const { id } = useParams();
   const hasEdit = useSearchParams().has('edit');
-  const { user } = useAuthGuard({ middleware: 'auth' });
+  const { user, isLoading: isLoadingUser } = useAuthGuard({
+    middleware: 'auth',
+  });
   const role = user?.role;
+  const userId = user?.id;
   const projectId = Array.isArray(id) ? id[0] : id;
-  const { data, isLoading } = useGetProjectInfo(parseInt(projectId));
+
+  const { data, isLoading: isLoadingProject } = useGetProjectInfo(
+    parseInt(projectId),
+    getUserRoleForAPI(role),
+    isLoadingUser
+  );
   const project = data?.data as ProjectType;
+  const isLoading = isLoadingUser || isLoadingProject;
 
   // Set draft project when project is fetched
   const [draftProject, setDraftProject] = useState<ProjectType>(
@@ -46,7 +56,11 @@ function ProjectPage() {
   useEffect(() => {
     if (project) {
       setDraftProject(project);
-      setEditMode(hasEdit);
+      setEditMode(
+        hasEdit &&
+          project.projectStatus === 'PENDING' &&
+          userId === project.clientId
+      );
     }
   }, [project, hasEdit]);
 
@@ -94,8 +108,8 @@ function ProjectPage() {
                 <FreelancerApplicationForm projectId={project.id} />
               )}
 
-              {/* Submission List - Only visible to clients */}
-              {role === Role.CLIENT && (
+              {/* Submission List - Only visible to clients who own the project */}
+              {role === Role.CLIENT && userId === project.clientId && (
                 <ProjectSubmissions projectId={project.id} />
               )}
             </div>
