@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import httpClient from '@/lib/httpClient';
-import { cn } from '@/lib/utils';
 
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
@@ -16,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { cn } from '@/util/utils';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 

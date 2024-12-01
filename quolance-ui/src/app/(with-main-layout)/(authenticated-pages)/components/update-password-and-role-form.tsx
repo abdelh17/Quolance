@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import httpClient from '@/lib/httpClient';
-import { cn } from '@/lib/utils';
 
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
@@ -17,18 +16,28 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { cn } from '@/util/utils';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 // Define schema for form validation using Zod
 const updateSchema = z
   .object({
-    oldPassword: z.string().min(8, { message: 'Old password must be at least 8 characters.' }),
-    password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
-    confirmPassword: z.string().min(8, { message: 'Confirm password must be at least 8 characters.' }),
-    role: z.string().nonempty('Role is required').refine((value) => ['CLIENT', 'FREELANCER'].includes(value), {
-      message: 'Role must be CLIENT or FREELANCER.',
-    }),
+    oldPassword: z
+      .string()
+      .min(8, { message: 'Old password must be at least 8 characters.' }),
+    password: z
+      .string()
+      .min(8, { message: 'Password must be at least 8 characters.' }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: 'Confirm password must be at least 8 characters.' }),
+    role: z
+      .string()
+      .nonempty('Role is required')
+      .refine((value) => ['CLIENT', 'FREELANCER'].includes(value), {
+        message: 'Role must be CLIENT or FREELANCER.',
+      }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -37,10 +46,15 @@ const updateSchema = z
 
 type Schema = z.infer<typeof updateSchema>;
 
-export function UpdatePendingUserForm({ className, ...props }: UserAuthFormProps) {
+export function UpdatePendingUserForm({
+  className,
+  ...props
+}: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [success, setSuccess] = React.useState<boolean>(false);
-  const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(undefined);
+  const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
+    undefined
+  );
 
   async function onSubmit(data: Schema) {
     setErrors(undefined);
@@ -70,8 +84,8 @@ export function UpdatePendingUserForm({ className, ...props }: UserAuthFormProps
     <div className={cn('grid gap-6', className)} {...props}>
       <SuccessFeedback
         show={success}
-        message="User updated"
-        description="Your password and role have been successfully updated."
+        message='User updated'
+        description='Your password and role have been successfully updated.'
         action={
           <Link href='/' className='underline'>
             Access your account
@@ -80,62 +94,75 @@ export function UpdatePendingUserForm({ className, ...props }: UserAuthFormProps
       />
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-2">
-          <Label htmlFor="oldPassword">Temp Password</Label>
+        <div className='grid gap-2'>
+          <Label htmlFor='oldPassword'>Temp Password</Label>
           <Input
-            id="oldPassword"
-            type="password"
-            autoCapitalize="none"
-            autoCorrect="off"
+            id='oldPassword'
+            type='password'
+            autoCapitalize='none'
+            autoCorrect='off'
             disabled={isLoading}
             {...register('oldPassword')}
           />
           {formState.errors.oldPassword && (
-            <small className="text-red-600">{formState.errors.oldPassword.message}</small>
+            <small className='text-red-600'>
+              {formState.errors.oldPassword.message}
+            </small>
           )}
 
-          <Label htmlFor="password">New Password</Label>
+          <Label htmlFor='password'>New Password</Label>
           <Input
-            id="password"
-            type="password"
-            autoCapitalize="none"
-            autoCorrect="off"
+            id='password'
+            type='password'
+            autoCapitalize='none'
+            autoCorrect='off'
             disabled={isLoading}
             {...register('password')}
           />
           {formState.errors.password && (
-            <small className="text-red-600">{formState.errors.password.message}</small>
+            <small className='text-red-600'>
+              {formState.errors.password.message}
+            </small>
           )}
 
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Label htmlFor='confirmPassword'>Confirm Password</Label>
           <Input
-            id="confirmPassword"
-            type="password"
+            id='confirmPassword'
+            type='password'
             disabled={isLoading}
             {...register('confirmPassword')}
           />
           {formState.errors.confirmPassword && (
-            <small className="text-red-600">{formState.errors.confirmPassword.message}</small>
+            <small className='text-red-600'>
+              {formState.errors.confirmPassword.message}
+            </small>
           )}
 
-          <Label htmlFor="role">Role</Label>
+          <Label htmlFor='role'>Role</Label>
           <select
-            id="role"
+            id='role'
             disabled={isLoading}
             {...register('role')}
-            className="rounded border border-gray-300 p-2"
+            className='rounded border border-gray-300 p-2'
           >
-            <option value="">Select Role</option>
-            <option value="CLIENT">CLIENT</option>
-            <option value="FREELANCER">FREELANCER</option>
+            <option value=''>Select Role</option>
+            <option value='CLIENT'>CLIENT</option>
+            <option value='FREELANCER'>FREELANCER</option>
           </select>
           {formState.errors.role && (
-            <small className="text-red-600">{formState.errors.role.message}</small>
+            <small className='text-red-600'>
+              {formState.errors.role.message}
+            </small>
           )}
 
           <ErrorFeedback data={errors} />
 
-          <Button className="mt-10" disabled={isLoading} type="submit" variant="footerColor">
+          <Button
+            className='mt-10'
+            disabled={isLoading}
+            type='submit'
+            variant='footerColor'
+          >
             {isLoading && 'Updating...'}
             {!isLoading && 'Update'}
           </Button>
