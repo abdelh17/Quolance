@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useAuthGuard } from '@/api/auth-api';
 import { useGetProjectInfo, useUpdateProject } from '@/api/projects-api';
 import ProjectDetailsHeader from '@/components/ui/projects/ProjectDetailsHeader';
-import ProjectApplication from '@/app/(with-main-layout)/projects/[id]/ProjectApplication';
+import FreelancerApplicationForm from '@/app/(with-main-layout)/projects/[id]/FreelancerApplicationForm';
 import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
 import { Role } from '@/constants/models/user/UserResponse';
 import { ProjectType } from '@/constants/types/project-types';
@@ -13,15 +13,26 @@ import Loading from '@/components/loading';
 import { useCallback, useEffect, useState } from 'react';
 import { isDeepEqual } from '@/util/objectUtils';
 import { showToast } from '@/util/context/ToastProvider';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { getUserRoleForAPI } from '@/util/utils';
 
 function ProjectPage() {
   const { id } = useParams();
   const hasEdit = useSearchParams().has('edit');
-  const { user } = useAuthGuard({ middleware: 'auth' });
+  const { user, isLoading: isLoadingUser } = useAuthGuard({
+    middleware: 'auth',
+  });
   const role = user?.role;
+  const userId = user?.id;
   const projectId = Array.isArray(id) ? id[0] : id;
-  const { data, isLoading } = useGetProjectInfo(parseInt(projectId));
+
+  const { data, isLoading: isLoadingProject } = useGetProjectInfo(
+    parseInt(projectId),
+    getUserRoleForAPI(role),
+    isLoadingUser
+  );
   const project = data?.data as ProjectType;
+  const isLoading = isLoadingUser || isLoadingProject;
 
   // Set draft project when project is fetched
   const [draftProject, setDraftProject] = useState<ProjectType>(
@@ -35,16 +46,21 @@ function ProjectPage() {
     },
     onError: (error) => {
       console.log('Error updating project:', error);
-      showToast('Error updating project', 'error');
+      const ErrorResponse = error.response?.data as HttpErrorResponse;
+      showToast(`Error updating project: ${ErrorResponse?.message}`, 'error');
     },
   });
 
-  const [editMode, setEditMode] = useState(hasEdit);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     if (project) {
       setDraftProject(project);
-      setEditMode(hasEdit);
+      setEditMode(
+        hasEdit &&
+          project.projectStatus === 'PENDING' &&
+          userId === project.clientId
+      );
     }
   }, [project, hasEdit]);
 
@@ -67,35 +83,37 @@ function ProjectPage() {
 
   return (
     <>
-      <section className='container mt-3'>
+      <section className='container mt-3 pb-16'>
         <BreadCrumb pageName='Project Details' />
         {project && (
-          <>
-            <ProjectDetailsHeader
-              project={projectData as ProjectType}
-              editMode={editMode}
-              setEditMode={setEditMode}
-              isEdited={!isDeepEqual(project, draftProject)}
-              resetDraftProject={resetDraftProject}
-              updateProject={handleUpdateProject}
-            />
-            <ProjectDetailsContent
-              project={projectData as ProjectType}
-              editMode={editMode}
-              setDraftProject={updateDraftProject}
-            />
+          <div className={''}>
+            <div>
+              <ProjectDetailsHeader
+                project={projectData as ProjectType}
+                editMode={editMode}
+                setEditMode={setEditMode}
+                isEdited={!isDeepEqual(project, draftProject)}
+                resetDraftProject={resetDraftProject}
+                updateProject={handleUpdateProject}
+              />
+              <ProjectDetailsContent
+                project={projectData as ProjectType}
+                editMode={editMode}
+                setDraftProject={updateDraftProject}
+              />
+            </div>
             <div className='mt-8'>
               {/* Application Form - Only visible to freelancers */}
               {role === Role.FREELANCER && (
-                <ProjectApplication projectId={project.id} />
+                <FreelancerApplicationForm projectId={project.id} />
               )}
 
-              {/* Submission List - Only visible to clients */}
-              {role === Role.CLIENT && (
+              {/* Submission List - Only visible to clients who own the project */}
+              {role === Role.CLIENT && userId === project.clientId && (
                 <ProjectSubmissions projectId={project.id} />
               )}
             </div>
-          </>
+          </div>
         )}
         {isLoading && <Loading />}
       </section>

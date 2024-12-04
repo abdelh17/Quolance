@@ -22,6 +22,7 @@ export const useAuthGuard = ({
     data: user,
     error,
     mutate,
+    isLoading,
   } = useSWR('/api/auth/me', () =>
     httpClient.get<UserResponse>('/api/auth/me').then((res) => res.data)
   );
@@ -34,7 +35,6 @@ export const useAuthGuard = ({
     props: any;
   }) => {
     onError(undefined);
-    // await csrf(); temporarly commented out to make the form work
     httpClient
       .post<HttpErrorResponse>('/api/auth/login', {
         email: props.email,
@@ -47,10 +47,6 @@ export const useAuthGuard = ({
       });
   };
 
-  // const csrf = async () => {
-  //   await httpClient.get("/api/auth/csrf")
-  // }
-
   const logout = async () => {
     if (!error) {
       await httpClient.post('/api/auth/logout').then(() => mutate());
@@ -60,21 +56,23 @@ export const useAuthGuard = ({
   };
 
   useEffect(() => {
-    // If middleware is 'guest' and we have a user, redirect
-    if (middleware === 'guest' && redirectIfAuthenticated && user) {
-      router.push(redirectIfAuthenticated);
-    }
+    if (!isLoading) {
+      // Only run redirects after loading is complete
+      if (middleware === 'guest' && redirectIfAuthenticated && user) {
+        router.push(redirectIfAuthenticated);
+      }
 
-    // If middleware is 'auth' and we have an error, logout
-    if (middleware === 'auth' && error && user) {
-      logout();
+      if (middleware === 'auth' && error && user) {
+        logout();
+      }
     }
-  }, [user, error]);
+  }, [user, error, isLoading]);
 
   return {
     user,
     login,
     logout,
     mutate,
+    isLoading,
   };
 };

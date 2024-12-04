@@ -1,6 +1,6 @@
 export interface ApplicationResponse {
-  applicationId: number;
-  applicationStatus: ApplicationStatus;
+  id: number;
+  status: ApplicationStatus;
   projectId: number;
   freelancerId: number;
 }

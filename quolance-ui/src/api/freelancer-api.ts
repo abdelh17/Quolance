@@ -1,26 +1,39 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
+import { showToast } from '@/util/context/ToastProvider';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 /*--- Hooks ---*/
 export const useSubmitApplication = () => {
   return useMutation({
-    mutationFn: submitApplication,
+    mutationFn: (projectId: number) =>
+      httpClient.post(`api/freelancer/submit-application`, { projectId }),
+    onSuccess: () => {
+      showToast('Application submitted successfully', 'success');
+    },
+    onError: (error) => {
+      const ErrorResponse = error.response?.data as HttpErrorResponse;
+      showToast(
+        `Error submitting application: ${ErrorResponse.message}`,
+        'error'
+      );
+    },
+  });
+};
+
+export const useCancelApplication = () => {
+  return useMutation({
+    mutationFn: (applicationId: number) =>
+      httpClient.post(`api/freelancer/${applicationId}/cancel-application`),
+    onSuccess: () => {
+      showToast('Application cancelled successfully', 'success');
+    },
+    onError: (error) => {
+      const ErrorResponse = error.response?.data as HttpErrorResponse;
+      showToast(`Error: ${ErrorResponse.message}`, 'error');
+    },
   });
 };
 
 /*--- Query functions ---*/
-// Hardcoded for now
-const submitApplication = async ({
-  freelancerId,
-  projectId,
-}: {
-  freelancerId: number;
-  projectId: number;
-  // we can a payload of specific type here in the future
-}) => {
-  return httpClient.post(`api/freelancer/submit-application`, {
-    freelancerId,
-    projectId,
-  });
-};

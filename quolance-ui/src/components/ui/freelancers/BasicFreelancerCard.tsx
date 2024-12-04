@@ -1,11 +1,7 @@
 'use client';
-import { PiHandshake, PiHeart } from 'react-icons/pi';
 import 'swiper/css';
 import badge from '@/public/images/verify-badge.png';
 import Image from 'next/image';
-import { useState } from 'react';
-import ApprovalConfirmationModal from '@/components/ui/freelancers/ApprovalConfirmationModal';
-import { ApplicationStatus } from '@/constants/models/applications/ApplicationResponse';
 
 interface BasicFreelancerCardProps {
   img: string;
@@ -13,44 +9,16 @@ interface BasicFreelancerCardProps {
   location: string;
 }
 
-export const StatusColors = {
-  APPLIED: 'blue',
-  REJECTED: 'red',
-  PENDING_CONFIRMATION: 'yellow',
-  ACCEPTED: 'green',
-  CANCELLED: 'gray',
-} as const;
-
-export const getStatusConfig = (status: ApplicationStatus) => {
-  const color = StatusColors[status];
-  return {
-    label: formatStatusLabel(status),
-    color,
-    classes: {
-      badge: `bg-${color}-100 text-${color}-700 border-${color}-400`,
-    },
-  };
-};
-
-const formatStatusLabel = (status: ApplicationStatus): string => {
-  return status
-    .split('_')
-    .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-    .join(' ');
-};
-
 function BasicFreelancerCard({
   img,
   freelancerName,
   location,
 }: BasicFreelancerCardProps) {
-
   return (
     <>
       <div
         className={`bg-n10 relative flex h-full flex-col rounded-3xl border pb-6 transition-all duration-200`}
       >
-
         <div className='mt-5 flex items-center justify-start gap-3 px-3 sm:px-6'>
           <div className='relative max-md:overflow-hidden'>
             <div className='hexagon-styles bg-b50 my-[calc(100px*0.5/2)] h-[calc(100px*0.57736720554273)] w-[100px] rounded-[calc(100px/36.75)] before:rounded-[calc(100px/18.75)] after:rounded-[calc(100px/18.75)]'>
@@ -63,12 +31,12 @@ function BasicFreelancerCard({
                           <div
                             className='r-hex-inner-3 before:h-[86x] before:bg-cover'
                             style={{
-                                backgroundImage:  `url(${img})`,
-                                backgroundSize: 'cover', // or 'contain'
-                                backgroundPosition: 'center', // Centers the image
-                                backgroundRepeat: 'no-repeat', // Prevents tiling
-                                height: '86px',
-                                width: '86px',
+                              backgroundImage: `url(${img})`,
+                              backgroundSize: 'cover', // or 'contain'
+                              backgroundPosition: 'center', // Centers the image
+                              backgroundRepeat: 'no-repeat', // Prevents tiling
+                              height: '86px',
+                              width: '86px',
                             }}
                           ></div>
                         </div>

@@ -3,24 +3,24 @@ import {
   ApplicationResponse,
   ApplicationStatus,
 } from '@/constants/models/applications/ApplicationResponse';
-import { SubmissionFilters } from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
+import { ApplicationFilters } from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
 import { Dispatch, SetStateAction } from 'react';
 
 // Filter logic function that will be used to filter submissions
 export const applySubmissionFilters = (
   submissions: ApplicationResponse[],
-  filters: SubmissionFilters
+  filters: ApplicationFilters
 ) => {
   return submissions.filter((submission) => {
     if (
       !filters.viewRejected &&
-      submission.applicationStatus === ApplicationStatus.REJECTED
+      submission.status === ApplicationStatus.REJECTED
     ) {
       return false;
     }
     if (
       !filters.viewCancelled &&
-      submission.applicationStatus === ApplicationStatus.CANCELLED
+      submission.status === ApplicationStatus.CANCELLED
     ) {
       return false;
     }
@@ -29,8 +29,8 @@ export const applySubmissionFilters = (
 };
 
 export const handleFilterChange = (
-  setTempFilters: Dispatch<SetStateAction<SubmissionFilters>>,
-  filterType: keyof SubmissionFilters,
+  setTempFilters: Dispatch<SetStateAction<ApplicationFilters>>,
+  filterType: keyof ApplicationFilters,
   value: boolean
 ) => {
   setTempFilters((prevFilters) => ({
@@ -40,8 +40,8 @@ export const handleFilterChange = (
 };
 
 export const handleApplyFilters = (
-  tempFilters: SubmissionFilters,
-  setActiveFilters: Dispatch<SetStateAction<SubmissionFilters>>,
+  tempFilters: ApplicationFilters,
+  setActiveFilters: Dispatch<SetStateAction<ApplicationFilters>>,
   setFilterModal: Dispatch<SetStateAction<boolean>>
 ) => {
   setActiveFilters(tempFilters);
@@ -49,9 +49,9 @@ export const handleApplyFilters = (
 };
 
 export const handleResetFilters = (
-  initialFilters: SubmissionFilters,
-  setTempFilters: Dispatch<SetStateAction<SubmissionFilters>>,
-  setActiveFilters: Dispatch<SetStateAction<SubmissionFilters>>,
+  initialFilters: ApplicationFilters,
+  setTempFilters: Dispatch<SetStateAction<ApplicationFilters>>,
+  setActiveFilters: Dispatch<SetStateAction<ApplicationFilters>>,
   setFilterModal: Dispatch<SetStateAction<boolean>>
 ) => {
   setTempFilters(initialFilters);

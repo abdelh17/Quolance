@@ -1,22 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-
 import httpClient from '@/lib/httpClient';
-
 import { PostProjectType, ProjectType } from '@/constants/types/project-types';
+import { AxiosError } from 'axios';
 
 /*--- Hooks ---*/
-export const useGetProjectInfo = (projectId: number) => {
+export const useGetProjectInfo = (
+  projectId: number,
+  role: 'client' | 'freelancer' | 'public',
+  isUserLoading: boolean
+) => {
   return useQuery({
     queryKey: ['projects', projectId],
-    queryFn: () => getProjectInfo(projectId),
-    enabled: !!projectId,
+    queryFn: () => httpClient.get(`/api/${role}/projects/${projectId}`),
+    enabled: !!projectId && !!role && !isUserLoading,
   });
 };
 
 export const useGetAllPublicProjects = () => {
   return useQuery({
     queryKey: ['all-public-projects'],
-    queryFn: () => getAllPublicProjects(),
+    queryFn: () => httpClient.get('/api/public/projects/all'),
   });
 };
 
@@ -25,7 +28,8 @@ export const usePostProject = (options?: {
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: postProject,
+    mutationFn: (project: PostProjectType) =>
+      httpClient.post('/api/client/create-project', project),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -35,12 +39,13 @@ export const useUpdateProject = (
   projectId: number,
   options?: {
     onSuccess?: () => void;
-    onError?: (error: unknown) => void;
+    onError?: (error: AxiosError) => void;
   }
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: updateProject,
+    mutationFn: (project: ProjectType) =>
+      httpClient.put(`/api/client/projects/${project.id}`, project),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
       options?.onSuccess && options.onSuccess();
@@ -49,19 +54,4 @@ export const useUpdateProject = (
   });
 };
 
-// /*--- Query functions ---*/
-const getProjectInfo = async (projectId: number) => {
-  return httpClient.get(`/api/public/projects/${projectId}`);
-};
-
-const getAllPublicProjects = async () => {
-  return httpClient.get('/api/public/projects/all');
-};
-
-const postProject = async (project: PostProjectType) => {
-  return httpClient.post('/api/client/create-project', project);
-};
-
-const updateProject = async (project: ProjectType) => {
-  return httpClient.put(`/api/client/projects/${project.id}`, project);
-};
+/*--- Query functions ---*/
