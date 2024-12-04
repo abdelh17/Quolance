@@ -40,6 +40,7 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 | Oussama Cherifi            | 40212275   | OussamaCherifi   | oussama.cherifi7@gmail.com     |
 | Sathurthikan Saththyvel    | 40213455   | SSathu           | sathuow@gmail.com              |
 | Zakaria El Manar El Bouanani| 40190432   | Zakaria0907      | zakaria.elmanar@gmail.com      |
+| Fadi Nimer| 40183225   | Lukateki      | fadi_nimer@hotmail.com      |
 
 ## Diversity Statement
 Quolance is designed to be inclusive and accessible to everyone, regardless of their background, race, gender, age or abilities. We firmly believe that diversity makes our platform stronger and helps us create better solutions for a wide range of users. By embracing and showing that different perspectives and experiences are encouraged, we can ensure that Quolance serves a variety of needs and remains fair to all individuals.
