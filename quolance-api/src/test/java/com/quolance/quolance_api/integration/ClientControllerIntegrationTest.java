@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-class ClientControllerIntegrationTest {
+class ClientControllerIntegrationTest{
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.2");
@@ -103,31 +103,6 @@ class ClientControllerIntegrationTest {
         freelancer.setPassword(encodedPassword);
         return userRepository.save(freelancer);
     }
-
-//    private Project createAndSavePendingProject() {
-//        Project project = new Project();
-//        project.setTitle("title");
-//        project.setDescription("description");
-//        project.setCategory(ProjectCategory.APP_DEVELOPMENT);
-//        project.setPriceRange(PriceRange.LESS_500);
-//        project.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
-//        project.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
-//        project.setClient(client);
-//        return projectRepository.save(project);
-//    }
-
-//    private Project createAndSaveOpenProject() {
-//        Project project = new Project();
-//        project.setTitle("title");
-//        project.setDescription("description");
-//        project.setCategory(ProjectCategory.APP_DEVELOPMENT);
-//        project.setPriceRange(PriceRange.LESS_500);
-//        project.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
-//        project.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
-//        project.setProjectStatus(ProjectStatus.OPEN);
-//        project.setClient(client);
-//        return projectRepository.save(project);
-//    }
 
     private Project createAndSaveProject(ProjectStatus projectStatus) {
         Project project = new Project();
