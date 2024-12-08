@@ -1,6 +1,9 @@
 name: CI/CD Pipeline
 
 on:
+  push:
+    branches:
+      - test-sonar
   pull_request:
     branches:
       - main
@@ -32,6 +35,14 @@ jobs:
           cd quolance-ui
           npm run build
 
+      - name: SonarCloud Analysis (Frontend)
+        uses: SonarSource/sonarcloud-github-action@v1
+        with:
+          organization: ${{ secrets.SONAR_ORG }}
+          token: ${{ secrets.SONAR_TOKEN }}
+        env:
+          SONAR_SCANNER_OPTS: "-Dsonar.sources=quolance-ui/src"
+
   backend-build-test:
     name: Build and Test Backend
     runs-on: ubuntu-latest
@@ -55,3 +66,12 @@ jobs:
           cd quolance-api
           ./mvnw clean install
           ./mvnw test
+
+      # Run SonarCloud Analysis (Backend)
+      - name: SonarCloud Analysis (Backend)
+        uses: SonarSource/sonarcloud-github-action@v1
+        with:
+          organization: ${{ secrets.SONAR_ORG }}
+          token: ${{ secrets.SONAR_TOKEN }}
+        env:
+          SONAR_SCANNER_OPTS: "-Dsonar.sources=quolance-api/src/main/java"
