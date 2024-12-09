@@ -37,7 +37,7 @@ This project presents a cutting-edge freelancing platform that connects freelanc
 | Francesco Ferrato          | 26642152   | franf91          | francescoferrato937@gmail.com  |
 | Ismail Feham               | 40213442   | FehamIsmail      | ismail.feham64@gmail.com       |
 | Abdelmalek Anes            | 40229242   | NotMalek         | malekanes213@gmail.com         |
-| Oussama Cherifi            | 40212275   | OussamaCherifi   | oussama.cherifi7@gmail.com     |
+| Oussama Cherifi            | 40212275   | OussamaCherifi   | oussamacherifi7@gmail.com     |
 | Sathurthikan Saththyvel    | 40213455   | SSathu           | sathuow@gmail.com              |
 | Zakaria El Manar El Bouanani| 40190432   | Zakaria0907      | zakaria.elmanar@gmail.com      |
 | Fadi Nimer| 40183225   | Lukateki      | fadi_nimer@hotmail.com      |
