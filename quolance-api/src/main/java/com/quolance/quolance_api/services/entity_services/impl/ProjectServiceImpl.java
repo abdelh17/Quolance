@@ -126,6 +126,14 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
         }
 
+        // title and description are blank
+        if (updateDto.getTitle().isBlank() || updateDto.getDescription().isBlank()) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Title and Description cannot be blank")
+                    .build();
+        }
+
         updateProjectFields(existingProject, updateDto);
         projectRepository.save(existingProject);
     }
