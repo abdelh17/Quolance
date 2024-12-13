@@ -9,6 +9,7 @@ import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowSe
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,9 +49,10 @@ public class FreelancerController {
             summary = "Delete an application.",
             description = "Delete an application by passing the application id."
     )
-    public void deleteApplication(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<String> deleteApplication(@PathVariable(name = "applicationId") Long applicationId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.cancelApplication(applicationId, freelancer);
+        return ResponseEntity.ok("Application deleted successfully.");
     }
 
     @GetMapping("/applications/all")
