@@ -13,17 +13,14 @@ import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
@@ -39,11 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-class ClientControllerIntegrationTest{
-
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.2");
-
+class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private MockMvc mockMvc;
 
@@ -67,54 +60,7 @@ class ClientControllerIntegrationTest{
     void setUp() {
         projectRepository.deleteAll();
         userRepository.deleteAll();
-        client = createAndSaveClient();
-    }
-
-    private Application createAndSaveApplication(Project project, User freelancer) {
-        Application application = new Application();
-        application.setProject(project);
-        application.setFreelancer(freelancer);
-        return applicationRepository.save(application);
-    }
-
-    private User createAndSaveClient() {
-        User client = new User();
-        client.setFirstName("Client");
-        client.setLastName("Test");
-        client.setEmail("client@test.com");
-        client.setRole(Role.CLIENT);
-        client.setVerified(true);
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode("Password123!");
-        client.setPassword(encodedPassword);
-        return userRepository.save(client);
-    }
-
-    //userNumber is used to create unique email addresses for each user when there is a need to create multiple users
-    private User createAndSaveFreelancer(int userNumber) {
-        User freelancer = new User();
-        freelancer.setFirstName("Freelancer" + userNumber);
-        freelancer.setLastName("Test");
-        freelancer.setEmail("freelancer" + userNumber + "@test.com");
-        freelancer.setRole(Role.FREELANCER);
-        freelancer.setVerified(true);
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode("Password123!");
-        freelancer.setPassword(encodedPassword);
-        return userRepository.save(freelancer);
-    }
-
-    private Project createAndSaveProject(ProjectStatus projectStatus) {
-        Project project = new Project();
-        project.setTitle("title");
-        project.setDescription("description");
-        project.setCategory(ProjectCategory.APP_DEVELOPMENT);
-        project.setPriceRange(PriceRange.LESS_500);
-        project.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
-        project.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
-        project.setProjectStatus(projectStatus);
-        project.setClient(client);
-        return projectRepository.save(project);
+        client = userRepository.save(Helper.createClient());
     }
 
     @BeforeEach
@@ -131,14 +77,6 @@ class ClientControllerIntegrationTest{
                 .getRequest()
                 .getSession();
     }
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-    }
-
 
     @Test
     void createProjectValidIsOk() throws Exception {
@@ -226,7 +164,7 @@ class ClientControllerIntegrationTest{
     @Test
     void updatePendingProjectReturnsOk() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.PENDING);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.PENDING, client));
 
         ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
                 .title("updated title")
@@ -258,7 +196,7 @@ class ClientControllerIntegrationTest{
 //    @Test
 //    void updateProjectWithEmptyFieldsDoesNotUpdateProject() throws Exception {
 //        //Arrange
-//        Project project = createAndSaveProject(ProjectStatus.PENDING);
+//        Project project = Helper.createProject(ProjectStatus.PENDING);
 //
 //        ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
 //                .title("")
@@ -288,10 +226,11 @@ class ClientControllerIntegrationTest{
 //        assertThat(projectResponse.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
 //    }
 
-    @Test
-    void updateNotPendingProjectDoesNotUpdateProject() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"OPEN", "CLOSED", "REJECTED"})
+    void updateNotPendingProjectDoesNotUpdateProject(String status) throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.OPEN);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.valueOf(status), client));
 
         ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
                 .title("updated title")
@@ -320,7 +259,7 @@ class ClientControllerIntegrationTest{
     @Test
     void getProjectByIdReturnsOk() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.PENDING);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.PENDING, client));
 
         //Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId()).session(session))
@@ -354,7 +293,7 @@ class ClientControllerIntegrationTest{
     @Test
     void getAllProjectsWhenExistIsOk() throws Exception {
         //Arrange
-        createAndSaveProject(ProjectStatus.PENDING);
+        projectRepository.save(Helper.createProject(ProjectStatus.PENDING, client));
 
         Project project2 = new Project();
         project2.setTitle("title2");
@@ -400,7 +339,7 @@ class ClientControllerIntegrationTest{
     @Test
     void deleteProjectIsOk() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.PENDING);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.PENDING, client));
 
         //Act
         String response = mockMvc.perform(delete("/api/client/projects/" + project.getId()).session(session))
@@ -429,11 +368,11 @@ class ClientControllerIntegrationTest{
     @Test
     void getAllApplicationsToProjectGivesOk() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.PENDING);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.PENDING, client));
 
-        User freelancer = createAndSaveFreelancer(1);
+        User freelancer = userRepository.save(Helper.createFreelancer(1));
 
-        createAndSaveApplication(project, freelancer);
+        applicationRepository.save(Helper.createApplication(project, freelancer));
 
         //Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
@@ -452,7 +391,7 @@ class ClientControllerIntegrationTest{
     @Test
     void getAllApplicationsToProjectWhenNoneExistReturnsEmptyList() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.PENDING);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.PENDING, client));
 
         //Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
@@ -470,11 +409,11 @@ class ClientControllerIntegrationTest{
     @Test
     void selectFreelancerChangesApplicationStatusAndProjectStatusIsOk() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.OPEN);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.OPEN, client));
 
-        User freelancer = createAndSaveFreelancer(1);
+        User freelancer = userRepository.save(Helper.createFreelancer(1));
 
-        Application application = createAndSaveApplication(project, freelancer);
+        Application application = applicationRepository.save(Helper.createApplication(project, freelancer));
 
         //Act
         String response = mockMvc.perform(post("/api/client/applications/" + application.getId() + "/select-freelancer").session(session))
@@ -492,15 +431,15 @@ class ClientControllerIntegrationTest{
     @Test
     void selectFreelancerRejectsOtherFreelancersApplications() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.OPEN);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.OPEN, client));
 
-        User freelancer1 = createAndSaveFreelancer(1);
+        User freelancer1 = userRepository.save(Helper.createFreelancer(1));
 
-        User freelancer2 = createAndSaveFreelancer(2);
+        User freelancer2 = userRepository.save(Helper.createFreelancer(2));
 
-        Application application1 = createAndSaveApplication(project, freelancer1);
+        Application application1 = applicationRepository.save(Helper.createApplication(project, freelancer1));
 
-        Application application2 = createAndSaveApplication(project, freelancer2);
+        Application application2 = applicationRepository.save(Helper.createApplication(project, freelancer2));
 
         //Act
         mockMvc.perform(post("/api/client/applications/" + application1.getId() + "/select-freelancer").session(session))
@@ -513,11 +452,11 @@ class ClientControllerIntegrationTest{
     @Test
     void rejectApplicationIsOk() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.OPEN);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.OPEN, client));
 
-        User freelancer = createAndSaveFreelancer(1);
+        User freelancer = userRepository.save(Helper.createFreelancer(1));
 
-        Application application = createAndSaveApplication(project, freelancer);
+        Application application = applicationRepository.save(Helper.createApplication(project, freelancer));
 
         //Act
         String response = mockMvc.perform(post("/api/client/applications/" + application.getId() + "/reject-freelancer").session(session))
@@ -533,15 +472,15 @@ class ClientControllerIntegrationTest{
     @Test
     void rejectManyApplicationsIsOk() throws Exception {
         //Arrange
-        Project project = createAndSaveProject(ProjectStatus.OPEN);
+        Project project = projectRepository.save(Helper.createProject(ProjectStatus.OPEN, client));
 
-        User freelancer1 = createAndSaveFreelancer(1);
+        User freelancer1 = userRepository.save(Helper.createFreelancer(1));
 
-        User freelancer2 = createAndSaveFreelancer(2);
+        User freelancer2 = userRepository.save(Helper.createFreelancer(2));
 
-        Application application1 = createAndSaveApplication(project, freelancer1);
+        Application application1 = applicationRepository.save(Helper.createApplication(project, freelancer1));
 
-        Application application2 = createAndSaveApplication(project, freelancer2);
+        Application application2 = applicationRepository.save(Helper.createApplication(project, freelancer2));
 
         //Act
         String response = mockMvc.perform(post("/api/client/applications/bulk/reject-freelancer")
