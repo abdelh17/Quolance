@@ -9,7 +9,6 @@ import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowSe
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,7 @@ public class FreelancerController {
 
     private final FreelancerWorkflowService freelancerWorkflowService;
     private final ApplicationProcessWorkflow applicationProcessWorkflow;
-    
+
     @PostMapping("/submit-application")
     @Operation(
             summary = "Create a new application on a project.",
