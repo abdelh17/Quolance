@@ -8,7 +8,7 @@ public abstract class AbstractTestcontainers {
     protected static final PostgreSQLContainer<?> postgres;
 
     static {
-        postgres = new PostgreSQLContainer<>("postgres:15.2");
+        postgres = new PostgreSQLContainer<>("postgres:latest");
         postgres.start();
     }
 
