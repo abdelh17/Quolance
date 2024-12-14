@@ -18,6 +18,18 @@ public class EntityCreationHelper {
         application.setFreelancer(freelancer);
         return application;
     }
+    public static User createAdmin() {
+        User admin = new User();
+        admin.setFirstName("Admin");
+        admin.setLastName("Test");
+        admin.setEmail("admin@test.com");
+        admin.setRole(Role.ADMIN);
+        admin.setVerified(true);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode("Password123!");
+        admin.setPassword(encodedPassword);
+        return admin;
+    }
 
     public static User createClient() {
         User client = new User();
@@ -46,7 +58,7 @@ public class EntityCreationHelper {
         return freelancer;
     }
 
-    public static Project createProjectWithVisibilityExpirationDate(ProjectStatus projectStatus, User client) {
+    public static Project createProject(ProjectStatus projectStatus, User client) {
         Project project = new Project();
         project.setTitle("title");
         project.setDescription("description");
@@ -59,7 +71,7 @@ public class EntityCreationHelper {
         return project;
     }
 
-    public static Project createProjectWithVisibilityExpirationDate(ProjectStatus projectStatus, LocalDate visibilityExpirationDate, User client) {
+    public static Project createProject(ProjectStatus projectStatus, LocalDate visibilityExpirationDate, User client) {
         Project project = new Project();
         project.setTitle("title");
         project.setDescription("description");
