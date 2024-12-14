@@ -98,7 +98,15 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
                 .getResponse().getContentAsString();
 
         //Assert
+        Project project = projectRepository.findAll().getFirst();
         assertThat(response).isEqualTo("Project created successfully");
+        assertThat(projectRepository.findAll().size()).isEqualTo(1);
+        assertThat(project.getTitle()).isEqualTo("title");
+        assertThat(project.getDescription()).isEqualTo("description");
+        assertThat(project.getCategory()).isEqualTo(ProjectCategory.APP_DEVELOPMENT);
+        assertThat(project.getPriceRange()).isEqualTo(PriceRange.LESS_500);
+        assertThat(project.getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.JUNIOR);
+        assertThat(project.getExpectedDeliveryTime()).isEqualTo(ExpectedDeliveryTime.FLEXIBLE);
     }
 
     @Test
