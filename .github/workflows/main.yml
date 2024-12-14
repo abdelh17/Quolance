@@ -85,10 +85,3 @@ jobs:
         run: |
           cd quolance-api
           ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-
-      # Build and test Spring Boot backend
-      - name: Build and Test Spring Boot
-        run: |
-          cd quolance-api
-          ./mvnw clean install
-          ./mvnw test
