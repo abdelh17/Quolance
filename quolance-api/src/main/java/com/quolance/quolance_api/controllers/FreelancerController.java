@@ -21,7 +21,7 @@ public class FreelancerController {
 
     private final FreelancerWorkflowService freelancerWorkflowService;
     private final ApplicationProcessWorkflow applicationProcessWorkflow;
-    
+
     @PostMapping("/submit-application")
     @Operation(
             summary = "Create a new application on a project.",
@@ -48,9 +48,10 @@ public class FreelancerController {
             summary = "Delete an application.",
             description = "Delete an application by passing the application id."
     )
-    public void deleteApplication(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<String> deleteApplication(@PathVariable(name = "applicationId") Long applicationId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.cancelApplication(applicationId, freelancer);
+        return ResponseEntity.ok("Application deleted successfully.");
     }
 
     @GetMapping("/applications/all")
