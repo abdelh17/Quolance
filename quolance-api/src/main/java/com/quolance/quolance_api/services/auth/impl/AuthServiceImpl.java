@@ -41,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
                       HttpServletResponse response,
                       LoginRequestDto body
     ) throws AuthenticationException {
+        // TODO: Handle case where provided email is not a registered user. Currently returns status 500. WRONG.
         UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(body.getEmail(), body.getPassword());
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
