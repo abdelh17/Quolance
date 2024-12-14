@@ -173,7 +173,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void updatePendingProjectReturnsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
                 .title("updated title")
@@ -239,7 +239,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @ValueSource(strings = {"OPEN", "CLOSED", "REJECTED"})
     void updateNotPendingProjectDoesNotUpdateProject(String status) throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.valueOf(status), client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.valueOf(status), client));
 
         ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
                 .title("updated title")
@@ -268,7 +268,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void getProjectByIdReturnsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         //Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId()).session(session))
@@ -302,7 +302,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void getAllProjectsWhenExistIsOk() throws Exception {
         //Arrange
-        projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, client));
+        projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         Project project2 = new Project();
         project2.setTitle("title2");
@@ -348,7 +348,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void deleteProjectIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         //Act
         String response = mockMvc.perform(delete("/api/client/projects/" + project.getId()).session(session))
@@ -377,7 +377,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void getAllApplicationsToProjectGivesOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
 
@@ -400,7 +400,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void getAllApplicationsToProjectWhenNoneExistReturnsEmptyList() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         //Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
@@ -418,7 +418,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void selectFreelancerChangesApplicationStatusAndProjectStatusIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
 
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
 
@@ -440,7 +440,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void selectFreelancerRejectsOtherFreelancersApplications() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
 
         User freelancer1 = userRepository.save(EntityCreationHelper.createFreelancer(1));
 
@@ -461,7 +461,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void rejectApplicationIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
 
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
 
@@ -481,7 +481,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void rejectManyApplicationsIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
 
         User freelancer1 = userRepository.save(EntityCreationHelper.createFreelancer(1));
 

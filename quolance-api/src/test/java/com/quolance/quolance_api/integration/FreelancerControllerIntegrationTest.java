@@ -82,7 +82,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void applyToProjectIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
 
         //Act
         mockMvc.perform(post("/api/freelancer/submit-application")
@@ -102,7 +102,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void applyToProjectIfAlreadyAppliedDoesNotCreateApplication() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
 
         //Act
@@ -127,7 +127,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @ValueSource(strings = {"PENDING", "REJECTED", "CLOSED"})
     void applyToNotOpenProjectDoesNotCreateApplication(String status) throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.valueOf(status), client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.valueOf(status), client));
 
         //Act
         String response = mockMvc.perform(post("/api/freelancer/submit-application")
@@ -148,7 +148,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getApplicationByIdIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
 
         //Act
@@ -171,7 +171,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void cancelApplicationIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
 
         //Act
@@ -190,7 +190,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void cancelAcceptedApplicationDoesNotDelete() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
         application.setApplicationStatus(ApplicationStatus.ACCEPTED);
         applicationRepository.save(application);
@@ -212,8 +212,8 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getAllFreelancerApplicationsIsOk() throws Exception {
         //Arrange
-        Project project1 = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
-        Project project2 = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
+        Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application1 = applicationRepository.save(EntityCreationHelper.createApplication(project1, freelancer));
         Application application2 = applicationRepository.save(EntityCreationHelper.createApplication(project2, freelancer));
 
@@ -250,15 +250,15 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getAllProjectsReturnsVisibleProjects() throws Exception {
         //Arrange
-        Project project1 = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
+        Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
 
-        Project project2 = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
+        Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
 
-        Project project3 = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, LocalDate.now().plusDays(7), client));
+        Project project3 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, LocalDate.now().plusDays(7), client));
 
-        Project project4 = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
+        Project project4 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
 
-        Project project5 = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.CLOSED, LocalDate.now().minusDays(7), client));
+        Project project5 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().minusDays(7), client));
 
 
         //Act
@@ -294,7 +294,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getProjectByIdIsOk() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.OPEN, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
 
         //Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
@@ -314,7 +314,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getProjectByIdIsOkWhenClosedAndVisibilityNotExpired() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
 
         //Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
@@ -334,7 +334,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getProjectByIdConflictWhenClosedAndVisibilityExpired() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.CLOSED, LocalDate.now().minusDays(2), client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().minusDays(2), client));
 
         //Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
@@ -353,7 +353,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getProjectByIdConflictWhenPending() throws Exception {
         //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProjectWithVisibilityExpirationDate(ProjectStatus.PENDING, client));
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         //Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
