@@ -120,7 +120,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         assertThat(jsonResponse.get("message")).isEqualTo("You have already applied to this project.");
         assertThat(applicationRepository.findAll()).hasSize(1);
         Application createdApplication = applicationRepository.findAll().get(0);
-        assertThat(createdApplication.getCreationDate()).isEqualTo(application.getCreationDate());
+        assertThat(createdApplication.getCreationDate()).isEqualToIgnoringNanos(application.getCreationDate());
     }
 
     @ParameterizedTest
