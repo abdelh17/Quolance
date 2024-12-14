@@ -1,9 +1,6 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - test-sonar-integration
   pull_request:
     branches:
       - main
