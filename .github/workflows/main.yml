@@ -68,21 +68,14 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # Build and test Spring Boot backend
-      - name: Build and Test Spring Boot
-        run: |
-          cd quolance-api
-          ./mvnw clean install
-          ./mvnw test
-
-      # SonarCloud Scan for Backend
-      - name: SonarCloud Scan Backend
+      - name: Build, Test, and Analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd quolance-api
-          ./mvnw verify sonar:sonar \
+          ./mvnw clean verify sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=abdelh17 \
-            -Dsonar.projectKey=abdelh17_Quolance_api
+            -Dsonar.projectKey=abdelh17_Quolance_api \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
