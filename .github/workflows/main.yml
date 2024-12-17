@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
 
 jobs:
   frontend-build-test:
@@ -12,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # Step 1: Install Dependencies
       - name: Install Dependencies
@@ -26,11 +31,26 @@ jobs:
       #     cd quolance-ui
       #     npm test
 
-      # Step 3: Build Frontend Package
+      # Step 3: Build Frontend
       - name: Build Frontend
         run: |
           cd quolance-ui
           npm run build
+
+      # Step 4: SonarCloud Scan for Frontend
+      - name: SonarCloud Scan Frontend
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: quolance-ui
+          args: >
+            -Dsonar.organization=abdelh17
+            -Dsonar.projectKey=abdelh17_Quolance_ui
+            -Dsonar.sources=.
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.host.url=https://sonarcloud.io
 
   backend-build-test:
     name: Build and Test Backend
@@ -41,6 +61,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # Set up JDK for Spring Boot
       - name: Set up JDK 21
@@ -49,9 +71,14 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # Build and test Spring Boot backend
-      - name: Build and Test Spring Boot
+      - name: Build, Test, and Analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd quolance-api
-          ./mvnw clean install
-          ./mvnw test
+          ./mvnw clean verify sonar:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=abdelh17 \
+            -Dsonar.projectKey=abdelh17_Quolance_api \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
