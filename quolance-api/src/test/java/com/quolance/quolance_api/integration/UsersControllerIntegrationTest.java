@@ -1,10 +1,7 @@
 package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quolance.quolance_api.dtos.CreateAdminRequestDto;
-import com.quolance.quolance_api.dtos.CreateUserRequestDto;
-import com.quolance.quolance_api.dtos.LoginRequestDto;
-import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
+import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
@@ -25,8 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -123,9 +119,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
         mockMvc.perform(post("/api/users/admin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
+                .andExpect(status().isOk());
 
         assertThat(userRepository.findAll().size()).isEqualTo(1);
         User savedUser = userRepository.findByEmail("test@test.com").get();
@@ -147,9 +141,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
         mockMvc.perform(post("/api/users/admin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden())
-                .andReturn()
-                .getResponse().getContentAsString();
+                .andExpect(status().isForbidden());
 
         // Assert
         assertThat(userRepository.findAll().size()).isEqualTo(0);
@@ -158,7 +150,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void testUpdateUserIsOk() throws Exception {
         // Arrange
-        User user = userRepository.save(EntityCreationHelper.createClient());
+        userRepository.save(EntityCreationHelper.createClient());
         UpdateUserRequestDto request = UpdateUserRequestDto.builder()
                 .firstName("NEW")
                 .lastName("NEW")
@@ -181,6 +173,52 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(updatedUser.getFirstName()).isEqualTo("NEW");
         assertThat(updatedUser.getLastName()).isEqualTo("NEW");
 
+    }
+
+    @Test
+    void testUpdatePasswordIsOk() throws Exception {
+        // Arrange
+        User createdClient = userRepository.save(EntityCreationHelper.createClient());
+        UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()
+                .oldPassword("Password123!")
+                .password("NewPassword123!")
+                .confirmPassword("NewPassword123!")
+                .build();
+
+        MockHttpSession session = getSession();
+
+        // Act
+        mockMvc.perform(patch("/api/users/password").session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        // Assert
+        User updatedUser = userRepository.findByEmail("client@test.com").get();
+        assertThat(updatedUser.getPassword()).isNotEqualTo(createdClient.getPassword());
+    }
+
+    @Test
+    void testUpdatePasswordErrorIfWrongPasswordFormat() throws Exception {
+        // Arrange
+        User createdClient = userRepository.save(EntityCreationHelper.createClient());
+        UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()
+                .oldPassword("Password123!")
+                .password("test!")
+                .confirmPassword("test!")
+                .build();
+
+        MockHttpSession session = getSession();
+
+        // Act
+        mockMvc.perform(patch("/api/users/password").session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Assert
+        User updatedUser = userRepository.findByEmail("client@test.com").get();
+        assertThat(updatedUser.getPassword()).isEqualTo(createdClient.getPassword());
     }
 
     private MockHttpSession getSession() throws Exception {
