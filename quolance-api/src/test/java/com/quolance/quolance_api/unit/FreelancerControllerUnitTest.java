@@ -1,5 +1,6 @@
-package com.quolance.quolance_api.controllers;
+package com.quolance.quolance_api.unit;
 
+import com.quolance.quolance_api.controllers.FreelancerController;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
@@ -32,7 +33,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class FreelancerControllerTest {
+class FreelancerControllerUnitTest {
 
     @Mock
     private FreelancerWorkflowService freelancerWorkflowService;

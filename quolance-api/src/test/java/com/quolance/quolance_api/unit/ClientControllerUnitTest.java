@@ -1,5 +1,6 @@
-package com.quolance.quolance_api.controllers;
+package com.quolance.quolance_api.unit;
 
+import com.quolance.quolance_api.controllers.ClientController;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
@@ -32,7 +33,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClientControllerTest {
+class ClientControllerUnitTest {
 
     @Mock
     private ClientWorkflowService clientWorkflowService;

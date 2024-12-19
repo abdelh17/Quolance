@@ -1,5 +1,6 @@
-package com.quolance.quolance_api.controllers;
+package com.quolance.quolance_api.unit;
 
+import com.quolance.quolance_api.controllers.AuthController;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.UserResponseDto;
 import com.quolance.quolance_api.entities.User;
@@ -25,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthControllerTest {
+class AuthControllerUnitTest {
 
     @Mock
     private AuthService authService;

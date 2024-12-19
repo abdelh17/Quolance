@@ -1,5 +1,6 @@
-package com.quolance.quolance_api.controllers;
+package com.quolance.quolance_api.unit;
 
+import com.quolance.quolance_api.controllers.AdminController;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AdminControllerTest {
+class AdminControllerUnitTest {
 
     @Mock
     private AdminWorkflowService adminWorkflowService;
