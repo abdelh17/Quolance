@@ -113,13 +113,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateProject(Project existingProject, ProjectUpdateDto updateDto) {
-        if (updateDto == null) {
-            throw ApiException.builder()
-                    .status(HttpServletResponse.SC_BAD_REQUEST)
-                    .message("Update data cannot be null")
-                    .build();
-        }
+        // First validate update DTO
+        validateUpdateDto(updateDto);
 
+        // Validate project status
         if (existingProject.getProjectStatus() != ProjectStatus.PENDING) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
@@ -127,17 +124,59 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
         }
 
+        // Proceed with update
         updateProjectFields(existingProject, updateDto);
         projectRepository.save(existingProject);
     }
 
+    private void validateUpdateDto(ProjectUpdateDto updateDto) {
+        if (updateDto == null) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Update data cannot be null")
+                    .build();
+        }
+
+        // Validate title
+        if (updateDto.getTitle() != null && updateDto.getTitle().trim().isEmpty()) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Title cannot be empty")
+                    .build();
+        }
+
+        // Validate description
+        if (updateDto.getDescription() != null && updateDto.getDescription().trim().isEmpty()) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Description cannot be empty")
+                    .build();
+        }
+
+        // Validate category
+        if (updateDto.getCategory() != null && updateDto.getCategory().toString().trim().isEmpty()) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Category cannot be empty")
+                    .build();
+        }
+
+        // Validate priceRange
+        if (updateDto.getPriceRange() != null && updateDto.getPriceRange().toString().trim().isEmpty()) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Price range cannot be empty")
+                    .build();
+        }
+    }
+
     private void updateProjectFields(Project project, ProjectUpdateDto updateDto) {
         if (updateDto.getTitle() != null) {
-            project.setTitle(updateDto.getTitle());
+            project.setTitle(updateDto.getTitle().trim());
         }
 
         if (updateDto.getDescription() != null) {
-            project.setDescription(updateDto.getDescription());
+            project.setDescription(updateDto.getDescription().trim());
         }
 
         if (updateDto.getCategory() != null) {
