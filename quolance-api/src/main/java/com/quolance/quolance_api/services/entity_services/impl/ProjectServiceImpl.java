@@ -113,10 +113,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateProject(Project existingProject, ProjectUpdateDto updateDto) {
-        // First validate the update DTO
+        // First validate update DTO
         validateUpdateDto(updateDto);
 
-        // Then proceed with the update
+        // Validate project status
+        if (existingProject.getProjectStatus() != ProjectStatus.PENDING) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_FORBIDDEN)
+                    .message("Project can only be updated when in PENDING state")
+                    .build();
+        }
+
+        // Proceed with update
         updateProjectFields(existingProject, updateDto);
         projectRepository.save(existingProject);
     }
@@ -181,6 +189,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         if (updateDto.getExpectedDeliveryTime() != null) {
             project.setExpectedDeliveryTime(updateDto.getExpectedDeliveryTime());
+        }
+
+        if (updateDto.getExperienceLevel() != null) {
+            project.setExperienceLevel(updateDto.getExperienceLevel());
         }
     }
 }
