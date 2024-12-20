@@ -43,14 +43,11 @@ class AdminControllerUnitTest {
 
     @Test
     void getAllPendingProjects_ReturnsListOfProjects() {
-        // Arrange
         List<ProjectDto> expectedProjects = Arrays.asList(projectDto1, projectDto2);
         when(adminWorkflowService.getAllPendingProjects()).thenReturn(expectedProjects);
 
-        // Act
         ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(expectedProjects);
         verify(adminWorkflowService, times(1)).getAllPendingProjects();
@@ -58,13 +55,10 @@ class AdminControllerUnitTest {
 
     @Test
     void getAllPendingProjects_ReturnsEmptyList_WhenNoProjects() {
-        // Arrange
         when(adminWorkflowService.getAllPendingProjects()).thenReturn(List.of());
 
-        // Act
         ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEmpty();
         verify(adminWorkflowService, times(1)).getAllPendingProjects();
@@ -72,11 +66,9 @@ class AdminControllerUnitTest {
 
     @Test
     void getAllPendingProjects_WhenUnauthorized_ThrowsAccessDeniedException() {
-        // Arrange
         when(adminWorkflowService.getAllPendingProjects())
                 .thenThrow(new AccessDeniedException("User is not authorized to view pending projects"));
 
-        // Act & Assert
         assertThatThrownBy(() -> adminController.getAllPendingProjects())
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("User is not authorized to view pending projects");
@@ -85,14 +77,11 @@ class AdminControllerUnitTest {
 
     @Test
     void approveProject_ReturnsSuccessMessage() {
-        // Arrange
         Long projectId = 1L;
         doNothing().when(adminWorkflowService).approveProject(projectId);
 
-        // Act
         ResponseEntity<String> response = adminController.approveProject(projectId);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Project approved successfully");
         verify(adminWorkflowService, times(1)).approveProject(projectId);
@@ -100,11 +89,9 @@ class AdminControllerUnitTest {
 
     @Test
     void approveProject_WhenProjectNotFound_ThrowsApiException() {
-        // Arrange
         Long projectId = 999L;
         doThrow(new ApiException("Project not found")).when(adminWorkflowService).approveProject(projectId);
 
-        // Act & Assert
         assertThatThrownBy(() -> adminController.approveProject(projectId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
@@ -113,12 +100,10 @@ class AdminControllerUnitTest {
 
     @Test
     void approveProject_WhenUnauthorized_ThrowsAccessDeniedException() {
-        // Arrange
         Long projectId = 1L;
         doThrow(new AccessDeniedException("User is not authorized to approve projects"))
                 .when(adminWorkflowService).approveProject(projectId);
 
-        // Act & Assert
         assertThatThrownBy(() -> adminController.approveProject(projectId))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("User is not authorized to approve projects");
@@ -127,14 +112,11 @@ class AdminControllerUnitTest {
 
     @Test
     void rejectProject_ReturnsSuccessMessage() {
-        // Arrange
         Long projectId = 1L;
         doNothing().when(adminWorkflowService).rejectProject(projectId);
 
-        // Act
         ResponseEntity<String> response = adminController.rejectProject(projectId);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Project rejected successfully");
         verify(adminWorkflowService, times(1)).rejectProject(projectId);
@@ -142,11 +124,9 @@ class AdminControllerUnitTest {
 
     @Test
     void rejectProject_WhenProjectNotFound_ThrowsApiException() {
-        // Arrange
         Long projectId = 999L;
         doThrow(new ApiException("Project not found")).when(adminWorkflowService).rejectProject(projectId);
 
-        // Act & Assert
         assertThatThrownBy(() -> adminController.rejectProject(projectId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
@@ -155,12 +135,10 @@ class AdminControllerUnitTest {
 
     @Test
     void rejectProject_WhenUnauthorized_ThrowsAccessDeniedException() {
-        // Arrange
         Long projectId = 1L;
         doThrow(new AccessDeniedException("User is not authorized to reject projects"))
                 .when(adminWorkflowService).rejectProject(projectId);
 
-        // Act & Assert
         assertThatThrownBy(() -> adminController.rejectProject(projectId))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("User is not authorized to reject projects");

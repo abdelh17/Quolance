@@ -88,15 +88,12 @@ class ClientControllerUnitTest {
 
     @Test
     void createProject_ReturnsSuccessMessage() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doNothing().when(clientWorkflowService).createProject(eq(projectCreateDto), any(User.class));
 
-            // Act
             ResponseEntity<String> response = clientController.createProject(projectCreateDto);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Project created successfully");
             verify(clientWorkflowService).createProject(eq(projectCreateDto), eq(mockClient));
@@ -105,13 +102,11 @@ class ClientControllerUnitTest {
 
     @Test
     void createProject_WithNullProjectDto_ThrowsException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doThrow(new ApiException("Project details cannot be null"))
                     .when(clientWorkflowService).createProject(eq(null), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.createProject(null))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Project details cannot be null");
@@ -120,13 +115,11 @@ class ClientControllerUnitTest {
 
     @Test
     void createProject_WhenUnauthorized_ThrowsAccessDeniedException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doThrow(new AccessDeniedException("User not authorized to create projects"))
                     .when(clientWorkflowService).createProject(eq(projectCreateDto), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.createProject(projectCreateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to create projects");
@@ -136,15 +129,12 @@ class ClientControllerUnitTest {
 
     @Test
     void getProject_ReturnsProjectDto() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(clientWorkflowService.getProject(eq(1L), any(User.class))).thenReturn(projectDto);
 
-            // Act
             ResponseEntity<ProjectDto> response = clientController.getProject(1L);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(projectDto);
             verify(clientWorkflowService).getProject(eq(1L), eq(mockClient));
@@ -153,13 +143,11 @@ class ClientControllerUnitTest {
 
     @Test
     void getProject_WithInvalidId_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(clientWorkflowService.getProject(eq(-1L), any(User.class)))
                     .thenThrow(new ApiException("Invalid project ID"));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.getProject(-1L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid project ID");
@@ -169,16 +157,13 @@ class ClientControllerUnitTest {
 
     @Test
     void updateProject_ReturnsUpdatedProject() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(clientWorkflowService.updateProject(eq(1L), eq(projectUpdateDto), any(User.class)))
                     .thenReturn(projectDto);
 
-            // Act
             ResponseEntity<ProjectDto> response = clientController.updateProject(1L, projectUpdateDto);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(projectDto);
             verify(clientWorkflowService).updateProject(eq(1L), eq(projectUpdateDto), eq(mockClient));
@@ -187,13 +172,11 @@ class ClientControllerUnitTest {
 
     @Test
     void updateProject_WhenUnauthorized_ThrowsAccessDeniedException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(clientWorkflowService.updateProject(eq(1L), eq(projectUpdateDto), any(User.class)))
                     .thenThrow(new AccessDeniedException("User not authorized to update this project"));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.updateProject(1L, projectUpdateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to update this project");
@@ -203,15 +186,12 @@ class ClientControllerUnitTest {
 
     @Test
     void deleteProject_ReturnsSuccessMessage() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doNothing().when(clientWorkflowService).deleteProject(eq(1L), any(User.class));
 
-            // Act
             ResponseEntity<String> response = clientController.deleteProject(1L);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Project deleted successfully");
             verify(clientWorkflowService).deleteProject(eq(1L), eq(mockClient));
@@ -220,13 +200,11 @@ class ClientControllerUnitTest {
 
     @Test
     void deleteProject_WhenProjectNotFound_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doThrow(new ApiException("Project not found"))
                     .when(clientWorkflowService).deleteProject(eq(999L), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.deleteProject(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Project not found");
@@ -236,16 +214,13 @@ class ClientControllerUnitTest {
 
     @Test
     void getAllClientProjects_ReturnsProjectList() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(clientWorkflowService.getAllClientProjects(any(User.class)))
                     .thenReturn(Arrays.asList(projectDto));
 
-            // Act
             ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSize(1);
             assertThat(response.getBody().get(0)).isEqualTo(projectDto);
@@ -255,16 +230,13 @@ class ClientControllerUnitTest {
 
     @Test
     void getAllClientProjects_ReturnsEmptyList() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(clientWorkflowService.getAllClientProjects(any(User.class)))
                     .thenReturn(List.of());
 
-            // Act
             ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEmpty();
             verify(clientWorkflowService).getAllClientProjects(eq(mockClient));
@@ -273,17 +245,14 @@ class ClientControllerUnitTest {
 
     @Test
     void getAllApplicationsToProject_ReturnsApplicationList() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            ApplicationDto applicationDto = new ApplicationDto(); // Create with necessary fields
+            ApplicationDto applicationDto = new ApplicationDto();
             when(clientWorkflowService.getAllApplicationsToProject(eq(1L), any(User.class)))
                     .thenReturn(Arrays.asList(applicationDto));
 
-            // Act
             ResponseEntity<List<ApplicationDto>> response = clientController.getAllApplicationsToProject(1L);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSize(1);
             verify(clientWorkflowService).getAllApplicationsToProject(eq(1L), eq(mockClient));
@@ -292,13 +261,11 @@ class ClientControllerUnitTest {
 
     @Test
     void getAllApplicationsToProject_WhenProjectNotFound_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(clientWorkflowService.getAllApplicationsToProject(eq(999L), any(User.class)))
                     .thenThrow(new ApiException("Project not found"));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.getAllApplicationsToProject(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Project not found");
@@ -308,15 +275,12 @@ class ClientControllerUnitTest {
 
     @Test
     void selectFreelancer_ReturnsSuccessMessage() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doNothing().when(applicationProcessWorkflow).selectFreelancer(eq(1L), any(User.class));
 
-            // Act
             ResponseEntity<String> response = clientController.selectFreelancer(1L);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Freelancer selected successfully");
             verify(applicationProcessWorkflow).selectFreelancer(eq(1L), eq(mockClient));
@@ -325,13 +289,11 @@ class ClientControllerUnitTest {
 
     @Test
     void selectFreelancer_WhenApplicationNotFound_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doThrow(new ApiException("Application not found"))
                     .when(applicationProcessWorkflow).selectFreelancer(eq(999L), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.selectFreelancer(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application not found");
@@ -341,15 +303,12 @@ class ClientControllerUnitTest {
 
     @Test
     void rejectFreelancer_ReturnsSuccessMessage() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doNothing().when(applicationProcessWorkflow).rejectApplication(eq(1L), any(User.class));
 
-            // Act
             ResponseEntity<String> response = clientController.rejectFreelancer(1L);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Freelancer rejected successfully");
             verify(applicationProcessWorkflow).rejectApplication(eq(1L), eq(mockClient));
@@ -358,16 +317,13 @@ class ClientControllerUnitTest {
 
     @Test
     void rejectManyFreelancers_ReturnsSuccessMessage() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             List<Long> applicationIds = Arrays.asList(1L, 2L);
             doNothing().when(applicationProcessWorkflow).rejectManyApplications(eq(applicationIds), any(User.class));
 
-            // Act
             ResponseEntity<String> response = clientController.rejectManyFreelancers(applicationIds);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("All selected freelancers rejected successfully");
             verify(applicationProcessWorkflow).rejectManyApplications(eq(applicationIds), eq(mockClient));
@@ -376,14 +332,12 @@ class ClientControllerUnitTest {
 
     @Test
     void rejectManyFreelancers_WithEmptyList_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             List<Long> emptyList = List.of();
             doThrow(new ApiException("Application IDs list cannot be empty"))
                     .when(applicationProcessWorkflow).rejectManyApplications(eq(emptyList), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> clientController.rejectManyFreelancers(emptyList))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application IDs list cannot be empty");

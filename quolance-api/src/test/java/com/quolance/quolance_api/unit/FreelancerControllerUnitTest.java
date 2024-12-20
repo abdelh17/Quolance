@@ -51,16 +51,13 @@ class FreelancerControllerUnitTest {
 
     @BeforeEach
     void setUp() {
-        // Setup mock freelancer
         mockFreelancer = new User();
         mockFreelancer.setId(1L);
         mockFreelancer.setEmail("freelancer@test.com");
         mockFreelancer.setRole(Role.FREELANCER);
 
-        // Setup application create dto
         applicationCreateDto = new ApplicationCreateDto(1L);
 
-        // Setup application dto using builder
         applicationDto = ApplicationDto.builder()
                 .id(1L)
                 .freelancerId(1L)
@@ -68,7 +65,6 @@ class FreelancerControllerUnitTest {
                 .status(ApplicationStatus.APPLIED)
                 .build();
 
-        // Setup project public dto
         projectPublicDto = new ProjectPublicDto();
         projectPublicDto.setId(1L);
         projectPublicDto.setTitle("Test Project");
@@ -76,28 +72,23 @@ class FreelancerControllerUnitTest {
 
     @Test
     void applyToProject_CallsService() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             doNothing().when(freelancerWorkflowService).submitApplication(eq(applicationCreateDto), any(User.class));
 
-            // Act
             freelancerController.applyToProject(applicationCreateDto);
 
-            // Assert
             verify(freelancerWorkflowService).submitApplication(eq(applicationCreateDto), eq(mockFreelancer));
         }
     }
 
     @Test
     void applyToProject_WithNullDto_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             doThrow(new ApiException("Application details cannot be null"))
                     .when(freelancerWorkflowService).submitApplication(eq(null), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> freelancerController.applyToProject(null))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application details cannot be null");
@@ -106,13 +97,12 @@ class FreelancerControllerUnitTest {
 
     @Test
     void applyToProject_WhenUnauthorized_ThrowsAccessDeniedException() {
-        // Arrange
+
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             doThrow(new AccessDeniedException("User not authorized to submit applications"))
                     .when(freelancerWorkflowService).submitApplication(eq(applicationCreateDto), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> freelancerController.applyToProject(applicationCreateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to submit applications");
@@ -121,15 +111,12 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getApplication_ReturnsApplicationDto() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             when(freelancerWorkflowService.getApplication(eq(1L), any(User.class))).thenReturn(applicationDto);
 
-            // Act
             ResponseEntity<ApplicationDto> response = freelancerController.getApplication(1L);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(applicationDto);
             assertThat(response.getBody().getStatus()).isEqualTo(ApplicationStatus.APPLIED);
@@ -139,13 +126,11 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getApplication_WithInvalidId_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             when(freelancerWorkflowService.getApplication(eq(-1L), any(User.class)))
                     .thenThrow(new ApiException("Invalid application ID"));
 
-            // Act & Assert
             assertThatThrownBy(() -> freelancerController.getApplication(-1L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid application ID");
@@ -154,15 +139,12 @@ class FreelancerControllerUnitTest {
 
     @Test
     void deleteApplication_ReturnsSuccessMessage() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             doNothing().when(applicationProcessWorkflow).cancelApplication(eq(1L), any(User.class));
 
-            // Act
             ResponseEntity<String> response = freelancerController.deleteApplication(1L);
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Application deleted successfully.");
             verify(applicationProcessWorkflow).cancelApplication(eq(1L), eq(mockFreelancer));
@@ -171,13 +153,11 @@ class FreelancerControllerUnitTest {
 
     @Test
     void deleteApplication_WithInvalidId_ThrowsApiException() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             doThrow(new ApiException("Application not found"))
                     .when(applicationProcessWorkflow).cancelApplication(eq(999L), any(User.class));
 
-            // Act & Assert
             assertThatThrownBy(() -> freelancerController.deleteApplication(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application not found");
@@ -186,16 +166,13 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getAllFreelancerApplications_ReturnsApplicationList() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             List<ApplicationDto> applications = Arrays.asList(applicationDto);
             when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class))).thenReturn(applications);
 
-            // Act
             ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSize(1);
             assertThat(response.getBody().get(0)).isEqualTo(applicationDto);
@@ -206,16 +183,13 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getAllFreelancerApplications_ReturnsEmptyList() {
-        // Arrange
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class)))
                     .thenReturn(Collections.emptyList());
 
-            // Act
             ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
 
-            // Assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEmpty();
             verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
@@ -224,14 +198,11 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getAllAvailableProjects_ReturnsProjectList() {
-        // Arrange
         List<ProjectPublicDto> projects = Arrays.asList(projectPublicDto);
         when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(projects);
 
-        // Act
         ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(1);
         assertThat(response.getBody().get(0)).isEqualTo(projectPublicDto);
@@ -240,13 +211,10 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getAllAvailableProjects_ReturnsEmptyList() {
-        // Arrange
         when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
 
-        // Act
         ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEmpty();
         verify(freelancerWorkflowService).getAllAvailableProjects();
@@ -254,13 +222,10 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getProjectById_ReturnsProject() {
-        // Arrange
         when(freelancerWorkflowService.getProject(1L)).thenReturn(projectPublicDto);
 
-        // Act
         ResponseEntity<ProjectPublicDto> response = freelancerController.getProjectById(1L);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(projectPublicDto);
         verify(freelancerWorkflowService).getProject(1L);
@@ -268,11 +233,9 @@ class FreelancerControllerUnitTest {
 
     @Test
     void getProjectById_WithInvalidId_ThrowsApiException() {
-        // Arrange
         when(freelancerWorkflowService.getProject(-1L))
                 .thenThrow(new ApiException("Invalid project ID"));
 
-        // Act & Assert
         assertThatThrownBy(() -> freelancerController.getProjectById(-1L))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid project ID");

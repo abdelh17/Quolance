@@ -46,12 +46,10 @@ class AuthControllerUnitTest {
 
     @BeforeEach
     void setUp() {
-        // Setup login request
         loginRequest = new LoginRequestDto();
         loginRequest.setEmail("test@example.com");
         loginRequest.setPassword("password123");
 
-        // Setup mock user
         mockUser = new User();
         mockUser.setId(1L);
         mockUser.setEmail("test@example.com");
@@ -62,30 +60,24 @@ class AuthControllerUnitTest {
         mockUser.setProfileImageUrl(null);
         mockUser.setConnectedAccounts(new ArrayList<>());
 
-        // Create UserResponseDto from mock user
         userResponse = new UserResponseDto(mockUser);
     }
 
     @Test
     void login_ReturnsOkResponse() {
-        // Arrange
         doNothing().when(authService).login(request, response, loginRequest);
 
-        // Act
         ResponseEntity<?> responseEntity = authController.login(request, response, loginRequest);
 
-        // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(authService, times(1)).login(request, response, loginRequest);
     }
 
     @Test
     void login_WhenInvalidCredentials_ThrowsBadCredentialsException() {
-        // Arrange
         doThrow(new BadCredentialsException("Invalid credentials"))
                 .when(authService).login(request, response, loginRequest);
 
-        // Act & Assert
         assertThatThrownBy(() -> authController.login(request, response, loginRequest))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("Invalid credentials");
@@ -94,11 +86,9 @@ class AuthControllerUnitTest {
 
     @Test
     void login_WhenUserNotVerified_ThrowsApiException() {
-        // Arrange
         doThrow(new ApiException("User not verified"))
                 .when(authService).login(request, response, loginRequest);
 
-        // Act & Assert
         assertThatThrownBy(() -> authController.login(request, response, loginRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("User not verified");
@@ -107,13 +97,10 @@ class AuthControllerUnitTest {
 
     @Test
     void getSession_ReturnsUserResponse() {
-        // Arrange
         when(authService.getSession(request)).thenReturn(userResponse);
 
-        // Act
         ResponseEntity<UserResponseDto> responseEntity = authController.getSession(request);
 
-        // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isEqualTo(userResponse);
         assertThat(responseEntity.getBody().getId()).isEqualTo(1L);
@@ -126,11 +113,9 @@ class AuthControllerUnitTest {
 
     @Test
     void getSession_WhenNoActiveSession_ThrowsApiException() {
-        // Arrange
         when(authService.getSession(request))
                 .thenThrow(new ApiException("No active session found"));
 
-        // Act & Assert
         assertThatThrownBy(() -> authController.getSession(request))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("No active session found");
@@ -139,24 +124,19 @@ class AuthControllerUnitTest {
 
     @Test
     void logout_ReturnsOkResponse() {
-        // Arrange
         doNothing().when(authService).logout(request, response);
 
-        // Act
         ResponseEntity<Void> responseEntity = authController.logout(request, response);
 
-        // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(authService, times(1)).logout(request, response);
     }
 
     @Test
     void logout_WhenNoActiveSession_ThrowsApiException() {
-        // Arrange
         doThrow(new ApiException("No active session to logout from"))
                 .when(authService).logout(request, response);
 
-        // Act & Assert
         assertThatThrownBy(() -> authController.logout(request, response))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("No active session to logout from");
@@ -165,10 +145,8 @@ class AuthControllerUnitTest {
 
     @Test
     void csrf_ReturnsOkResponse() {
-        // Act
         ResponseEntity<?> responseEntity = authController.csrf();
 
-        // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
