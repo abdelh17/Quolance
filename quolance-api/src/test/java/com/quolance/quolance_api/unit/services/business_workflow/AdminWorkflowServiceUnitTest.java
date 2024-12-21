@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AdminWorkflowServiceImplTest {
+class AdminWorkflowServiceTest {
 
     @Mock
     private ProjectService projectService;
