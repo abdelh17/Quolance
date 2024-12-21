@@ -76,6 +76,15 @@ export default function ChangePassword() {
              }
        }
 
+       if (error.response?.status === 422){
+        if (errData?.message === "Unprocessable entity") {
+            setError("password", {
+              type: "manual",
+              message: "New password must contain one uppercase letter, one lowercase letter, and one digit.",
+            });
+          }
+    }
+
 
      })
      .finally(() => {
