@@ -36,7 +36,7 @@ export default function FreelancerApplicationForm({
 
   const onSubmit: SubmitHandler<ApplicationFormFields> = async (data) => {
     if (!user) return;
-    submitApplication(projectId);
+    submitApplication(); // Add data to submitApplication
   };
 
   // Calculate word count

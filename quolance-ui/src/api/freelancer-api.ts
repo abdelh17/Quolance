@@ -9,7 +9,7 @@ import { ApplicationResponse } from '@/constants/models/applications/Application
 export const useSubmitApplication = (projectId: number) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (projectId: number) =>
+    mutationFn: () =>
       httpClient.post(`api/freelancer/submit-application`, { projectId }),
     onSuccess: () => {
       showToast('Application submitted successfully', 'success');
@@ -44,11 +44,13 @@ export const useCancelApplication = (projectId: number) => {
 export const useGetProjectApplication = (projectId: number) => {
   return useQuery({
     queryKey: ['applications', projectId],
-    queryFn: async (): Promise<ApplicationResponse | undefined> => {
+    queryFn: async (): Promise<ApplicationResponse | null> => {
       const { data } = await httpClient.get<ApplicationResponse[]>(
         'api/freelancer/applications/all'
       );
-      return data.find((application) => application.projectId === projectId);
+      return (
+        data.find((application) => application.projectId === projectId) || null
+      );
     },
   });
 };
