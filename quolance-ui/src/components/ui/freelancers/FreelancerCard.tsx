@@ -103,8 +103,7 @@ function FreelancerCard({
       };
 
   return (
-    <Link
-      href=''
+    <div
       className={`select-animation rounded-3xl transition-all duration-200 ${
         selected && '!ring-2 !ring-blue-500 !ring-offset-2'
       }`}
@@ -127,7 +126,7 @@ function FreelancerCard({
           </div>
           {/* Checkbox for selecting a submission */}
           {canSelect && (
-            <label className='-mt-[2px] mr-1 inline-flex cursor-pointer items-center'>
+            <label className='relative z-10 -mt-[2px] mr-1 inline-flex cursor-pointer items-center'>
               <input
                 type='checkbox'
                 checked={selected}
@@ -136,100 +135,101 @@ function FreelancerCard({
               />
               <span
                 className={`
-                  peer relative h-[20px] w-[20px] rounded border-2 border-gray-300 bg-white 
+                  peer relative z-50 h-[20px] w-[20px] rounded border-2 border-gray-300 bg-white
                   after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-3 after:-translate-x-1/2 after:-translate-y-1/2 after:bg-blue-500 after:opacity-0 after:transition-opacity peer-checked:border-blue-500 peer-checked:after:opacity-100
                 `}
               ></span>
             </label>
           )}
         </div>
-
-        <div className='mt-5 flex items-center justify-start gap-3 px-3 sm:px-6'>
-          <div className='relative'>
-            <div className='relative h-[88px] w-[88px] rounded-full'>
-              {/* Profile image */}
-              <Image
-                {...imageProps}
-                alt={`${freelancerName}'s profile`}
-                className={`rounded-full object-cover ring-2 ring-offset-[3px] ${statusConfig.classes.outline}`}
-                sizes='88px'
-                priority
-              />
-              {/* Verified badge */}
-              <div className='absolute -bottom-1 -right-1 z-30'>
+        <Link href={''}>
+          <div className='mt-5 flex items-center justify-start gap-3 px-3 sm:px-6'>
+            <div className='relative'>
+              <div className='relative h-[88px] w-[88px] rounded-full'>
+                {/* Profile image */}
                 <Image
-                  src={badge}
-                  alt='verified badge'
-                  width={24}
-                  height={24}
+                  {...imageProps}
+                  alt={`${freelancerName}'s profile`}
+                  className={`rounded-full object-cover ring-2 ring-offset-[3px] ${statusConfig.classes.outline}`}
+                  sizes='88px'
+                  priority
                 />
+                {/* Verified badge */}
+                <div className='absolute -bottom-1 -right-1 z-30'>
+                  <Image
+                    src={badge}
+                    alt='verified badge'
+                    width={24}
+                    height={24}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div className='max-[350px]:max-w-20'>
-            <div className='flex items-center justify-start gap-3'>
-              <h5 className='heading-5'>{freelancerName}</h5>
-              {/* PRO badge */}
-              <p className='bg-y300 rounded-full px-2 py-1 text-xs font-medium'>
-                PRO
-              </p>
-            </div>
-            <p className='text-n500 pt-2'>{location}</p>
-          </div>
-        </div>
-
-        {/* Freelancer Tags */}
-        {/*<div className='mt-6 flex flex-wrap gap-2 px-6 text-[13px]'>*/}
-        {/*  <p className='bg-r50 text-r300 rounded-full px-2 py-1 font-medium'>*/}
-        {/*    $75 - $100/hr*/}
-        {/*  </p>*/}
-        {/*  <p className='bg-g50 text-g400 rounded-full px-2 py-1 font-medium'>*/}
-        {/*    TOP INDEPENDENT*/}
-        {/*  </p>*/}
-        {/*  <p className='bg-v50 text-v300 rounded-full px-2 py-1 font-medium'>*/}
-        {/*    AVAILABLE*/}
-        {/*  </p>*/}
-        {/*</div>*/}
-
-        {/* Approve submission buttons */}
-        <div className='mt-6 flex items-center justify-start gap-2 px-6'>
-          {status === 'ACCEPTED' ? (
-            <button
-              disabled
-              className='wave-bg relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold text-white shadow-sm'
-            >
-              <div className='relative z-20 flex items-center justify-center gap-3'>
-                <PiCheckCircle className='text-2xl !leading-none text-white' />
-                <span>Submission Approved</span>
+            <div className='max-[350px]:max-w-20'>
+              <div className='flex items-center justify-start gap-3'>
+                <h5 className='heading-5'>{freelancerName}</h5>
+                {/* PRO badge */}
+                <p className='bg-y300 rounded-full px-2 py-1 text-xs font-medium'>
+                  PRO
+                </p>
               </div>
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsApprovalModalOpen(true)}
-              disabled={!canSelect}
-              className={`relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:duration-700 hover:after:w-[calc(100%+2px)]
+              <p className='text-n500 pt-2'>{location}</p>
+            </div>
+          </div>
+
+          {/* Freelancer Tags */}
+          {/*<div className='mt-6 flex flex-wrap gap-2 px-6 text-[13px]'>*/}
+          {/*  <p className='bg-r50 text-r300 rounded-full px-2 py-1 font-medium'>*/}
+          {/*    $75 - $100/hr*/}
+          {/*  </p>*/}
+          {/*  <p className='bg-g50 text-g400 rounded-full px-2 py-1 font-medium'>*/}
+          {/*    TOP INDEPENDENT*/}
+          {/*  </p>*/}
+          {/*  <p className='bg-v50 text-v300 rounded-full px-2 py-1 font-medium'>*/}
+          {/*    AVAILABLE*/}
+          {/*  </p>*/}
+          {/*</div>*/}
+
+          {/* Approve submission buttons */}
+          <div className='mt-6 flex items-center justify-start gap-2 px-6'>
+            {status === 'ACCEPTED' ? (
+              <button
+                disabled
+                className='wave-bg relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold text-white shadow-sm'
+              >
+                <div className='relative z-20 flex items-center justify-center gap-3'>
+                  <PiCheckCircle className='text-2xl !leading-none text-white' />
+                  <span>Submission Approved</span>
+                </div>
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsApprovalModalOpen(true)}
+                disabled={!canSelect}
+                className={`relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:duration-700 hover:after:w-[calc(100%+2px)]
                 ${
                   !canSelect
                     ? 'bg-gray-700/20 text-white hover:bg-gray-700/30'
                     : 'bg-n700 hover:text-n900 text-white after:bg-yellow-400'
                 }`}
-            >
-              <div className='relative z-20 flex items-center justify-center gap-3'>
-                <PiHandshake className='text-2xl !leading-none ' />
-                <span>
-                  {status === 'APPLIED' && canSelect
-                    ? 'Approve Submission'
-                    : 'Cannot Approve'}
-                </span>
-              </div>
-            </button>
-          )}
-          {canSelect && (
-            <button className='hover:bg-y300 relative flex items-center justify-center rounded-full border p-3 text-xl !leading-none duration-500'>
-              <PiHeart />
-            </button>
-          )}
-        </div>
+              >
+                <div className='relative z-20 flex items-center justify-center gap-3'>
+                  <PiHandshake className='text-2xl !leading-none ' />
+                  <span>
+                    {status === 'APPLIED' && canSelect
+                      ? 'Approve Submission'
+                      : 'Cannot Approve'}
+                  </span>
+                </div>
+              </button>
+            )}
+            {canSelect && (
+              <button className='hover:bg-y300 relative flex items-center justify-center rounded-full border p-3 text-xl !leading-none duration-500'>
+                <PiHeart />
+              </button>
+            )}
+          </div>
+        </Link>
       </div>
 
       <ApprovalConfirmationModal
@@ -238,7 +238,7 @@ function FreelancerCard({
         onConfirm={handleApproveSubmission}
         freelancerName={freelancerName}
       />
-    </Link>
+    </div>
   );
 }
 
