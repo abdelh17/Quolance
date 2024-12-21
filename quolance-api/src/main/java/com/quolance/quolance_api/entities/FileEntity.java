@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-public class FileUpload {
+public class FileEntity extends AbstractEntity{
 
 
     @Id
