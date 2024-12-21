@@ -1,8 +1,8 @@
 package com.quolance.quolance_api.controllers;
 
-import com.quolance.quolance_api.dtos.FileUploadDto;
+import com.quolance.quolance_api.dtos.FileDto;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.services.entity_services.FileUploadService;
+import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,26 +15,26 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/files")
-public class FileUploadController {
+public class FileController {
 
-    private final FileUploadService fileUploadService;
+    private final FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, Object>> uploadFile(
+    public ResponseEntity<String> uploadFile(
             @RequestParam("file") MultipartFile file){
         try {
             User uploadedBy = SecurityUtil.getAuthenticatedUser();
-            Map<String, Object> uploadResult = fileUploadService.uploadFile(file,uploadedBy);
-            return ResponseEntity.ok(uploadResult);
+            Map<String, Object> uploadResult = fileService.uploadFile(file,uploadedBy);
+            return ResponseEntity.ok(uploadResult.get("secure_url").toString());
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body("Invalid file type");
         }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<FileUploadDto>> getAllUserFiles(){
+    public ResponseEntity<List<FileDto>> getAllUserFiles(){
         User user = SecurityUtil.getAuthenticatedUser();
-        List<FileUploadDto> files = fileUploadService.getAllFileUploadsByUser(user);
+        List<FileDto> files = fileService.getAllFileUploadsByUser(user);
         return ResponseEntity.ok(files);
     }
 }
