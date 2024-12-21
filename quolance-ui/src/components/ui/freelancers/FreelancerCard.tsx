@@ -26,7 +26,7 @@ type ImageURL = {
   height: number;
 };
 
-const StatusColors = {
+export const StatusColors = {
   APPLIED: {
     badge: 'bg-blue-500/20 text-blue-900',
     outline: 'ring-blue-400',
@@ -66,7 +66,7 @@ const getStatusConfig = (status: ApplicationStatus) => {
   };
 };
 
-const formatStatusLabel = (status: ApplicationStatus): string => {
+export const formatStatusLabel = (status: ApplicationStatus): string => {
   return status
     .split('_')
     .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
