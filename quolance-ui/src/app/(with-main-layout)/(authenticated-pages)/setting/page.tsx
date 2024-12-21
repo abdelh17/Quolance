@@ -7,7 +7,6 @@ import DeleteAccount from './components/DeleteAccount';
 export default function SettingPage() {
 
  return (
-   <>
        <div className="flex justify-center">
         
            <div className="divide-y max-w-5xl">
@@ -29,6 +28,5 @@ export default function SettingPage() {
             
            </div>
        </div>
-   </>
  )
 }

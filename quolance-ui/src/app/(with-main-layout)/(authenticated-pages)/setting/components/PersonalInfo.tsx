@@ -27,7 +27,7 @@ export default function PersonalInfo() {
              id="first-name"
              type="text"
              autoComplete="given-name"
-             value={user?.firstName || ''}
+             value={user?.firstName ?? ''}
              disabled
              className="block w-full rounded-md px-3 py-1.5 outline outline-1 focus:outline-indigo-500 sm:text-sm/6"
            />
@@ -41,7 +41,7 @@ export default function PersonalInfo() {
              id="last-name"
              type="text"
              autoComplete="family-name"
-             value={user?.lastName || ''}
+             value={user?.lastName ?? ''}
              disabled
              className="block w-full rounded-md px-3 py-1.5 outline outline-1 focus:outline-indigo-500 sm:text-sm/6"
            />
@@ -55,7 +55,7 @@ export default function PersonalInfo() {
              id="email"
              type="email"
              autoComplete="email"
-             value={user?.email || ''}
+             value={user?.email ?? ''}
              disabled
              className="block w-full rounded-md px-3 py-1.5 outline outline-1 focus:outline-indigo-500 sm:text-sm/6"
            />
