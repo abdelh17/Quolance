@@ -10,6 +10,5 @@ import java.util.Map;
 public interface FileService {
 
     Map<String, Object> uploadFile(MultipartFile file, User uploadedBy);
-    //List<FileUpload> (Long userId);
     List<FileDto> getAllFileUploadsByUser(User user);
 }

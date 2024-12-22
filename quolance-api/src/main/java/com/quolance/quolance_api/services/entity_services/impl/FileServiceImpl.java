@@ -6,6 +6,7 @@ import com.quolance.quolance_api.entities.FileEntity;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.FileRepository;
 import com.quolance.quolance_api.services.entity_services.FileService;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +45,7 @@ public class FileServiceImpl implements FileService {
             fileRepository.save(fileEntity);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ApiException("Error uploading file");
         }
 
         return  uploadResult;

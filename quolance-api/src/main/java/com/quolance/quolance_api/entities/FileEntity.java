@@ -5,22 +5,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class FileEntity extends AbstractEntity{
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+
     private Long id;
-    @Getter @Setter
+
     private String fileName;
-    @Getter @Setter
+
     private String fileUrl;
-    @Getter @Setter
+    
     private String fileType;
 
-    @Getter
-    @Setter
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;

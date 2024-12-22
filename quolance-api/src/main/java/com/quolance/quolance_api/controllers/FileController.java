@@ -4,6 +4,7 @@ import com.quolance.quolance_api.dtos.FileDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.util.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,10 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/upload")
+    @Operation(
+            summary = "Upload a file",
+            description = "Uploads a file to the server and returns the upload result."
+    )
     public ResponseEntity<String> uploadFile(
             @RequestParam("file") MultipartFile file){
         try {
@@ -32,6 +37,10 @@ public class FileController {
     }
 
     @GetMapping("/all")
+    @Operation(
+            summary = "Get All User Files",
+            description = "Returns all files uploaded by the authenticated user."
+    )
     public ResponseEntity<List<FileDto>> getAllUserFiles(){
         User user = SecurityUtil.getAuthenticatedUser();
         List<FileDto> files = fileService.getAllFileUploadsByUser(user);
