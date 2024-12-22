@@ -8,18 +8,17 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import httpClient from '@/lib/httpClient';
-
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { cn } from '@/util/utils';
 import { RegistrationUserType } from '@/app/(without-main-layout)/auth/register/page';
 import { Role } from '@/constants/models/user/UserResponse';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
-import { getProviderLoginUrl } from '@/app/(without-main-layout)/auth/login/components/user-auth-form';
+import {
+  FormInput,
+  SocialAuthLogins,
+} from '@/app/(without-main-layout)/auth/shared/auth-components';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
   userRole: RegistrationUserType;
@@ -40,6 +39,7 @@ const registerSchema = z
   });
 
 type Schema = z.infer<typeof registerSchema>;
+
 export function UserRegisterForm({
   className,
   userRole,
@@ -51,12 +51,17 @@ export function UserRegisterForm({
     undefined
   );
 
+  const { register, handleSubmit, formState } = useForm<Schema>({
+    resolver: zodResolver(registerSchema),
+    reValidateMode: 'onSubmit',
+  });
+
   async function onSubmit(data: Schema) {
     setErrors(undefined);
     setSuccess(false);
     setIsLoading(true);
-    // Add role to the data
     data.role = userRole;
+
     httpClient
       .post('/api/users', data)
       .then(() => {
@@ -72,11 +77,6 @@ export function UserRegisterForm({
       });
   }
 
-  const { register, handleSubmit, formState } = useForm<Schema>({
-    resolver: zodResolver(registerSchema),
-    reValidateMode: 'onSubmit',
-  });
-
   return (
     <div className={cn('grid gap-6', className)} {...props}>
       <SuccessFeedback
@@ -89,135 +89,67 @@ export function UserRegisterForm({
           </Link>
         }
       />
-      <div className='flex flex-col gap-4 sm:flex-row'>
-        <Link href={getProviderLoginUrl('github')} className={'w-full'}>
-          <Button
-            variant='outline'
-            type='button'
-            disabled={isLoading}
-            className='w-full'
-          >
-            <FaGithub className='mr-2 h-4 w-4' />
-            GitHub
-          </Button>
-        </Link>
-
-        <Link href={getProviderLoginUrl('google')} className={'w-full'}>
-          <Button
-            variant='outline'
-            type='button'
-            disabled={isLoading}
-            className='w-full'
-          >
-            <FaGoogle className='mr-2 h-4 w-4' />
-            Google
-          </Button>
-        </Link>
-      </div>
-
-      <div className='relative my-2'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='text-muted-foreground bg-white px-2'>
-            Or continue with
-          </span>
-        </div>
-      </div>
+      <SocialAuthLogins isLoading={isLoading} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='grid gap-2'>
           <div className='grid gap-3'>
             <div className='grid grid-cols-2 gap-4'>
-              <div className='grid gap-2'>
-                <div>
-                  <Label htmlFor='firstName'>First name</Label>
-                  <Input
-                    id='firstName'
-                    type='text'
-                    autoCapitalize='none'
-                    autoCorrect='off'
-                    disabled={isLoading}
-                    {...register('firstName')}
-                  />
-                </div>
-              </div>
-
-              <div className='grid gap-2'>
-                <Label htmlFor='lastName'>Last name</Label>
-                <Input
-                  id='lastName'
-                  type='text'
-                  autoCapitalize='none'
-                  autoCorrect='off'
-                  disabled={isLoading}
-                  {...register('lastName')}
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor='email'>Email</Label>
-              <Input
-                id='email'
-                placeholder='name@example.com'
+              <FormInput
+                id='firstName'
+                label='First name'
                 type='text'
-                autoCapitalize='none'
-                autoComplete='email'
-                autoCorrect='off'
-                disabled={isLoading}
-                {...register('email')}
+                isLoading={isLoading}
+                register={register}
               />
-              {formState.errors.email && (
-                <small className='text-red-600'>
-                  {formState.errors.email.message}
-                </small>
-              )}
+              <FormInput
+                id='lastName'
+                label='Last name'
+                type='text'
+                isLoading={isLoading}
+                register={register}
+              />
             </div>
 
-            <div>
-              <Label htmlFor='password'>Password</Label>
-              <Input
-                id='password'
-                type='password'
-                autoCapitalize='none'
-                autoCorrect='off'
-                disabled={isLoading}
-                {...register('password')}
-              />
-              {formState.errors.password && (
-                <small className='text-red-600'>
-                  {formState.errors.password.message}
-                </small>
-              )}
-            </div>
+            <FormInput
+              id='email'
+              label='Email'
+              type='text'
+              placeholder='name@example.com'
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.email?.message}
+              autoComplete='email'
+            />
 
-            <div>
-              <Label htmlFor='passwordConfirmation'>Confirm password</Label>
-              <Input
-                id='passwordConfirmation'
-                type='password'
-                disabled={isLoading}
-                {...register('passwordConfirmation')}
-              />
-              {formState.errors.passwordConfirmation && (
-                <small className='text-red-600'>
-                  {formState.errors.passwordConfirmation.message}
-                </small>
-              )}
-            </div>
+            <FormInput
+              id='password'
+              label='Password'
+              type='password'
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.password?.message}
+            />
+
+            <FormInput
+              id='passwordConfirmation'
+              label='Confirm password'
+              type='password'
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.passwordConfirmation?.message}
+            />
           </div>
 
           <ErrorFeedback data={errors} />
 
           <Button
-            className={'mt-6'}
+            className='mt-6'
             disabled={isLoading}
             animation={{
               hoverTextColor: 'text-n700',
               overlayColor: 'bg-yellow-400',
             }}
-            bgColor={'n900'}
+            bgColor='n900'
             type='submit'
           >
             {isLoading && 'Creating account...'}
