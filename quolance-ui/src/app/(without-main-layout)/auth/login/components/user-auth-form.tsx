@@ -1,10 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
@@ -14,6 +12,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { useAuthGuard } from '@/api/auth-api';
+import Link from 'next/link';
+import { FaGithub, FaGoogle } from 'react-icons/fa';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -22,10 +22,15 @@ const loginFormSchema = z.object({
   password: z.string().min(1),
 });
 
+export function getProviderLoginUrl(
+  provider: 'google' | 'facebook' | 'github' | 'okta'
+) {
+  return process.env.NEXT_PUBLIC_BASE_URL + `/oauth2/authorization/${provider}`;
+}
+
 type Schema = z.infer<typeof loginFormSchema>;
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const { login } = useAuthGuard({
+  const { login, isLoginLoading: isLoading } = useAuthGuard({
     middleware: 'guest',
     redirectIfAuthenticated: '/dashboard',
   });
@@ -34,15 +39,20 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   );
 
   async function onSubmit(data: Schema) {
-    login({
-      onError: (errors) => {
-        setErrors(errors);
-        if (errors) {
-          toast.error('Authentication failed');
-        }
-      },
-      props: data,
-    });
+    try {
+      await login({
+        onError: (errors) => {
+          if (errors) {
+            setErrors(errors);
+            toast.error('Authentication failed');
+          }
+        },
+        props: data,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error('Authentication failed');
+    }
   }
 
   const { register, handleSubmit, formState } = useForm<Schema>({
@@ -50,73 +60,70 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     reValidateMode: 'onSubmit',
   });
 
-  function getProviderLoginUrl(
-    provider: 'google' | 'facebook' | 'github' | 'okta'
-  ) {
-    return (
-      process.env.NEXT_PUBLIC_BASE_URL + `/oauth2/authorization/${provider}`
-    );
-  }
-
   return (
     <div className='grid gap-6'>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='grid gap-2'>
-          <div className='grid gap-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input
-              id='email'
-              placeholder='name@example.com'
-              type='text'
-              autoCapitalize='none'
-              autoComplete='email'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('email')}
-            />
-            {formState.errors.email && (
-              <small className='text-red-600'>
-                {formState.errors.email.message}
-              </small>
-            )}
+        <div className='grid gap-5'>
+          <SocialAuthLogins isLoading={isLoading} />
+          <div className='grid gap-4'>
+            <div>
+              <Label htmlFor='email'>Email</Label>
+              <Input
+                id='email'
+                placeholder='name@example.com'
+                type='text'
+                autoCapitalize='none'
+                autoComplete='email'
+                autoCorrect='off'
+                disabled={isLoading}
+                {...register('email')}
+              />
+              {formState.errors.email && (
+                <small className='text-red-600'>
+                  {formState.errors.email.message}
+                </small>
+              )}
+            </div>
 
-            <Label htmlFor='password'>Password</Label>
-            <Input
-              id='password'
-              type='password'
-              autoCapitalize='none'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('password')}
-            />
-            {formState.errors.password && (
-              <small className='text-red-600'>
-                {formState.errors.password.message}
-              </small>
-            )}
+            <div>
+              <Label htmlFor='password'>Password</Label>
+              <Input
+                id='password'
+                type='password'
+                autoCapitalize='none'
+                autoCorrect='off'
+                disabled={isLoading}
+                {...register('password')}
+              />
+              {formState.errors.password && (
+                <small className='text-red-600'>
+                  {formState.errors.password.message}
+                </small>
+              )}
+            </div>
           </div>
 
           <ErrorFeedback data={errors} />
 
-          <Button disabled={isLoading} type='submit' variant={'footerColor'}>
-            {isLoading && 'Logging in...'}
-            Sign In with Email
+          <Button
+            disabled={isLoading}
+            type='submit'
+            variant={'footerColor'}
+            className={'mt-6'}
+          >
+            {isLoading ? 'Signing in...' : 'Sign In with Email'}
           </Button>
         </div>
       </form>
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background text-muted-foreground px-2'>
-            Or continue with
-          </span>
-        </div>
-      </div>
+    </div>
+  );
+}
 
-      <div className='flex flex-col gap-y-2'>
-        <Link href={getProviderLoginUrl('github')}>
+export const SocialAuthLogins = ({ isLoading }: { isLoading: boolean }) => {
+  return (
+    <>
+      <div className='flex flex-col gap-4 sm:flex-row'>
+        <Link href={getProviderLoginUrl('github')} className={'w-full'}>
           <Button
             variant='outline'
             type='button'
@@ -128,7 +135,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </Button>
         </Link>
 
-        <Link href={getProviderLoginUrl('google')}>
+        <Link href={getProviderLoginUrl('google')} className={'w-full'}>
           <Button
             variant='outline'
             type='button'
@@ -140,6 +147,17 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </Button>
         </Link>
       </div>
-    </div>
+
+      <div className='relative my-2'>
+        <div className='absolute inset-0 flex items-center'>
+          <span className='w-full border-t' />
+        </div>
+        <div className='relative flex justify-center text-xs uppercase'>
+          <span className='text-muted-foreground bg-white px-2'>
+            Or continue with
+          </span>
+        </div>
+      </div>
+    </>
   );
-}
+};
