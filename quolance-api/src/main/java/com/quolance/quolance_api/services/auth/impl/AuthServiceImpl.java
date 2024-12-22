@@ -3,8 +3,10 @@ package com.quolance.quolance_api.services.auth.impl;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.UserResponseDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.auth.AuthService;
 import com.quolance.quolance_api.util.SecurityUtil;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ import java.util.Collection;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
     private SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
@@ -41,7 +44,14 @@ public class AuthServiceImpl implements AuthService {
                       HttpServletResponse response,
                       LoginRequestDto body
     ) throws AuthenticationException {
-        // TODO: Handle case where provided email is not a registered user. Currently returns status 500. WRONG.
+
+        if(!userRepository.existsByEmail(body.getEmail())) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .message("Bad Credentials")
+                    .build();
+        }
+
         UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(body.getEmail(), body.getPassword());
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
