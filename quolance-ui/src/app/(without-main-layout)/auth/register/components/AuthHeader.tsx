@@ -3,11 +3,6 @@ import { RegistrationUserType } from '@/app/(without-main-layout)/auth/register/
 import Link from 'next/link';
 import { Role } from '@/constants/models/user/UserResponse';
 
-type AuthHeaderProps = {
-  userRole: RegistrationUserType;
-  setUserRole?: (role: RegistrationUserType) => void;
-};
-
 const getPropsFromUserRole = (userRole: RegistrationUserType) => {
   switch (userRole) {
     case Role.CLIENT:
@@ -27,12 +22,17 @@ const getPropsFromUserRole = (userRole: RegistrationUserType) => {
       };
   }
 };
+type AuthHeaderProps = {
+  userRole?: RegistrationUserType; // Make it optional
+  setUserRole?: (role: RegistrationUserType) => void;
+};
 
 function AuthHeader({ userRole, setUserRole }: AuthHeaderProps) {
-  const { title, linkText } = getPropsFromUserRole(userRole);
+  const { title, linkText } = getPropsFromUserRole(userRole ?? undefined); // Add null coalescing
 
   const setNewRole = () => {
-    if (setUserRole) {
+    if (setUserRole && userRole) {
+      // Add userRole check
       setUserRole(userRole === Role.CLIENT ? Role.FREELANCER : Role.CLIENT);
     }
   };
@@ -44,17 +44,19 @@ function AuthHeader({ userRole, setUserRole }: AuthHeaderProps) {
       <Link href='/' className={'outline-none'}>
         <h1 className='text-2xl font-bold'>Quolance</h1>
       </Link>
-      <div className={'text-md invisible flex gap-5 font-medium sm:visible'}>
-        <span className={'text-n700'}>{title}</span>
-        <div
-          onClick={setNewRole}
-          className={
-            'hover:text-n600 cursor-pointer font-medium underline  underline-offset-4'
-          }
-        >
-          {linkText}
+      {userRole && ( // Only show this section if userRole exists
+        <div className={'text-md invisible flex gap-5 font-medium sm:visible'}>
+          <span className={'text-n700'}>{title}</span>
+          <div
+            onClick={setNewRole}
+            className={
+              'hover:text-n600 cursor-pointer font-medium underline underline-offset-4'
+            }
+          >
+            {linkText}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

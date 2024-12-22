@@ -39,23 +39,12 @@ const registerSchema = z
     path: ['passwordConfirmation'],
   });
 
-const getPropsFromUserRole = (userRole: Role.CLIENT | Role.FREELANCER) => {
-  switch (userRole) {
-    case Role.CLIENT:
-      return {
-        title: 'Sign up as a client',
-        linkText: 'Apply as a freelancer',
-      };
-    case Role.FREELANCER:
-      return {
-        title: 'Sign up as a freelancer',
-        linkText: 'Join as a client',
-      };
-  }
-};
-
 type Schema = z.infer<typeof registerSchema>;
-export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
+export function UserRegisterForm({
+  className,
+  userRole,
+  ...props
+}: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [success, setSuccess] = React.useState<boolean>(false);
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
@@ -67,7 +56,7 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
     setSuccess(false);
     setIsLoading(true);
     // Add role to the data
-    data.role = props.userRole;
+    data.role = userRole;
     httpClient
       .post('/api/users', data)
       .then(() => {
@@ -232,7 +221,9 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
             type='submit'
           >
             {isLoading && 'Creating account...'}
-            Register
+            {userRole === Role.CLIENT
+              ? 'Register as a client'
+              : 'Register as a freelancer'}
           </Button>
         </div>
       </form>
