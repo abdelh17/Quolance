@@ -31,7 +31,7 @@ const RadioCard = ({
           : 'border-gray-200'
       )}
     >
-      <div className='flex justify-between'>
+      <div className='flex w-full justify-between'>
         {/* Icon */}
         <Icon
           className={`${

@@ -152,8 +152,9 @@ export function UserRegisterForm({
             bgColor='n900'
             type='submit'
           >
-            {isLoading && 'Creating account...'}
-            {userRole === Role.CLIENT
+            {isLoading
+              ? 'Creating account...'
+              : userRole === Role.CLIENT
               ? 'Register as a client'
               : 'Register as a freelancer'}
           </Button>
