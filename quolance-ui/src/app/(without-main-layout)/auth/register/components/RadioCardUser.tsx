@@ -17,12 +17,15 @@ const RadioCard = ({
   onSelect,
 }: RadioCardProps) => {
   return (
-    <div
+    <button
       onClick={onSelect}
+      type='button'
+      aria-pressed={isSelected}
       className={cn(
-        'relative flex h-[156px] cursor-pointer flex-col rounded-xl border-2 bg-white p-6 pb-8',
+        'relative flex h-[156px] w-full flex-col rounded-xl border-2 bg-white p-6 pb-8 text-left',
         'transition-all duration-200',
         'hover:border-n70 m-0 hover:bg-blue-50/30',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
         isSelected
           ? 'bg-blue-50/40 ring-2 ring-blue-500 ring-offset-2'
           : 'border-gray-200'
@@ -50,7 +53,7 @@ const RadioCard = ({
       <div className='mt-auto flex items-center'>
         <h4 className='text-n700 text-xl font-medium'>{text}</h4>
       </div>
-    </div>
+    </button>
   );
 };
 

@@ -47,14 +47,13 @@ function AuthHeader({ userRole, setUserRole }: AuthHeaderProps) {
       {userRole && ( // Only show this section if userRole exists
         <div className={'text-md invisible flex gap-5 font-medium sm:visible'}>
           <span className={'text-n700'}>{title}</span>
-          <div
+          <button
             onClick={setNewRole}
-            className={
-              'hover:text-n600 cursor-pointer font-medium underline underline-offset-4'
-            }
+            className='hover:text-n600 border-none bg-transparent p-0 font-medium underline underline-offset-4'
+            type='button'
           >
             {linkText}
-          </div>
+          </button>
         </div>
       )}
     </div>
