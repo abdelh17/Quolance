@@ -2,6 +2,7 @@ package com.quolance.quolance_api.services.auth.impl;
 
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.util.exceptions.ApiException;
@@ -57,6 +58,9 @@ class AuthServiceTest {
     @Mock
     private Authentication authentication;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private AuthServiceImpl authService;
 
@@ -101,6 +105,8 @@ class AuthServiceTest {
         when(contextHolderStrategy.createEmptyContext()).thenReturn(securityContext);
         SecurityContextHolder.setContextHolderStrategy(contextHolderStrategy);
 
+        when(userRepository.existsByEmail(loginRequest.getEmail())).thenReturn(true);
+
         when(authenticationManager.authenticate(any(Authentication.class)))
                 .thenReturn(new UsernamePasswordAuthenticationToken(mockUser, null, authorities));
 
@@ -112,6 +118,8 @@ class AuthServiceTest {
 
     @Test
     void login_InvalidCredentials_ThrowsException() {
+        when(userRepository.existsByEmail(loginRequest.getEmail())).thenReturn(true);
+
         when(authenticationManager.authenticate(any(Authentication.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
 
