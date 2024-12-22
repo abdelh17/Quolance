@@ -21,6 +21,13 @@ spring:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    filter:
+      order: 10
+    session:
+      creation-policy: always
+  main:
+    allow-bean-definition-overriding: true
 
 org:
   jobrunr:

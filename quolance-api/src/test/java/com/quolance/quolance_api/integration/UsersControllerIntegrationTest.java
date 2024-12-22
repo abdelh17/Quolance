@@ -106,8 +106,9 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
     void testCreateAdminIsOk() throws Exception {
+        // Arrange
+        userRepository.save(EntityCreationHelper.createAdmin());
         CreateAdminRequestDto request = CreateAdminRequestDto.builder()
                 .email("test@test.com")
                 .firstName("Test")
@@ -116,20 +117,25 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .passwordConfirmation("Test1234")
                 .build();
 
+        MockHttpSession adminSession = getAuthenticatedSession("admin@test.com", "Password123!");
+
+        // Act
         mockMvc.perform(post("/api/users/admin")
+                        .session(adminSession)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
 
-        assertThat(userRepository.findAll().size()).isEqualTo(1);
+        // Assert
+        assertThat(userRepository.findAll().size()).isEqualTo(2);
         User savedUser = userRepository.findByEmail("test@test.com").get();
         assertThat(savedUser.getRole()).isEqualTo(Role.ADMIN);
     }
 
     @Test
-    @WithMockUser(roles = {"CLIENT"})
     void testCreateAdminDoesNotCreateIfNotByAdmin() throws Exception {
         // Arrange
+        User client = userRepository.save(EntityCreationHelper.createClient());
         CreateAdminRequestDto request = CreateAdminRequestDto.builder()
                 .email("test@test.com")
                 .firstName("Test")
@@ -137,14 +143,19 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .temporaryPassword("Test1234")
                 .passwordConfirmation("Test1234")
                 .build();
+
+        MockHttpSession clientSession = getAuthenticatedSession("client@test.com", "Password123!");
+
         // Act
         mockMvc.perform(post("/api/users/admin")
+                        .session(clientSession)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isForbidden());
 
         // Assert
-        assertThat(userRepository.findAll().size()).isEqualTo(0);
+        assertThat(userRepository.findAll().size()).isEqualTo(1);
+        assertThat(userRepository.findByEmail("test@test.com")).isEmpty();
     }
 
     @Test
