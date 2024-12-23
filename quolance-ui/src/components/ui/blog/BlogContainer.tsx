@@ -6,6 +6,9 @@ interface BlogContainerProps {
         title: string;
         body: string;
         userName: string;
+        fieldOfWork: string;
+        profilePicture: string; // URL
+        date: string;
     }[];
 }
 
