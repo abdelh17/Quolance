@@ -1,7 +1,8 @@
 package com.quolance.quolance_api.entities.enums;
 
 public enum FreelancerExperienceLevel {
-    JUNIOR,
+    ENTRY_LEVEL,
     INTERMEDIATE,
+    SENIOR,
     EXPERT
 }

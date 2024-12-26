@@ -75,6 +75,14 @@ public class User extends AbstractEntity implements UserDetails {
         this.firstName = data.getFirstName();
         this.lastName = data.getLastName();
         this.role = Role.valueOf(data.getRole());
+
+        if (this.role == Role.FREELANCER) {
+            Profile profile = new Profile();
+            profile.setContactEmail(this.email);
+            profile.setBio(this.firstName + " " + this.lastName + " bio.");
+            this.profile = profile;
+            profile.setUser(this);
+        }
     }
 
     /**
