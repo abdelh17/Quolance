@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Length;
-
+import com.quolance.quolance_api.entities.Tag;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -49,6 +49,7 @@ public class Project extends AbstractEntity {
     @CollectionTable(name = "projectTags", joinColumns = @JoinColumn(name = "projectId"))
     @Enumerated(EnumType.STRING)
     @Column(name = "tag")
+
     private List<Tag> tags;
 
     @ManyToOne
