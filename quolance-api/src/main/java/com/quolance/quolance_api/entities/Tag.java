@@ -25,8 +25,8 @@ public class Tag {
     @JoinColumn(name = "blog_thread_view_id", nullable = false)
     private BlogThreadView blogThreadView;
 
-   // @SuppressWarnings("unchecked")
-   // public static List<Tag> getTags(BlogThreadView blogThreadView) {
-    //    return (List<Tag>) blogThreadView.getTags();
-   // }
+    @SuppressWarnings("unchecked")
+    public static List<Tag> getTags(BlogThreadView blogThreadView) {
+        return (List<Tag>) blogThreadView.getTags();
+    }
 }
