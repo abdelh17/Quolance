@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.unit;
+package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.ClientController;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
@@ -61,7 +61,7 @@ class ClientControllerUnitTest {
                 .description("Test Description")
                 .category(ProjectCategory.APP_DEVELOPMENT)
                 .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+                .experienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL)
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .expirationDate(LocalDate.now().plusDays(7))
                 .build();
@@ -72,7 +72,7 @@ class ClientControllerUnitTest {
                 .description("Test Description")
                 .category(ProjectCategory.APP_DEVELOPMENT)
                 .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+                .experienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL)
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .build();
 

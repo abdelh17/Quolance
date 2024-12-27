@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.helpers;
 
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
@@ -55,6 +56,13 @@ public class EntityCreationHelper {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode("Password123!");
         freelancer.setPassword(encodedPassword);
+
+        Profile profile = new Profile();
+        profile.setBio(freelancer.getFirstName() + " bio");
+        profile.setAvailability(Availability.FULL_TIME);
+        profile.setUser(freelancer);
+
+        freelancer.setProfile(profile);
         return freelancer;
     }
 
@@ -64,7 +72,7 @@ public class EntityCreationHelper {
         project.setDescription("description");
         project.setCategory(ProjectCategory.APP_DEVELOPMENT);
         project.setPriceRange(PriceRange.LESS_500);
-        project.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
+        project.setExperienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL);
         project.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
         project.setProjectStatus(projectStatus);
         project.setClient(client);
@@ -77,7 +85,7 @@ public class EntityCreationHelper {
         project.setDescription("description");
         project.setCategory(ProjectCategory.APP_DEVELOPMENT);
         project.setPriceRange(PriceRange.LESS_500);
-        project.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
+        project.setExperienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL);
         project.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
         project.setVisibilityExpirationDate(visibilityExpirationDate);
         project.setProjectStatus(projectStatus);

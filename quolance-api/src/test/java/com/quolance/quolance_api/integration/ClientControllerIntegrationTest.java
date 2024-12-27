@@ -87,7 +87,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
                 .description("description")
                 .category(ProjectCategory.APP_DEVELOPMENT)
                 .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+                .experienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL)
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .build();
 
@@ -105,7 +105,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(project.getDescription()).isEqualTo("description");
         assertThat(project.getCategory()).isEqualTo(ProjectCategory.APP_DEVELOPMENT);
         assertThat(project.getPriceRange()).isEqualTo(PriceRange.LESS_500);
-        assertThat(project.getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.JUNIOR);
+        assertThat(project.getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.ENTRY_LEVEL);
         assertThat(project.getExpectedDeliveryTime()).isEqualTo(ExpectedDeliveryTime.FLEXIBLE);
     }
 
@@ -117,7 +117,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
                 .description("description")
                 .category(ProjectCategory.APP_DEVELOPMENT)
                 .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+                .experienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL)
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .expirationDate(LocalDate.now().plusDays(10))
                 .build();
@@ -139,7 +139,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
                 .description("description")
                 .category(ProjectCategory.APP_DEVELOPMENT)
                 .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+                .experienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL)
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .build();
 
@@ -282,7 +282,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(projectResponse.get("description")).isEqualTo("description");
         assertThat(projectResponse.get("category")).isEqualTo("APP_DEVELOPMENT");
         assertThat(projectResponse.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse.get("experienceLevel")).isEqualTo("JUNIOR");
+        assertThat(projectResponse.get("experienceLevel")).isEqualTo("ENTRY_LEVEL");
         assertThat(projectResponse.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
     }
 
@@ -309,7 +309,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         project2.setDescription("description2");
         project2.setCategory(ProjectCategory.APP_DEVELOPMENT);
         project2.setPriceRange(PriceRange.LESS_500);
-        project2.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
+        project2.setExperienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL);
         project2.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
         project2.setClient(client);
         projectRepository.save(project2);
@@ -332,14 +332,14 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(projectResponse1.get("description")).isEqualTo("description");
         assertThat(projectResponse1.get("category")).isEqualTo("APP_DEVELOPMENT");
         assertThat(projectResponse1.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse1.get("experienceLevel")).isEqualTo("JUNIOR");
+        assertThat(projectResponse1.get("experienceLevel")).isEqualTo("ENTRY_LEVEL");
         assertThat(projectResponse1.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
 
         assertThat(projectResponse2.get("title")).isEqualTo("title2");
         assertThat(projectResponse2.get("description")).isEqualTo("description2");
         assertThat(projectResponse2.get("category")).isEqualTo("APP_DEVELOPMENT");
         assertThat(projectResponse2.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse2.get("experienceLevel")).isEqualTo("JUNIOR");
+        assertThat(projectResponse2.get("experienceLevel")).isEqualTo("ENTRY_LEVEL");
         assertThat(projectResponse2.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
 
     }
@@ -503,6 +503,40 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         //Assert
         assertThat(applicationRepository.findById(application1.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
         assertThat(applicationRepository.findById(application2.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
+    }
+
+    @Test
+    void getFreelancerProfileReturnsOk() throws Exception {
+        //Arrange
+        User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
+
+        //Act
+        String response = mockMvc.perform(get("/api/client/freelancer/profile/" + freelancer.getId()).session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        //Assert
+        Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
+        assertThat(profileResponse.get("userId")).isEqualTo(freelancer.getId().intValue());
+    }
+
+    @Test
+    void getFreelancerProfileWhenNotExistReturnsNotFound() throws Exception {
+        //Arrange
+        Long nonExistentFreelancerId = 999L;
+
+        //Act
+        String response = mockMvc.perform(get("/api/client/freelancer/profile/" + nonExistentFreelancerId).session(session))
+                .andExpect(status().is4xxClientError())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        //Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse.get("message")).isEqualTo("Freelancer not found");
     }
 
 

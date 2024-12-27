@@ -20,6 +20,7 @@ import java.util.Set;
 public class FreelancerProfileDto {
 
     private Long id;
+    private Long userId;
 
     private String firstName;
     private String lastName;
@@ -39,6 +40,7 @@ public class FreelancerProfileDto {
         Profile profile = user.getProfile();
         return FreelancerProfileDto.builder()
                 .id(profile.getId())
+                .userId(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .profileImageUrl(user.getProfileImageUrl())
