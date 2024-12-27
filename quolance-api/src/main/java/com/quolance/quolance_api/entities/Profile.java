@@ -2,7 +2,6 @@ package com.quolance.quolance_api.entities;
 
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
-import com.quolance.quolance_api.entities.enums.SalaryRange;
 import com.quolance.quolance_api.entities.enums.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -38,9 +37,6 @@ public class Profile extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     private Availability availability;
-
-    @Enumerated(EnumType.STRING)
-    private SalaryRange askingSalary;
 
     @OneToOne(mappedBy = "profile")
     @JoinColumn(name = "userId")

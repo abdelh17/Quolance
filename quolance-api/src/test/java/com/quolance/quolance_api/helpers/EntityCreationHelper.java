@@ -72,7 +72,7 @@ public class EntityCreationHelper {
         project.setDescription("description");
         project.setCategory(ProjectCategory.APP_DEVELOPMENT);
         project.setPriceRange(PriceRange.LESS_500);
-        project.setExperienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL);
+        project.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
         project.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
         project.setProjectStatus(projectStatus);
         project.setClient(client);
@@ -85,7 +85,7 @@ public class EntityCreationHelper {
         project.setDescription("description");
         project.setCategory(ProjectCategory.APP_DEVELOPMENT);
         project.setPriceRange(PriceRange.LESS_500);
-        project.setExperienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL);
+        project.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
         project.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
         project.setVisibilityExpirationDate(visibilityExpirationDate);
         project.setProjectStatus(projectStatus);

@@ -1,10 +1,9 @@
-package com.quolance.quolance_api.dtos;
+package com.quolance.quolance_api.dtos.profile;
 
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
-import com.quolance.quolance_api.entities.enums.SalaryRange;
 import com.quolance.quolance_api.entities.enums.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +33,6 @@ public class FreelancerProfileDto {
     private Set<String> socialMediaLinks;
     private Set<Tag> skills;
     private Availability availability;
-    private SalaryRange askingSalary;
 
     public static FreelancerProfileDto fromEntity(User user) {
         Profile profile = user.getProfile();
@@ -52,7 +50,6 @@ public class FreelancerProfileDto {
                 .socialMediaLinks(profile.getSocialMediaLinks())
                 .skills(profile.getSkills())
                 .availability(profile.getAvailability())
-                .askingSalary(profile.getAskingSalary())
                 .build();
     }
 }

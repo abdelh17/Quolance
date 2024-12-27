@@ -61,7 +61,7 @@ class ClientControllerUnitTest {
                 .description("Test Description")
                 .category(ProjectCategory.APP_DEVELOPMENT)
                 .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL)
+                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .expirationDate(LocalDate.now().plusDays(7))
                 .build();
@@ -72,7 +72,7 @@ class ClientControllerUnitTest {
                 .description("Test Description")
                 .category(ProjectCategory.APP_DEVELOPMENT)
                 .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.ENTRY_LEVEL)
+                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .build();
 

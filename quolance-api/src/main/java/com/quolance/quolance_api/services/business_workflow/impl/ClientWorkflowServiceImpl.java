@@ -1,6 +1,6 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
-import com.quolance.quolance_api.dtos.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
