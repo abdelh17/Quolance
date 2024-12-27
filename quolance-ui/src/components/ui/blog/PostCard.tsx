@@ -12,9 +12,10 @@ interface PostCardProps {
     fieldOfWork: string;
     profilePicture: string; // URL
     date: string;
+    tags?: string[];
 }
 
-const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldOfWork, profilePicture, date }) => {
+const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldOfWork, profilePicture, date, tags }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -47,12 +48,28 @@ const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldO
                 <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
                     <p className="text-gray-700">{body}</p>
                 </div>
-                <button
+
+                {body.length > 300 && (
+                    <button
                     onClick={toggleExpand}
                     className="text-blue-500 text-sm mt-2 focus:outline-none"
                 >
                     {isExpanded ? "Read less" : "Read more"}
                 </button>
+                )}
+                
+                {/* Tags */}
+                <div className="mt-4">
+                    <p className="text-sm font-semibold text-grey-800 mb-2">Tags: </p>
+                    {tags.map((tag, index) => (
+                        <span
+                            key={index}
+                            className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs"
+                        >
+                            {tag}
+                        </span>
+                    ))}
+                </div>
             </div>
         </div>
     );

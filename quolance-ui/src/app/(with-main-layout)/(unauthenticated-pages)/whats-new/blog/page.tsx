@@ -12,7 +12,8 @@ const blogPosts = [
     userName: 'SomeCompany',
     fieldOfWork: 'Entertainment',
     profilePicture: '',
-    date: 'December 1, 2024'
+    date: 'December 1, 2024',
+    tags: ['UX/UI Design', 'Graphic Design', 'Events']
   },
   {
     type: 'News', 
@@ -21,7 +22,8 @@ const blogPosts = [
     userName: 'Quolance Team',
     fieldOfWork: 'Development',
     profilePicture: '',
-    date: 'November 25, 2024'
+    date: 'November 25, 2024',
+    tags: ['Product Updates', 'Premium Features', 'Subscription']
   },
   {
     type: 'Event', 
@@ -30,7 +32,8 @@ const blogPosts = [
     userName: 'Quolance Team',
     fieldOfWork: 'Development',
     profilePicture: '',
-    date: 'November 20, 2024' 
+    date: 'November 20, 2024',
+    tags: ['Hackathon', 'Innovation', 'Events']
   },
   {
     type: 'Article', 
@@ -39,9 +42,10 @@ const blogPosts = [
     userName: 'SomeUser',
     fieldOfWork: 'Human Resources',
     profilePicture: '',
-    date: 'November 15, 2024' 
+    date: 'November 15, 2024',
+    tags: ['Freelancing', 'Hiring', 'Tips']
   },
-]
+];
 
 
 function BlogPage() {
