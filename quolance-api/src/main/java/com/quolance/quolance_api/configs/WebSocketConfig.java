@@ -39,8 +39,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // Main WebSocket endpoint
-                .setAllowedOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:8080");
-                //.withSockJS(); // Fallback to SockJS TODO: Fix SockJS not working with postman, enable in DEV environment
+                .setAllowedOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:8080")
+                .withSockJS(); // Fallback to SockJS TODO: Fix SockJS not working with postman, enable in DEV environment
     }
 
     /**
@@ -55,6 +55,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, org.springframework.messaging.MessageChannel channel) {
+                //TODO: Implement better middleware for authentication, causes some issues sometimes
+
                 // Retrieve the authentication from the security context
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -68,4 +70,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             }
         });
     }
+
 }

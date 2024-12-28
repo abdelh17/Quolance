@@ -10,6 +10,14 @@ http://localhost:8080 {
         }
     }
 
+    route /ws/* {
+        reverse_proxy http://host.docker.internal:8081 {
+            transport http {
+                versions h1
+            }
+        }
+    }
+
     # Proxy for API requests
     # - Routes all requests starting with /api/* to the backend service.
     route /api/* {
