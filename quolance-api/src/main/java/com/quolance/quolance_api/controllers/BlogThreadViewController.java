@@ -7,8 +7,13 @@ import com.quolance.quolance_api.services.entity_services.BlogThreadViewService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import jakarta.validation.Valid;
 
@@ -24,6 +29,16 @@ public class BlogThreadViewController {
     public ResponseEntity<BlogThreadViewResponseDto> createThreadView(
             @Valid @RequestBody BlogThreadViewRequestDto request) {
         BlogThreadViewResponseDto response = blogThreadViewService.create(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all blog thread views with pagination")
+    public ResponseEntity<Page<BlogThreadViewResponseDto>> getAllThreadViews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BlogThreadViewResponseDto> response = blogThreadViewService.getAll(pageable);
         return ResponseEntity.ok(response);
     }
 

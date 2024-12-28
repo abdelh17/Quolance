@@ -10,10 +10,14 @@ import com.quolance.quolance_api.repositories.BlogPostRepository;
 import com.quolance.quolance_api.repositories.BlogThreadViewRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.entity_services.BlogThreadViewService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +66,12 @@ public class BlogThreadViewServiceImpl implements BlogThreadViewService {
                 threadView.getBlogPost().getId(),
                 threadView.getDateCreated()
         );
+    }
+
+    @Override
+    public Page<BlogThreadViewResponseDto> getAll(Pageable pageable) {
+        Page<BlogThreadView> threadViews = blogThreadViewRepository.findAll(pageable);
+        return threadViews.map(this::mapToResponseDto);
     }
 
     @Override

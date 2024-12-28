@@ -1009,6 +1009,36 @@
 								"header": []
 							},
 							"response": []
+						},
+						{
+							"name": "Get Paginated All Threads",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/blog-thread-views?page=1&size=5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"blog-thread-views"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "size",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}
