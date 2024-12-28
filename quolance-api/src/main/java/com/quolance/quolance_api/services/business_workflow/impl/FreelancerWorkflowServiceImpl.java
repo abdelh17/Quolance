@@ -4,6 +4,7 @@ import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
 import com.quolance.quolance_api.dtos.UserResponseDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.Application;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -148,6 +150,11 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .build();
         }
         return ProjectPublicDto.fromEntity(project);
+    }
+
+    @Override
+    public FreelancerProfileDto getFreelancerProfile(User freelancer) {
+        return FreelancerProfileDto.fromEntity(freelancer);
     }
 
     @Override
