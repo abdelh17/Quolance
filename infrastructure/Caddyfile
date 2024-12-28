@@ -1,16 +1,36 @@
 http://localhost:8080 {
+    # Proxy for WebSocket connections
+    # - Handles WebSocket requests specifically for the /ws route.
+    # - Ensures compatibility with WebSocket's Upgrade mechanism by enforcing HTTP/1.1.
+    route /ws {
+        reverse_proxy http://host.docker.internal:8081 {
+            transport http {
+                versions h1
+            }
+        }
+    }
+
+    # Proxy for API requests
+    # - Routes all requests starting with /api/* to the backend service.
     route /api/* {
         reverse_proxy http://host.docker.internal:8081
     }
 
+    # Proxy for OAuth2 authorization requests
+    # - Handles routes under /oauth2/authorization/* for OAuth2 flows.
     route /oauth2/authorization/* {
         reverse_proxy http://host.docker.internal:8081
     }
 
+    # Proxy for OAuth2 login callback requests
+    # - Handles routes under /login/oauth2/code/* to manage OAuth2 callbacks.
     route /login/oauth2/code/* {
         reverse_proxy http://host.docker.internal:8081
     }
 
+    # Default proxy for frontend requests
+    # - Routes all unmatched requests to the frontend server.
+    # - Useful for single-page applications or static assets.
     route * {
         reverse_proxy http://host.docker.internal:3000
     }
