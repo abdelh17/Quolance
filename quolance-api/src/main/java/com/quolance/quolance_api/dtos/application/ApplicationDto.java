@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.dtos.application;
 
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import lombok.AllArgsConstructor;
@@ -21,12 +22,15 @@ public class ApplicationDto {
 
     private Long freelancerId;
 
+    private FreelancerProfileDto freelancerProfile;
+
     public static ApplicationDto fromEntity(Application application) {
         return ApplicationDto.builder()
                 .id(application.getId())
                 .status(application.getApplicationStatus())
                 .projectId(application.getProject() != null ? application.getProject().getId() : null)
                 .freelancerId(application.getFreelancer() != null ? application.getFreelancer().getId() : null)
+                .freelancerProfile(FreelancerProfileDto.fromEntity(application.getFreelancer()))
                 .build();
     }
 }
