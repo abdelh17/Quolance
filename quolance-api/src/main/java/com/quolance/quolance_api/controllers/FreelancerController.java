@@ -2,6 +2,7 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.User;
@@ -84,6 +85,17 @@ public class FreelancerController {
     public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") Long projectId) {
         ProjectPublicDto project = freelancerWorkflowService.getProject(projectId);
         return ResponseEntity.ok(project);
+    }
+
+    @GetMapping("/profile")
+    @Operation(
+            summary = "View freelancer profile",
+            description = "View the authenticated freelancer's profile information"
+    )
+    public ResponseEntity<FreelancerProfileDto> getFreelancerProfile() {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        FreelancerProfileDto profile = freelancerWorkflowService.getFreelancerProfile(freelancer);
+        return ResponseEntity.ok(profile);
     }
 
     @PutMapping("/profile")

@@ -29,12 +29,12 @@ public class Profile extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private FreelancerExperienceLevel experienceLevel;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "social_media_links", joinColumns = @JoinColumn(name = "profile_id"))
     @Column(name = "link")
     private Set<String> socialMediaLinks;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "skills", joinColumns = @JoinColumn(name = "profile_id"))
     @Column(name = "skill")
     private Set<Tag> skills;

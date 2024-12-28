@@ -436,5 +436,29 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void getFreelancerProfileIsOk() throws Exception {
+        //Act
+        String response = mockMvc.perform(get("/api/freelancer/profile")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        //Assert
+        Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
+
+        assertThat(profileResponse.get("firstName")).isEqualTo(freelancer.getFirstName());
+        assertThat(profileResponse.get("lastName")).isEqualTo(freelancer.getLastName());
+        assertThat(profileResponse.get("bio")).isEqualTo(freelancer.getProfile().getBio());
+    }
+
+    @Test
+    void getFreelancerProfileUnauthorizedReturnsError() throws Exception {
+        //Act & Assert
+        mockMvc.perform(get("/api/freelancer/profile"))
+                .andExpect(status().isUnauthorized());
+    }
 
 }
