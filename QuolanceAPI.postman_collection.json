@@ -1,11 +1,9 @@
 {
 	"info": {
-		"_postman_id": "dc35aa1c-1b2c-4451-89d3-616cee38b443",
+		"_postman_id": "d7a44dae-3e2e-42c5-bdf4-eaf05631ea3e",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26432903",
-		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-58a37ce2-2856-4b3e-877b-baa3897fc901?action=share&source=collection_link&creator=39178284"
-
+		"_exporter_id": "33249345"
 	},
 	"item": [
 		{
@@ -872,7 +870,149 @@
 		},
 		{
 			"name": "Blog",
-			"item": []
+			"item": [
+				{
+					"name": "Blog Post",
+					"item": [
+						{
+							"name": "Create Blog Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"My First Blog\",\r\n    \"content\": \"This is the content of my first blog post.\",\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/blog-posts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"blog-posts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Blog Posts",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Blog Post By ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Get Blog Post By User ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Update Blog Post",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Blog Post",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Blog Post View",
+					"item": [
+						{
+							"name": "Create Thread",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"My First Blog Thread\",\r\n    \"content\": \"This is the content for the associated blog post.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/api/blog-thread-views",
+									"path": [
+										"api",
+										"blog-thread-views"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Blog Thread By Thread ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Get Thread View by BlogPost ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Update Blog Thread Title",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Thread",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		},
 		{
 			"name": "Pending",
