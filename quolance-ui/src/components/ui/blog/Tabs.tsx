@@ -9,6 +9,7 @@ const Tabs: React.FC<TabsProps> = ({ tags, onSelectTag }) => {
     const [customTabs, setCustomTabs] = useState<string[]>([]);
     const [newTab, setNewTab] = useState("");
     const [isCreatingTab, setIsCreatingTab] = useState(false);
+    const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
     const handleAddTab = () => {
         if (newTab.trim() && !customTabs.includes(newTab)) {
@@ -18,22 +19,35 @@ const Tabs: React.FC<TabsProps> = ({ tags, onSelectTag }) => {
         }
     };
 
+    const handleTabClick = (tag: string | null) => {
+        setSelectedTag(tag);
+        onSelectTag(tag); // Pass the selected tag to the parent
+    };
+
     return (
         <div className="flex items-center gap-2 overflow-x-auto p-4 rounded-md">
             {/* Default All Tab */}
             <button
-                onClick={() => onSelectTag(null)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                onClick={() => handleTabClick(null)}
+                className={`px-4 py-2 rounded-md ${
+                    selectedTag === null
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                }`}
             >
                 All
             </button>
 
-            {/* Predefined Tags */}
+            {/* Loaded Tabs */}
             {tags.map((tag, index) => (
                 <button
                     key={index}
-                    onClick={() => onSelectTag(tag)}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
+                    onClick={() => handleTabClick(tag)}
+                    className={`px-4 py-2 rounded-md ${
+                        selectedTag === tag
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                    }`}
                 >
                     #{tag}
                 </button>
@@ -43,8 +57,12 @@ const Tabs: React.FC<TabsProps> = ({ tags, onSelectTag }) => {
             {customTabs.map((customTag, index) => (
                 <button
                     key={index}
-                    onClick={() => onSelectTag(customTag)}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
+                    onClick={() => handleTabClick(customTag)}
+                    className={`px-4 py-2 rounded-md ${
+                        selectedTag === customTag
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                    }`}
                 >
                     #{customTag}
                 </button>

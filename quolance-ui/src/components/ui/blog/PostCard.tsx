@@ -12,7 +12,7 @@ interface PostCardProps {
     fieldOfWork: string;
     profilePicture: string; // URL
     date: string;
-    tags?: string[];
+    tags: string[];
 }
 
 const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldOfWork, profilePicture, date, tags }) => {
