@@ -4,6 +4,7 @@ import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
@@ -56,6 +57,7 @@ class FreelancerWorkflowServiceTest {
     void setUp() {
         mockFreelancer = User.builder()
                 .id(1L)
+                .profile(new Profile())
                 .build();
 
         mockProject = Project.builder()
