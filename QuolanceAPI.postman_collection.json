@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "58a37ce2-2856-4b3e-877b-baa3897fc901",
+		"_postman_id": "a12d5c28-92d6-491b-a43f-8f5239d7bfa2",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39178284",
-		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-58a37ce2-2856-4b3e-877b-baa3897fc901?action=share&source=collection_link&creator=39178284"
+		"_exporter_id": "40687150"
 	},
 	"item": [
 		{
@@ -443,6 +442,39 @@
 					"response": []
 				},
 				{
+					"name": "Get freelancer profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmRlbEB0ZXN0LmNvbSIsImlhdCI6MTcyOTkwMDE2NSwiZXhwIjoxNzI5OTg2NTY1fQ.S4jiJ53imgth3ekFG9s8zn4xUeKMSueqJILpFPGr_U8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/freelancer/profile/{freelancerId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"freelancer",
+								"profile",
+								"{freelancerId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get all projects of a client",
 					"request": {
 						"method": "GET",
@@ -732,6 +764,69 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"bio\": \"Full-stack developer with 5 years of experience\",\r\n    \"contactEmail\": \"john.doe@example.com\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"experienceLevel\": \"EXPERT\",\r\n    \"socialMediaLinks\": [\r\n        \"https://linkedin.com/in/johndoe\",\r\n        \"https://github.com/johndoe\"\r\n    ],\r\n    \"skills\": [\r\n        \"JAVA\",\r\n        \"PYTHON\",\r\n        \"JAVASCRIPT\",\r\n        \"HTML\",\r\n        \"CSS\"\r\n    ],\r\n    \"availability\": \"FULL_TIME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"bio\": \"Full-stack developer with 5 years of experience\",\r\n    \"contactEmail\": \"john.doe@example.com\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"experienceLevel\": \"EXPERT\",\r\n    \"socialMediaLinks\": [\r\n        \"https://linkedin.com/in/johndoe\",\r\n        \"https://github.com/johndoe\"\r\n    ],\r\n    \"skills\": [\r\n        \"JAVA\",\r\n        \"PYTHON\",\r\n        \"JAVASCRIPT\",\r\n        \"HTML\",\r\n        \"CSS\"\r\n    ],\r\n    \"availability\": \"FULL_TIME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"profile"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -890,7 +985,86 @@
 								}
 							}
 						},
-						"url": "http://localhost:8080/api/pending/update"
+						"url": {
+							"raw": "http://localhost:8080/api/pending/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"pending",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8081/api/files/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"files",
+								"upload"
+							],
+							"query": [
+								{
+									"key": "file",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "uploadedBy",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View All User Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/api/files/all",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"files",
+								"all"
+							]
+						}
 					},
 					"response": []
 				}

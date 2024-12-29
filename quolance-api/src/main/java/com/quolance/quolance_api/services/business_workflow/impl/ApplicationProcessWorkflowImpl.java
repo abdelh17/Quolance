@@ -97,9 +97,6 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
         }
     }
 
-
-
-
     @Override
     public void cancelApplication(Long applicationId, User freelancer) {
         try {

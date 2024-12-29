@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.helpers;
 
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
@@ -55,6 +56,13 @@ public class EntityCreationHelper {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode("Password123!");
         freelancer.setPassword(encodedPassword);
+
+        Profile profile = new Profile();
+        profile.setBio(freelancer.getFirstName() + " bio");
+        profile.setAvailability(Availability.FULL_TIME);
+        profile.setUser(freelancer);
+
+        freelancer.setProfile(profile);
         return freelancer;
     }
 
