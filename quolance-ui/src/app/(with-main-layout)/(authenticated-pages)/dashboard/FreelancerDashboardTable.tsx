@@ -9,7 +9,7 @@ import {
   formatPriceRange,
 } from '@/util/stringUtils';
 
-export default function ClientDashboardTable() {
+export default function FreelancerDashboardTable() {
   const { data, isLoading } = useGetAllClientProjects();
   const projects = data?.data || [];
 
@@ -20,7 +20,7 @@ export default function ClientDashboardTable() {
   return (
     <div className='px-4 sm:px-6 lg:px-8'>
       <div className='sm:flex sm:items-center'>
-        <h2 className='mt-2 text-xl font-bold text-gray-700'>My projects</h2>
+        <h2 className='mt-2 text-xl font-bold text-gray-700'>My submissions</h2>
       </div>
       <div className='-mx-4 mt-8 sm:-mx-0'>
         <table className='min-w-full divide-y divide-gray-300'>
@@ -63,7 +63,10 @@ export default function ClientDashboardTable() {
                 Status
               </th>
               <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
-                <span className='sr-only'>Edit</span>
+                <span className='sr-only'>View</span>
+              </th>
+              <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
+                <span className='sr-only'>Withdraw</span>
               </th>
             </tr>
           </thead>
@@ -73,14 +76,13 @@ export default function ClientDashboardTable() {
                 <td colSpan={7} className='py-12 text-center'>
                   <div className='flex flex-col items-center'>
                     <p className='mb-4 text-center text-gray-600'>
-                      You haven't created any projects yet. Get started by
-                      creating your first project!
+                      You haven't submitted your application to any project yet. Get started by applying to a project!
                     </p>
                     <Link
-                      href='/post-project'
+                      href='/projects'
                       className='text-sm/6 font-semibold text-gray-900'
                     >
-                      Create First Project<span aria-hidden='true'>→</span>
+                      Find new projects<span aria-hidden='true'>→</span>
                     </Link>
                   </div>
                 </td>
@@ -111,7 +113,16 @@ export default function ClientDashboardTable() {
                       href={`/projects/${projects.id}?edit`}
                       className='text-b300 hover:text-indigo-900'
                     >
-                      Edit
+                      View project
+                      <span className='sr-only'>, {projects.priceRange}</span>
+                    </Link>
+                  </td>
+                  <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                    <Link
+                      href={`/projects/${projects.id}?edit`}
+                      className='text-b300 hover:text-indigo-900'
+                    >
+                      Withdraw my submission
                       <span className='sr-only'>, {projects.priceRange}</span>
                     </Link>
                   </td>
