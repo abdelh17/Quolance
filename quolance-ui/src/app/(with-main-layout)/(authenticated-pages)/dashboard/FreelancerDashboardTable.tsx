@@ -1,5 +1,5 @@
 'use client';
-import { useGetAllClientProjects } from '@/api/client-api';
+import { useGetAllClientapplications } from '@/api/client-api';
 import { ProjectType } from '@/constants/types/project-types';
 import Loading from '@/components/loading';
 import Link from 'next/link';
@@ -8,10 +8,11 @@ import {
   formatEnumString,
   formatPriceRange,
 } from '@/util/stringUtils';
+import { useGetAllFreelancerApplications } from '@/api/freelancer-api';
 
 export default function FreelancerDashboardTable() {
-  const { data, isLoading } = useGetAllClientProjects();
-  const projects = data?.data || [];
+  const { data, isLoading } = useGetAllFreelancerApplications();
+  const applications = data?.data || [];
 
   if (isLoading) {
     return <Loading />;
@@ -42,12 +43,6 @@ export default function FreelancerDashboardTable() {
                 scope='col'
                 className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
               >
-                Expiration Date
-              </th>
-              <th
-                scope='col'
-                className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
-              >
                 Category
               </th>
               <th
@@ -71,7 +66,7 @@ export default function FreelancerDashboardTable() {
             </tr>
           </thead>
           <tbody className='divide-y divide-gray-200 bg-white'>
-            {projects.length === 0 ? (
+            {applications.length === 0 ? (
               <tr>
                 <td colSpan={7} className='py-12 text-center'>
                   <div className='flex flex-col items-center'>
@@ -79,51 +74,46 @@ export default function FreelancerDashboardTable() {
                       You haven't submitted your application to any project yet. Get started by applying to a project!
                     </p>
                     <Link
-                      href='/projects'
+                      href='/applications'
                       className='text-sm/6 font-semibold text-gray-900'
                     >
-                      Find new projects<span aria-hidden='true'>→</span>
+                      Find new applications<span aria-hidden='true'>→</span>
                     </Link>
                   </div>
                 </td>
               </tr>
             ) : (
-              projects.map((projects: ProjectType) => (
-                <tr key={projects.id}>
+              applications.map((applications : any) => (
+                <tr key={applications.id}>
                   <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
-                    {projects.title}
+                    title
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                    {formatPriceRange(projects.priceRange)}
+                    range
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                    {formatDate(projects.expirationDate)}
-                  </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                    {formatEnumString(projects.category)}
+                    category
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                    {projects.experienceLevel}
+                    level
                   </td>
                   <td className='px-3 py-4 text-sm text-gray-500'>
-                    {projects.projectStatus}
+                    {applications.status}
                   </td>
                   <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                     <Link
-                      href={`/projects/${projects.id}?edit`}
+                      href={`/projects/${applications.projectId}`}
                       className='text-b300 hover:text-indigo-900'
                     >
                       View project
-                      <span className='sr-only'>, {projects.priceRange}</span>
                     </Link>
                   </td>
                   <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                     <Link
-                      href={`/projects/${projects.id}?edit`}
+                      href={`/projects/${applications.id}?edit`}
                       className='text-b300 hover:text-indigo-900'
                     >
                       Withdraw my submission
-                      <span className='sr-only'>, {projects.priceRange}</span>
                     </Link>
                   </td>
                 </tr>
