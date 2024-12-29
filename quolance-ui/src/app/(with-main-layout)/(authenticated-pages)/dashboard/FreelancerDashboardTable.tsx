@@ -1,13 +1,6 @@
 'use client';
-import { useGetAllClientapplications } from '@/api/client-api';
-import { ProjectType } from '@/constants/types/project-types';
 import Loading from '@/components/loading';
 import Link from 'next/link';
-import {
-  formatDate,
-  formatEnumString,
-  formatPriceRange,
-} from '@/util/stringUtils';
 import { useGetAllFreelancerApplications } from '@/api/freelancer-api';
 
 export default function FreelancerDashboardTable() {
