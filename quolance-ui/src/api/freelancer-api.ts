@@ -41,6 +41,13 @@ export const useCancelApplication = (projectId: number) => {
   });
 };
 
+export const useGetAllFreelancerApplications = () => {
+  return useQuery({
+    queryKey: ['all-freelancer-applications'],
+    queryFn: () => httpClient.get('/api/freelancer/applications/all'),
+  });
+};
+
 export const useGetProjectApplication = (projectId: number) => {
   return useQuery({
     queryKey: ['applications', projectId],
