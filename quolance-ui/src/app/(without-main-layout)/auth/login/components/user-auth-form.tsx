@@ -87,8 +87,8 @@ export function UserAuthForm({
           <Button
             disabled={isLoading}
             type='submit'
-            variant='footerColor'
-            className='mt-6'
+            className='mt-6 py-4'
+            variant={'default'}
           >
             {isLoading ? 'Signing in...' : 'Sign In with Email'}
           </Button>

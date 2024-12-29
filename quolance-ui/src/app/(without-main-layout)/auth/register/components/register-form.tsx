@@ -145,11 +145,7 @@ export function UserRegisterForm({
           <Button
             className='mt-6'
             disabled={isLoading}
-            animation={{
-              hoverTextColor: 'text-n700',
-              overlayColor: 'bg-yellow-400',
-            }}
-            bgColor='n900'
+            animation={'default'}
             type='submit'
           >
             {isLoading

@@ -71,11 +71,7 @@ const UserRoleSelection = ({
           className='mt-10 px-7 py-[22px]'
           onClick={() => setUserRoleConfirmed(true)}
           disabled={!selected}
-          bgColor={'n900'}
-          animation={{
-            hoverTextColor: 'text-n700',
-            overlayColor: 'bg-yellow-400',
-          }}
+          animation={'default'}
         >
           {!selected
             ? 'Create an account'

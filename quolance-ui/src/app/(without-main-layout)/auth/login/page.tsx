@@ -11,8 +11,7 @@ export default function LoginPage() {
     <>
       <AuthHeader userRole={undefined} />
       <div className='mx-auto mt-4 flex h-full min-w-52 max-w-screen-sm flex-col justify-center space-y-6 pt-24 md:mt-0'>
-        {/* New container div with border */}
-        <div className='rounded-lg border p-6'>
+        <div className='rounded-3xl border p-6'>
           <div className='my-6 flex flex-col space-y-2 text-center'>
             <h1 className='text-2xl font-semibold tracking-tight'>
               Login to your account
@@ -35,9 +34,9 @@ export default function LoginPage() {
           <p className='flex justify-center gap-x-2 pb-4'>
             <Link
               href='/auth/register'
-              className='border-n900 text-primary hover:bg-primary hover:bg-n10 rounded-lg border-2 px-20 py-2'
+              className='rounded-lg border px-8 py-2 text-center transition-colors hover:bg-gray-50'
             >
-              Register
+              Register now
             </Link>
           </p>
         </div>
