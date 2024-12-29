@@ -1,5 +1,5 @@
 'use client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
@@ -36,4 +36,9 @@ export const useCancelApplication = () => {
   });
 };
 
-/*--- Query functions ---*/
+export const useGetAllFreelancerApplications = () => {
+  return useQuery({
+    queryKey: ['all-freelancer-applications'],
+    queryFn: () => httpClient.get('/api/freelancer/applications/all'),
+  });
+};

@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
-export default function ClientDashboardActionButtons() {
+export default function FreelancerDashboardActionButtons() {
   const router = useRouter();
   return (
     <>
