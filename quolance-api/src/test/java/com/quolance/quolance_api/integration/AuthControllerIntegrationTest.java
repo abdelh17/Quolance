@@ -162,27 +162,26 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(jsonResponse.get("message")).isEqualTo("Bad credentials");
     }
 
-    //TODO: Uncomment test when bug #185 is resolved
-//    @Test
-//    void testLoginWithNonRegisteredEmail() throws Exception {
-//        // Arrange
-//        LoginRequestDto loginRequest = new LoginRequestDto();
-//        loginRequest.setEmail("doesnotexist@test.com");
-//        loginRequest.setPassword("wrongPassword");
-//
-//        // Act
-//        String response = mockMvc.perform(post("/api/auth/login")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(loginRequest)))
-//                .andExpect(status().isUnauthorized())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        // Assert
-//        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-//        assertThat(jsonResponse.get("message")).isEqualTo("Bad credentials");
-//    }
+    @Test
+    void testLoginWithNonRegisteredEmail() throws Exception {
+        // Arrange
+        LoginRequestDto loginRequest = new LoginRequestDto();
+        loginRequest.setEmail("doesnotexist@test.com");
+        loginRequest.setPassword("wrongPassword");
+
+        // Act
+        String response = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse.get("message")).isEqualTo("Bad Credentials");
+    }
 
     @Test
     void testGetSessionIsOk() throws Exception {
@@ -193,8 +192,8 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
         // Act
         MockHttpSession session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
                 .andReturn()
                 .getRequest()
                 .getSession();

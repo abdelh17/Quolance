@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
@@ -9,6 +10,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
     private final ProjectService projectService;
     private final ApplicationService applicationService;
+    private final UserService userService;
 
     @Override
     public void createProject(ProjectCreateDto projectCreateDto, User client) {
@@ -89,4 +93,19 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
         return ProjectDto.fromEntity(existingProject);
     }
+
+    @Override
+    public FreelancerProfileDto getFreelancerProfile(Long freelancerId) {
+        Optional<User> freelancer = userService.findById(freelancerId);
+
+        if (freelancer.isPresent()) {
+            return FreelancerProfileDto.fromEntity(freelancer.get());
+        } else {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_NOT_FOUND)
+                    .message("Freelancer not found")
+                    .build();
+        }
+    }
+
 }

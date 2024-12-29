@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
@@ -124,6 +125,16 @@ public class ClientController {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.rejectManyApplications(applicationIds, client);
         return ResponseEntity.ok("All selected freelancers rejected successfully");
+    }
+
+    @GetMapping("/freelancer/profile/{freelancerId}")
+    @Operation(
+            summary = "Get freelancer profile",
+            description = "Get freelancer profile by passing the freelancer ID"
+    )
+    public ResponseEntity<FreelancerProfileDto> getFreelancerProfile(@PathVariable(name = "freelancerId") Long freelancerId) {
+        FreelancerProfileDto freelancerProfile = clientWorkflowService.getFreelancerProfile(freelancerId);
+        return ResponseEntity.ok(freelancerProfile);
     }
 
 }

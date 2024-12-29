@@ -5,6 +5,7 @@ import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
@@ -47,6 +48,7 @@ class ClientWorkflowServiceTest {
     private ArgumentCaptor<Project> projectCaptor;
 
     private User mockClient;
+    private User mockFreelancer;
     private Project mockProject;
     private ProjectCreateDto mockProjectCreateDto;
     private ProjectUpdateDto mockProjectUpdateDto;
@@ -57,6 +59,12 @@ class ClientWorkflowServiceTest {
         mockClient = User.builder()
                 .id(1L)
                 .email("client@test.com")
+                .build();
+
+        mockFreelancer = User.builder()
+                .id(2L)
+                .email("freelancer@test.com")
+                .profile(new Profile())
                 .build();
 
         mockProject = Project.builder()
@@ -95,6 +103,7 @@ class ClientWorkflowServiceTest {
         mockApplication = Application.builder()
                 .id(1L)
                 .project(mockProject)
+                .freelancer(mockFreelancer)
                 .build();
     }
 

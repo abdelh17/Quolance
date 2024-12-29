@@ -505,5 +505,39 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(applicationRepository.findById(application2.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
     }
 
+    @Test
+    void getFreelancerProfileReturnsOk() throws Exception {
+        //Arrange
+        User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
+
+        //Act
+        String response = mockMvc.perform(get("/api/client/freelancer/profile/" + freelancer.getId()).session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        //Assert
+        Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
+        assertThat(profileResponse.get("userId")).isEqualTo(freelancer.getId().intValue());
+    }
+
+    @Test
+    void getFreelancerProfileWhenNotExistReturnsNotFound() throws Exception {
+        //Arrange
+        Long nonExistentFreelancerId = 999L;
+
+        //Act
+        String response = mockMvc.perform(get("/api/client/freelancer/profile/" + nonExistentFreelancerId).session(session))
+                .andExpect(status().is4xxClientError())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        //Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse.get("message")).isEqualTo("Freelancer not found");
+    }
+
 
 }

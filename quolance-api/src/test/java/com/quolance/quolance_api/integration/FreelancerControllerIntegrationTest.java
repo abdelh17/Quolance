@@ -3,15 +3,16 @@ package com.quolance.quolance_api.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
+import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.ApplicationStatus;
-import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.entities.enums.*;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,6 +29,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -368,5 +370,95 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         assertThat(jsonResponse.get("message")).isEqualTo("Project is not yet approved.");
     }
 
+    @Test
+    void updateFreelancerProfileFullUpdateIsOk() throws Exception {
+        //Arrange
+        UpdateFreelancerProfileDto updateDto = UpdateFreelancerProfileDto.builder()
+                .firstName("John")
+                .lastName("Updated")
+                .bio("Full-stack developer with 5 years of experience")
+                .contactEmail("john.updated@test.com")
+                .city("San Francisco")
+                .state("CA")
+                .experienceLevel(FreelancerExperienceLevel.EXPERT)
+                .socialMediaLinks(Set.of(
+                        "https://linkedin.com/in/johnupdated",
+                        "https://github.com/johnupdated"
+                ))
+                .skills(Set.of(
+                        Tag.JAVA,
+                        Tag.JAVASCRIPT,
+                        Tag.PYTHON,
+                        Tag.HTML,
+                        Tag.CSS
+                ))
+                .availability(Availability.FULL_TIME)
+                .build();
+
+        //Act
+        String response = mockMvc.perform(put("/api/freelancer/profile")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        //Assert
+        assertThat(response).isEqualTo("Profile updated successfully");
+
+        // Verify the changes in database
+        User updatedUser = userRepository.findById(freelancer.getId()).get();
+        assertThat(updatedUser.getFirstName()).isEqualTo("John");
+        assertThat(updatedUser.getLastName()).isEqualTo("Updated");
+        assertThat(updatedUser.getProfile().getBio()).isEqualTo("Full-stack developer with 5 years of experience");
+        assertThat(updatedUser.getProfile().getContactEmail()).isEqualTo("john.updated@test.com");
+        assertThat(updatedUser.getProfile().getCity()).isEqualTo("San Francisco");
+        assertThat(updatedUser.getProfile().getState()).isEqualTo("CA");
+        assertThat(updatedUser.getProfile().getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.EXPERT);
+        assertThat(updatedUser.getProfile().getAvailability()).isEqualTo(Availability.FULL_TIME);
+    }
+
+    @Test
+    void updateFreelancerProfileUnauthorizedReturnsError() throws Exception {
+        //Arrange
+        UpdateFreelancerProfileDto updateDto = UpdateFreelancerProfileDto.builder()
+                .firstName("John")
+                .lastName("Updated")
+                .skills(Set.of(Tag.JAVA, Tag.PYTHON))
+                .build();
+
+        //Act & Assert
+        mockMvc.perform(put("/api/freelancer/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getFreelancerProfileIsOk() throws Exception {
+        //Act
+        String response = mockMvc.perform(get("/api/freelancer/profile")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        //Assert
+        Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
+
+        assertThat(profileResponse.get("firstName")).isEqualTo(freelancer.getFirstName());
+        assertThat(profileResponse.get("lastName")).isEqualTo(freelancer.getLastName());
+        assertThat(profileResponse.get("bio")).isEqualTo(freelancer.getProfile().getBio());
+    }
+
+    @Test
+    void getFreelancerProfileUnauthorizedReturnsError() throws Exception {
+        //Act & Assert
+        mockMvc.perform(get("/api/freelancer/profile"))
+                .andExpect(status().isUnauthorized());
+    }
 
 }
