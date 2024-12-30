@@ -8,16 +8,21 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import httpClient from '@/lib/httpClient';
-
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { cn } from '@/util/utils';
+import { RegistrationUserType } from '@/app/(without-main-layout)/auth/register/page';
+import { Role } from '@/constants/models/user/UserResponse';
+import {
+  FormInput,
+  SocialAuthLogins,
+} from '@/app/(without-main-layout)/auth/shared/auth-components';
 
-type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
+type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
+  userRole: RegistrationUserType;
+};
 
 const registerSchema = z
   .object({
@@ -34,17 +39,29 @@ const registerSchema = z
   });
 
 type Schema = z.infer<typeof registerSchema>;
-export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
+
+export function UserRegisterForm({
+  className,
+  userRole,
+  ...props
+}: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [success, setSuccess] = React.useState<boolean>(false);
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
     undefined
   );
 
+  const { register, handleSubmit, formState } = useForm<Schema>({
+    resolver: zodResolver(registerSchema),
+    reValidateMode: 'onSubmit',
+  });
+
   async function onSubmit(data: Schema) {
     setErrors(undefined);
     setSuccess(false);
     setIsLoading(true);
+    data.role = userRole;
+
     httpClient
       .post('/api/users', data)
       .then(() => {
@@ -60,11 +77,6 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
       });
   }
 
-  const { register, handleSubmit, formState } = useForm<Schema>({
-    resolver: zodResolver(registerSchema),
-    reValidateMode: 'onSubmit',
-  });
-
   return (
     <div className={cn('grid gap-6', className)} {...props}>
       <SuccessFeedback
@@ -77,93 +89,70 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
           </Link>
         }
       />
-
+      <SocialAuthLogins isLoading={isLoading} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='grid gap-2'>
-          <div className='grid gap-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input
+          <div className='grid gap-3'>
+            <div className='grid grid-cols-2 gap-4'>
+              <FormInput
+                id='firstName'
+                label='First name'
+                type='text'
+                isLoading={isLoading}
+                register={register}
+              />
+              <FormInput
+                id='lastName'
+                label='Last name'
+                type='text'
+                isLoading={isLoading}
+                register={register}
+              />
+            </div>
+
+            <FormInput
               id='email'
+              label='Email'
+              type='text'
               placeholder='name@example.com'
-              type='text'
-              autoCapitalize='none'
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.email?.message}
               autoComplete='email'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('email')}
             />
-            {formState.errors.email && (
-              <small className='text-red-600'>
-                {formState.errors.email.message}
-              </small>
-            )}
 
-            <Label htmlFor='password'>Password</Label>
-            <Input
+            <FormInput
               id='password'
+              label='Password'
               type='password'
-              autoCapitalize='none'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('password')}
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.password?.message}
             />
-            {formState.errors.password && (
-              <small className='text-red-600'>
-                {formState.errors.password.message}
-              </small>
-            )}
 
-            <Label htmlFor='passwordConfirmation'>Confirm password</Label>
-            <Input
+            <FormInput
               id='passwordConfirmation'
+              label='Confirm password'
               type='password'
-              disabled={isLoading}
-              {...register('passwordConfirmation')}
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.passwordConfirmation?.message}
             />
-            {formState.errors.passwordConfirmation && (
-              <small className='text-red-600'>
-                {formState.errors.passwordConfirmation.message}
-              </small>
-            )}
-
-            <Label htmlFor='firstName'>First name</Label>
-            <Input
-              id='firstName'
-              type='text'
-              autoCapitalize='none'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('firstName')}
-            />
-
-            <Label htmlFor='lastName'>Last name</Label>
-            <Input
-              id='lastName'
-              type='text'
-              autoCapitalize='none'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('lastName')}
-            />
-
-            <Label htmlFor='role'>Role</Label>
-            <select
-              id='role'
-              disabled={isLoading}
-              {...register('role')}
-              className='rounded border border-gray-300 p-2'
-            >
-              <option value=''>Select Role</option>
-              <option value='CLIENT'>CLIENT</option>
-              <option value='FREELANCER'>FREELANCER</option>
-            </select>
           </div>
 
           <ErrorFeedback data={errors} />
 
-          <Button disabled={isLoading} type='submit' variant={'footerColor'}>
-            {isLoading && 'Creating account...'}
-            Register
+          <Button
+            className='mt-6'
+            disabled={isLoading}
+            animation={'default'}
+            type='submit'
+          >
+            {isLoading
+              ? 'Creating account...'
+              : userRole === Role.CLIENT
+              ? 'Register as a client'
+              : 'Register as a freelancer'}
           </Button>
         </div>
       </form>
