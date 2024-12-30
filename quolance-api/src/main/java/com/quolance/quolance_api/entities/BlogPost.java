@@ -2,6 +2,7 @@ package com.quolance.quolance_api.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class BlogPost extends AbstractEntity {
 
     @Column(nullable = false, length = 10000) // Ensures content has a size limit

@@ -49,7 +49,7 @@ public class BlogThreadViewServiceImpl implements BlogThreadViewService {
         BlogThreadView threadView = BlogThreadView.builder()
                 .title(request.getContent())
                 .content(shortenedContent)
-                .dateCreated(savedBlogPost.getDateCreated()) // Match the blog post's date
+                .dateCreated(savedBlogPost.getCreationDate()) // Match the blog post's date
                 .blogPost(savedBlogPost)
                 .build();
         BlogThreadView savedThreadView = blogThreadViewRepository.save(threadView);
