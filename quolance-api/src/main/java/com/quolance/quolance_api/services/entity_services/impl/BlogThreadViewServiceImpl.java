@@ -37,7 +37,6 @@ public class BlogThreadViewServiceImpl implements BlogThreadViewService {
         BlogPost blogPost = BlogPost.builder()
                 .content(request.getContent())
                 .user(user)
-                .dateCreated(LocalDateTime.now())
                 .build();
         BlogPost savedBlogPost = blogPostRepository.save(blogPost);
 
