@@ -50,7 +50,7 @@ public class Project extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "tag")
 
-    private List<Tag> tags;
+    //private List<Tag> tags;
 
     @ManyToOne
     private User client;
