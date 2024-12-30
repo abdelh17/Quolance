@@ -12,14 +12,12 @@ import useScroll from '@/util/hooks/useScroll';
 
 import {
   Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
   Menu,
   MenuButton,
   MenuItem,
   MenuItems,
 } from '@headlessui/react';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { BellIcon } from '@heroicons/react/24/outline';
 
 const dummyUser = {
   name: 'Tom Cook',
@@ -177,12 +175,12 @@ function Header() {
                       >
                         {userNavigation.map((item) => (
                           <MenuItem key={item.name}>
-                            <a
+                            <Link
                               href={item.href}
                               className='block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none'
                             >
                               {item.name}
-                            </a>
+                            </Link>
                           </MenuItem>
                         ))}
                       </MenuItems>

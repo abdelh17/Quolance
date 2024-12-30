@@ -1,11 +1,9 @@
 {
 	"info": {
-		"_postman_id": "dc35aa1c-1b2c-4451-89d3-616cee38b443",
+		"_postman_id": "a12d5c28-92d6-491b-a43f-8f5239d7bfa2",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26432903",
-		"_collection_link": "https://red-spaceship-708711.postman.co/workspace/Team-Workspace~e1b42c6e-212e-468e-8029-f64205a3557e/collection/39151315-58a37ce2-2856-4b3e-877b-baa3897fc901?action=share&source=collection_link&creator=39178284"
-
+		"_exporter_id": "40687150"
 	},
 	"item": [
 		{
@@ -444,6 +442,39 @@
 					"response": []
 				},
 				{
+					"name": "Get freelancer profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmRlbEB0ZXN0LmNvbSIsImlhdCI6MTcyOTkwMDE2NSwiZXhwIjoxNzI5OTg2NTY1fQ.S4jiJ53imgth3ekFG9s8zn4xUeKMSueqJILpFPGr_U8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/freelancer/profile/{freelancerId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"freelancer",
+								"profile",
+								"{freelancerId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get all projects of a client",
 					"request": {
 						"method": "GET",
@@ -733,6 +764,69 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"bio\": \"Full-stack developer with 5 years of experience\",\r\n    \"contactEmail\": \"john.doe@example.com\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"experienceLevel\": \"EXPERT\",\r\n    \"socialMediaLinks\": [\r\n        \"https://linkedin.com/in/johndoe\",\r\n        \"https://github.com/johndoe\"\r\n    ],\r\n    \"skills\": [\r\n        \"JAVA\",\r\n        \"PYTHON\",\r\n        \"JAVASCRIPT\",\r\n        \"HTML\",\r\n        \"CSS\"\r\n    ],\r\n    \"availability\": \"FULL_TIME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"bio\": \"Full-stack developer with 5 years of experience\",\r\n    \"contactEmail\": \"john.doe@example.com\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"experienceLevel\": \"EXPERT\",\r\n    \"socialMediaLinks\": [\r\n        \"https://linkedin.com/in/johndoe\",\r\n        \"https://github.com/johndoe\"\r\n    ],\r\n    \"skills\": [\r\n        \"JAVA\",\r\n        \"PYTHON\",\r\n        \"JAVASCRIPT\",\r\n        \"HTML\",\r\n        \"CSS\"\r\n    ],\r\n    \"availability\": \"FULL_TIME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"profile"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -872,7 +966,179 @@
 		},
 		{
 			"name": "Blog",
-			"item": []
+			"item": [
+				{
+					"name": "Blog Post",
+					"item": [
+						{
+							"name": "Create Blog Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"My First Blog\",\r\n    \"content\": \"This is the content of my first blog post.\",\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/blog-posts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"blog-posts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Blog Posts",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Blog Post By ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Get Blog Post By User ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Update Blog Post",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Blog Post",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Blog Post View",
+					"item": [
+						{
+							"name": "Create Thread",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"My First Blog Thread\",\r\n    \"content\": \"This is the content for the associated blog post.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/api/blog-thread-views",
+									"path": [
+										"api",
+										"blog-thread-views"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Blog Thread By Thread ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Get Thread View by BlogPost ID",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Update Blog Thread Title",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Thread",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Get Paginated All Threads",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/blog-thread-views?page=1&size=5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"blog-thread-views"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "size",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		},
 		{
 			"name": "Pending",

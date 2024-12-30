@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 import ClientDashboardTable from './ClientDashboardTable';
+import FreelancerDashboardTable from './FreelancerDashboardTable';
 import { useAuthGuard } from '@/api/auth-api';
 import ClientDashboardActionButtons from './ClientDashboardActionButtons';
 import FreelancerDashboardActionButtons from './FreelancerDashboardActionButtons';
@@ -58,14 +59,15 @@ export default function Dashboard() {
           <div className='mx-auto px-4 py-8 sm:px-6 lg:px-8'>
             {user?.role === 'CLIENT' && (
               <div>
-                <ClientDashboardTable />
                 <ClientDashboardActionButtons />
+                <ClientDashboardTable />
               </div>
             )}
 
             {user?.role === 'FREELANCER' && (
               <div>
                 <FreelancerDashboardActionButtons />
+                <FreelancerDashboardTable />
               </div>
             )}
           </div>

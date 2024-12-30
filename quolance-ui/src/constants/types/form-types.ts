@@ -53,6 +53,12 @@ export const PROJECT_STATUS_OPTIONS: FormFieldOption[] = [
   { id: 'rejected', value: 'REJECTED', label: 'Rejected' },
 ];
 
+export const AVAILABILITY_OPTIONS = [
+  { id: 'full-time', value: 'FULL_TIME', label: 'Full Time' },
+  { id: 'part-time', value: 'PART_TIME', label: 'Part Time' },
+  { id: 'contract', value: 'CONTRACT', label: 'Contract' }
+];
+
 export const getLabelFromValue = (
   options: FormFieldOption[],
   value: string
