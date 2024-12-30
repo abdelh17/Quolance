@@ -105,7 +105,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         })
       : null;
 
-    // Updated animation classes with improved corner handling
     const animationClasses = animationConfig
       ? cn(
           'relative overflow-hidden duration-700',
@@ -114,10 +113,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           bgColor && `bg-${bgColor}`,
           textColor && `text-${textColor}`,
           `hover:${animationConfig.hoverTextColor || 'text-n900'}`,
-          'after:absolute after:inset-0 after:left-0',
-          'after:w-0 after:h-[calc(100%+4px)] after:top-0',
+          'after:absolute after:-left-2 after:-right-2',
+          'after:w-0 after:h-[calc(100%+16px)]',
+          'after:-top-2 ',
           `after:${animationConfig.overlayColor || 'bg-yellow-400'}`,
-          'after:duration-700 hover:after:w-[calc(100%+2px)]',
+          'after:duration-700 hover:after:w-[calc(100%+16px)]',
           'after:transition-all after:ease-out',
           shape === 'full' ? 'after:rounded-full' : 'after:rounded-md'
         )
