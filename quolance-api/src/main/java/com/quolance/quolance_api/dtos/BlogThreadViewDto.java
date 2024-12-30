@@ -30,7 +30,7 @@ public class BlogThreadViewDto {
         return BlogThreadViewDto.builder()
                 .id(blogThreadView.getId())
                 // .blogPostId(blogThreadView.getBlogPost().getId())
-                .tagIds(blogThreadView.getTags().stream().map(Tag::getId).collect(Collectors.toSet()))
+               // .tagIds(blogThreadView.getTags().stream().map(Tag::getId).collect(Collectors.toSet()))
                 .build();
     }
 }
