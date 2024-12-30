@@ -22,7 +22,7 @@ public class BlogPostController {
 
     @PostMapping
     @Operation(summary = "Create a blog post")
-    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @RequestBody BlogPostRequestDto request) {
+    public ResponseEntity<BlogPostResponseDto> createBlogPost( @RequestBody BlogPostRequestDto request) {
         BlogPostResponseDto response = blogPostService.create(request);
         return ResponseEntity.ok(response);
     }
@@ -44,7 +44,7 @@ public class BlogPostController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a blog post")
-    public ResponseEntity<BlogPostResponseDto> updateBlogPost(@PathVariable Long id, @Valid @RequestBody BlogPostRequestDto request) {
+    public ResponseEntity<BlogPostResponseDto> updateBlogPost(@PathVariable Long id, @RequestBody BlogPostRequestDto request) {
         BlogPostResponseDto response = blogPostService.update(id, request);
         return ResponseEntity.ok(response);
     }
@@ -58,8 +58,8 @@ public class BlogPostController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a blog post")
-    public ResponseEntity<Void> deleteBlogPost(@PathVariable Long id) {
+    public ResponseEntity<String> deleteBlogPost(@PathVariable Long id) {
         blogPostService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("The post was successfully deleted");
     }
 }

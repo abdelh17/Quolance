@@ -12,17 +12,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BlogPost {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class BlogPost extends AbstractEntity {
 
     @Column(nullable = false, length = 10000) // Ensures content has a size limit
     private String content;
-
-    @Column(nullable = false)
-    private LocalDateTime dateCreated;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

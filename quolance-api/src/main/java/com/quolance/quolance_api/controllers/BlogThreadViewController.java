@@ -27,7 +27,7 @@ public class BlogThreadViewController {
     @PostMapping
     @Operation(summary = "Create a blog thread view with an associated blog post")
     public ResponseEntity<BlogThreadViewResponseDto> createThreadView(
-            @Valid @RequestBody BlogThreadViewRequestDto request) {
+            @RequestBody BlogThreadViewRequestDto request) {
         BlogThreadViewResponseDto response = blogThreadViewService.create(request);
         return ResponseEntity.ok(response);
     }

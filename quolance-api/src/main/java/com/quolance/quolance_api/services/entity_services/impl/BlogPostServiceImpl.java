@@ -7,6 +7,8 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.entity_services.BlogPostService;
+import com.quolance.quolance_api.util.SecurityUtil;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,19 +23,17 @@ import java.util.stream.Collectors;
 public class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostRepository blogPostRepository;
-    private final UserRepository userRepository;
 
     @Override
     public BlogPostResponseDto create(@Valid BlogPostRequestDto request) {
         // Fetch user
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = SecurityUtil.getAuthenticatedUser();
+
 
         // Create and save the blog post
         BlogPost blogPost = BlogPost.builder()
                 .content(request.getContent())
                 .user(user)
-                .dateCreated(LocalDateTime.now())
                 .build();
 
         BlogPost savedBlogPost = blogPostRepository.save(blogPost);
@@ -69,7 +69,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPostResponseDto update(Long id, @Valid BlogPostRequestDto request) {
         // Fetch the existing blog post
         BlogPost blogPost = blogPostRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Blog post not found"));
+                .orElseThrow(() -> new ApiException("Blog post not found"));
 
         // Update the blog post fields
         blogPost.setContent(request.getContent());
@@ -83,6 +83,8 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public void delete(Long id) {
+        if (blogPostRepository.findByUserId(id) != SecurityUtil.getAuthenticatedUser())
+            throw new ApiException("Incorrect User. Cannot delete");
         blogPostRepository.deleteById(id);
     }
 
@@ -92,7 +94,7 @@ public class BlogPostServiceImpl implements BlogPostService {
                 blogPost.getId(),
                 blogPost.getContent(),
                 blogPost.getUser().getFirstName() + " " + blogPost.getUser().getLastName(),
-                blogPost.getDateCreated()
+                blogPost.getCreationDate()
 //                blogPost.getTags().stream().map(Tag::getName).collect(Collectors.toList()), // Empty if no tags
 //                new ArrayList<>(), // Placeholder for reactions
 //                new ArrayList<>()  // Placeholder for replies
