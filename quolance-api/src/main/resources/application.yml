@@ -66,6 +66,8 @@ org:
 logging:
   level:
     org.springframework.security: DEBUG
+    org.springframework.web.socket: DEBUG
+    org.springframework.messaging: DEBUG
 
 server:
   port: 8081

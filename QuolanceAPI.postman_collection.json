@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "d7a44dae-3e2e-42c5-bdf4-eaf05631ea3e",
+		"_postman_id": "a12d5c28-92d6-491b-a43f-8f5239d7bfa2",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "33249345"
+		"_exporter_id": "40687150"
 	},
 	"item": [
 		{
@@ -442,6 +442,39 @@
 					"response": []
 				},
 				{
+					"name": "Get freelancer profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmRlbEB0ZXN0LmNvbSIsImlhdCI6MTcyOTkwMDE2NSwiZXhwIjoxNzI5OTg2NTY1fQ.S4jiJ53imgth3ekFG9s8zn4xUeKMSueqJILpFPGr_U8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/freelancer/profile/{freelancerId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"freelancer",
+								"profile",
+								"{freelancerId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get all projects of a client",
 					"request": {
 						"method": "GET",
@@ -727,6 +760,69 @@
 								"freelancer",
 								"applications",
 								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"bio\": \"Full-stack developer with 5 years of experience\",\r\n    \"contactEmail\": \"john.doe@example.com\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"experienceLevel\": \"EXPERT\",\r\n    \"socialMediaLinks\": [\r\n        \"https://linkedin.com/in/johndoe\",\r\n        \"https://github.com/johndoe\"\r\n    ],\r\n    \"skills\": [\r\n        \"JAVA\",\r\n        \"PYTHON\",\r\n        \"JAVASCRIPT\",\r\n        \"HTML\",\r\n        \"CSS\"\r\n    ],\r\n    \"availability\": \"FULL_TIME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"bio\": \"Full-stack developer with 5 years of experience\",\r\n    \"contactEmail\": \"john.doe@example.com\",\r\n    \"city\": \"San Francisco\",\r\n    \"state\": \"CA\",\r\n    \"experienceLevel\": \"EXPERT\",\r\n    \"socialMediaLinks\": [\r\n        \"https://linkedin.com/in/johndoe\",\r\n        \"https://github.com/johndoe\"\r\n    ],\r\n    \"skills\": [\r\n        \"JAVA\",\r\n        \"PYTHON\",\r\n        \"JAVASCRIPT\",\r\n        \"HTML\",\r\n        \"CSS\"\r\n    ],\r\n    \"availability\": \"FULL_TIME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"profile"
 							]
 						}
 					},

@@ -1,21 +1,19 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
 import ErrorFeedback from '@/components/error-feedback';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { useAuthGuard } from '@/api/auth-api';
-
-type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
+import {
+  FormInput,
+  SocialAuthLogins,
+} from '@/app/(without-main-layout)/auth/shared/auth-components';
 
 const loginFormSchema = z.object({
   email: z.string().email(),
@@ -23,9 +21,12 @@ const loginFormSchema = z.object({
 });
 
 type Schema = z.infer<typeof loginFormSchema>;
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const { login } = useAuthGuard({
+
+export function UserAuthForm({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const { login, isLoginLoading: isLoading } = useAuthGuard({
     middleware: 'guest',
     redirectIfAuthenticated: '/dashboard',
   });
@@ -33,113 +34,66 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     undefined
   );
 
-  async function onSubmit(data: Schema) {
-    login({
-      onError: (errors) => {
-        setErrors(errors);
-        if (errors) {
-          toast.error('Authentication failed');
-        }
-      },
-      props: data,
-    });
-  }
-
   const { register, handleSubmit, formState } = useForm<Schema>({
     resolver: zodResolver(loginFormSchema),
     reValidateMode: 'onSubmit',
   });
 
-  function getProviderLoginUrl(
-    provider: 'google' | 'facebook' | 'github' | 'okta'
-  ) {
-    return (
-      process.env.NEXT_PUBLIC_BASE_URL + `/oauth2/authorization/${provider}`
-    );
+  async function onSubmit(data: Schema) {
+    try {
+      await login({
+        onError: (errors) => {
+          if (errors) {
+            setErrors(errors);
+            toast.error('Authentication failed');
+          }
+        },
+        props: data,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error('Authentication failed');
+    }
   }
 
   return (
     <div className='grid gap-6'>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='grid gap-2'>
-          <div className='grid gap-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input
+        <div className='grid gap-5'>
+          <SocialAuthLogins isLoading={isLoading} />
+          <div className='grid gap-4'>
+            <FormInput
               id='email'
-              placeholder='name@example.com'
+              label='Email'
               type='text'
-              autoCapitalize='none'
+              placeholder='name@example.com'
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.email?.message}
               autoComplete='email'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('email')}
             />
-            {formState.errors.email && (
-              <small className='text-red-600'>
-                {formState.errors.email.message}
-              </small>
-            )}
-
-            <Label htmlFor='password'>Password</Label>
-            <Input
+            <FormInput
               id='password'
+              label='Password'
               type='password'
-              autoCapitalize='none'
-              autoCorrect='off'
-              disabled={isLoading}
-              {...register('password')}
+              isLoading={isLoading}
+              register={register}
+              error={formState.errors.password?.message}
             />
-            {formState.errors.password && (
-              <small className='text-red-600'>
-                {formState.errors.password.message}
-              </small>
-            )}
           </div>
 
           <ErrorFeedback data={errors} />
 
-          <Button disabled={isLoading} type='submit' variant={'footerColor'}>
-            {isLoading && 'Logging in...'}
-            Sign In with Email
+          <Button
+            disabled={isLoading}
+            type='submit'
+            className='mt-6 py-4'
+            variant={'default'}
+          >
+            {isLoading ? 'Signing in...' : 'Sign In with Email'}
           </Button>
         </div>
       </form>
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background text-muted-foreground px-2'>
-            Or continue with
-          </span>
-        </div>
-      </div>
-
-      <div className='flex flex-col gap-y-2'>
-        <Link href={getProviderLoginUrl('github')}>
-          <Button
-            variant='outline'
-            type='button'
-            disabled={isLoading}
-            className='w-full'
-          >
-            <FaGithub className='mr-2 h-4 w-4' />
-            GitHub
-          </Button>
-        </Link>
-
-        <Link href={getProviderLoginUrl('google')}>
-          <Button
-            variant='outline'
-            type='button'
-            disabled={isLoading}
-            className='w-full'
-          >
-            <FaGoogle className='mr-2 h-4 w-4' />
-            Google
-          </Button>
-        </Link>
-      </div>
     </div>
   );
 }

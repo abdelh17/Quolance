@@ -1,16 +1,19 @@
 'use client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
 
 /*--- Hooks ---*/
-export const useSubmitApplication = () => {
+export const useSubmitApplication = (projectId: number) => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (projectId: number) =>
+    mutationFn: () =>
       httpClient.post(`api/freelancer/submit-application`, { projectId }),
     onSuccess: () => {
       showToast('Application submitted successfully', 'success');
+      queryClient.invalidateQueries({ queryKey: ['applications', projectId] });
     },
     onError: (error) => {
       const ErrorResponse = error.response?.data as HttpErrorResponse;
@@ -22,16 +25,39 @@ export const useSubmitApplication = () => {
   });
 };
 
-export const useCancelApplication = () => {
+export const useCancelApplication = (projectId: number) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (applicationId: number) =>
-      httpClient.post(`api/freelancer/${applicationId}/cancel-application`),
+      httpClient.delete(`api/freelancer/applications/${applicationId}`),
     onSuccess: () => {
       showToast('Application cancelled successfully', 'success');
+      queryClient.invalidateQueries({ queryKey: ['applications', projectId] });
     },
     onError: (error) => {
       const ErrorResponse = error.response?.data as HttpErrorResponse;
       showToast(`Error: ${ErrorResponse.message}`, 'error');
+    },
+  });
+};
+
+export const useGetAllFreelancerApplications = () => {
+  return useQuery({
+    queryKey: ['all-freelancer-applications'],
+    queryFn: () => httpClient.get('/api/freelancer/applications/all'),
+  });
+};
+
+export const useGetProjectApplication = (projectId: number) => {
+  return useQuery({
+    queryKey: ['applications', projectId],
+    queryFn: async (): Promise<ApplicationResponse | null> => {
+      const { data } = await httpClient.get<ApplicationResponse[]>(
+        'api/freelancer/applications/all'
+      );
+      return (
+        data.find((application) => application.projectId === projectId) || null
+      );
     },
   });
 };

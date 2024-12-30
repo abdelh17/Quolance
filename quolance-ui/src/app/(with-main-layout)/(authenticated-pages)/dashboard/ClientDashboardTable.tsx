@@ -8,7 +8,6 @@ import {
   formatEnumString,
   formatPriceRange,
 } from '@/util/stringUtils';
-import { Button } from '@/components/ui/button';
 
 export default function ClientDashboardTable() {
   const { data, isLoading } = useGetAllClientProjects();

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import httpClient from '@/lib/httpClient';
@@ -27,6 +27,8 @@ export const useAuthGuard = ({
     httpClient.get<UserResponse>('/api/auth/me').then((res) => res.data)
   );
 
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+
   const login = async ({
     onError,
     props,
@@ -34,17 +36,22 @@ export const useAuthGuard = ({
     onError: (errors: HttpErrorResponse | undefined) => void;
     props: any;
   }) => {
-    onError(undefined);
-    httpClient
-      .post<HttpErrorResponse>('/api/auth/login', {
-        email: props.email,
-        password: props.password,
-      })
-      .then(() => mutate())
-      .catch((err) => {
-        const errors = err.response.data as HttpErrorResponse;
-        onError(errors);
-      });
+    try {
+      setIsLoginLoading(true);
+      onError(undefined);
+      await httpClient
+        .post<HttpErrorResponse>('/api/auth/login', {
+          email: props.email,
+          password: props.password,
+        })
+        .then(() => mutate())
+        .catch((err) => {
+          const errors = err.response.data as HttpErrorResponse;
+          onError(errors);
+        });
+    } finally {
+      setIsLoginLoading(false);
+    }
   };
 
   const logout = async () => {
@@ -74,5 +81,6 @@ export const useAuthGuard = ({
     logout,
     mutate,
     isLoading,
+    isLoginLoading,
   };
 };
