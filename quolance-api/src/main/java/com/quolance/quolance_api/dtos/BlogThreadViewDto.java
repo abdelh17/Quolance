@@ -21,7 +21,7 @@ public class BlogThreadViewDto {
     public BlogThreadView toEntity(Set<Tag> tags) {
         BlogThreadView blogThreadView = new BlogThreadView();
         blogThreadView.setId(this.id);
-        blogThreadView.setTags(tags);
+      //  blogThreadView.setTags(tags);
         return blogThreadView;
     }
 
