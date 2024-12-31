@@ -26,10 +26,14 @@ export function UserAuthForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+
+  const { user } = useAuthGuard({ middleware: 'auth' });
+
   const { login, isLoginLoading: isLoading } = useAuthGuard({
     middleware: 'guest',
-    redirectIfAuthenticated: '/dashboard',
+    redirectIfAuthenticated: user?.role == 'ADMIN' ? '/adminDashboard' : '/dashboard',
   });
+
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
     undefined
   );
