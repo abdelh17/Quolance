@@ -8,10 +8,22 @@ import {
   formatEnumString,
   formatPriceRange,
 } from '@/util/stringUtils';
-
+import { useRouter } from 'next/navigation';
 export default function ClientDashboardTable() {
   const { data, isLoading } = useGetAllClientProjects();
   const projects = data?.data || [];
+
+  const router = useRouter();
+
+  const scrollToApplicants = () => {
+    router.push(`/projects/${projects.id}#applicants-section`);
+    // Add a small delay to ensure the DOM has updated
+    setTimeout(() => {
+      document.getElementById('applicants-section')?.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -111,8 +123,16 @@ export default function ClientDashboardTable() {
                       href={`/projects/${projects.id}?edit`}
                       className='text-b300 hover:text-indigo-900'
                     >
-                      Edit
-                      <span className='sr-only'>, {projects.priceRange}</span>
+                      Edit Project
+                    </Link>
+                  </td>
+                  <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                    <Link
+                      href={`/projects/${projects.id}/#applicants-section`}
+                      onClick={scrollToApplicants}
+                      className='text-b300 hover:text-indigo-900'
+                    >
+                      View Applicants
                     </Link>
                   </td>
                 </tr>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import {useMemo, useRef, useState} from 'react';
 import { PiSliders, PiUsers, PiX } from 'react-icons/pi';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
 import {
@@ -116,11 +116,15 @@ export default function ProjectSubmissions({
     await rejectSubmissions(selectedSubmissions);
   };
 
+  //This ref is useful since we scroll down to it when a Client clicks on the "View Applicants" button
+  const applicantsRef = useRef(null);
+
+
   return (
     <section className='sbp-30 stp-15 container'>
       <div>
         <div className='flex items-center justify-between'>
-          <div>
+          <div ref={applicantsRef} id="applicants-section">
             <h2 className='heading-2 pb-3'>Project Submissions</h2>
             <p className='text-n300 font-medium'>
               Browse and connect with top talent
