@@ -51,7 +51,7 @@ function PostsTasksSteps() {
       await mutateProject(project);
 
       // push to home page
-      router.push('/projects');
+      router.push('/dashboard');
     } catch (err) {
       console.log('Error in submitForm:', err);
     }
