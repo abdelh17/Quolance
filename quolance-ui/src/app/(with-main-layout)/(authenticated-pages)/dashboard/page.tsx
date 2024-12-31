@@ -1,8 +1,6 @@
 'use client';
 import Image from 'next/image';
 
-import { Button } from '@/components/ui/button';
-
 import ClientDashboardTable from './ClientDashboardTable';
 import FreelancerDashboardTable from './FreelancerDashboardTable';
 import { useAuthGuard } from '@/api/auth-api';
