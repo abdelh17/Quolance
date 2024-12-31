@@ -16,6 +16,7 @@ import { usePostProject } from '@/api/projects-api';
 import { PostProjectType } from '@/constants/types/project-types';
 
 import { showToast } from '@/util/context/ToastProvider';
+import { useAuthGuard } from '@/api/auth-api';
 
 const stepsComponents = [StepOne, StepTwo, StepThree, StepFour];
 
@@ -28,6 +29,8 @@ const stepsName = [
 
 function PostsTasksSteps() {
   const router = useRouter();
+
+  const { user } = useAuthGuard({ middleware: 'auth' });
 
   const { currentStep, setCurrentStep, formData } = useSteps();
 
@@ -71,18 +74,36 @@ function PostsTasksSteps() {
     <>
       <section className='sbp-30'>
         <div className='4xl:large-container max-4xl:container flex items-center justify-between pt-6'>
-          <Link href='/' className='pt-1 text-2xl font-bold'>
-            Quolance
-          </Link>
-          <Link
-            href='/'
-            className='hover:text-r300 flex items-center justify-start gap-2 text-lg font-medium duration-500'
-          >
-            Cancel{' '}
-            <span className='ph-bold ph-x !leading-none'>
-              <PiXBold />
-            </span>
-          </Link>
+          {user?.role ? (
+            <Link href='/dashboard'>
+              <h1 className='text-2xl font-bold'>Quolance</h1>
+            </Link>
+          ) : (
+            <Link href='/'>
+              <h1 className='text-2xl font-bold'>Quolance</h1>
+            </Link>
+          )}
+          {user?.role ? (
+            <Link
+              href='/dashboard'
+              className='hover:text-r300 flex items-center justify-start gap-2 text-lg font-medium duration-500'
+            >
+              Cancel{' '}
+              <span className='ph-bold ph-x !leading-none'>
+                <PiXBold />
+              </span>
+            </Link>
+          ) : (
+            <Link
+              href='/'
+              className='hover:text-r300 flex items-center justify-start gap-2 text-lg font-medium duration-500'
+            >
+              Cancel{' '}
+              <span className='ph-bold ph-x !leading-none'>
+                <PiXBold />
+              </span>
+            </Link>
+          )}
         </div>
 
         {currentStep < 4 && (

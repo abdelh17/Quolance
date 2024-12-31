@@ -77,9 +77,17 @@ function Header() {
               >
                 <PiListBold className='text-b500 pt-2' />
               </button>
-              <Link href='/'>
-                <h1 className='text-2xl font-bold'>Quolance</h1>
-              </Link>
+              {
+                user?.role? (
+                    <Link href='/dashboard'>
+                        <h1 className='text-2xl font-bold'>Quolance</h1>
+                    </Link>
+                    ) : (
+                    <Link href='/'>
+                        <h1 className='text-2xl font-bold'>Quolance</h1>
+                    </Link>
+                )
+              }
             </div>
 
             <div className='max-4xl:hidden flex items-center justify-between gap-6 max-lg:hidden'>
