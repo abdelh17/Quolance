@@ -110,7 +110,6 @@ public class FreelancerController {
         return ResponseEntity.ok("Profile updated successfully");
     }
 
-    // post mapping endpoint to upload a file that take a multipart file as a parameter
     @PostMapping("/profile/picture")
     @Operation(
             summary = "Upload profile picture",
