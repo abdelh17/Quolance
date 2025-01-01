@@ -247,7 +247,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_Success() {
+    void updateUserInfoUser_Success() {
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
         UserResponseDto result = userService.updateUser(updateUserRequest, mockUser);
@@ -259,7 +259,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updatePassword_Success() {
+    void updateUserInfoPassword_Success() {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
@@ -269,7 +269,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updatePassword_WrongOldPassword_ThrowsException() {
+    void updateUserInfoPassword_WrongOldPassword_ThrowsException() {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
         assertThatThrownBy(() -> userService.updatePassword(updatePasswordRequest, mockUser))

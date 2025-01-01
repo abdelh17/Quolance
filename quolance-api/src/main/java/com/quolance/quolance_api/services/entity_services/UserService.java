@@ -12,6 +12,8 @@ public interface UserService {
 
     Optional<User> findById(Long id);
 
+    Optional<User> findByUsername(String username);
+
     void verifyEmail(String code);
 
     void forgotPassword(String email);
@@ -19,6 +21,8 @@ public interface UserService {
     void resetPassword(UpdateUserPasswordRequestDto request);
 
     UserResponseDto updateUser(UpdateUserRequestDto request, User user);
+
+    void updateUserName(String username, User user);
 
     UserResponseDto updatePassword(UpdateUserPasswordRequestDto request, User user);
 

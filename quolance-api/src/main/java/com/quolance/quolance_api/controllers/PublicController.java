@@ -1,9 +1,12 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +45,15 @@ public class PublicController {
     public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") Long projectId) {
         ProjectPublicDto project = freelancerWorkflowService.getProject(projectId);
         return ResponseEntity.ok(project);
+    }
+
+    @GetMapping("freelancer/profile/{username}")
+    @Operation(
+            summary = "View freelancer profile"
+    )
+    public ResponseEntity<FreelancerProfileDto> getFreelancerProfile(@PathVariable(name = "username") String username) {
+        FreelancerProfileDto profile = freelancerWorkflowService.getFreelancerProfile(username);
+        return ResponseEntity.ok(profile);
     }
 
 }

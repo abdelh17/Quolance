@@ -14,15 +14,13 @@ public interface FreelancerWorkflowService {
 
     void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer);
     void deleteApplication(Long applicationId, User freelancer);
-//    ApplicationDto getApplicationToProject(Long projectId, User freelancer);
     ApplicationDto getApplication(Long applicationId, User freelancer);
 
     List<ApplicationDto> getAllFreelancerApplications(User freelancer);
     List<ProjectPublicDto> getAllAvailableProjects();
     ProjectPublicDto getProject(Long projectId);
 
-    FreelancerProfileDto getFreelancerProfile(User freelancer);
+    FreelancerProfileDto getFreelancerProfile(String username);
     void updateFreelancerProfile(UpdateFreelancerProfileDto updateFreelancerProfileDto, User freelancer);
-
     void uploadProfilePicture(MultipartFile photo, User freelancer);
 }

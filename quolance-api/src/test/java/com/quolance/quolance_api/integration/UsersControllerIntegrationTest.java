@@ -50,6 +50,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
     void testCreateUserIsOk() throws Exception {
         CreateUserRequestDto request = CreateUserRequestDto.builder()
                 .email("test@test.com")
+                .username("MyClient123")
                 .firstName("Test")
                 .lastName("Test")
                 .password("Test1234")
@@ -66,6 +67,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
 
         Map<String, Object> userResponse = objectMapper.readValue(response, LinkedHashMap.class);
         assertThat(userResponse.get("email")).isEqualTo("test@test.com");
+        assertThat(userResponse.get("username")).isEqualTo("MyClient123");
         assertThat(userResponse.get("firstName")).isEqualTo("Test");
         assertThat(userResponse.get(("lastName"))).isEqualTo("Test");
         assertThat(userResponse.get("role")).isEqualTo("CLIENT");
@@ -84,6 +86,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
         userRepository.save(EntityCreationHelper.createClient());
         CreateUserRequestDto request = CreateUserRequestDto.builder()
                 .email("client@test.com")
+                .username("MyClient123")
                 .firstName("Test")
                 .lastName("Test")
                 .password("Test1234")
@@ -110,6 +113,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
     void testCreateAdminIsOk() throws Exception {
         CreateAdminRequestDto request = CreateAdminRequestDto.builder()
                 .email("test@test.com")
+                .username("TestTest")
                 .firstName("Test")
                 .lastName("Test")
                 .temporaryPassword("Test1234")
@@ -132,6 +136,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
         // Arrange
         CreateAdminRequestDto request = CreateAdminRequestDto.builder()
                 .email("test@test.com")
+                .username("MyClient123")
                 .firstName("Test")
                 .lastName("Test")
                 .temporaryPassword("Test1234")
@@ -148,7 +153,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    void testUpdateUserIsOk() throws Exception {
+    void testUpdateUserInfoUserIsOk() throws Exception {
         // Arrange
         userRepository.save(EntityCreationHelper.createClient());
         UpdateUserRequestDto request = UpdateUserRequestDto.builder()
@@ -176,7 +181,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    void testUpdatePasswordIsOk() throws Exception {
+    void testUpdateUserInfoPasswordIsOk() throws Exception {
         // Arrange
         User createdClient = userRepository.save(EntityCreationHelper.createClient());
         UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()
@@ -199,7 +204,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    void testUpdatePasswordErrorIfWrongPasswordFormat() throws Exception {
+    void testUpdateUserInfoPasswordErrorIfWrongPasswordFormat() throws Exception {
         // Arrange
         User createdClient = userRepository.save(EntityCreationHelper.createClient());
         UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()

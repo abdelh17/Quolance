@@ -88,17 +88,6 @@ public class FreelancerController {
         return ResponseEntity.ok(project);
     }
 
-    @GetMapping("/profile")
-    @Operation(
-            summary = "View freelancer profile",
-            description = "View the authenticated freelancer's profile information"
-    )
-    public ResponseEntity<FreelancerProfileDto> getFreelancerProfile() {
-        User freelancer = SecurityUtil.getAuthenticatedUser();
-        FreelancerProfileDto profile = freelancerWorkflowService.getFreelancerProfile(freelancer);
-        return ResponseEntity.ok(profile);
-    }
-
     @PutMapping("/profile")
     @Operation(
             summary = "Update freelancer profile",

@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
         User user = new User(request);
         user = userRepository.save(user);
         sendVerificationEmail(user);
+
         return new UserResponseDto(user);
     }
 
@@ -61,6 +62,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     private void sendVerificationEmail(User user) {
@@ -111,9 +117,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto updateUser(UpdateUserRequestDto request, User user) {
-        user.update(request);
+        user.updateUserInfo(request);
         user = userRepository.save(user);
         return new UserResponseDto(user);
+    }
+
+    @Override
+    public void updateUserName(String username, User user) {
+        user.setUsername(username);
+        userRepository.save(user);
     }
 
     @Override

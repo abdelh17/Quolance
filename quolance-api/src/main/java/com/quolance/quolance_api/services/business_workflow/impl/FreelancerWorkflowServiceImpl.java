@@ -96,19 +96,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
         applicationService.deleteApplication(application);
     }
 
-//    // Might remove this method
-//    @Override
-//    public ApplicationDto getApplicationToProject(Long projectId, User freelancer) {
-//        Application application = applicationService.getApplicationByFreelancerIdAndProjectId(freelancer.getId(), projectId);
-//        if (application == null) {
-//            throw ApiException.builder()
-//                    .status(HttpServletResponse.SC_NOT_FOUND)
-//                    .message("No application found for this project.")
-//                    .build();
-//        }
-//        return ApplicationDto.fromEntity(application);
-//    }
-
     @Override
     public List<ApplicationDto> getAllFreelancerApplications(User freelancer) {
         return applicationService.getAllApplicationsByFreelancerId(freelancer.getId()).stream()
@@ -156,8 +143,17 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public FreelancerProfileDto getFreelancerProfile(User freelancer) {
-        return FreelancerProfileDto.fromEntity(freelancer);
+    public FreelancerProfileDto getFreelancerProfile(String username) {
+        Optional<User> freelancer = userService.findByUsername(username);
+
+        if (freelancer.isPresent()) {
+            return FreelancerProfileDto.fromEntity(freelancer.get());
+        } else {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_NOT_FOUND)
+                    .message("Freelancer not found")
+                    .build();
+        }
     }
 
     @Override

@@ -511,7 +511,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
 
         //Act
-        String response = mockMvc.perform(get("/api/client/freelancer/profile/" + freelancer.getId()).session(session))
+        String response = mockMvc.perform(get("/api/public/freelancer/profile/" + freelancer.getUsername()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -525,10 +525,10 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void getFreelancerProfileWhenNotExistReturnsNotFound() throws Exception {
         //Arrange
-        Long nonExistentFreelancerId = 999L;
+        String nonExistantUsername = "IDoNotExist";
 
         //Act
-        String response = mockMvc.perform(get("/api/client/freelancer/profile/" + nonExistentFreelancerId).session(session))
+        String response = mockMvc.perform(get("/api/public/freelancer/profile/" + nonExistantUsername))
                 .andExpect(status().is4xxClientError())
                 .andReturn()
                 .getResponse()
