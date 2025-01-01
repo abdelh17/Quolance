@@ -23,4 +23,6 @@ public interface UserService {
     UserResponseDto updatePassword(UpdateUserPasswordRequestDto request, User user);
 
     UserResponseDto createAdmin(@Valid CreateAdminRequestDto request);
+
+    void updateProfilePicture(User user, String photoUrl);
 }

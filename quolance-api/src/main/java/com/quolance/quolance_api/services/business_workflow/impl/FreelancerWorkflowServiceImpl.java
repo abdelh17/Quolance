@@ -14,6 +14,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
+import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
@@ -22,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.ILoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +37,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final ProjectService projectService;
     private final ApplicationService applicationService;
     private final UserService userService;
+    private final FileService fileService;
 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
@@ -194,6 +197,25 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .errors(Map.of("updateError", e.getMessage()))
                     .build();
         }
+    }
+
+    @Override
+    public void uploadProfilePicture(MultipartFile photo, User freelancer) {
+        try{
+            Map<String, Object> uploadResult = fileService.uploadFile(photo, freelancer);
+            String photoUrl = uploadResult.get("secure_url").toString();
+
+            userService.updateProfilePicture(freelancer, photoUrl);
+
+
+        } catch (Exception e) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
+                    .message("Failed to upload profile picture")
+                    .errors(Map.of("uploadError", e.getMessage()))
+                    .build();
+        }
+
     }
 
     // Helper method to handle optimistic lock exception

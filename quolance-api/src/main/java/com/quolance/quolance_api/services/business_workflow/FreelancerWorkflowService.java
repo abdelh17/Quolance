@@ -6,6 +6,7 @@ import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface FreelancerWorkflowService {
 
     FreelancerProfileDto getFreelancerProfile(User freelancer);
     void updateFreelancerProfile(UpdateFreelancerProfileDto updateFreelancerProfileDto, User freelancer);
+
+    void uploadProfilePicture(MultipartFile photo, User freelancer);
 }

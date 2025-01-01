@@ -27,9 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
-//    private final UploadedFileRepository uploadedFileRepository;
     private final PasswordEncoder passwordEncoder;
-//    private final FileUploadService fileUploadService;
 
     @Override
     @Transactional
@@ -52,6 +50,12 @@ public class UserServiceImpl implements UserService {
         User user = new User(request);
         user = userRepository.save(user);
         return new UserResponseDto(user);
+    }
+
+    @Override
+    public void updateProfilePicture(User user, String photoUrl) {
+        user.setProfileImageUrl(photoUrl);
+        userRepository.save(user);
     }
 
     @Override
