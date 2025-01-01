@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -107,6 +108,18 @@ public class FreelancerController {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         freelancerWorkflowService.updateFreelancerProfile(updateFreelancerProfileDto, freelancer);
         return ResponseEntity.ok("Profile updated successfully");
+    }
+
+    // post mapping endpoint to upload a file that take a multipart file as a parameter
+    @PostMapping("/profile/picture")
+    @Operation(
+            summary = "Upload profile picture",
+            description = "Upload a profile picture for the authenticated freelancer"
+    )
+    public ResponseEntity<String> uploadProfilePicture(@RequestParam("photo") MultipartFile photo) {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        freelancerWorkflowService.uploadProfilePicture(photo, freelancer);
+        return ResponseEntity.ok("Profile picture uploaded successfully");
     }
 
 }

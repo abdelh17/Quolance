@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a12d5c28-92d6-491b-a43f-8f5239d7bfa2",
+		"_postman_id": "9a233a60-4c0e-446a-932b-178a22fc3337",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "40687150"
@@ -827,6 +827,38 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Upload profile picture",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/freelancer/profile/picture",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"freelancer",
+								"profile",
+								"picture"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1009,7 +1041,10 @@
 							"name": "Get All Blog Posts",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -1017,7 +1052,10 @@
 							"name": "Blog Post By ID",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -1025,7 +1063,10 @@
 							"name": "Get Blog Post By User ID",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -1033,7 +1074,10 @@
 							"name": "Update Blog Post",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -1041,7 +1085,10 @@
 							"name": "Delete Blog Post",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						}
@@ -1078,7 +1125,10 @@
 							"name": "Blog Thread By Thread ID",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -1086,7 +1136,10 @@
 							"name": "Get Thread View by BlogPost ID",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -1094,7 +1147,10 @@
 							"name": "Update Blog Thread Title",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -1102,7 +1158,10 @@
 							"name": "Delete Thread",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
