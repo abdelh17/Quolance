@@ -12,8 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequestDto {
+
     @Email
     @NotNull
     private String email;
+
     private String password;
 }

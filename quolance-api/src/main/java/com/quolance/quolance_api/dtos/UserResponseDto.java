@@ -15,11 +15,13 @@ import org.springframework.security.core.GrantedAuthority;
 @Getter
 @Setter
 public class UserResponseDto {
+
     private Long id;
     private Role role;
     private String firstName;
     private String lastName;
     private String email;
+    private String username;
     private String profileImageUrl;
     private Boolean verified;
     private List<ConnectedAccountResponse> connectedAccounts = new ArrayList<>();
@@ -31,6 +33,7 @@ public class UserResponseDto {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.username = user.getUsername();
         this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
         user.getConnectedAccounts().forEach((provider) -> {
@@ -44,6 +47,7 @@ public class UserResponseDto {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.username = user.getUsername();
         this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
         user.getConnectedAccounts().forEach((provider) -> {

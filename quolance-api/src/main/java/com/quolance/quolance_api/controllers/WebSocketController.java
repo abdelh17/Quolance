@@ -28,7 +28,7 @@ public class WebSocketController {
 
         // Set sender if not provided
         if (message.getSender() == null || message.getSender().isEmpty()) {
-            message.setSender(user.getUsername());
+            message.setSender(user.getUserEmail());
         }
 
         // Save the message to the database
@@ -66,7 +66,7 @@ public class WebSocketController {
 
         // Set sender and timestamp if not provided
         if (message.getSender() == null || message.getSender().isEmpty()) {
-            message.setSender(user.getUsername());
+            message.setSender(user.getUserEmail());
         }
         if (message.getTimestamp() == null) {
             message.setTimestamp(LocalDateTime.now());

@@ -20,6 +20,4 @@ public interface ClientWorkflowService {
     List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client);
 
     ProjectDto updateProject(Long projectId, ProjectUpdateDto projectUpdateDto, User client);
-
-    FreelancerProfileDto getFreelancerProfile(Long freelancerId);
 }

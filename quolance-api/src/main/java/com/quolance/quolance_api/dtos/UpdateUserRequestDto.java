@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequestDto {
+
     @NotBlank
     private String firstName;
+
     @NotBlank
     private String lastName;
 }

@@ -127,14 +127,4 @@ public class ClientController {
         return ResponseEntity.ok("All selected freelancers rejected successfully");
     }
 
-    @GetMapping("/freelancer/profile/{freelancerId}")
-    @Operation(
-            summary = "Get freelancer profile",
-            description = "Get freelancer profile by passing the freelancer ID"
-    )
-    public ResponseEntity<FreelancerProfileDto> getFreelancerProfile(@PathVariable(name = "freelancerId") Long freelancerId) {
-        FreelancerProfileDto freelancerProfile = clientWorkflowService.getFreelancerProfile(freelancerId);
-        return ResponseEntity.ok(freelancerProfile);
-    }
-
 }

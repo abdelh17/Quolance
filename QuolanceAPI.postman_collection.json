@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9a233a60-4c0e-446a-932b-178a22fc3337",
+		"_postman_id": "d044538f-f5e6-4dd3-a823-507c285d7831",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "40687150"
@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"Nermin\",\r\n    \"lastName\": \"Karapandzic\",\r\n    \"role\":\"CLIENT\"\r\n}",
+							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"username\": \"MyUsernameClient123\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"Nermin\",\r\n    \"lastName\": \"Karapandzic\",\r\n    \"role\":\"FREELANCER\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -436,39 +436,6 @@
 								"client",
 								"projects",
 								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get freelancer profile",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmRlbEB0ZXN0LmNvbSIsImlhdCI6MTcyOTkwMDE2NSwiZXhwIjoxNzI5OTg2NTY1fQ.S4jiJ53imgth3ekFG9s8zn4xUeKMSueqJILpFPGr_U8",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/api/client/freelancer/profile/{freelancerId}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"client",
-								"freelancer",
-								"profile",
-								"{freelancerId}"
 							]
 						}
 					},
@@ -989,6 +956,39 @@
 								"public",
 								"projects",
 								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get freelancer profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmRlbEB0ZXN0LmNvbSIsImlhdCI6MTcyOTkwMDE2NSwiZXhwIjoxNzI5OTg2NTY1fQ.S4jiJ53imgth3ekFG9s8zn4xUeKMSueqJILpFPGr_U8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/public/freelancer/profile/MyFree123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"public",
+								"freelancer",
+								"profile",
+								"MyFree123"
 							]
 						}
 					},

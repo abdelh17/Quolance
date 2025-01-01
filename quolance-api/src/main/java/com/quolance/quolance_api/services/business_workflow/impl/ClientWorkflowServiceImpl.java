@@ -94,18 +94,4 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         return ProjectDto.fromEntity(existingProject);
     }
 
-    @Override
-    public FreelancerProfileDto getFreelancerProfile(Long freelancerId) {
-        Optional<User> freelancer = userService.findById(freelancerId);
-
-        if (freelancer.isPresent()) {
-            return FreelancerProfileDto.fromEntity(freelancer.get());
-        } else {
-            throw ApiException.builder()
-                    .status(HttpServletResponse.SC_NOT_FOUND)
-                    .message("Freelancer not found")
-                    .build();
-        }
-    }
-
 }

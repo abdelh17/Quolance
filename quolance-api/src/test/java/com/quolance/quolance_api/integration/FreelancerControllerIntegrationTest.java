@@ -439,7 +439,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @Test
     void getFreelancerProfileIsOk() throws Exception {
         //Act
-        String response = mockMvc.perform(get("/api/freelancer/profile")
+        String response = mockMvc.perform(get("/api/public/freelancer/profile/" + freelancer.getUsername())
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()

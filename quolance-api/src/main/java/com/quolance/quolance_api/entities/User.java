@@ -37,6 +37,10 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
+    @Getter
+    @Column(unique = true, length = 50, nullable = false)
+    private String username;
+
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
@@ -71,6 +75,7 @@ public class User extends AbstractEntity implements UserDetails {
     public User(CreateUserRequestDto data) {
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
         this.email = data.getEmail();
+        this.username = data.getUsername();
         this.password = passwordEncoder.encode(data.getPassword());
         this.firstName = data.getFirstName();
         this.lastName = data.getLastName();
@@ -91,6 +96,7 @@ public class User extends AbstractEntity implements UserDetails {
     public User(CreateAdminRequestDto data) {
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
         this.email = data.getEmail();
+        this.username = data.getUsername();
         this.password = passwordEncoder.encode(data.getTemporaryPassword());
         this.firstName = data.getFirstName();
         this.lastName = data.getLastName();
@@ -103,6 +109,7 @@ public class User extends AbstractEntity implements UserDetails {
      */
     public User(OAuth2User oAuth2User) {
         this.email = oAuth2User.getAttribute("email");
+        this.username = oAuth2User.getAttribute("email"); // Use email as username
         String name = oAuth2User.getAttribute("name");
         if (name != null) {
             String[] names = name.split(" ");
@@ -127,7 +134,7 @@ public class User extends AbstractEntity implements UserDetails {
     /**
      * Updates the user's first name and last name.
      */
-    public void update(UpdateUserRequestDto request) {
+    public void updateUserInfo(UpdateUserRequestDto request) {
         this.firstName = request.getFirstName();
         this.lastName = request.getLastName();
     }
@@ -147,8 +154,7 @@ public class User extends AbstractEntity implements UserDetails {
         return Collections.singletonList(authority);
     }
 
-    @Override
-    public String getUsername() {
+    public String getUserEmail() {
         return email;
     }
 

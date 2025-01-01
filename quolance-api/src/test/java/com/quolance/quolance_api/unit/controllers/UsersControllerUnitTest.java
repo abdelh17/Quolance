@@ -348,7 +348,7 @@ class UsersControllerUnitTest {
     }
 
     @Test
-    void update_Success() {
+    void update_UserInfo_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
 
@@ -368,7 +368,7 @@ class UsersControllerUnitTest {
     }
 
     @Test
-    void update_Unauthorized_ThrowsAccessDeniedException() {
+    void update_UserInfo_Unauthorized_ThrowsAccessDeniedException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
 
@@ -385,7 +385,7 @@ class UsersControllerUnitTest {
     }
 
     @Test
-    void updatePassword_Success() {
+    void updateUserInfoPassword_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
 
@@ -404,7 +404,7 @@ class UsersControllerUnitTest {
     }
 
     @Test
-    void updatePassword_WithInvalidCredentials_ThrowsApiException() {
+    void updateUserInfoPassword_WithInvalidCredentials_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
 

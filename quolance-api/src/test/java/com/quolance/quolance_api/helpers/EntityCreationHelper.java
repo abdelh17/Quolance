@@ -6,6 +6,7 @@ import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.testcontainers.shaded.org.bouncycastle.asn1.cmp.Challenge;
 
 import java.time.LocalDate;
 
@@ -24,6 +25,7 @@ public class EntityCreationHelper {
         admin.setFirstName("Admin");
         admin.setLastName("Test");
         admin.setEmail("admin@test.com");
+        admin.setUsername("MyAdmin123");
         admin.setRole(Role.ADMIN);
         admin.setVerified(true);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -37,6 +39,7 @@ public class EntityCreationHelper {
         client.setFirstName("Client");
         client.setLastName("Test");
         client.setEmail("client@test.com");
+        client.setUsername("MyClient123");
         client.setRole(Role.CLIENT);
         client.setVerified(true);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -51,6 +54,7 @@ public class EntityCreationHelper {
         freelancer.setFirstName("Freelancer" + userNumber);
         freelancer.setLastName("Test");
         freelancer.setEmail("freelancer" + userNumber + "@test.com");
+        freelancer.setUsername("MyFreelancer" + userNumber);
         freelancer.setRole(Role.FREELANCER);
         freelancer.setVerified(true);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
