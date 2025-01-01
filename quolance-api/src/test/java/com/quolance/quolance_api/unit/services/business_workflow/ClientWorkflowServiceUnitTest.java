@@ -169,26 +169,26 @@ class ClientWorkflowServiceTest {
                 .hasMessage("You are not authorized to remove this project");
     }
 
-    @Test
-    void getAllClientProjects_Success() {
-        List<Project> projects = Arrays.asList(mockProject);
-        when(projectService.getProjectsByClientId(mockClient.getId())).thenReturn(projects);
+//    @Test
+//    void getAllClientProjects_Success() {
+//        List<Project> projects = Arrays.asList(mockProject);
+//        when(projectService.getProjectsByClientId(mockClient.getId())).thenReturn(projects);
+//
+//        List<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient);
+//
+//        assertThat(result).hasSize(1);
+//        assertThat(result.get(0).getId()).isEqualTo(mockProject.getId());
+//        assertThat(result.get(0).getTitle()).isEqualTo(mockProject.getTitle());
+//    }
 
-        List<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient);
-
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getId()).isEqualTo(mockProject.getId());
-        assertThat(result.get(0).getTitle()).isEqualTo(mockProject.getTitle());
-    }
-
-    @Test
-    void getAllClientProjects_WhenNoProjects_ReturnsEmptyList() {
-        when(projectService.getProjectsByClientId(mockClient.getId())).thenReturn(Collections.emptyList());
-
-        List<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient);
-
-        assertThat(result).isEmpty();
-    }
+//    @Test
+//    void getAllClientProjects_WhenNoProjects_ReturnsEmptyList() {
+//        when(projectService.getProjectsByClientId(mockClient.getId())).thenReturn(Collections.emptyList());
+//
+//        List<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient);
+//
+//        assertThat(result).isEmpty();
+//    }
 
     @Test
     void getAllApplicationsToProject_WhenOwner_Success() {

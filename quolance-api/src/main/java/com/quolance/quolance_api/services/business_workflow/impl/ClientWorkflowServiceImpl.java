@@ -14,6 +14,9 @@ import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -59,10 +62,11 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     }
 
     @Override
-    public List<ProjectDto> getAllClientProjects(User client) {
-        List<Project> projects = projectService.getProjectsByClientId(client.getId());
-        return projects.stream().map(ProjectDto::fromEntity).toList();
+    public Page<ProjectDto> getAllClientProjects(User client, Pageable pageable) {
+        Page<Project> projectPage = projectService.getProjectsByClientId(client.getId(), pageable);
+        return projectPage.map(ProjectDto::fromEntity); // Map entities to DTOs
     }
+
 
     @Override
     public List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client) {

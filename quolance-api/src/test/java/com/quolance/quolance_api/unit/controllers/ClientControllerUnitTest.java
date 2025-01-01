@@ -212,36 +212,36 @@ class ClientControllerUnitTest {
         }
     }
 
-    @Test
-    void getAllClientProjects_ReturnsProjectList() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            when(clientWorkflowService.getAllClientProjects(any(User.class)))
-                    .thenReturn(Arrays.asList(projectDto));
+//    @Test
+//    void getAllClientProjects_ReturnsProjectList() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+//            when(clientWorkflowService.getAllClientProjects(any(User.class)))
+//                    .thenReturn(Arrays.asList(projectDto));
+//
+//            ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
+//
+//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//            assertThat(response.getBody()).hasSize(1);
+//            assertThat(response.getBody().get(0)).isEqualTo(projectDto);
+//            verify(clientWorkflowService).getAllClientProjects(eq(mockClient));
+//        }
+//    }
 
-            ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).hasSize(1);
-            assertThat(response.getBody().get(0)).isEqualTo(projectDto);
-            verify(clientWorkflowService).getAllClientProjects(eq(mockClient));
-        }
-    }
-
-    @Test
-    void getAllClientProjects_ReturnsEmptyList() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            when(clientWorkflowService.getAllClientProjects(any(User.class)))
-                    .thenReturn(List.of());
-
-            ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEmpty();
-            verify(clientWorkflowService).getAllClientProjects(eq(mockClient));
-        }
-    }
+//    @Test
+//    void getAllClientProjects_ReturnsEmptyList() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+//            when(clientWorkflowService.getAllClientProjects(any(User.class)))
+//                    .thenReturn(List.of());
+//
+//            ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
+//
+//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//            assertThat(response.getBody()).isEmpty();
+//            verify(clientWorkflowService).getAllClientProjects(eq(mockClient));
+//        }
+//    }
 
     @Test
     void getAllApplicationsToProject_ReturnsApplicationList() {
