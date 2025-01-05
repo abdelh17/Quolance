@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
@@ -8,9 +9,12 @@ import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +28,7 @@ public class FreelancerController {
 
     private final FreelancerWorkflowService freelancerWorkflowService;
     private final ApplicationProcessWorkflow applicationProcessWorkflow;
+    private final PaginationUtils paginationUtils;
 
     @PostMapping("/submit-application")
     @Operation(
@@ -62,9 +67,13 @@ public class FreelancerController {
             summary = "View all the application of a freelancer.",
             description = " "
     )
-    public ResponseEntity<List<ApplicationDto>> getAllFreelancerApplications() {
+    public ResponseEntity<Page<ApplicationDto>> getAllFreelancerApplications(
+            @Valid PageableRequestDto pageableRequest) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
-        List<ApplicationDto> applications = freelancerWorkflowService.getAllFreelancerApplications(freelancer);
+        Page<ApplicationDto> applications = freelancerWorkflowService.getAllFreelancerApplications(
+                freelancer,
+                paginationUtils.createPageable(pageableRequest)
+                );
         return ResponseEntity.ok(applications);
     }
 

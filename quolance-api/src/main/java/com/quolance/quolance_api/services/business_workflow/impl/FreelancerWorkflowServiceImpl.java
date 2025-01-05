@@ -24,6 +24,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.ILoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -97,10 +100,9 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public List<ApplicationDto> getAllFreelancerApplications(User freelancer) {
-        return applicationService.getAllApplicationsByFreelancerId(freelancer.getId()).stream()
-                .map(ApplicationDto::fromEntity)
-                .toList();
+    public Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable) {
+        Page<Application> applicationPage = applicationService.getAllApplicationsByFreelancerId(freelancer.getId(), pageable);
+        return applicationPage.map(ApplicationDto::fromEntity);
     }
 
     @Override
