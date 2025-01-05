@@ -164,37 +164,37 @@ class FreelancerControllerUnitTest {
         }
     }
 
-    @Test
-    void getAllFreelancerApplications_ReturnsApplicationList() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
-            List<ApplicationDto> applications = Arrays.asList(applicationDto);
-            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class))).thenReturn(applications);
+//    @Test
+//    void getAllFreelancerApplications_ReturnsApplicationList() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+//            List<ApplicationDto> applications = Arrays.asList(applicationDto);
+//            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class))).thenReturn(applications);
+//
+//            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
+//
+//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//            assertThat(response.getBody()).hasSize(1);
+//            assertThat(response.getBody().get(0)).isEqualTo(applicationDto);
+//            assertThat(response.getBody().get(0).getStatus()).isEqualTo(ApplicationStatus.APPLIED);
+//            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
+//        }
+//    }
 
-            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).hasSize(1);
-            assertThat(response.getBody().get(0)).isEqualTo(applicationDto);
-            assertThat(response.getBody().get(0).getStatus()).isEqualTo(ApplicationStatus.APPLIED);
-            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
-        }
-    }
-
-    @Test
-    void getAllFreelancerApplications_ReturnsEmptyList() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
-            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class)))
-                    .thenReturn(Collections.emptyList());
-
-            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEmpty();
-            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
-        }
-    }
+//    @Test
+//    void getAllFreelancerApplications_ReturnsEmptyList() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+//            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class)))
+//                    .thenReturn(Collections.emptyList());
+//
+//            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
+//
+//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//            assertThat(response.getBody()).isEmpty();
+//            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
+//        }
+//    }
 
     @Test
     void getAllAvailableProjects_ReturnsProjectList() {

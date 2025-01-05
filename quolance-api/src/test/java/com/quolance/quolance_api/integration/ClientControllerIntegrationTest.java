@@ -289,14 +289,19 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Test
     void getAllProjectsWhenNoneExistReturnsEmptyList() throws Exception {
         //Act
-        String response = mockMvc.perform(get("/api/client/projects/all").session(session))
+        String response = mockMvc.perform(get("/api/client/projects/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortDirection", "asc")
+                        .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
         //Assert
-        List<Object> responseList = objectMapper.readValue(response, List.class);
-        assertThat(responseList.size()).isEqualTo(0);
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String,Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+        assertThat(content.size()).isEqualTo(0);
     }
 
     @Test
@@ -315,18 +320,23 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         projectRepository.save(project2);
 
         //Act
-        String response = mockMvc.perform(get("/api/client/projects/all").session(session))
+        String response = mockMvc.perform(get("/api/client/projects/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortDirection", "asc")
+                        .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        List<Object> responseList = objectMapper.readValue(response, List.class);
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String,Object>> content = (List<Map<String, Object>>) responseMap.get("content");
 
         //Assert
-        assertThat(responseList.size()).isEqualTo(2);
+        assertThat(content.size()).isEqualTo(2);
 
-        Map<String, Object> projectResponse1 = (Map<String, Object>) responseList.get(0);
-        Map<String, Object> projectResponse2 = (Map<String, Object>) responseList.get(1);
+        Map<String, Object> projectResponse1 = (Map<String, Object>) content.get(0);
+        Map<String, Object> projectResponse2 = (Map<String, Object>) content.get(1);
 
         assertThat(projectResponse1.get("title")).isEqualTo("title");
         assertThat(projectResponse1.get("description")).isEqualTo("description");
