@@ -23,4 +23,6 @@ public interface ProjectService {
 
     void updateProjectStatus(Project project, ProjectStatus newStatus);
     void updateSelectedFreelancer(Project project, User freelancer);
+
+    Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable);
 }

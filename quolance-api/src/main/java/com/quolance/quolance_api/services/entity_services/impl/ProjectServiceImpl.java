@@ -197,4 +197,9 @@ public class ProjectServiceImpl implements ProjectService {
             project.setExperienceLevel(updateDto.getExperienceLevel());
         }
     }
+
+    @Override
+    public Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable) {
+        return projectRepository.findProjectsByProjectStatusIn(projectStatuses, pageable);
+    }
 }
