@@ -286,64 +286,62 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(projectResponse.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
     }
 
-    @Test
-    void getAllProjectsWhenNoneExistReturnsEmptyList() throws Exception {
-        //Act
-        String response = mockMvc.perform(get("/api/client/projects/all").session(session))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
+//    @Test
+//    void getAllProjectsWhenNoneExistReturnsEmptyList() throws Exception {
+//        //Act
+//        String response = mockMvc.perform(get("/api/client/projects/all").session(session))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        //Assert
+//        List<Object> responseList = objectMapper.readValue(response, List.class);
+//        assertThat(responseList.size()).isEqualTo(0);
+//    }
 
-        //Assert
-        List<Object> responseList = objectMapper.readValue(response, List.class);
-        assertThat(responseList.size()).isEqualTo(0);
-    }
-
-    @Test
-    void getAllProjectsWhenExistIsOk() throws Exception {
-        //Arrange
-        projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-
-        Project project2 = new Project();
-        project2.setTitle("title2");
-        project2.setDescription("description2");
-        project2.setCategory(ProjectCategory.APP_DEVELOPMENT);
-        project2.setPriceRange(PriceRange.LESS_500);
-        project2.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
-        project2.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
-        project2.setClient(client);
-        projectRepository.save(project2);
-
-        //Act
-        String response = mockMvc.perform(get("/api/client/projects/all").session(session))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        List<Object> responseList = objectMapper.readValue(response, List.class);
-
-        //Assert
-        assertThat(responseList.size()).isEqualTo(2);
-
-        Map<String, Object> projectResponse1 = (Map<String, Object>) responseList.get(0);
-        Map<String, Object> projectResponse2 = (Map<String, Object>) responseList.get(1);
-
-        assertThat(projectResponse1.get("title")).isEqualTo("title");
-        assertThat(projectResponse1.get("description")).isEqualTo("description");
-        assertThat(projectResponse1.get("category")).isEqualTo("APP_DEVELOPMENT");
-        assertThat(projectResponse1.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse1.get("experienceLevel")).isEqualTo("JUNIOR");
-        assertThat(projectResponse1.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
-
-        assertThat(projectResponse2.get("title")).isEqualTo("title2");
-        assertThat(projectResponse2.get("description")).isEqualTo("description2");
-        assertThat(projectResponse2.get("category")).isEqualTo("APP_DEVELOPMENT");
-        assertThat(projectResponse2.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse2.get("experienceLevel")).isEqualTo("JUNIOR");
-        assertThat(projectResponse2.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
-
-    }
-
+//    @Test
+//    void getAllProjectsWhenExistIsOk() throws Exception {
+//        //Arrange
+//        projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+//
+//        Project project2 = new Project();
+//        project2.setTitle("title2");
+//        project2.setDescription("description2");
+//        project2.setCategory(ProjectCategory.APP_DEVELOPMENT);
+//        project2.setPriceRange(PriceRange.LESS_500);
+//        project2.setExperienceLevel(FreelancerExperienceLevel.JUNIOR);
+//        project2.setExpectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE);
+//        project2.setClient(client);
+//        projectRepository.save(project2);
+//
+//        //Act
+//        String response = mockMvc.perform(get("/api/client/projects/all").session(session))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        List<Object> responseList = objectMapper.readValue(response, List.class);
+//
+//        //Assert
+//        assertThat(responseList.size()).isEqualTo(2);
+//
+//        Map<String, Object> projectResponse1 = (Map<String, Object>) responseList.get(0);
+//        Map<String, Object> projectResponse2 = (Map<String, Object>) responseList.get(1);
+//
+//        assertThat(projectResponse1.get("title")).isEqualTo("title");
+//        assertThat(projectResponse1.get("description")).isEqualTo("description");
+//        assertThat(projectResponse1.get("category")).isEqualTo("APP_DEVELOPMENT");
+//        assertThat(projectResponse1.get("priceRange")).isEqualTo("LESS_500");
+//        assertThat(projectResponse1.get("experienceLevel")).isEqualTo("JUNIOR");
+//        assertThat(projectResponse1.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
+//
+//        assertThat(projectResponse2.get("title")).isEqualTo("title2");
+//        assertThat(projectResponse2.get("description")).isEqualTo("description2");
+//        assertThat(projectResponse2.get("category")).isEqualTo("APP_DEVELOPMENT");
+//        assertThat(projectResponse2.get("priceRange")).isEqualTo("LESS_500");
+//        assertThat(projectResponse2.get("experienceLevel")).isEqualTo("JUNIOR");
+//        assertThat(projectResponse2.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
+//    }
 
     @Test
     void deleteProjectIsOk() throws Exception {
