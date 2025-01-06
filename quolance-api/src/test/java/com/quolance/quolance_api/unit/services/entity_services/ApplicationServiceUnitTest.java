@@ -100,16 +100,16 @@ class ApplicationServiceTest {
         assertThat(result).isEqualTo(mockApplication);
     }
 
-//    @Test
-//    void getAllApplicationsByFreelancerId_Success() {
-//        List<Application> applications = Arrays.asList(mockApplication);
-//        when(applicationRepository.findApplicationsByFreelancerId(1L)).thenReturn(applications);
-//
-//        List<Application> result = applicationService.getAllApplicationsByFreelancerId(1L);
-//
-//        assertThat(result).hasSize(1);
-//        assertThat(result).containsExactly(mockApplication);
-//    }
+    @Test
+    void getAllApplicationsByFreelancerId_Success() {
+        List<Application> applications = Arrays.asList(mockApplication);
+        when(applicationRepository.findApplicationsByFreelancerId(1L)).thenReturn(applications);
+
+        List<Application> result = applicationService.getAllApplicationsByFreelancerId(1L);
+
+        assertThat(result).hasSize(1);
+        assertThat(result).containsExactly(mockApplication);
+    }
 
     @Test
     void getAllApplicationsByProjectId_Success() {

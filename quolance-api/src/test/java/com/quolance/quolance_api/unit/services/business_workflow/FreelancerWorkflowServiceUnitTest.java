@@ -153,26 +153,26 @@ class FreelancerWorkflowServiceTest {
         verify(applicationService).deleteApplication(mockApplication);
     }
 
-//    @Test
-//    void getAllFreelancerApplications_Success() {
-//        when(applicationService.getAllApplicationsByFreelancerId(1L))
-//                .thenReturn(Arrays.asList(mockApplication));
-//
-//        List<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer);
-//
-//        assertThat(results).hasSize(1);
-//        assertThat(results.get(0).getId()).isEqualTo(mockApplication.getId());
-//    }
+    @Test
+    void getAllFreelancerApplications_Success() {
+        when(applicationService.getAllApplicationsByFreelancerId(1L))
+                .thenReturn(Arrays.asList(mockApplication));
 
-//    @Test
-//    void getAllFreelancerApplications_NoApplications_ReturnsEmptyList() {
-//        when(applicationService.getAllApplicationsByFreelancerId(1L))
-//                .thenReturn(Collections.emptyList());
-//
-//        List<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer);
-//
-//        assertThat(results).isEmpty();
-//    }
+        List<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer);
+
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).getId()).isEqualTo(mockApplication.getId());
+    }
+
+    @Test
+    void getAllFreelancerApplications_NoApplications_ReturnsEmptyList() {
+        when(applicationService.getAllApplicationsByFreelancerId(1L))
+                .thenReturn(Collections.emptyList());
+
+        List<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer);
+
+        assertThat(results).isEmpty();
+    }
 
     @Test
     void getAllAvailableProjects_FiltersExpiredClosedProjects() {
