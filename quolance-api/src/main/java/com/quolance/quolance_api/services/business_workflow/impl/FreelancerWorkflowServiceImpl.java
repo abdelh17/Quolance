@@ -105,19 +105,22 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
         return applicationPage.map(ApplicationDto::fromEntity);
     }
 
+    //Alternatively, properly paginate this endpoint
     @Override
     public List<ProjectPublicDto> getAllAvailableProjects() {
         LocalDate currentDate = LocalDate.now();
 
-        // Get all projects that are OPEN or CLOSED
-        List<Project> openAndClosedProjects = projectService.getProjectsByStatuses(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED));
+        Pageable allResults = Pageable.unpaged();
+        Page<Project> openAndClosedProjects = projectService.getProjectsByStatuses(
+                List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED),
+                allResults
+        );
 
-        // removed the project that are both status CLOSED and visibilityExpirationDate is before currentDate
-        openAndClosedProjects.removeIf(project ->
-                project.getProjectStatus().equals(ProjectStatus.CLOSED) &&
-                        project.getVisibilityExpirationDate().isBefore(currentDate));
-
-        return openAndClosedProjects.stream()
+        return openAndClosedProjects.getContent().stream()
+                .filter(project -> !(
+                        project.getProjectStatus().equals(ProjectStatus.CLOSED) &&
+                                project.getVisibilityExpirationDate().isBefore(currentDate)
+                ))
                 .map(ProjectPublicDto::fromEntity)
                 .toList();
     }

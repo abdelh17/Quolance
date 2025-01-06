@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled("Temporarily disabled due to pagination implementation")
 class AdminControllerUnitTest {
 
     @Mock
@@ -43,7 +42,6 @@ class AdminControllerUnitTest {
         projectDto2.setId(2L);
     }
 
-//    @Disabled("Temporarily disabled due to pagination implementation")
 //    @Test
 //    void getAllPendingProjects_ReturnsListOfProjects() {
 //        List<ProjectDto> expectedProjects = Arrays.asList(projectDto1, projectDto2);
@@ -56,7 +54,6 @@ class AdminControllerUnitTest {
 //        verify(adminWorkflowService, times(1)).getAllPendingProjects();
 //    }
 
-//    @Disabled("Temporarily disabled due to pagination implementation")
 //    @Test
 //    void getAllPendingProjects_ReturnsEmptyList_WhenNoProjects() {
 //        when(adminWorkflowService.getAllPendingProjects()).thenReturn(List.of());
@@ -68,7 +65,6 @@ class AdminControllerUnitTest {
 //        verify(adminWorkflowService, times(1)).getAllPendingProjects();
 //    }
 
-//    @Disabled("Temporarily disabled due to pagination implementation")
 //    @Test
 //    void getAllPendingProjects_WhenUnauthorized_ThrowsAccessDeniedException() {
 //        when(adminWorkflowService.getAllPendingProjects())

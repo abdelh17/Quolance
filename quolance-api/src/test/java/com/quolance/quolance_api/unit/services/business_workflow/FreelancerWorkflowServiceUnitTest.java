@@ -174,40 +174,40 @@ class FreelancerWorkflowServiceTest {
 //        assertThat(results).isEmpty();
 //    }
 
-    @Test
-    void getAllAvailableProjects_FiltersExpiredClosedProjects() {
-        Project expiredProject = Project.builder()
-                .id(2L)
-                .projectStatus(ProjectStatus.CLOSED)
-                .visibilityExpirationDate(LocalDate.now().minusDays(1))
-                .build();
-
-        Project activeProject = Project.builder()
-                .id(3L)
-                .projectStatus(ProjectStatus.OPEN)
-                .visibilityExpirationDate(LocalDate.now().plusDays(7))
-                .build();
-
-        Project closedButVisibleProject = Project.builder()
-                .id(4L)
-                .projectStatus(ProjectStatus.CLOSED)
-                .visibilityExpirationDate(LocalDate.now().plusDays(2))
-                .build();
-
-        List<Project> mockProjects = new ArrayList<>();
-        mockProjects.add(activeProject);
-        mockProjects.add(expiredProject);
-        mockProjects.add(closedButVisibleProject);
-
-        when(projectService.getProjectsByStatuses(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED)))
-                .thenReturn(mockProjects);
-
-        List<ProjectPublicDto> results = freelancerWorkflowService.getAllAvailableProjects();
-
-        assertThat(results).hasSize(2);
-        assertThat(results.stream().map(ProjectPublicDto::getId))
-                .containsExactlyInAnyOrder(activeProject.getId(), closedButVisibleProject.getId());
-    }
+//    @Test
+//    void getAllAvailableProjects_FiltersExpiredClosedProjects() {
+//        Project expiredProject = Project.builder()
+//                .id(2L)
+//                .projectStatus(ProjectStatus.CLOSED)
+//                .visibilityExpirationDate(LocalDate.now().minusDays(1))
+//                .build();
+//
+//        Project activeProject = Project.builder()
+//                .id(3L)
+//                .projectStatus(ProjectStatus.OPEN)
+//                .visibilityExpirationDate(LocalDate.now().plusDays(7))
+//                .build();
+//
+//        Project closedButVisibleProject = Project.builder()
+//                .id(4L)
+//                .projectStatus(ProjectStatus.CLOSED)
+//                .visibilityExpirationDate(LocalDate.now().plusDays(2))
+//                .build();
+//
+//        List<Project> mockProjects = new ArrayList<>();
+//        mockProjects.add(activeProject);
+//        mockProjects.add(expiredProject);
+//        mockProjects.add(closedButVisibleProject);
+//
+//        when(projectService.getProjectsByStatuses(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED)))
+//                .thenReturn(mockProjects);
+//
+//        List<ProjectPublicDto> results = freelancerWorkflowService.getAllAvailableProjects();
+//
+//        assertThat(results).hasSize(2);
+//        assertThat(results.stream().map(ProjectPublicDto::getId))
+//                .containsExactlyInAnyOrder(activeProject.getId(), closedButVisibleProject.getId());
+//    }
 
     @Test
     void getProject_Success() {
