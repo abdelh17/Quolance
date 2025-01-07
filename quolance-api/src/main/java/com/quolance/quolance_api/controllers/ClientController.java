@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
@@ -83,14 +84,14 @@ public class ClientController {
             summary = "Get all projects of a client",
             description = "Get all projects of a client"
     )
-    public ResponseEntity<Page<ProjectDto>> getAllClientProjects(
+    public ResponseEntity<PageResponseDto<ProjectDto>> getAllClientProjects(
             @Valid PageableRequestDto pageableRequest) {
         User client = SecurityUtil.getAuthenticatedUser();
         Page<ProjectDto> projects = clientWorkflowService.getAllClientProjects(
                 client,
                 paginationUtils.createPageable(pageableRequest)
         );
-        return ResponseEntity.ok(projects);
+        return ResponseEntity.ok(new PageResponseDto<>(projects));
     }
 
     @GetMapping("/projects/{projectId}/applications/all")
