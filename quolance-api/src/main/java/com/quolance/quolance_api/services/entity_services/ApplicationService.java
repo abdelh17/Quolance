@@ -2,6 +2,8 @@ package com.quolance.quolance_api.services.entity_services;
 
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface ApplicationService {
     Application getApplicationByFreelancerIdAndProjectId(Long freelancerId, Long projectId);
 
     List<Application> getAllApplications();
-    List<Application> getAllApplicationsByFreelancerId(Long freelancerId);
+    Page<Application> getAllApplicationsByFreelancerId(Long freelancerId, Pageable pageable);
     List<Application> getAllApplicationsByProjectId(Long projectId);
 
 
