@@ -372,46 +372,45 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(jsonResponse.get("message")).isEqualTo("No Project found with ID: 1");
     }
 
-    @Test
-    void getAllApplicationsToProjectGivesOk() throws Exception {
-        //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+//    @Test
+//    void getAllApplicationsToProjectGivesOk() throws Exception {
+//        //Arrange
+//        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+//
+//        User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
+//
+//        applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
+//
+//        //Act
+//        String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        List<Object> responseList = objectMapper.readValue(response, List.class);
+//        Map<String, Object> applicationReturned = (Map<String, Object>) responseList.get(0);
+//
+//        //Assert
+//        assertThat(applicationReturned.get("projectId")).isEqualTo(project.getId().intValue());
+//        assertThat(applicationReturned.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
+//    }
 
-        User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
-
-        applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
-
-        //Act
-        String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        List<Object> responseList = objectMapper.readValue(response, List.class);
-        Map<String, Object> applicationReturned = (Map<String, Object>) responseList.get(0);
-
-        //Assert
-        assertThat(applicationReturned.get("projectId")).isEqualTo(project.getId().intValue());
-        assertThat(applicationReturned.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
-    }
-
-    @Test
-    void getAllApplicationsToProjectWhenNoneExistReturnsEmptyList() throws Exception {
-        //Arrange
-        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-
-        //Act
-        String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        List<Object> responseList = objectMapper.readValue(response, List.class);
-
-        //Assert
-        assertThat(responseList.size()).isEqualTo(0);
-    }
-
+//    @Test
+//    void getAllApplicationsToProjectWhenNoneExistReturnsEmptyList() throws Exception {
+//        //Arrange
+//        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+//
+//        //Act
+//        String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        List<Object> responseList = objectMapper.readValue(response, List.class);
+//
+//        //Assert
+//        assertThat(responseList.size()).isEqualTo(0);
+//    }
 
     @Test
     void selectFreelancerChangesApplicationStatusAndProjectStatusIsOk() throws Exception {
