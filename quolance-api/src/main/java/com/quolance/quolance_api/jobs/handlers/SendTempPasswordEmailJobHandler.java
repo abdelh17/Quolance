@@ -31,7 +31,6 @@ public class SendTempPasswordEmailJobHandler implements JobRequestHandler<SendTe
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         sendTempPasswordEmail(user, job.getTempPassword());
-        log.info("Temporary password email sent to user with id: {}", job.getUserId());
     }
 
     private void sendTempPasswordEmail(User user, String tempPassword) throws MessagingException {
