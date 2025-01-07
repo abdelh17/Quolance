@@ -50,9 +50,26 @@ export const useRejectSubmissions = (projectId: number) => {
   });
 };
 
-export const useGetAllClientProjects = () => {
+interface PaginationParams {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDirection?: string;
+}
+
+export const useGetAllClientProjects = (params: PaginationParams) => {
+  const queryString = new URLSearchParams({
+    page: params.page?.toString() || '0',
+    size: params.size?.toString() || '10',
+    sortBy: params.sortBy || 'id',
+    sortDirection: params.sortDirection || 'asc',
+  }).toString();
+
   return useQuery({
-    queryKey: ['all-client-projects'],
-    queryFn: () => httpClient.get('/api/client/projects/all'),
+    queryKey: ['clientProjects', params],
+    queryFn: async () => {
+      const response = await httpClient.get(`/api/client/projects/all?${queryString}`);
+      return response.data; // Return the data from the Axios response
+    },
   });
 };
