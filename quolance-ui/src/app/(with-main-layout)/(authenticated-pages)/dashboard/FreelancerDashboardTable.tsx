@@ -1,5 +1,5 @@
 'use client';
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
 import Link from 'next/link';
 import { useGetAllFreelancerApplications } from '@/api/freelancer-api';
 

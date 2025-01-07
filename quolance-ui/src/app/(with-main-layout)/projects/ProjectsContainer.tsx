@@ -1,6 +1,6 @@
 import { useGetAllPublicProjects } from '@/api/projects-api';
 import { ProjectType } from '@/constants/types/project-types';
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
 import ProjectCard from '@/components/ui/projects/ProjectCard';
 import ProjectFilter from '@/components/ui/projects/ProjectFilter';
 import Link from 'next/link';

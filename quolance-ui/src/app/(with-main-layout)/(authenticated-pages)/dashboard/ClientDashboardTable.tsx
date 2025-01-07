@@ -2,7 +2,8 @@
 import { useGetAllClientProjects } from '@/api/client-api';
 import { ProjectType } from '@/constants/types/project-types';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
+import LoadingSpinner1 from "@/components/ui/loading/loadingSpinner1";
 import Link from 'next/link';
 import {
     formatDate,
@@ -17,7 +18,7 @@ export default function ClientDashboardTable() {
     const [page, setPage] = useState(0);
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
-    const pageSize = 2; // Match your backend default or set as needed
+    const pageSize = 2;
 
     const { data, isLoading } = useGetAllClientProjects({
         page,
@@ -33,10 +34,8 @@ export default function ClientDashboardTable() {
 
     const handleSort = (column: string) => {
         if (sortBy === column) {
-            // Toggle direction if clicking the same column
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
-            // New column, default to ascending
             setSortBy(column);
             setSortDirection('asc');
         }
@@ -62,7 +61,7 @@ export default function ClientDashboardTable() {
     };
 
     if (isLoading) {
-        return <Loading />;
+        return <LoadingSpinner1 />;
     }
 
     return (
