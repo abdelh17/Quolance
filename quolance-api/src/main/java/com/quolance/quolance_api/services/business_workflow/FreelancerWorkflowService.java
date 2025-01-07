@@ -20,7 +20,7 @@ public interface FreelancerWorkflowService {
     ApplicationDto getApplication(Long applicationId, User freelancer);
 
     Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable);
-    List<ProjectPublicDto> getAllAvailableProjects();
+    Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable);
     ProjectPublicDto getProject(Long projectId);
 
     FreelancerProfileDto getFreelancerProfile(String username);

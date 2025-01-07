@@ -22,6 +22,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.ILoggerFactory;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
@@ -107,22 +108,27 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
     //Alternatively, properly paginate this endpoint
     @Override
-    public List<ProjectPublicDto> getAllAvailableProjects() {
+    public Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable) {
         LocalDate currentDate = LocalDate.now();
 
-        Pageable allResults = Pageable.unpaged();
         Page<Project> openAndClosedProjects = projectService.getProjectsByStatuses(
                 List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED),
-                allResults
+                pageable
         );
 
-        return openAndClosedProjects.getContent().stream()
+        List<ProjectPublicDto> filteredProjects = openAndClosedProjects.getContent().stream()
                 .filter(project -> !(
                         project.getProjectStatus().equals(ProjectStatus.CLOSED) &&
                                 project.getVisibilityExpirationDate().isBefore(currentDate)
                 ))
                 .map(ProjectPublicDto::fromEntity)
                 .toList();
+
+        return new PageImpl<>(
+                filteredProjects,
+                pageable,
+                openAndClosedProjects.getTotalElements()
+        );
     }
 
     @Override
