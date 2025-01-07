@@ -167,6 +167,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         assertThat(projectResponse.get("status")).isEqualTo("APPLIED");
         assertThat(projectResponse.get("status")).isEqualTo(application.getApplicationStatus().name());
         assertThat(projectResponse.get("projectId")).isEqualTo(project.getId().intValue());
+        assertThat(projectResponse.get("projectTitle")).isEqualTo(project.getTitle());
         assertThat(projectResponse.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
     }
 
@@ -240,12 +241,14 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         assertThat(applicationResponse1.get("status")).isEqualTo("APPLIED");
         assertThat(applicationResponse1.get("status")).isEqualTo(application1.getApplicationStatus().name());
         assertThat(applicationResponse1.get("projectId")).isEqualTo(project1.getId().intValue());
+        assertThat(applicationResponse1.get("projectTitle")).isEqualTo(project1.getTitle());
         assertThat(applicationResponse1.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
 
         assertThat(applicationResponse2.get("id")).isEqualTo(application2.getId().intValue());
         assertThat(applicationResponse2.get("status")).isEqualTo("APPLIED");
         assertThat(applicationResponse2.get("status")).isEqualTo(application2.getApplicationStatus().name());
         assertThat(applicationResponse2.get("projectId")).isEqualTo(project2.getId().intValue());
+        assertThat(applicationResponse2.get("projectTitle")).isEqualTo(project2.getTitle());
         assertThat(applicationResponse2.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
     }
 

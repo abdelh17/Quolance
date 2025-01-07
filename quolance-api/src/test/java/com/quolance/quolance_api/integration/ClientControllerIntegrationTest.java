@@ -394,6 +394,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
 
         //Assert
         assertThat(applicationReturned.get("projectId")).isEqualTo(project.getId().intValue());
+        assertThat(applicationReturned.get("projectTitle")).isEqualTo(project.getTitle());
         assertThat(applicationReturned.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
     }
 
