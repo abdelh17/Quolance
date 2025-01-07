@@ -14,11 +14,13 @@ import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.scheduling.BackgroundJobRequest;
+import org.jobrunr.scheduling.BackgroundJob;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -73,8 +75,11 @@ public class UserServiceImpl implements UserService {
         VerificationCode verificationCode = new VerificationCode(user);
         user.setVerificationCode(verificationCode);
         verificationCodeRepository.save(verificationCode);
+
         SendWelcomeEmailJob sendWelcomeEmailJob = new SendWelcomeEmailJob(user.getId());
-        BackgroundJobRequest.enqueue(sendWelcomeEmailJob);
+        BackgroundJob.schedule(Instant.now().plusSeconds(1), () ->
+                BackgroundJobRequest.enqueue(sendWelcomeEmailJob)
+        );
     }
 
     @Override

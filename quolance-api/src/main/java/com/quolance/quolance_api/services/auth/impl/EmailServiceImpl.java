@@ -34,7 +34,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendSimpleEmail(List<String> to, String subject, String content) {
-        log.info("Sending email to: {}", to);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to.toArray(new String[0]));
         message.setSubject(subject);

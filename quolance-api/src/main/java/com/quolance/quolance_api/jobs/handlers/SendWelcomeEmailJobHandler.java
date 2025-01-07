@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jobrunr.jobs.lambdas.JobRequestHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -32,10 +33,23 @@ public class SendWelcomeEmailJobHandler implements JobRequestHandler<SendWelcome
   @Override
   @Transactional
   public void run(SendWelcomeEmailJob sendWelcomEmailJob) throws Exception {
-    User user = userService.findById(sendWelcomEmailJob.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-    if (user.getVerificationCode() != null && !user.getVerificationCode().isEmailSent()) {
+    Long userId = sendWelcomEmailJob.getUserId();
+
+    User user = userService.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    if (user.getVerificationCode() == null) {
+      return;
+    }
+
+    if (user.getVerificationCode().isEmailSent()) {
+      return;
+    }
+
+    try {
       sendWelcomeEmail(user, user.getVerificationCode());
-      log.info("Sending welcome email to user with id: {}", sendWelcomEmailJob.getUserId());
+    } catch (Exception e) {
+      throw e;
     }
   }
 
