@@ -31,7 +31,7 @@ public class SendWelcomeEmailJobHandler implements JobRequestHandler<SendWelcome
   private final ApplicationProperties applicationProperties;
 
   @Override
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  @Transactional
   public void run(SendWelcomeEmailJob sendWelcomEmailJob) throws Exception {
     Long userId = sendWelcomEmailJob.getUserId();
 
