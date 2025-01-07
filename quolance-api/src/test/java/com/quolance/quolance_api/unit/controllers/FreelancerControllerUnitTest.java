@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.unit;
 
 import com.quolance.quolance_api.controllers.FreelancerController;
+import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
@@ -9,6 +10,7 @@ import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +20,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -44,6 +49,9 @@ class FreelancerControllerUnitTest {
     @InjectMocks
     private FreelancerController freelancerController;
 
+    @Mock
+    private PaginationUtils paginationUtils;
+
     private User mockFreelancer;
     private ApplicationCreateDto applicationCreateDto;
     private ApplicationDto applicationDto;
@@ -68,6 +76,9 @@ class FreelancerControllerUnitTest {
         projectPublicDto = new ProjectPublicDto();
         projectPublicDto.setId(1L);
         projectPublicDto.setTitle("Test Project");
+
+        lenient().when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(Pageable.unpaged());
+
     }
 
     @Test
@@ -197,27 +208,35 @@ class FreelancerControllerUnitTest {
 //    }
 
     @Test
-    void getAllAvailableProjects_ReturnsProjectList() {
-        List<ProjectPublicDto> projects = Arrays.asList(projectPublicDto);
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(projects);
+    void getAllAvailableProjects_ReturnsProjectPage() {
+        Page<ProjectPublicDto> projectPage = new PageImpl<>(Collections.singletonList(projectPublicDto));
 
-        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
+        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class))).thenReturn(projectPage);
+
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        ResponseEntity<Page<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequest);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).hasSize(1);
-        assertThat(response.getBody().get(0)).isEqualTo(projectPublicDto);
-        verify(freelancerWorkflowService).getAllAvailableProjects();
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent()).hasSize(1);
+        assertThat(response.getBody().getContent().get(0)).isEqualTo(projectPublicDto);
+        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class));
     }
 
     @Test
-    void getAllAvailableProjects_ReturnsEmptyList() {
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
+    void getAllAvailableProjects_ReturnsEmptyPage() {
 
-        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
+        Page<ProjectPublicDto> emptyPage = Page.empty();
+
+        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class))).thenReturn(emptyPage);
+
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        ResponseEntity<Page<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequest);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEmpty();
-        verify(freelancerWorkflowService).getAllAvailableProjects();
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent()).isEmpty();
+        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class));
     }
 
     @Test

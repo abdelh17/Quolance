@@ -1,8 +1,10 @@
 package com.quolance.quolance_api.unit;
 
 import com.quolance.quolance_api.controllers.PublicController;
+import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -27,6 +32,10 @@ class PublicControllerUnitTest {
 
     @Mock
     private FreelancerWorkflowService freelancerWorkflowService;
+
+    @Mock
+    private PaginationUtils paginationUtils;
+
 
     @InjectMocks
     private PublicController publicController;
@@ -50,50 +59,62 @@ class PublicControllerUnitTest {
                         .description("Another Description")
                         .build()
         );
+
+        lenient().when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(Pageable.unpaged());
+
     }
 
     @Test
-    void getAllAvailableProjects_ShouldReturnProjects_WhenProjectsExist() {
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(sampleProjects);
+    void getAllAvailableProjects_ShouldReturnProjectsPage_WhenProjectsExist() {
 
-        ResponseEntity<List<ProjectPublicDto>> response = publicController.getAllAvailableProjects();
+        Page<ProjectPublicDto> projectPage = new PageImpl<>(sampleProjects);
+
+        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class))).thenReturn(projectPage);
+
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        ResponseEntity<Page<ProjectPublicDto>> response = publicController.getAllAvailableProjects(pageableRequest);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody())
-                .isNotNull()
-                .hasSize(2)
-                .isEqualTo(sampleProjects);
-        verify(freelancerWorkflowService).getAllAvailableProjects();
-        verifyNoMoreInteractions(freelancerWorkflowService);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent()).hasSize(2);
+        assertThat(response.getBody().getContent().get(0)).isEqualTo(sampleProjects.get(0));
+        assertThat(response.getBody().getContent().get(1)).isEqualTo(sampleProjects.get(1));
+        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class));
     }
 
     @Test
-    void getAllAvailableProjects_ShouldReturnEmptyList_WhenNoProjects() {
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
+    void getAllAvailableProjects_ShouldReturnEmptyPage_WhenNoProjects() {
 
-        ResponseEntity<List<ProjectPublicDto>> response = publicController.getAllAvailableProjects();
+        Page<ProjectPublicDto> emptyPage = Page.empty();
+
+        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class))).thenReturn(emptyPage);
+
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        ResponseEntity<Page<ProjectPublicDto>> response = publicController.getAllAvailableProjects(pageableRequest);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody())
-                .isNotNull()
-                .isEmpty();
-        verify(freelancerWorkflowService).getAllAvailableProjects();
-        verifyNoMoreInteractions(freelancerWorkflowService);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent()).isEmpty();
+        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class));
+
     }
 
     @Test
     void getAllAvailableProjects_ShouldThrowApiException_WhenServiceFails() {
-        when(freelancerWorkflowService.getAllAvailableProjects())
+        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class)))
                 .thenThrow(ApiException.builder()
                         .message("Failed to fetch projects")
                         .status(500)
                         .build());
 
-        assertThatThrownBy(() -> publicController.getAllAvailableProjects())
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+
+        assertThatThrownBy(() -> publicController.getAllAvailableProjects(pageableRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Failed to fetch projects");
-        verify(freelancerWorkflowService).getAllAvailableProjects();
+        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class));
         verifyNoMoreInteractions(freelancerWorkflowService);
+
     }
 
     @Test
