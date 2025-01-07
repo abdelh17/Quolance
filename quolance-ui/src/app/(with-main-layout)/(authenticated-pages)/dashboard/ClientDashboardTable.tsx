@@ -2,8 +2,8 @@
 import { useGetAllClientProjects } from '@/api/client-api';
 import { ProjectType } from '@/constants/types/project-types';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
-import Loading from '@/components/ui/loading/loading';
-import LoadingSpinner1 from "@/components/ui/loading/loadingSpinner1";
+import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
+import LoadingSpinner1 from '@/components/ui/loading/loadingSpinner1';
 import Link from 'next/link';
 import {
     formatDate,
@@ -158,8 +158,8 @@ export default function ClientDashboardTable() {
                     <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
                       {project.experienceLevel}
                     </td>
-                    <td className='px-3 py-4 text-sm text-gray-500'>
-                      {project.projectStatus}
+                    <td className='px-3 py-4 text-sm'>
+                      <ProjectStatusBadge status={project.projectStatus} />
                     </td>
                     <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                       <div className='flex space-x-4'>
