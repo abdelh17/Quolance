@@ -98,9 +98,15 @@ public class ClientController {
             summary = "Get all applications on a project",
             description = "Get all applications on a project by passing the project ID"
     )
-    public ResponseEntity<List<ApplicationDto>> getAllApplicationsToProject(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<Page<ApplicationDto>> getAllApplicationsToProject(
+            @PathVariable(name = "projectId") Long projectId,
+            @Valid PageableRequestDto pageableRequest) {
         User client = SecurityUtil.getAuthenticatedUser();
-        List<ApplicationDto> applications = clientWorkflowService.getAllApplicationsToProject(projectId, client);
+        Page<ApplicationDto> applications = clientWorkflowService.getAllApplicationsToProject(
+                projectId,
+                client,
+                paginationUtils.createPageable(pageableRequest)
+        );
         return ResponseEntity.ok(applications);
     }
 

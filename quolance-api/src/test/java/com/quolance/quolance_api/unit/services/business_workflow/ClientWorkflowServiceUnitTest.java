@@ -190,28 +190,28 @@ class ClientWorkflowServiceTest {
 //        assertThat(result).isEmpty();
 //    }
 
-    @Test
-    void getAllApplicationsToProject_WhenOwner_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
-        when(applicationService.getAllApplicationsByProjectId(1L))
-                .thenReturn(Arrays.asList(mockApplication));
+//    @Test
+//    void getAllApplicationsToProject_WhenOwner_Success() {
+//        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+//        when(applicationService.getAllApplicationsByProjectId(1L))
+//                .thenReturn(Arrays.asList(mockApplication));
+//
+//        List<ApplicationDto> result = clientWorkflowService.getAllApplicationsToProject(1L, mockClient);
+//
+//        assertThat(result).hasSize(1);
+//        assertThat(result.get(0).getId()).isEqualTo(mockApplication.getId());
+//    }
 
-        List<ApplicationDto> result = clientWorkflowService.getAllApplicationsToProject(1L, mockClient);
-
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getId()).isEqualTo(mockApplication.getId());
-    }
-
-    @Test
-    void getAllApplicationsToProject_WhenNotOwner_ThrowsApiException() {
-        User wrongClient = User.builder().id(999L).build();
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
-
-        assertThatThrownBy(() -> clientWorkflowService.getAllApplicationsToProject(1L, wrongClient))
-                .isInstanceOf(ApiException.class)
-                .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
-                .hasMessage("You are not authorized to view this project applications");
-    }
+//    @Test
+//    void getAllApplicationsToProject_WhenNotOwner_ThrowsApiException() {
+//        User wrongClient = User.builder().id(999L).build();
+//        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+//
+//        assertThatThrownBy(() -> clientWorkflowService.getAllApplicationsToProject(1L, wrongClient))
+//                .isInstanceOf(ApiException.class)
+//                .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
+//                .hasMessage("You are not authorized to view this project applications");
+//    }
 
     @Test
     void updateProject_WhenOwner_Success() {

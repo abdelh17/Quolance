@@ -18,9 +18,9 @@ public interface ClientWorkflowService {
     ProjectDto getProject(Long projectId, User client);
     void deleteProject(Long projectId, User client);
 
-    public Page<ProjectDto> getAllClientProjects(User client, Pageable pageable);
+    Page<ProjectDto> getAllClientProjects(User client, Pageable pageable);
 
-    List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client);
+    Page<ApplicationDto> getAllApplicationsToProject(Long projectId, User client, Pageable pageable);
 
     ProjectDto updateProject(Long projectId, ProjectUpdateDto projectUpdateDto, User client);
 }

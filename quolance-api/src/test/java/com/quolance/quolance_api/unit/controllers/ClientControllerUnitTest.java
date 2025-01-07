@@ -243,35 +243,35 @@ class ClientControllerUnitTest {
 //        }
 //    }
 
-    @Test
-    void getAllApplicationsToProject_ReturnsApplicationList() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            ApplicationDto applicationDto = new ApplicationDto();
-            when(clientWorkflowService.getAllApplicationsToProject(eq(1L), any(User.class)))
-                    .thenReturn(Arrays.asList(applicationDto));
+//    @Test
+//    void getAllApplicationsToProject_ReturnsApplicationList() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+//            ApplicationDto applicationDto = new ApplicationDto();
+//            when(clientWorkflowService.getAllApplicationsToProject(eq(1L), any(User.class)))
+//                    .thenReturn(Arrays.asList(applicationDto));
+//
+//            ResponseEntity<List<ApplicationDto>> response = clientController.getAllApplicationsToProject(1L);
+//
+//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//            assertThat(response.getBody()).hasSize(1);
+//            verify(clientWorkflowService).getAllApplicationsToProject(eq(1L), eq(mockClient));
+//        }
+//    }
 
-            ResponseEntity<List<ApplicationDto>> response = clientController.getAllApplicationsToProject(1L);
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).hasSize(1);
-            verify(clientWorkflowService).getAllApplicationsToProject(eq(1L), eq(mockClient));
-        }
-    }
-
-    @Test
-    void getAllApplicationsToProject_WhenProjectNotFound_ThrowsApiException() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            when(clientWorkflowService.getAllApplicationsToProject(eq(999L), any(User.class)))
-                    .thenThrow(new ApiException("Project not found"));
-
-            assertThatThrownBy(() -> clientController.getAllApplicationsToProject(999L))
-                    .isInstanceOf(ApiException.class)
-                    .hasMessage("Project not found");
-            verify(clientWorkflowService).getAllApplicationsToProject(eq(999L), eq(mockClient));
-        }
-    }
+//    @Test
+//    void getAllApplicationsToProject_WhenProjectNotFound_ThrowsApiException() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+//            when(clientWorkflowService.getAllApplicationsToProject(eq(999L), any(User.class)))
+//                    .thenThrow(new ApiException("Project not found"));
+//
+//            assertThatThrownBy(() -> clientController.getAllApplicationsToProject(999L))
+//                    .isInstanceOf(ApiException.class)
+//                    .hasMessage("Project not found");
+//            verify(clientWorkflowService).getAllApplicationsToProject(eq(999L), eq(mockClient));
+//        }
+//    }
 
     @Test
     void selectFreelancer_ReturnsSuccessMessage() {

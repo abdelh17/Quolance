@@ -11,6 +11,6 @@ import java.util.List;
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
     Page<Application> findApplicationsByFreelancerId(Long freelancerId, Pageable pageable);
-    List<Application> findApplicationsByProjectId(Long projectId);
+    Page<Application> findApplicationsByProjectId(Long projectId, Pageable pageable);
     Application findApplicationByFreelancerIdAndProjectId(Long freelancerId, Long projectId);
 }

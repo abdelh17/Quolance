@@ -67,9 +67,8 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         return projectPage.map(ProjectDto::fromEntity); // Map entities to DTOs
     }
 
-
     @Override
-    public List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client) {
+    public Page<ApplicationDto> getAllApplicationsToProject(Long projectId, User client, Pageable pageable) {
         Project project = projectService.getProjectById(projectId);
 
         if(!project.isOwnedBy(client.getId())) {
@@ -79,7 +78,8 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                     .build();
         }
 
-        return applicationService.getAllApplicationsByProjectId(projectId).stream().map(ApplicationDto::fromEntity).toList();
+        return applicationService.getAllApplicationsByProjectId(projectId, pageable)
+                .map(ApplicationDto::fromEntity);
     }
 
     @Override

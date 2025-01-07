@@ -21,7 +21,5 @@ public interface ApplicationService {
 
     List<Application> getAllApplications();
     Page<Application> getAllApplicationsByFreelancerId(Long freelancerId, Pageable pageable);
-    List<Application> getAllApplicationsByProjectId(Long projectId);
-
-
+    Page<Application> getAllApplicationsByProjectId(Long projectId, Pageable pageable);
 }

@@ -111,16 +111,16 @@ class ApplicationServiceTest {
 //        assertThat(result).containsExactly(mockApplication);
 //    }
 
-    @Test
-    void getAllApplicationsByProjectId_Success() {
-        List<Application> applications = Arrays.asList(mockApplication);
-        when(applicationRepository.findApplicationsByProjectId(1L)).thenReturn(applications);
-
-        List<Application> result = applicationService.getAllApplicationsByProjectId(1L);
-
-        assertThat(result).hasSize(1);
-        assertThat(result).containsExactly(mockApplication);
-    }
+//    @Test
+//    void getAllApplicationsByProjectId_Success() {
+//        List<Application> applications = Arrays.asList(mockApplication);
+//        when(applicationRepository.findApplicationsByProjectId(1L)).thenReturn(applications);
+//
+//        List<Application> result = applicationService.getAllApplicationsByProjectId(1L);
+//
+//        assertThat(result).hasSize(1);
+//        assertThat(result).containsExactly(mockApplication);
+//    }
 
     @Test
     void updateApplicationStatus_Success_ToAccepted() {

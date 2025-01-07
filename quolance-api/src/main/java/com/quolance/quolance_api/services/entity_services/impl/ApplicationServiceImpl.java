@@ -56,8 +56,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getAllApplicationsByProjectId(Long projectId) {
-        return applicationRepository.findApplicationsByProjectId(projectId);
+    public Page<Application> getAllApplicationsByProjectId(Long projectId, Pageable pageable) {
+        return applicationRepository.findApplicationsByProjectId(projectId, pageable);
     }
 
     @Override

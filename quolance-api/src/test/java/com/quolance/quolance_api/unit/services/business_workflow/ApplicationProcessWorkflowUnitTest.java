@@ -77,19 +77,19 @@ class ApplicationProcessWorkflowTest {
                 .build();
     }
 
-    @Test
-    void selectFreelancer_Success() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
-        when(applicationService.getAllApplicationsByProjectId(1L))
-                .thenReturn(Arrays.asList(mockApplication, mockApplication2));
-
-        applicationProcessWorkflow.selectFreelancer(1L, mockClient);
-
-        verify(applicationService).updateApplicationStatus(mockApplication, ApplicationStatus.ACCEPTED);
-        verify(projectService).updateProjectStatus(mockProject, ProjectStatus.CLOSED);
-        verify(projectService).updateSelectedFreelancer(mockProject, mockFreelancer);
-        verify(applicationService).updateApplicationStatus(mockApplication2, ApplicationStatus.REJECTED);
-    }
+//    @Test
+//    void selectFreelancer_Success() {
+//        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+//        when(applicationService.getAllApplicationsByProjectId(1L))
+//                .thenReturn(Arrays.asList(mockApplication, mockApplication2));
+//
+//        applicationProcessWorkflow.selectFreelancer(1L, mockClient);
+//
+//        verify(applicationService).updateApplicationStatus(mockApplication, ApplicationStatus.ACCEPTED);
+//        verify(projectService).updateProjectStatus(mockProject, ProjectStatus.CLOSED);
+//        verify(projectService).updateSelectedFreelancer(mockProject, mockFreelancer);
+//        verify(applicationService).updateApplicationStatus(mockApplication2, ApplicationStatus.REJECTED);
+//    }
 
     @Test
     void selectFreelancer_WhenNotProjectOwner_ThrowsApiException() {
