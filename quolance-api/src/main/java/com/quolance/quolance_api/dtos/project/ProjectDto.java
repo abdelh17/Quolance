@@ -59,7 +59,7 @@ public class ProjectDto {
                 .experienceLevel(project.getExperienceLevel())
                 .expectedDeliveryTime(project.getExpectedDeliveryTime())
                 .projectStatus(project.getProjectStatus())
-                .tags(project.getTags())
+                // .tags(project.getTags())
                 .clientId(project.getClient() != null ? project.getClient().getId() : null)
                 .selectedFreelancerId(project.getSelectedFreelancer() != null ? project.getSelectedFreelancer().getId() : null)
                 .applications(project.getApplications() != null ? project.getApplications().stream()

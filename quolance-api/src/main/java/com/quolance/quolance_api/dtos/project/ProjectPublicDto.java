@@ -47,7 +47,7 @@ public class ProjectPublicDto {
                 .experienceLevel(project.getExperienceLevel())
                 .expectedDeliveryTime(project.getExpectedDeliveryTime())
                 .projectStatus(project.getProjectStatus())
-                .tags(project.getTags())
+                // .tags(project.getTags())
                 .build();
     }
 }
