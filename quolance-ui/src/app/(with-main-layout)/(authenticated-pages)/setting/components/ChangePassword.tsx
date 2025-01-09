@@ -118,9 +118,10 @@ export default function ChangePassword() {
            {...register("oldPassword")}
            className="block w-full rounded-md px-3 py-1.5 outline outline-1 focus:outline-indigo-500 sm:text-sm/6"
            onChange={() => clearErrors("oldPassword")}
+           data-test="old-password-input"
          />
          {formState.errors.oldPassword && (
-           <small className="text-red-600">{formState.errors.oldPassword.message}</small>
+           <small data-test="old-password-error"  className="text-red-600">{formState.errors.oldPassword.message}</small>
          )}
        </div>
 
@@ -139,10 +140,11 @@ export default function ChangePassword() {
                clearErrors("password");
                setPassword(e.target.value);
              }}
+           data-test="new-password-input"
          />
         
          {formState.errors.password && (
-           <small className="text-red-600">{formState.errors.password.message}</small>
+           <small data-test="new-password-error"  className="text-red-600">{formState.errors.password.message}</small>
          )}
          {password.length >= 1 && <PasswordStrengthBar password={password} />}
        </div>
@@ -158,9 +160,10 @@ export default function ChangePassword() {
            {...register("confirmPassword")}
            className="block w-full rounded-md px-3 py-1.5 text-base outline outline-1 focus:outline-indigo-500 sm:text-sm/6"
            onChange={() => clearErrors("confirmPassword")}
+           data-test="confirm-password-input"
          />
          {formState.errors.confirmPassword && (
-           <small className="text-red-600">{formState.errors.confirmPassword.message}</small>
+           <small data-test="confirm-password-error"  className="text-red-600">{formState.errors.confirmPassword.message}</small>
          )}
        </div>
 
@@ -170,6 +173,7 @@ export default function ChangePassword() {
            type="submit"
            disabled={isLoading}
            className="rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-900 "
+           data-test="change-password-btn"
          >
            {isLoading ? "Updating..." : "Change Password"}
          </Button>
