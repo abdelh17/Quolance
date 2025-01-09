@@ -89,6 +89,81 @@ class AdminControllerUnitTest {
     }
 
     @Test
+    void getAllPendingProjects_WithCustomPageSize_ReturnsCorrectPageSize() {
+        int customPageSize = 5;
+        List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
+        Page<ProjectDto> expectedProjects = new org.springframework.data.domain.PageImpl<>(projectList);
+        PageRequest pageRequest = PageRequest.of(0, customPageSize, Sort.by(Sort.Direction.DESC, "id"));
+
+        when(adminWorkflowService.getAllPendingProjects(pageRequest)).thenReturn(expectedProjects);
+
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(0, customPageSize, "id", "desc");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(expectedProjects);
+        verify(adminWorkflowService).getAllPendingProjects(any(PageRequest.class));
+        verify(adminWorkflowService).getAllPendingProjects(argThat(pr ->
+                pr.getPageSize() == customPageSize
+        ));
+    }
+
+    @Test
+    void getAllPendingProjects_WithCustomPage_ReturnsCorrectPage() {
+        int customPage = 2;
+        List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
+        Page<ProjectDto> expectedProjects = new org.springframework.data.domain.PageImpl<>(projectList);
+        PageRequest pageRequest = PageRequest.of(customPage, 10, Sort.by(Sort.Direction.DESC, "id"));
+
+        when(adminWorkflowService.getAllPendingProjects(pageRequest)).thenReturn(expectedProjects);
+
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(customPage, 10, "id", "desc");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(expectedProjects);
+        verify(adminWorkflowService).getAllPendingProjects(any(PageRequest.class));
+        verify(adminWorkflowService).getAllPendingProjects(argThat(pr ->
+                pr.getPageNumber() == customPage
+        ));
+    }
+
+    @Test
+    void getAllPendingProjects_WithCustomSortField_ReturnsSortedResults() {
+        String customSortField = "createdDate";
+        List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
+        Page<ProjectDto> expectedProjects = new org.springframework.data.domain.PageImpl<>(projectList);
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, customSortField));
+
+        when(adminWorkflowService.getAllPendingProjects(pageRequest)).thenReturn(expectedProjects);
+
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(0, 10, customSortField, "desc");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(expectedProjects);
+        verify(adminWorkflowService).getAllPendingProjects(any(PageRequest.class));
+        verify(adminWorkflowService).getAllPendingProjects(argThat(pr ->
+                pr.getSort().getOrderFor(customSortField) != null
+        ));
+    }
+
+    @Test
+    void getAllPendingProjects_WithAscendingSort_ReturnsSortedResults() {
+        List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
+        Page<ProjectDto> expectedProjects = new org.springframework.data.domain.PageImpl<>(projectList);
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
+
+        when(adminWorkflowService.getAllPendingProjects(pageRequest)).thenReturn(expectedProjects);
+
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(0, 10, "id", "asc");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(expectedProjects);
+        verify(adminWorkflowService).getAllPendingProjects(any(PageRequest.class));
+        verify(adminWorkflowService).getAllPendingProjects(argThat(pr ->
+                pr.getSort().getOrderFor("id").getDirection() == Sort.Direction.ASC
+        ));
+    }
+
+    @Test
     void approveProject_ReturnsSuccessMessage() {
         Long projectId = 1L;
         doNothing().when(adminWorkflowService).approveProject(projectId);
