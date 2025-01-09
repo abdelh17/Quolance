@@ -55,7 +55,7 @@ public class ProjectCreateDto {
                 .priceRange(projectCreateDto.getPriceRange())
                 .experienceLevel(projectCreateDto.getExperienceLevel())
                 .expectedDeliveryTime(projectCreateDto.getExpectedDeliveryTime())
-                .tags(projectCreateDto.getTags())
+                // .tags(projectCreateDto.getTags())
                 .build();
     }
 }
