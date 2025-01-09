@@ -52,6 +52,7 @@ export default function AdminApproveProject() {
                  projectStatus={project.projectStatus}
                  expirationDate={project.expirationDate}
                  clientId={project.clientId}
+                 data-test={`project-${project.id}`}
                />
              ))}
            </div>
