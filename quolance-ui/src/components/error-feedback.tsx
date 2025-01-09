@@ -7,7 +7,7 @@ import { cn } from '@/util/utils';
 interface ErrorFeedbackProps extends React.HTMLAttributes<HTMLDivElement> {
   data: HttpErrorResponse | undefined;
 }
-export default function ErrorFeedback({ data, className }: ErrorFeedbackProps) {
+export default function ErrorFeedback({ data, className, ...rest }: ErrorFeedbackProps) {
   if (!data) return <></>;
 
   return (
@@ -17,7 +17,7 @@ export default function ErrorFeedback({ data, className }: ErrorFeedbackProps) {
         className
       )}
     >
-      {data.message && <p className='font-bold'>{data.message}</p>}
+      {data.message && <p {...rest} className='font-bold'>{data.message}</p>}
 
       {data.errors && (
         <ul className='mt-2 list-inside list-disc'>

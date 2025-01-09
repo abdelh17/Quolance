@@ -15,9 +15,11 @@ const RadioCard = ({
   text,
   isSelected,
   onSelect,
+  ...rest
 }: RadioCardProps) => {
   return (
     <button
+      {...rest}
       onClick={onSelect}
       type='button'
       aria-pressed={isSelected}
