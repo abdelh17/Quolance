@@ -8,6 +8,7 @@ function ProjectAdminCard({
  projectStatus,
  expirationDate,
  clientId,
+ ...rest
 }: {
  id: number;
  title: string;
@@ -38,7 +39,7 @@ function ProjectAdminCard({
        </div>
      </div>
 
-     <div className="flex w-full sm:w-auto flex-none items-center sm:justify-end gap-x-4">
+     <div {...rest} className="flex w-full sm:w-auto flex-none items-center sm:justify-end gap-x-4">
        <Link
          href={`./adminApproveProject/${id}`}
          className="rounded-md px-2.5 py-1.5 text-sm  shadow-sm ring-1 ring-inset ring-gray-300 bg-blue-500 hover:bg-yellow-500 text-white w-full sm:w-auto text-center"
