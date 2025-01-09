@@ -230,6 +230,72 @@ class FreelancerControllerUnitTest {
     }
 
     @Test
+    void getAllFreelancerApplications_WithCustomPage_ReturnsCorrectPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setPage(2);
+            Pageable customPageable = mock(Pageable.class);
+            when(customPageable.getPageNumber()).thenReturn(2);
+
+            when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(customPageable);
+            when(freelancerWorkflowService.getAllFreelancerApplications(eq(mockFreelancer), eq(customPageable)))
+                    .thenReturn(new PageImpl<>(List.of(applicationDto)));
+
+            ResponseEntity<Page<ApplicationDto>> response = freelancerController.getAllFreelancerApplications(pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            verify(paginationUtils).createPageable(argThat(pr ->
+                    pr.getPage() == 2
+            ));
+            verify(freelancerWorkflowService).getAllFreelancerApplications(
+                    eq(mockFreelancer),
+                    argThat(p -> p.getPageNumber() == 2)
+            );
+        }
+    }
+
+    @Test
+    void getAllFreelancerApplications_WithCustomSortDirection_ReturnsSortedResults() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setSortDirection("asc");
+            Pageable customPageable = mock(Pageable.class);
+
+            when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(customPageable);
+            when(freelancerWorkflowService.getAllFreelancerApplications(eq(mockFreelancer), eq(customPageable)))
+                    .thenReturn(new PageImpl<>(List.of(applicationDto)));
+
+            ResponseEntity<Page<ApplicationDto>> response = freelancerController.getAllFreelancerApplications(pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            verify(paginationUtils).createPageable(argThat(pr ->
+                    pr.getSortDirection().equals("asc")
+            ));
+        }
+    }
+
+    @Test
+    void getAllFreelancerApplications_WithZeroPageSize_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setSize(0);
+
+            when(paginationUtils.createPageable(eq(pageableRequest)))
+                    .thenThrow(new ApiException("Page size must be greater than zero"));
+
+            assertThatThrownBy(() -> freelancerController.getAllFreelancerApplications(pageableRequest))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Page size must be greater than zero");
+        }
+    }
+
+    @Test
     void getAllAvailableProjects_ReturnsProjectPage() {
         Page<ProjectPublicDto> projectPage = new PageImpl<>(Collections.singletonList(projectPublicDto));
 
@@ -259,6 +325,48 @@ class FreelancerControllerUnitTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getContent()).isEmpty();
         verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class));
+    }
+
+    @Test
+    void getAllAvailableProjects_WithCustomPageSize_ReturnsCorrectPageSize() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setSize(5);
+        Pageable customPageable = mock(Pageable.class);
+        when(customPageable.getPageSize()).thenReturn(5);
+
+        when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(customPageable);
+        when(freelancerWorkflowService.getAllAvailableProjects(eq(customPageable)))
+                .thenReturn(new PageImpl<>(List.of(projectPublicDto)));
+
+        ResponseEntity<Page<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequest);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(paginationUtils).createPageable(argThat(pr ->
+                pr.getSize() == 5
+        ));
+        verify(freelancerWorkflowService).getAllAvailableProjects(argThat(p ->
+                p.getPageSize() == 5
+        ));
+    }
+
+    @Test
+    void getAllAvailableProjects_WithCustomSortField_ReturnsSortedResults() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setSortBy("createdDate");
+        pageableRequest.setSortDirection("asc");
+        Pageable customPageable = mock(Pageable.class);
+
+        when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(customPageable);
+        when(freelancerWorkflowService.getAllAvailableProjects(eq(customPageable)))
+                .thenReturn(new PageImpl<>(List.of(projectPublicDto)));
+
+        ResponseEntity<Page<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequest);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(paginationUtils).createPageable(argThat(pr ->
+                pr.getSortBy().equals("createdDate") &&
+                        pr.getSortDirection().equals("asc")
+        ));
     }
 
     @Test
