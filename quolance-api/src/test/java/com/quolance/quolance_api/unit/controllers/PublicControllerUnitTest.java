@@ -83,6 +83,108 @@ class PublicControllerUnitTest {
     }
 
     @Test
+    void getAllAvailableProjects_WithCustomPageSize_ReturnsCorrectPageSize() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setSize(5);
+        Pageable customPageable = mock(Pageable.class);
+        when(customPageable.getPageSize()).thenReturn(5);
+        Page<ProjectPublicDto> projectPage = new PageImpl<>(Collections.singletonList(sampleProject));
+
+        when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(customPageable);
+        when(freelancerWorkflowService.getAllAvailableProjects(eq(customPageable)))
+                .thenReturn(projectPage);
+
+        ResponseEntity<Page<ProjectPublicDto>> response = publicController.getAllAvailableProjects(pageableRequest);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        verify(paginationUtils).createPageable(argThat(pr ->
+                pr.getSize() == 5
+        ));
+        verify(freelancerWorkflowService).getAllAvailableProjects(argThat(p ->
+                p.getPageSize() == 5
+        ));
+    }
+
+    @Test
+    void getAllAvailableProjects_WithCustomPage_ReturnsCorrectPage() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setPage(2);
+        Pageable customPageable = mock(Pageable.class);
+        when(customPageable.getPageNumber()).thenReturn(2);
+        Page<ProjectPublicDto> projectPage = new PageImpl<>(Collections.singletonList(sampleProject));
+
+        when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(customPageable);
+        when(freelancerWorkflowService.getAllAvailableProjects(eq(customPageable)))
+                .thenReturn(projectPage);
+
+        ResponseEntity<Page<ProjectPublicDto>> response = publicController.getAllAvailableProjects(pageableRequest);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        verify(paginationUtils).createPageable(argThat(pr ->
+                pr.getPage() == 2
+        ));
+        verify(freelancerWorkflowService).getAllAvailableProjects(argThat(p ->
+                p.getPageNumber() == 2
+        ));
+    }
+
+    @Test
+    void getAllAvailableProjects_WithCustomSortField_ReturnsSortedResults() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setSortBy("createdDate");
+        pageableRequest.setSortDirection("asc");
+        Pageable customPageable = mock(Pageable.class);
+        Page<ProjectPublicDto> projectPage = new PageImpl<>(Collections.singletonList(sampleProject));
+
+        when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(customPageable);
+        when(freelancerWorkflowService.getAllAvailableProjects(eq(customPageable)))
+                .thenReturn(projectPage);
+
+        ResponseEntity<Page<ProjectPublicDto>> response = publicController.getAllAvailableProjects(pageableRequest);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        verify(paginationUtils).createPageable(argThat(pr ->
+                pr.getSortBy().equals("createdDate") &&
+                        pr.getSortDirection().equals("asc")
+        ));
+    }
+
+    @Test
+    void getAllAvailableProjects_WithInvalidPageNumber_ThrowsApiException() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setPage(-1);
+
+        when(paginationUtils.createPageable(eq(pageableRequest)))
+                .thenThrow(new ApiException("Page number cannot be negative"));
+
+        assertThatThrownBy(() -> publicController.getAllAvailableProjects(pageableRequest))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Page number cannot be negative");
+
+        verify(paginationUtils).createPageable(eq(pageableRequest));
+        verifyNoInteractions(freelancerWorkflowService);
+    }
+
+    @Test
+    void getAllAvailableProjects_WithInvalidSortDirection_ThrowsApiException() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setSortDirection("invalid");
+
+        when(paginationUtils.createPageable(eq(pageableRequest)))
+                .thenThrow(new ApiException("Sort direction must be either 'asc' or 'desc'"));
+
+        assertThatThrownBy(() -> publicController.getAllAvailableProjects(pageableRequest))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Sort direction must be either 'asc' or 'desc'");
+
+        verify(paginationUtils).createPageable(eq(pageableRequest));
+        verifyNoInteractions(freelancerWorkflowService);
+    }
+
+    @Test
     void getAllAvailableProjects_ShouldReturnEmptyPage_WhenNoProjects() {
 
         Page<ProjectPublicDto> emptyPage = Page.empty();
