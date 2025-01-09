@@ -10,7 +10,7 @@ on:
 
 jobs:
   frontend-build-test:
-    name: Build and Test Frontend
+    name: Build, Test, and Run E2E for Frontend
     runs-on: ubuntu-latest
 
     steps:
@@ -24,20 +24,28 @@ jobs:
           cd quolance-ui
           npm install
 
-      # UNCOMMENT WHEN THERE ARE TESTS IN FRONTEND
-      # # Step 2: Run Tests
-      # - name: Run Tests
-      #   run: |
-      #     cd quolance-ui
-      #     npm test
 
-      # Step 3: Build Frontend
+      # Step 2: Start the Frontend Server
+      - name: Start Frontend Server
+        run: |
+          cd quolance-ui
+          npm run dev &
+        env:
+          PORT: 3000
+      
+      # Step 3: Run Cypress Tests
+      - name: Run Cypress Tests
+        run: |
+          cd quolance-ui
+          npm run e2e:chrome
+
+      # Step 4: Build Frontend
       - name: Build Frontend
         run: |
           cd quolance-ui
           npm run build
 
-      # Step 4: SonarCloud Scan for Frontend
+      # Step 5: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarqube-scan-action@master
         env:
