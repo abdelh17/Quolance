@@ -68,30 +68,38 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
                 .getSession();
     }
 
-//    @Test
-//    void getAllPendingProjectIsOk() throws Exception {
-//        // Arrange
-//        Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-//        Project openProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-//
-//        // Act
-//        String response = mockMvc.perform(get("/api/admin/projects/pending/all")
-//                        .session(session))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        List<Object> responseList = objectMapper.readValue(response, List.class);
-//
-//        // Assert
-//        assertThat(responseList.size()).isEqualTo(1);
-//
-//        Map<String, Object> projectResponse = (Map<String, Object>) responseList.get(0);
-//
-//        assertThat(projectResponse.get("id")).isEqualTo(pendingProject.getId().intValue());
-//        assertThat(projectResponse.get("projectStatus")).isEqualTo("PENDING");
-//    }
+    @Test
+    void getAllPendingProjectIsOk() throws Exception {
+        // Arrange
+        Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+        Project openProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
+
+        // Act
+        String response = mockMvc.perform(get("/api/admin/projects/pending/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortBy", "id")
+                        .param("direction", "desc")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Map<String, Object> pageResponse = objectMapper.readValue(response, Map.class);
+        List<Object> content = (List<Object>) pageResponse.get("content");
+
+        // Assert
+        assertThat(content.size()).isEqualTo(1);
+        assertThat(pageResponse.get("totalElements")).isEqualTo(1);
+        assertThat(pageResponse.get("totalPages")).isEqualTo(1);
+        assertThat(pageResponse.get("number")).isEqualTo(0);
+        assertThat(pageResponse.get("size")).isEqualTo(10);
+
+        Map<String, Object> projectResponse = (Map<String, Object>) content.get(0);
+        assertThat(projectResponse.get("id")).isEqualTo(pendingProject.getId().intValue());
+        assertThat(projectResponse.get("projectStatus")).isEqualTo("PENDING");
+    }
 
     @Test
     void approvePendingProjectIsOkBecomesApproved() throws Exception {

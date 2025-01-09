@@ -211,43 +211,52 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         assertThat(applicationRepository.findAll()).hasSize(1);
     }
 
-//    @Test
-//    void getAllFreelancerApplicationsIsOk() throws Exception {
-//        //Arrange
-//        Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-//        Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-//        Application application1 = applicationRepository.save(EntityCreationHelper.createApplication(project1, freelancer));
-//        Application application2 = applicationRepository.save(EntityCreationHelper.createApplication(project2, freelancer));
-//
-//
-//        //Act
-//        String response = mockMvc.perform(get("/api/freelancer/applications/all")
-//                        .session(session))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        List<Object> responseList = objectMapper.readValue(response, List.class);
-//
-//        //Assert
-//        assertThat(responseList).hasSize(2);
-//
-//        Map<String, Object> applicationResponse1 = (Map<String, Object>) responseList.get(0);
-//        Map<String, Object> applicationResponse2 = (Map<String, Object>) responseList.get(1);
-//
-//        assertThat(applicationResponse1.get("id")).isEqualTo(application1.getId().intValue());
-//        assertThat(applicationResponse1.get("status")).isEqualTo("APPLIED");
-//        assertThat(applicationResponse1.get("status")).isEqualTo(application1.getApplicationStatus().name());
-//        assertThat(applicationResponse1.get("projectId")).isEqualTo(project1.getId().intValue());
-//        assertThat(applicationResponse1.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
-//
-//        assertThat(applicationResponse2.get("id")).isEqualTo(application2.getId().intValue());
-//        assertThat(applicationResponse2.get("status")).isEqualTo("APPLIED");
-//        assertThat(applicationResponse2.get("status")).isEqualTo(application2.getApplicationStatus().name());
-//        assertThat(applicationResponse2.get("projectId")).isEqualTo(project2.getId().intValue());
-//        assertThat(applicationResponse2.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
-//    }
+    @Test
+    void getAllFreelancerApplicationsIsOk() throws Exception {
+        //Arrange
+        Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
+        Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
+        Application application1 = applicationRepository.save(EntityCreationHelper.createApplication(project1, freelancer));
+        Application application2 = applicationRepository.save(EntityCreationHelper.createApplication(project2, freelancer));
+
+        //Act
+        String response = mockMvc.perform(get("/api/freelancer/applications/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortDirection", "asc")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+
+        //Assert
+        assertThat(content).hasSize(2);
+
+        Map<String, Object> applicationResponse1 = content.get(0);
+        Map<String, Object> applicationResponse2 = content.get(1);
+
+        assertThat(applicationResponse1.get("id")).isEqualTo(application1.getId().intValue());
+        assertThat(applicationResponse1.get("status")).isEqualTo("APPLIED");
+        assertThat(applicationResponse1.get("status")).isEqualTo(application1.getApplicationStatus().name());
+        assertThat(applicationResponse1.get("projectId")).isEqualTo(project1.getId().intValue());
+        assertThat(applicationResponse1.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
+
+        assertThat(applicationResponse2.get("id")).isEqualTo(application2.getId().intValue());
+        assertThat(applicationResponse2.get("status")).isEqualTo("APPLIED");
+        assertThat(applicationResponse2.get("status")).isEqualTo(application2.getApplicationStatus().name());
+        assertThat(applicationResponse2.get("projectId")).isEqualTo(project2.getId().intValue());
+        assertThat(applicationResponse2.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
+
+        // Verify pagination information
+        assertThat(responseMap.get("totalElements")).isEqualTo(2);
+        assertThat(responseMap.get("totalPages")).isEqualTo(1);
+        assertThat(responseMap.get("number")).isEqualTo(0);
+        assertThat(responseMap.get("size")).isEqualTo(10);
+    }
 
     @Test
     void getAllProjectsReturnsVisibleProjects() throws Exception {
