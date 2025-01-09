@@ -14,6 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,39 +46,47 @@ class AdminControllerUnitTest {
         projectDto2.setId(2L);
     }
 
-//    @Test
-//    void getAllPendingProjects_ReturnsListOfProjects() {
-//        List<ProjectDto> expectedProjects = Arrays.asList(projectDto1, projectDto2);
-//        when(adminWorkflowService.getAllPendingProjects()).thenReturn(expectedProjects);
-//
-//        ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
-//
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(response.getBody()).isEqualTo(expectedProjects);
-//        verify(adminWorkflowService, times(1)).getAllPendingProjects();
-//    }
+    @Test
+    void getAllPendingProjects_ReturnsPageOfProjects() {
+        List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
+        Page<ProjectDto> expectedProjects = new org.springframework.data.domain.PageImpl<>(projectList);
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
 
-//    @Test
-//    void getAllPendingProjects_ReturnsEmptyList_WhenNoProjects() {
-//        when(adminWorkflowService.getAllPendingProjects()).thenReturn(List.of());
-//
-//        ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
-//
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(response.getBody()).isEmpty();
-//        verify(adminWorkflowService, times(1)).getAllPendingProjects();
-//    }
+        when(adminWorkflowService.getAllPendingProjects(pageRequest)).thenReturn(expectedProjects);
 
-//    @Test
-//    void getAllPendingProjects_WhenUnauthorized_ThrowsAccessDeniedException() {
-//        when(adminWorkflowService.getAllPendingProjects())
-//                .thenThrow(new AccessDeniedException("User is not authorized to view pending projects"));
-//
-//        assertThatThrownBy(() -> adminController.getAllPendingProjects())
-//                .isInstanceOf(AccessDeniedException.class)
-//                .hasMessage("User is not authorized to view pending projects");
-//        verify(adminWorkflowService, times(1)).getAllPendingProjects();
-//    }
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(0, 10, "id", "desc");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(expectedProjects);
+        verify(adminWorkflowService, times(1)).getAllPendingProjects(pageRequest);
+    }
+
+    @Test
+    void getAllPendingProjects_ReturnsEmptyPage_WhenNoProjects() {
+        Page<ProjectDto> emptyPage = new org.springframework.data.domain.PageImpl<>(List.of());
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
+
+        when(adminWorkflowService.getAllPendingProjects(pageRequest)).thenReturn(emptyPage);
+
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(0, 10, "id", "desc");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getContent()).isEmpty();
+        verify(adminWorkflowService, times(1)).getAllPendingProjects(pageRequest);
+    }
+
+    @Test
+    void getAllPendingProjects_WhenUnauthorized_ThrowsAccessDeniedException() {
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
+
+        when(adminWorkflowService.getAllPendingProjects(pageRequest))
+                .thenThrow(new AccessDeniedException("User is not authorized to view pending projects"));
+
+        assertThatThrownBy(() -> adminController.getAllPendingProjects(0, 10, "id", "desc"))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("User is not authorized to view pending projects");
+        verify(adminWorkflowService, times(1)).getAllPendingProjects(pageRequest);
+    }
 
     @Test
     void approveProject_ReturnsSuccessMessage() {

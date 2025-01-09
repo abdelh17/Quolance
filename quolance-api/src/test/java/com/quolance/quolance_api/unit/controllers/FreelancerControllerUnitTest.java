@@ -175,37 +175,59 @@ class FreelancerControllerUnitTest {
         }
     }
 
-//    @Test
-//    void getAllFreelancerApplications_ReturnsApplicationList() {
-//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
-//            List<ApplicationDto> applications = Arrays.asList(applicationDto);
-//            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class))).thenReturn(applications);
-//
-//            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
-//
-//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//            assertThat(response.getBody()).hasSize(1);
-//            assertThat(response.getBody().get(0)).isEqualTo(applicationDto);
-//            assertThat(response.getBody().get(0).getStatus()).isEqualTo(ApplicationStatus.APPLIED);
-//            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
-//        }
-//    }
+    @Test
+    void getAllFreelancerApplications_ReturnsApplicationPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            Page<ApplicationDto> applicationsPage = new PageImpl<>(List.of(applicationDto));
 
-//    @Test
-//    void getAllFreelancerApplications_ReturnsEmptyList() {
-//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
-//            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class)))
-//                    .thenReturn(Collections.emptyList());
-//
-//            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
-//
-//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//            assertThat(response.getBody()).isEmpty();
-//            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
-//        }
-//    }
+            when(freelancerWorkflowService.getAllFreelancerApplications(eq(mockFreelancer), any(Pageable.class)))
+                    .thenReturn(applicationsPage);
+
+            ResponseEntity<Page<ApplicationDto>> response = freelancerController.getAllFreelancerApplications(pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            assertThat(response.getBody().getContent().get(0)).isEqualTo(applicationDto);
+            assertThat(response.getBody().getContent().get(0).getStatus()).isEqualTo(ApplicationStatus.APPLIED);
+            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer), any(Pageable.class));
+        }
+    }
+
+    @Test
+    void getAllFreelancerApplications_ReturnsEmptyPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            Page<ApplicationDto> emptyPage = Page.empty();
+
+            when(freelancerWorkflowService.getAllFreelancerApplications(eq(mockFreelancer), any(Pageable.class)))
+                    .thenReturn(emptyPage);
+
+            ResponseEntity<Page<ApplicationDto>> response = freelancerController.getAllFreelancerApplications(pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).isEmpty();
+            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer), any(Pageable.class));
+        }
+    }
+
+    @Test
+    void getAllFreelancerApplications_WithInvalidPageSize_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setSize(101);
+
+            when(paginationUtils.createPageable(eq(pageableRequest)))
+                    .thenThrow(new ApiException("Page size must not be greater than 100"));
+
+            assertThatThrownBy(() -> freelancerController.getAllFreelancerApplications(pageableRequest))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Page size must not be greater than 100");
+        }
+    }
 
     @Test
     void getAllAvailableProjects_ReturnsProjectPage() {
