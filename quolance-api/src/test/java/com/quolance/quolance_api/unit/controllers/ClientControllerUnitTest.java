@@ -264,6 +264,69 @@ class ClientControllerUnitTest {
     }
 
     @Test
+    void getAllClientProjects_WithCustomPageNumber_ReturnsCorrectPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setPage(2);
+            pageableRequest.setSize(10);
+            PageRequest expectedPageRequest = PageRequest.of(2, 10, Sort.by(Sort.Direction.DESC, "id"));
+            Page<ProjectDto> projectPage = new PageImpl<>(List.of(projectDto));
+
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(expectedPageRequest);
+            when(clientWorkflowService.getAllClientProjects(eq(mockClient), eq(expectedPageRequest)))
+                    .thenReturn(projectPage);
+
+            ResponseEntity<Page<ProjectDto>> response = clientController.getAllClientProjects(pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(projectPage);
+            verify(paginationUtils).createPageable(argThat(pr ->
+                    pr.getPage() == 2
+            ));
+        }
+    }
+
+    @Test
+    void getAllClientProjects_WithCustomSortField_ReturnsSortedResults() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setSortBy("createdDate");
+            PageRequest expectedPageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+            Page<ProjectDto> projectPage = new PageImpl<>(List.of(projectDto));
+
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(expectedPageRequest);
+            when(clientWorkflowService.getAllClientProjects(eq(mockClient), eq(expectedPageRequest)))
+                    .thenReturn(projectPage);
+
+            ResponseEntity<Page<ProjectDto>> response = clientController.getAllClientProjects(pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(projectPage);
+            verify(paginationUtils).createPageable(argThat(pr ->
+                    pr.getSortBy().equals("createdDate")
+            ));
+        }
+    }
+
+    @Test
+    void getAllClientProjects_WithInvalidSortDirection_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setSortDirection("invalid");
+
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            when(paginationUtils.createPageable(eq(pageableRequest)))
+                    .thenThrow(new ApiException("Sort direction must be either 'asc' or 'desc'"));
+
+            assertThatThrownBy(() -> clientController.getAllClientProjects(pageableRequest))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Sort direction must be either 'asc' or 'desc'");
+        }
+    }
+
+    @Test
     void getAllApplicationsToProject_ReturnsApplicationPage() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             PageableRequestDto pageableRequest = new PageableRequestDto();
@@ -301,18 +364,66 @@ class ClientControllerUnitTest {
     }
 
     @Test
-    void getAllClientProjects_WithInvalidSortDirection_ThrowsApiException() {
+    void getAllApplicationsToProject_WithCustomPageSize_ReturnsCorrectPageSize() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             PageableRequestDto pageableRequest = new PageableRequestDto();
-            pageableRequest.setSortDirection("invalid");
+            pageableRequest.setSize(5);
+            PageRequest expectedPageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id"));
+            ApplicationDto applicationDto = new ApplicationDto();
+            Page<ApplicationDto> applicationPage = new PageImpl<>(List.of(applicationDto));
+
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(expectedPageRequest);
+            when(clientWorkflowService.getAllApplicationsToProject(eq(1L), eq(mockClient), eq(expectedPageRequest)))
+                    .thenReturn(applicationPage);
+
+            ResponseEntity<Page<ApplicationDto>> response = clientController.getAllApplicationsToProject(1L, pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(applicationPage);
+            verify(paginationUtils).createPageable(argThat(pr ->
+                    pr.getSize() == 5
+            ));
+        }
+    }
+
+    @Test
+    void getAllApplicationsToProject_WithAscendingSortOrder_ReturnsSortedResults() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setSortDirection("asc");
+            PageRequest expectedPageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
+            ApplicationDto applicationDto = new ApplicationDto();
+            Page<ApplicationDto> applicationPage = new PageImpl<>(List.of(applicationDto));
+
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            when(paginationUtils.createPageable(eq(pageableRequest))).thenReturn(expectedPageRequest);
+            when(clientWorkflowService.getAllApplicationsToProject(eq(1L), eq(mockClient), eq(expectedPageRequest)))
+                    .thenReturn(applicationPage);
+
+            ResponseEntity<Page<ApplicationDto>> response = clientController.getAllApplicationsToProject(1L, pageableRequest);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(applicationPage);
+            verify(paginationUtils).createPageable(argThat(pr ->
+                    pr.getSortDirection().equals("asc")
+            ));
+        }
+    }
+
+    @Test
+    void getAllApplicationsToProject_WithNegativePageNumber_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setPage(-1);
 
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             when(paginationUtils.createPageable(eq(pageableRequest)))
-                    .thenThrow(new ApiException("Sort direction must be either 'asc' or 'desc'"));
+                    .thenThrow(new ApiException("Page number cannot be negative"));
 
-            assertThatThrownBy(() -> clientController.getAllClientProjects(pageableRequest))
+            assertThatThrownBy(() -> clientController.getAllApplicationsToProject(1L, pageableRequest))
                     .isInstanceOf(ApiException.class)
-                    .hasMessage("Sort direction must be either 'asc' or 'desc'");
+                    .hasMessage("Page number cannot be negative");
         }
     }
 
