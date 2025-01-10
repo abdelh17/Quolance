@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.business_workflow.impl;
+package com.quolance.quolance_api.unit.services.business_workflow;
 
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.entities.Project;
