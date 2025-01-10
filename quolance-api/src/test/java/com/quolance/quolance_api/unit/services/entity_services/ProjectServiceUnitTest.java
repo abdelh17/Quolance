@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
@@ -9,6 +9,7 @@ import com.quolance.quolance_api.entities.enums.PriceRange;
 import com.quolance.quolance_api.entities.enums.ExpectedDeliveryTime;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.repositories.ProjectRepository;
+import com.quolance.quolance_api.services.entity_services.impl.ProjectServiceImpl;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

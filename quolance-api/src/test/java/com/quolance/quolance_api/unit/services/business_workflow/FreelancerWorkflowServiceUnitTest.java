@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.business_workflow.impl;
+package com.quolance.quolance_api.unit.services.business_workflow;
 
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
@@ -9,6 +9,7 @@ import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.services.business_workflow.impl.FreelancerWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
