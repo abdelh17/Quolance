@@ -12,6 +12,7 @@ interface Application {
   status: ApplicationStatus;
   projectId: number;
   freelancerId: number;
+  projectTitle: string;
 }
 
 export default function FreelancerDashboardTable() {
@@ -49,6 +50,10 @@ export default function FreelancerDashboardTable() {
         : <ArrowDown className="h-4 w-4 inline-block ml-1" />;
   };
 
+  const canWithdrawApplication = (status: ApplicationStatus) => {
+    return status === 'APPLIED';
+  };
+
   if (isLoading) {
     return <LoadingSpinner1 />;
   }
@@ -65,6 +70,13 @@ export default function FreelancerDashboardTable() {
               <th
                   scope='col'
                   className='cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:pl-0'
+                  onClick={() => handleSort('id')}
+              >
+                <div className='flex items-center'>Project Title</div>
+              </th>
+              <th
+                  scope='col'
+                  className='hidden sm:table-cell cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:pl-0'
                   onClick={() => handleSort('id')}
               >
                 <div className='flex items-center'>
@@ -85,7 +97,6 @@ export default function FreelancerDashboardTable() {
               >
                 <div className='flex items-center'>
                   Status
-                  {getSortIcon('status')}
                 </div>
               </th>
               <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
@@ -99,7 +110,8 @@ export default function FreelancerDashboardTable() {
                   <td colSpan={4} className='py-12 text-center'>
                     <div className='flex flex-col items-center'>
                       <p className='mb-4 text-center text-gray-600'>
-                        You haven't submitted your application to any project yet. Get started by applying to a project!
+                        You haven't submitted your application to any project yet.
+                        Get started by applying to a project!
                       </p>
                       <Link
                           href='/applications'
@@ -114,6 +126,9 @@ export default function FreelancerDashboardTable() {
                 applications.map((application: Application) => (
                     <tr key={application.id}>
                       <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
+                        {application.projectTitle}
+                      </td>
+                      <td className='hidden sm:table-cell w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
                         {application.id}
                       </td>
                       <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
@@ -123,21 +138,28 @@ export default function FreelancerDashboardTable() {
                         <ApplicationStatusBadge status={application.status} />
                       </td>
                       <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                        <div className="flex space-x-4 justify-end">
+                        <div className='flex justify-end space-x-4'>
                           <Link
                               href={`/projects/${application.projectId}`}
                               className='text-b300 hover:text-indigo-900'
                           >
                             View project
                           </Link>
-                          {application.status === 'APPLIED' && (
-                              <Link
-                                  href={`/applications/${application.id}?withdraw=true`}
-                                  className='text-red-600 hover:text-red-800'
-                              >
-                                Withdraw submission
-                              </Link>
-                          )}
+                          <Link
+                              href={canWithdrawApplication(application.status) ? `/applications/${application.id}?withdraw=true` : '#'}
+                              className={`${
+                                  canWithdrawApplication(application.status)
+                                      ? 'text-red-600 hover:text-red-800'
+                                      : 'text-gray-400 cursor-not-allowed'
+                              }`}
+                              onClick={(e) => {
+                                if (!canWithdrawApplication(application.status)) {
+                                  e.preventDefault();
+                                }
+                              }}
+                          >
+                            Withdraw submission
+                          </Link>
                         </div>
                       </td>
                     </tr>
@@ -168,10 +190,15 @@ export default function FreelancerDashboardTable() {
                   <div>
                     <p className='text-sm text-gray-700'>
                       Showing{' '}
-                      <span className='font-medium'>{metadata.pageNumber * metadata.pageSize + 1}</span>{' '}
+                      <span className='font-medium'>
+                    {metadata.pageNumber * metadata.pageSize + 1}
+                  </span>{' '}
                       to{' '}
                       <span className='font-medium'>
-                    {Math.min((metadata.pageNumber + 1) * metadata.pageSize, metadata.totalElements)}
+                    {Math.min(
+                        (metadata.pageNumber + 1) * metadata.pageSize,
+                        metadata.totalElements
+                    )}
                   </span>{' '}
                       of{' '}
                       <span className='font-medium'>{metadata.totalElements}</span>{' '}
