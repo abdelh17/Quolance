@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class FreelancerWorkflowServiceTest {
+class FreelancerWorkflowServiceUnitTest {
 
     @Mock
     private ProjectService projectService;
