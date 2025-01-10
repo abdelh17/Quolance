@@ -19,7 +19,4 @@ public class BlogThreadView {
     // @JoinColumn(name = "blogpost_id", nullable = false)
     // private BlogPost blogPost;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "blog_thread_view_id")
-    private Set<Tag> tags;
 }
