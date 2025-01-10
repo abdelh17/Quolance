@@ -1,14 +1,18 @@
-package com.quolance.quolance_api.unit;
+package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.FreelancerController;
+import com.quolance.quolance_api.dtos.PageResponseDto;
+import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +22,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -39,6 +47,9 @@ class FreelancerControllerUnitTest {
     private FreelancerWorkflowService freelancerWorkflowService;
 
     @Mock
+    private PaginationUtils paginationUtils;
+
+    @Mock
     private ApplicationProcessWorkflow applicationProcessWorkflow;
 
     @InjectMocks
@@ -48,6 +59,7 @@ class FreelancerControllerUnitTest {
     private ApplicationCreateDto applicationCreateDto;
     private ApplicationDto applicationDto;
     private ProjectPublicDto projectPublicDto;
+    private ProjectDto projectDto;
 
     @BeforeEach
     void setUp() {
@@ -57,11 +69,14 @@ class FreelancerControllerUnitTest {
         mockFreelancer.setRole(Role.FREELANCER);
 
         applicationCreateDto = new ApplicationCreateDto(1L);
+        projectDto = new ProjectDto();
+        projectDto.setId(1L);
+        projectDto.setTitle("Test Project");
 
         applicationDto = ApplicationDto.builder()
                 .id(1L)
                 .freelancerId(1L)
-                .projectId(1L)
+                .projectTitle(projectDto.getTitle())
                 .status(ApplicationStatus.APPLIED)
                 .build();
 
@@ -169,15 +184,19 @@ class FreelancerControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             List<ApplicationDto> applications = Arrays.asList(applicationDto);
-            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class))).thenReturn(applications);
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<ApplicationDto> applicationPage = new PageImpl<>(applications, pageable, applications.size());
 
-            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class),eq(pageable))).thenReturn(applicationPage);
+
+            ResponseEntity<PageResponseDto<ApplicationDto>> response = freelancerController.getAllFreelancerApplications(new PageableRequestDto());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).hasSize(1);
-            assertThat(response.getBody().get(0)).isEqualTo(applicationDto);
-            assertThat(response.getBody().get(0).getStatus()).isEqualTo(ApplicationStatus.APPLIED);
-            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
+            assertThat(response.getBody().getContent()).hasSize(1);
+            assertThat(response.getBody().getContent().get(0)).isEqualTo(applicationDto);
+            assertThat(response.getBody().getContent().get(0).getStatus()).isEqualTo(ApplicationStatus.APPLIED);
+            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer), eq(pageable));
         }
     }
 
@@ -185,14 +204,18 @@ class FreelancerControllerUnitTest {
     void getAllFreelancerApplications_ReturnsEmptyList() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
-            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class)))
-                    .thenReturn(Collections.emptyList());
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<ApplicationDto> emptyPage = Page.empty(pageable);
 
-            ResponseEntity<List<ApplicationDto>> response = freelancerController.getAllFreelancerApplications();
+            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class), eq(pageable)))
+                    .thenReturn(emptyPage);
+
+            ResponseEntity<PageResponseDto<ApplicationDto>> response = freelancerController.getAllFreelancerApplications(new PageableRequestDto());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEmpty();
-            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer));
+            assertThat(response.getBody().getContent()).isEmpty();
+            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer), eq(pageable));
         }
     }
 
