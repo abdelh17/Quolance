@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import jakarta.validation.Valid;
 import java.util.List;
 
@@ -22,12 +26,12 @@ public class BlogPostController {
 
     @PostMapping
     @Operation(summary = "Create a blog post")
-    public ResponseEntity<BlogPostResponseDto> createBlogPost( @RequestBody BlogPostRequestDto request) {
+    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @RequestBody BlogPostRequestDto request) {
         BlogPostResponseDto response = blogPostService.create(request);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @Operation(summary = "Get all blog posts")
     public ResponseEntity<List<BlogPostResponseDto>> getAllBlogPosts() {
         List<BlogPostResponseDto> responses = blogPostService.getAll();
@@ -61,5 +65,15 @@ public class BlogPostController {
     public ResponseEntity<String> deleteBlogPost(@PathVariable Long id) {
         blogPostService.delete(id);
         return ResponseEntity.ok("The post was successfully deleted");
+    }
+
+    @GetMapping
+    @Operation(summary = "Get paginated blog posts with title and truncated content")
+    public ResponseEntity<Page<BlogPostResponseDto>> getPaginatedBlogPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BlogPostResponseDto> response = blogPostService.getPaginatedBlogPosts(pageable);
+        return ResponseEntity.ok(response);
     }
 }

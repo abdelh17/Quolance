@@ -11,12 +11,16 @@ import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +36,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         // Create and save the blog post
         BlogPost blogPost = BlogPost.builder()
+                .title(request.getTitle())
                 .content(request.getContent())
                 .user(user)
                 .build();
@@ -74,6 +79,8 @@ public class BlogPostServiceImpl implements BlogPostService {
         // Update the blog post fields
         blogPost.setContent(request.getContent());
 
+        blogPost.setTitle(request.getTitle());
+
         // Save the updated blog post
         BlogPost updatedBlogPost = blogPostRepository.save(blogPost);
 
@@ -83,8 +90,13 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public void delete(Long id) {
-        if (blogPostRepository.findByUserId(id) != SecurityUtil.getAuthenticatedUser())
+        BlogPost blogPost = blogPostRepository.findById(id)
+                .orElseThrow(() -> new ApiException("Blog post not found"));
+        Long authenticatedUserId = SecurityUtil.getAuthenticatedUser().getId(); // Assuming this method exists
+
+        if (!blogPost.getUser().getId().equals(authenticatedUserId)) {
             throw new ApiException("Incorrect User. Cannot delete");
+        }
         blogPostRepository.deleteById(id);
     }
 
@@ -92,6 +104,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPostResponseDto mapToResponseDto(BlogPost blogPost) {
         return new BlogPostResponseDto(
                 blogPost.getId(),
+                blogPost.getTitle(),
                 blogPost.getContent(),
                 blogPost.getUser().getFirstName() + " " + blogPost.getUser().getLastName(),
                 blogPost.getCreationDate()
@@ -99,5 +112,24 @@ public class BlogPostServiceImpl implements BlogPostService {
 //                new ArrayList<>(), // Placeholder for reactions
 //                new ArrayList<>()  // Placeholder for replies
         );
+    }
+
+    @Override
+    public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
+        // Fetch paginated blog posts
+        Page<BlogPost> blogPosts = blogPostRepository.findAll(pageable);
+
+        // Map to response DTOs with truncated content
+        return blogPosts.map(blogPost -> {
+               return new BlogPostResponseDto(
+                    blogPost.getId(),
+                    blogPost.getTitle(),
+                    blogPost.getContent().length() > 100
+                            ? blogPost.getContent().substring(0, 100) + "..."
+                            : blogPost.getContent(),
+                    blogPost.getUser().getFirstName() + " " + blogPost.getUser().getLastName(),
+                    blogPost.getCreationDate()
+            );
+        });
     }
 }
