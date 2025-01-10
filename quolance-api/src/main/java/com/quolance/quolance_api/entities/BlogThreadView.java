@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 package com.quolance.quolance_api.entities;
 
 import jakarta.persistence.*;
@@ -34,4 +32,3 @@ public class BlogThreadView {
     private BlogPost blogPost;
 
 }
->>>>>>> c84386881e4a9b1d8a962cdab5d2a0f48c890c4c
