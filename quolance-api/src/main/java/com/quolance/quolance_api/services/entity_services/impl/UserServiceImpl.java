@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -77,9 +76,12 @@ public class UserServiceImpl implements UserService {
         verificationCodeRepository.save(verificationCode);
 
         SendWelcomeEmailJob sendWelcomeEmailJob = new SendWelcomeEmailJob(user.getId());
-        BackgroundJob.schedule(Instant.now().plusSeconds(1), () ->
-                BackgroundJobRequest.enqueue(sendWelcomeEmailJob)
-        );
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        BackgroundJobRequest.enqueue(sendWelcomeEmailJob);
     }
 
     @Override
