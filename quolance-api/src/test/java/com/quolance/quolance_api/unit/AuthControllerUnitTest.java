@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.unit.controllers;
+package com.quolance.quolance_api.unit;
 
 import com.quolance.quolance_api.controllers.AuthController;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
