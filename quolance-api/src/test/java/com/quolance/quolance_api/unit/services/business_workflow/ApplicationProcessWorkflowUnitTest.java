@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ApplicationProcessWorkflowTest {
+class ApplicationProcessWorkflowUnitTest {
 
     @Mock
     private ApplicationService applicationService;

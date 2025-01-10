@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ApplicationServiceTest {
+class ApplicationServiceUnitTest {
 
     @Mock
     private ApplicationRepository applicationRepository;
