@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BlogPostResponseDto {
     private Long id;
+    private String title;
     private String content;
     private String authorName; // Derived from User entity
     private LocalDateTime dateCreated;
