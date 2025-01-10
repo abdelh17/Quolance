@@ -1,7 +1,7 @@
 'use client';
 
 import { useGetAllClientProjects } from '@/api/client-api';
-import { ProjectType } from '@/constants/types/project-types';
+import {ProjectStatus, ProjectType} from '@/constants/types/project-types';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
 import LoadingSpinner1 from '@/components/ui/loading/loadingSpinner1';
@@ -160,7 +160,7 @@ export default function ClientDashboardTable() {
                       {project.experienceLevel}
                     </td>
                     <td className='px-3 py-4 text-sm'>
-                      <ProjectStatusBadge status={project.projectStatus} />
+                      <ProjectStatusBadge status={project.projectStatus as ProjectStatus} />
                     </td>
                     <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                       <div className='flex space-x-4'>
