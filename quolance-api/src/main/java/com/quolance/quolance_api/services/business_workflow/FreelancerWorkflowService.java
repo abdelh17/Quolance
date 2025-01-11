@@ -5,6 +5,7 @@ import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public interface FreelancerWorkflowService {
     ApplicationDto getApplication(Long applicationId, User freelancer);
 
     public Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable);
-    Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable);
+    Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable, ProjectFilterDto filters);
     ProjectPublicDto getProject(Long projectId);
 
     FreelancerProfileDto getFreelancerProfile(String username);

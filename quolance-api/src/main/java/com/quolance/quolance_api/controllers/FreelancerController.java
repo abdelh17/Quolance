@@ -7,6 +7,7 @@ import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
@@ -79,10 +80,14 @@ public class FreelancerController {
             summary = "View all available projects.",
             description = "View all projects that are open or closed and still in the visibility of the freelancer."
     )
-    public ResponseEntity<Page<ProjectPublicDto>> getAllAvailableProjects(
-            @Valid PageableRequestDto pageableRequest) {
-        Page<ProjectPublicDto> availableProjects = freelancerWorkflowService.getAllAvailableProjects(paginationUtils.createPageable(pageableRequest));
-        return ResponseEntity.ok(availableProjects);
+    public ResponseEntity<PageResponseDto<ProjectPublicDto>> getAllAvailableProjects(
+            @Valid PageableRequestDto pageableRequest,
+            @Valid ProjectFilterDto filters) {
+        Page<ProjectPublicDto> availableProjects = freelancerWorkflowService.getAllAvailableProjects(
+                paginationUtils.createPageable(pageableRequest),
+                filters
+        );
+        return ResponseEntity.ok(new PageResponseDto<>(availableProjects));
     }
 
     @GetMapping("/projects/{projectId}")
