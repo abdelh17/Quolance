@@ -2,6 +2,7 @@
 
 import { Client, IMessage } from '@stomp/stompjs';
 import { useEffect, useRef, useState } from 'react';
+import SockJS from 'sockjs-client';
 
 const WebSocketPage: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -15,7 +16,7 @@ const WebSocketPage: React.FC = () => {
     console.log('Initializing STOMP client...');
 
     const stompClient = new Client({
-      webSocketFactory: () => new WebSocket(socketURL), // Native WebSocket
+      webSocketFactory: () => new SockJS(socketURL), // Native WebSocket
       reconnectDelay: 5000,
       debug: (str) => console.log(str), // Debugging messages
       onConnect: () => {

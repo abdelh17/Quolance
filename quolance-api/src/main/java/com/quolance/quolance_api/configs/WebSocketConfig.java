@@ -55,17 +55,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, org.springframework.messaging.MessageChannel channel) {
-                //TODO: Implement better middleware for authentication, causes some issues sometimes
-
-                // Retrieve the authentication from the security context
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-                // Ensure the user is authenticated
-                if (authentication == null || !authentication.isAuthenticated()) {
-                    throw new SecurityException("Unauthenticated WebSocket access");
-                }
-
-                // Allow the message to proceed if authenticated
                 return message;
             }
         });
