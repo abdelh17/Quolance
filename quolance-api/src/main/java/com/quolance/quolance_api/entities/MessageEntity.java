@@ -34,7 +34,7 @@ public class MessageEntity {
      * Convenience constructor for creating a MessageEntity.
      *
      * @param message     The message content.
-     * @param sender      The sender's username.
+     * @param sender      The sender.
      * @param timestamp   The timestamp of the message.
      * @param messageType The type of the message (e.g., "chat", "notification").
      */
