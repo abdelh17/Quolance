@@ -1,6 +1,5 @@
 import React from 'react';
 import BlogContainer from '@/components/ui/blog/BlogContainer';
-import SearchBar from '@/components/ui/blog/SearchBar';
 import icon from '@/public/images/freelancer_default_icon.png';
 
 {/* Mock data for blog posts */}
@@ -159,7 +158,6 @@ function BlogPage() {
                 Stay up to date with the latest news. Here you can find articles, events, news.
               </p>
           </div>
-          <SearchBar />
           <BlogContainer blogPosts={blogPosts} />
         </div>
       </div>

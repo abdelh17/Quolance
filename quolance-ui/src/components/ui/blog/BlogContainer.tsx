@@ -5,6 +5,7 @@ import PostCard from "./PostCard";
 import Tabs from "./Tabs";
 import CreatePostModal from "./CreatePostModal";
 import CreatePostForm from "./CreatePostForm";
+import SearchBar from "./SearchBar";
 
 import icon from "@/public/images/freelancer_default_icon.png";
 
@@ -44,13 +45,18 @@ const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
                     user={{ name: "John Doe", profilePicture: { icon } }}
                 />
             </CreatePostModal>
-            {/* Create Post Button */}
-            <button
-                onClick={() => setIsModalOpen(true)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
-            >
-                Create New Post
-            </button>
+            {/* Create Post Button and Search Bar*/}
+            <div className="relative flex items-center">
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="absolute left-0 px-4 py-2 bg-blue-500 text-white rounded-md"
+                >
+                    Create New Post
+                </button>
+                <div className="flex-grow mx-auto max-w-lg">
+                    <SearchBar />
+                </div>
+            </div>
             {/* Tabs Component */}
             <Tabs
                 tags={["UX/UI Design", "Backend", "Security", "Finance"]} // each user will have their customized tabs saved in the db and will be fetched on page load
