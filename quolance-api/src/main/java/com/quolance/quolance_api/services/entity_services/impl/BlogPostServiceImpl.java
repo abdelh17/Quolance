@@ -1,7 +1,9 @@
 package com.quolance.quolance_api.services.entity_services.impl;
 
+import com.quolance.quolance_api.dtos.BlogCommentDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
+import com.quolance.quolance_api.entities.BlogComment;
 import com.quolance.quolance_api.entities.BlogPost;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
@@ -33,7 +35,6 @@ public class BlogPostServiceImpl implements BlogPostService {
         // Fetch user
         User user = SecurityUtil.getAuthenticatedUser();
 
-
         // Create and save the blog post
         BlogPost blogPost = BlogPost.builder()
                 .title(request.getTitle())
@@ -41,6 +42,15 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .user(user)
                 .build();
 
+        // Handle comments if present
+        if (request.getComments() != null && !request.getComments().isEmpty()) {
+            List<BlogComment> comments = request.getComments().stream()
+                    .map(commentDto -> {
+                        BlogComment comment = commentDto.toEntity(blogPost, user); 
+                        return comment;
+                    }).collect(Collectors.toList());
+    
+            blogPost.setBlogComments(comments);          }
         BlogPost savedBlogPost = blogPostRepository.save(blogPost);
 
         // Return response DTO
@@ -81,6 +91,17 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         blogPost.setTitle(request.getTitle());
 
+        // Handle new or updated comments
+        if (request.getComments() != null && !request.getComments().isEmpty()) {
+            List<BlogComment> comments = request.getComments().stream()
+                    .map(commentDto -> {
+                        BlogComment comment = commentDto.toEntity(blogPost, blogPost.getUser());  
+                        return comment;
+                    }).collect(Collectors.toList());
+    
+            blogPost.setBlogComments(comments);   
+        }
+
         // Save the updated blog post
         BlogPost updatedBlogPost = blogPostRepository.save(blogPost);
 
@@ -102,16 +123,21 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPostResponseDto mapToResponseDto(BlogPost blogPost) {
+        List<BlogCommentDto> commentDtos = blogPost.getBlogComments().stream()
+                .map(BlogCommentDto::fromEntity)
+                .collect(Collectors.toList());
+
         return new BlogPostResponseDto(
                 blogPost.getId(),
                 blogPost.getTitle(),
                 blogPost.getContent(),
                 blogPost.getUser().getFirstName() + " " + blogPost.getUser().getLastName(),
-                blogPost.getCreationDate()
-//                blogPost.getTags().stream().map(Tag::getName).collect(Collectors.toList()), // Empty if no tags
-//                new ArrayList<>(), // Placeholder for reactions
-//                new ArrayList<>()  // Placeholder for replies
-        );
+                blogPost.getCreationDate(),
+                commentDtos);
+        // blogPost.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
+        // // Empty if no tags
+        // new ArrayList<>(), // Placeholder for reactions
+        // new ArrayList<>() // Placeholder for replies
     }
 
     @Override
@@ -120,16 +146,16 @@ public class BlogPostServiceImpl implements BlogPostService {
         Page<BlogPost> blogPosts = blogPostRepository.findAll(pageable);
 
         // Map to response DTOs with truncated content
-        return blogPosts.map(blogPost -> {
-               return new BlogPostResponseDto(
-                    blogPost.getId(),
-                    blogPost.getTitle(),
-                    blogPost.getContent().length() > 100
-                            ? blogPost.getContent().substring(0, 100) + "..."
-                            : blogPost.getContent(),
-                    blogPost.getUser().getFirstName() + " " + blogPost.getUser().getLastName(),
-                    blogPost.getCreationDate()
-            );
-        });
+        return blogPosts.map(blogPost -> new BlogPostResponseDto(
+                blogPost.getId(),
+                blogPost.getTitle(),
+                blogPost.getContent().length() > 100 ? blogPost.getContent().substring(0, 100) + "..."
+                        : blogPost.getContent(),
+                blogPost.getUser().getFirstName() + " " + blogPost.getUser().getLastName(),
+                blogPost.getCreationDate(),
+                blogPost.getBlogComments().stream()
+                        .map(BlogCommentDto::fromEntity) // Convert each comment to a BlogCommentDto
+                        .collect(Collectors.toList()) // Collect all comments
+        ));
     }
 }

@@ -22,62 +22,66 @@ import java.util.stream.Collectors;
 @Transactional
 public class BlogCommentServiceImpl implements BlogCommentService {
 
-    private final BlogCommentRepository blogCommentRepository;
-    private final BlogPostRepository blogPostRepository;
-    private final UserRepository userRepository;
+        private final BlogCommentRepository blogCommentRepository;
+        private final BlogPostRepository blogPostRepository;
+        private final UserRepository userRepository;
 
-    @Override
-    public BlogCommentDto createBlogComment(Long blogPostId, Long userId, BlogCommentDto blogCommentDto) {
-        BlogPost blogPost = blogPostRepository.findById(blogPostId)
-                .orElseThrow(() -> new EntityNotFoundException("BlogPost not found with ID: " + blogPostId));
+        @Override
+        public BlogCommentDto createBlogComment(Long blogPostId, Long userId, BlogCommentDto blogCommentDto) {
+                BlogPost blogPost = blogPostRepository.findById(blogPostId)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "BlogPost not found with ID: " + blogPostId));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+                User user = userRepository.findById(userId)
+                                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
-        BlogComment blogComment = blogCommentDto.toEntity();
-        blogComment.setBlogPost(blogPost);
-        blogComment.setUser(user);
+                // Pass the BlogPost and User entities to the toEntity() method
+                BlogComment blogComment = blogCommentDto.toEntity(blogPost, user);
 
-        BlogComment savedComment = blogCommentRepository.save(blogComment);
-        return BlogCommentDto.fromEntity(savedComment);
-    }
+                BlogComment savedComment = blogCommentRepository.save(blogComment);
+                return BlogCommentDto.fromEntity(savedComment);
+        }
 
-    @Override
-    public BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto) {
-        BlogComment blogComment = blogCommentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundException("BlogComment not found with ID: " + commentId));
+        @Override
+        public BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto) {
+                BlogComment blogComment = blogCommentRepository.findById(commentId)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "BlogComment not found with ID: " + commentId));
 
-        blogComment.setContent(blogCommentDto.getContent());
-        BlogComment updatedComment = blogCommentRepository.save(blogComment);
+                blogComment.setContent(blogCommentDto.getContent()); // Update content
+                BlogComment updatedComment = blogCommentRepository.save(blogComment);
 
-        return BlogCommentDto.fromEntity(updatedComment);
-    }
+                return BlogCommentDto.fromEntity(updatedComment);
+        }
 
-    @Override
-    public void deleteBlogComment(Long commentId) {
-        BlogComment blogComment = blogCommentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundException("BlogComment not found with ID: " + commentId));
+        @Override
+        public void deleteBlogComment(Long commentId) {
+                BlogComment blogComment = blogCommentRepository.findById(commentId)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "BlogComment not found with ID: " + commentId));
 
-        blogCommentRepository.delete(blogComment);
-    }
+                blogCommentRepository.delete(blogComment);
+        }
 
-    @Override
-    public BlogCommentDto getBlogCommentById(Long commentId) {
-        BlogComment blogComment = blogCommentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundException("BlogComment not found with ID: " + commentId));
+        @Override
+        public BlogCommentDto getBlogCommentById(Long commentId) {
+                BlogComment blogComment = blogCommentRepository.findById(commentId)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "BlogComment not found with ID: " + commentId));
 
-        return BlogCommentDto.fromEntity(blogComment);
-    }
+                return BlogCommentDto.fromEntity(blogComment);
+        }
 
-    @Override
-    public List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId) {
-        BlogPost blogPost = blogPostRepository.findById(blogPostId)
-                .orElseThrow(() -> new EntityNotFoundException("BlogPost not found with ID: " + blogPostId));
+        @Override
+        public List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId) {
+                BlogPost blogPost = blogPostRepository.findById(blogPostId)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "BlogPost not found with ID: " + blogPostId));
 
-        List<BlogComment> comments = blogCommentRepository.findByBlogPost(blogPost);
+                List<BlogComment> comments = blogCommentRepository.findByBlogPost(blogPost);
 
-        return comments.stream()
-                .map(BlogCommentDto::fromEntity)
-                .collect(Collectors.toList());
-    }
+                return comments.stream()
+                                .map(BlogCommentDto::fromEntity)
+                                .collect(Collectors.toList());
+        }
 }

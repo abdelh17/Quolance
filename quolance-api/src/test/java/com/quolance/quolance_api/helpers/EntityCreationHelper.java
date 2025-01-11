@@ -7,6 +7,7 @@ import org.testcontainers.shaded.org.bouncycastle.asn1.cmp.Challenge;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * Helper class to create entities for testing purposes
@@ -99,6 +100,15 @@ public class EntityCreationHelper {
         BlogPost blogPost = new BlogPost();
         blogPost.setContent("This is a test blog post.");
         blogPost.setUser(user);
+        blogPost.setBlogComments(new ArrayList<>());
         return blogPost;
+    }
+
+    public static BlogComment createBlogComment(User user, BlogPost blogPost) {
+        BlogComment blogComment = new BlogComment();
+        blogComment.setContent("This is a test comment.");
+        blogComment.setUser(user);
+        blogComment.setBlogPost(blogPost);
+        return blogComment;
     }
 }

@@ -14,23 +14,18 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class BlogComment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private Long id; 
+        
     @Column(nullable = false, length = 1000)
     private String content;
 
-    @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date(id);
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "blog_post_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "blog_post_id")
     private BlogPost blogPost;
 }
