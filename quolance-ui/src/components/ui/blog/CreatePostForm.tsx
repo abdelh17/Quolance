@@ -72,7 +72,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, user
         />
       </div>
 
-      <div className="flex items-center justify-end space-x-4">
+      <div className="flex items-center justify-end space-x-4 mb-4">
         <button
           type="button"
           onClick={onClose}

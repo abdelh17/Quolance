@@ -1,6 +1,5 @@
 import React from 'react';
 import BlogContainer from '@/components/ui/blog/BlogContainer';
-import icon from '@/public/images/freelancer_default_icon.png';
 
 {/* Mock data for blog posts */}
 const blogPosts = [

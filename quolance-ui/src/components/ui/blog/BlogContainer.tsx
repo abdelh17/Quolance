@@ -7,7 +7,7 @@ import CreatePostModal from "./CreatePostModal";
 import CreatePostForm from "./CreatePostForm";
 import SearchBar from "./SearchBar";
 
-import icon from "@/public/images/freelancer_default_icon.png";
+import { useAuthGuard } from "@/api/auth-api";
 
 interface BlogContainerProps {
     blogPosts: {
@@ -23,8 +23,13 @@ interface BlogContainerProps {
 }
 
 const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
+    const { user, isLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+    console.log(user);
+
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState<boolean | null>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     // Filter posts based on the selected tag
     const filteredPosts = selectedTag
@@ -34,16 +39,36 @@ const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
     return (
         <>
             {/* Create Post Modal */}
-            <CreatePostModal open={isModalOpen} onClose={() => setIsModalOpen(false)} >
-                <CreatePostForm
-                    onSubmit={(postData) => {
-                        // Submit the post to the server
-                        console.log(postData);
-                        setIsModalOpen(false);
-                    }}
-                    onClose={() => setIsModalOpen(false)}
-                    user={{ name: "John Doe", profilePicture: { icon } }}
-                />
+            <CreatePostModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                {/* If the user is not authenticated, show a message to sign in (should be replaced with isLoading || !user) */}
+                {isLoading && false ? (
+                    <p>Loading...</p>
+                ) : !user ? (
+                    <CreatePostForm
+                        onSubmit={(postData) => {
+                            // Submit the post to the server
+                            console.log(postData);
+                            setIsModalOpen(false);
+                        }}
+                        onClose={() => setIsModalOpen(false)}
+                        user={user}
+                    />
+                ) : (
+                    <div className="flex justify-center items-center h-full">
+                        <div className="p-4 text-center">
+                            <h2 className="text-lg font-bold mb-2">Sign In Required</h2>
+                            <p className="text-gray-700">
+                                You must be signed in to create a post. Please log in to continue.
+                            </p>
+                            <button
+                                onClick={() => (window.location.pathname = "/auth/login")}
+                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                            >
+                                Sign In
+                            </button>
+                        </div>
+                    </div>
+                )}
             </CreatePostModal>
             {/* Create Post Button and Search Bar*/}
             <div className="relative flex items-center">

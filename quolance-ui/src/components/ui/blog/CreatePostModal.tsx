@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuthGuard } from '@/api/auth-api';
 
 interface CreatePostModalProps {
     open: boolean;
@@ -10,12 +9,8 @@ interface CreatePostModalProps {
     onSubmit: () => void;
 };
 
-const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, children, onSubmit }) => {
-
+const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, children }) => {
     const dialogRef = useRef<null | HTMLDialogElement>(null);
-    const { user } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     useEffect(() => {
         if (open) {
@@ -30,15 +25,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, childr
         onClose();
     };
 
-    const clickOk = () => {
-        onSubmit();
-        closeDialog();
-    };
-
-    const dialog: JSX.Element | null = open ? (
+    return open ? (
         <dialog ref={dialogRef} className="dialog">
             <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
-                <div className="bg-white p-6 rounded-lg shadow-md w-3/5 h-3/5 max-w-4xl max-h-screen">
+                <div className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-4xl h-[60%] max-h-[60%] overflow-hidden">
+                    {/* Close Button */}
                     <div className="flex justify-end">
                         <button
                             onClick={closeDialog}
@@ -47,16 +38,15 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, childr
                             ✖
                         </button>
                     </div>
-                    <div className="space-y-4 overflow-auto h-full">
+
+                    {/* Content Area */}
+                    <div className="overflow-auto h-full space-y-4">
                         {children}
                     </div>
                 </div>
             </div>
         </dialog>
     ) : null;
-    
-
-    return dialog;
 };
 
 export default CreatePostModal;
