@@ -7,6 +7,7 @@ import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
@@ -19,11 +20,14 @@ import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.ILoggerFactory;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +35,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -105,20 +110,46 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public List<ProjectPublicDto> getAllAvailableProjects() {
+    public Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable, ProjectFilterDto filters) {
         LocalDate currentDate = LocalDate.now();
 
-        // Get all projects that are OPEN or CLOSED
-        List<Project> openAndClosedProjects = projectService.getProjectsByStatuses(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED));
+        Specification<Project> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-        // removed the project that are both status CLOSED and visibilityExpirationDate is before currentDate
-        openAndClosedProjects.removeIf(project ->
-                project.getProjectStatus().equals(ProjectStatus.CLOSED) &&
-                        project.getVisibilityExpirationDate().isBefore(currentDate));
+            // Add status filter (OPEN or CLOSED)
+            predicates.add(root.get("projectStatus").in(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED)));
 
-        return openAndClosedProjects.stream()
-                .map(ProjectPublicDto::fromEntity)
-                .toList();
+            // Add visibility date check for CLOSED projects
+            Predicate isOpen = criteriaBuilder.equal(root.get("projectStatus"), ProjectStatus.OPEN);
+            Predicate isClosedAndVisible = criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get("projectStatus"), ProjectStatus.CLOSED),
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("visibilityExpirationDate"), currentDate)
+            );
+            predicates.add(criteriaBuilder.or(isOpen, isClosedAndVisible));
+
+            // Add search filters if provided
+            if (filters != null) {
+                if (filters.getSearchTitle() != null && !filters.getSearchTitle().trim().isEmpty()) {
+                    predicates.add(criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("title")),
+                            "%" + filters.getSearchTitle().toLowerCase() + "%"
+                    ));
+                }
+
+                if (filters.getCategory() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("category"), filters.getCategory()));
+                }
+
+                if (filters.getPriceRange() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("priceRange"), filters.getPriceRange()));
+                }
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<Project> projectPage = projectService.findAllWithFilters(spec, pageable);
+        return projectPage.map(ProjectPublicDto::fromEntity);
     }
 
     @Override

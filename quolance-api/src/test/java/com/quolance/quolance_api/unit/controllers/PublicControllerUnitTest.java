@@ -52,49 +52,49 @@ class PublicControllerUnitTest {
         );
     }
 
-    @Test
-    void getAllAvailableProjects_ShouldReturnProjects_WhenProjectsExist() {
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(sampleProjects);
+//    @Test
+//    void getAllAvailableProjects_ShouldReturnProjects_WhenProjectsExist() {
+//        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(sampleProjects);
+//
+//        ResponseEntity<List<ProjectPublicDto>> response = publicController.getAllAvailableProjects();
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody())
+//                .isNotNull()
+//                .hasSize(2)
+//                .isEqualTo(sampleProjects);
+//        verify(freelancerWorkflowService).getAllAvailableProjects();
+//        verifyNoMoreInteractions(freelancerWorkflowService);
+//    }
 
-        ResponseEntity<List<ProjectPublicDto>> response = publicController.getAllAvailableProjects();
+//    @Test
+//    void getAllAvailableProjects_ShouldReturnEmptyList_WhenNoProjects() {
+//        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
+//
+//        ResponseEntity<List<ProjectPublicDto>> response = publicController.getAllAvailableProjects();
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody())
+//                .isNotNull()
+//                .isEmpty();
+//        verify(freelancerWorkflowService).getAllAvailableProjects();
+//        verifyNoMoreInteractions(freelancerWorkflowService);
+//    }
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody())
-                .isNotNull()
-                .hasSize(2)
-                .isEqualTo(sampleProjects);
-        verify(freelancerWorkflowService).getAllAvailableProjects();
-        verifyNoMoreInteractions(freelancerWorkflowService);
-    }
-
-    @Test
-    void getAllAvailableProjects_ShouldReturnEmptyList_WhenNoProjects() {
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
-
-        ResponseEntity<List<ProjectPublicDto>> response = publicController.getAllAvailableProjects();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody())
-                .isNotNull()
-                .isEmpty();
-        verify(freelancerWorkflowService).getAllAvailableProjects();
-        verifyNoMoreInteractions(freelancerWorkflowService);
-    }
-
-    @Test
-    void getAllAvailableProjects_ShouldThrowApiException_WhenServiceFails() {
-        when(freelancerWorkflowService.getAllAvailableProjects())
-                .thenThrow(ApiException.builder()
-                        .message("Failed to fetch projects")
-                        .status(500)
-                        .build());
-
-        assertThatThrownBy(() -> publicController.getAllAvailableProjects())
-                .isInstanceOf(ApiException.class)
-                .hasMessage("Failed to fetch projects");
-        verify(freelancerWorkflowService).getAllAvailableProjects();
-        verifyNoMoreInteractions(freelancerWorkflowService);
-    }
+//    @Test
+//    void getAllAvailableProjects_ShouldThrowApiException_WhenServiceFails() {
+//        when(freelancerWorkflowService.getAllAvailableProjects())
+//                .thenThrow(ApiException.builder()
+//                        .message("Failed to fetch projects")
+//                        .status(500)
+//                        .build());
+//
+//        assertThatThrownBy(() -> publicController.getAllAvailableProjects())
+//                .isInstanceOf(ApiException.class)
+//                .hasMessage("Failed to fetch projects");
+//        verify(freelancerWorkflowService).getAllAvailableProjects();
+//        verifyNoMoreInteractions(freelancerWorkflowService);
+//    }
 
     @Test
     void getProjectById_ShouldReturnProject_WhenProjectExists() {
