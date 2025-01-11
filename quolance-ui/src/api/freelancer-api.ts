@@ -1,4 +1,3 @@
-'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import { showToast } from '@/util/context/ToastProvider';
@@ -41,10 +40,27 @@ export const useCancelApplication = (projectId: number) => {
   });
 };
 
-export const useGetAllFreelancerApplications = () => {
+interface PaginationParams {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDirection?: string;
+}
+
+export const useGetAllFreelancerApplications = (params: PaginationParams) => {
+  const queryString = new URLSearchParams({
+    page: params.page?.toString() || '0',
+    size: params.size?.toString() || '10',
+    sortBy: params.sortBy || 'id',
+    sortDirection: params.sortDirection || 'asc',
+  }).toString();
+
   return useQuery({
-    queryKey: ['all-freelancer-applications'],
-    queryFn: () => httpClient.get('/api/freelancer/applications/all'),
+    queryKey: ['freelancerApplications', params],
+    queryFn: async () => {
+      const response = await httpClient.get(`/api/freelancer/applications/all?${queryString}`);
+      return response.data;
+    },
   });
 };
 

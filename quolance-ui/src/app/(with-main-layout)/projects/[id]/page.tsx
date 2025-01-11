@@ -9,7 +9,7 @@ import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSu
 import { Role } from '@/constants/models/user/UserResponse';
 import { ProjectType } from '@/constants/types/project-types';
 import ProjectDetailsContent from '@/components/ui/projects/ProjectDetailsContent';
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
 import { useCallback, useEffect, useState } from 'react';
 import { isDeepEqual } from '@/util/objectUtils';
 import { showToast } from '@/util/context/ToastProvider';

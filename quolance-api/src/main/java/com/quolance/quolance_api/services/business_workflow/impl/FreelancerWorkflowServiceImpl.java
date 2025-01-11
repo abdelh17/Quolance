@@ -22,6 +22,8 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.ILoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,10 +99,9 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public List<ApplicationDto> getAllFreelancerApplications(User freelancer) {
-        return applicationService.getAllApplicationsByFreelancerId(freelancer.getId()).stream()
-                .map(ApplicationDto::fromEntity)
-                .toList();
+    public Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable) {
+        Page < Application > applicationPage = applicationService.getAllApplicationsByFreelancerId(freelancer.getId(), pageable);
+        return applicationPage.map(ApplicationDto::fromEntity);
     }
 
     @Override

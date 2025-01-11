@@ -1,6 +1,6 @@
 'use client';
 
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
 import VerificationNotice from '@/components/verify-account';
 
 import { useAuthGuard } from '@/api/auth-api';
