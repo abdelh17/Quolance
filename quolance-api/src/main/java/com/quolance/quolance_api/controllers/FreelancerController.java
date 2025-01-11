@@ -79,8 +79,9 @@ public class FreelancerController {
             summary = "View all available projects.",
             description = "View all projects that are open or closed and still in the visibility of the freelancer."
     )
-    public ResponseEntity<List<ProjectPublicDto>> getAllAvailableProjects() {
-        List<ProjectPublicDto> availableProjects = freelancerWorkflowService.getAllAvailableProjects();
+    public ResponseEntity<Page<ProjectPublicDto>> getAllAvailableProjects(
+            @Valid PageableRequestDto pageableRequest) {
+        Page<ProjectPublicDto> availableProjects = freelancerWorkflowService.getAllAvailableProjects(paginationUtils.createPageable(pageableRequest));
         return ResponseEntity.ok(availableProjects);
     }
 

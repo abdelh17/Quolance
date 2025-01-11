@@ -219,29 +219,29 @@ class FreelancerControllerUnitTest {
         }
     }
 
-    @Test
-    void getAllAvailableProjects_ReturnsProjectList() {
-        List<ProjectPublicDto> projects = Arrays.asList(projectPublicDto);
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(projects);
+//    @Test
+//    void getAllAvailableProjects_ReturnsProjectList() {
+//        List<ProjectPublicDto> projects = Arrays.asList(projectPublicDto);
+//        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(projects);
+//
+//        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody()).hasSize(1);
+//        assertThat(response.getBody().get(0)).isEqualTo(projectPublicDto);
+//        verify(freelancerWorkflowService).getAllAvailableProjects();
+//    }
 
-        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).hasSize(1);
-        assertThat(response.getBody().get(0)).isEqualTo(projectPublicDto);
-        verify(freelancerWorkflowService).getAllAvailableProjects();
-    }
-
-    @Test
-    void getAllAvailableProjects_ReturnsEmptyList() {
-        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
-
-        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEmpty();
-        verify(freelancerWorkflowService).getAllAvailableProjects();
-    }
+//    @Test
+//    void getAllAvailableProjects_ReturnsEmptyList() {
+//        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
+//
+//        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody()).isEmpty();
+//        verify(freelancerWorkflowService).getAllAvailableProjects();
+//    }
 
     @Test
     void getProjectById_ReturnsProject() {

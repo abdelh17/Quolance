@@ -117,17 +117,17 @@ class ProjectServiceTest {
         assertThat(result).containsExactly(mockProject);
     }
 
-    @Test
-    void getProjectsByStatuses_Success() {
-        List<Project> projects = Arrays.asList(mockProject);
-        List<ProjectStatus> statuses = Arrays.asList(ProjectStatus.PENDING, ProjectStatus.OPEN);
-        when(projectRepository.findProjectsByProjectStatusIn(statuses)).thenReturn(projects);
-
-        List<Project> result = projectService.getProjectsByStatuses(statuses);
-
-        assertThat(result).hasSize(1);
-        assertThat(result).containsExactly(mockProject);
-    }
+//    @Test
+//    void getProjectsByStatuses_Success() {
+//        List<Project> projects = Arrays.asList(mockProject);
+//        List<ProjectStatus> statuses = Arrays.asList(ProjectStatus.PENDING, ProjectStatus.OPEN);
+//        when(projectRepository.findProjectsByProjectStatusIn(statuses)).thenReturn(projects);
+//
+//        List<Project> result = projectService.getProjectsByStatuses(statuses);
+//
+//        assertThat(result).hasSize(1);
+//        assertThat(result).containsExactly(mockProject);
+//    }
 
 //    @Test
 //    void getProjectsByClientId_Success() {

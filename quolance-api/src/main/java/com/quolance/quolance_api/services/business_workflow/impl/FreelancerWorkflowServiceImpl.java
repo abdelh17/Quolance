@@ -22,6 +22,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.ILoggerFactory;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -105,20 +106,27 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public List<ProjectPublicDto> getAllAvailableProjects() {
+    public Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable) {
         LocalDate currentDate = LocalDate.now();
 
-        // Get all projects that are OPEN or CLOSED
-        List<Project> openAndClosedProjects = projectService.getProjectsByStatuses(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED));
+        Page<Project> openAndClosedProjects = projectService.getProjectsByStatuses(
+                List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED),
+                pageable
+        );
 
-        // removed the project that are both status CLOSED and visibilityExpirationDate is before currentDate
-        openAndClosedProjects.removeIf(project ->
-                project.getProjectStatus().equals(ProjectStatus.CLOSED) &&
-                        project.getVisibilityExpirationDate().isBefore(currentDate));
-
-        return openAndClosedProjects.stream()
+        List<ProjectPublicDto> filteredProjects = openAndClosedProjects.getContent().stream()
+                .filter(project -> !(
+                        project.getProjectStatus().equals(ProjectStatus.CLOSED) &&
+                                project.getVisibilityExpirationDate().isBefore(currentDate)
+                ))
                 .map(ProjectPublicDto::fromEntity)
                 .toList();
+
+        return new PageImpl<>(
+                filteredProjects,
+                pageable,
+                openAndClosedProjects.getTotalElements()
+        );
     }
 
     @Override

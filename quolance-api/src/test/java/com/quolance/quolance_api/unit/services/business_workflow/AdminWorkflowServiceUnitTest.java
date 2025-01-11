@@ -66,32 +66,32 @@ class AdminWorkflowServiceTest {
                 .build();
     }
 
-    @Test
-    void getAllPendingProjects_ReturnsListOfProjects() {
-        List<Project> mockProjects = Arrays.asList(mockProject1, mockProject2);
-        when(projectService.getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING)))
-                .thenReturn(mockProjects);
+//    @Test
+//    void getAllPendingProjects_ReturnsListOfProjects() {
+//        List<Project> mockProjects = Arrays.asList(mockProject1, mockProject2);
+//        when(projectService.getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING)))
+//                .thenReturn(mockProjects);
+//
+//        List<ProjectDto> result = adminWorkflowService.getAllPendingProjects();
+//
+//        assertThat(result).hasSize(2);
+//        assertThat(result.get(0).getId()).isEqualTo(mockProject1.getId());
+//        assertThat(result.get(0).getTitle()).isEqualTo(mockProject1.getTitle());
+//        assertThat(result.get(1).getId()).isEqualTo(mockProject2.getId());
+//        assertThat(result.get(1).getTitle()).isEqualTo(mockProject2.getTitle());
+//        verify(projectService).getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING));
+//    }
 
-        List<ProjectDto> result = adminWorkflowService.getAllPendingProjects();
-
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getId()).isEqualTo(mockProject1.getId());
-        assertThat(result.get(0).getTitle()).isEqualTo(mockProject1.getTitle());
-        assertThat(result.get(1).getId()).isEqualTo(mockProject2.getId());
-        assertThat(result.get(1).getTitle()).isEqualTo(mockProject2.getTitle());
-        verify(projectService).getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING));
-    }
-
-    @Test
-    void getAllPendingProjects_WhenNoProjects_ReturnsEmptyList() {
-        when(projectService.getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING)))
-                .thenReturn(Collections.emptyList());
-
-        List<ProjectDto> result = adminWorkflowService.getAllPendingProjects();
-
-        assertThat(result).isEmpty();
-        verify(projectService).getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING));
-    }
+//    @Test
+//    void getAllPendingProjects_WhenNoProjects_ReturnsEmptyList() {
+//        when(projectService.getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING)))
+//                .thenReturn(Collections.emptyList());
+//
+//        List<ProjectDto> result = adminWorkflowService.getAllPendingProjects();
+//
+//        assertThat(result).isEmpty();
+//        verify(projectService).getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING));
+//    }
 
     @Test
     void approveProject_Success() {

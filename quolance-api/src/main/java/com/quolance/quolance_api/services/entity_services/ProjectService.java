@@ -18,7 +18,7 @@ public interface ProjectService {
     void updateProject(Project existingProject, ProjectUpdateDto updatedProject);
 
     List<Project> getAllProjects();
-    List<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses);
+    Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable);
     Page<Project> getProjectsByClientId(Long clientId, Pageable pageable);
 
     void updateProjectStatus(Project project, ProjectStatus newStatus);

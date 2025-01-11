@@ -48,8 +48,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses) {
-        return projectRepository.findProjectsByProjectStatusIn(projectStatuses);
+    public Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable) {
+        return projectRepository.findProjectsByProjectStatusIn(projectStatuses, pageable);
     }
 
     @Override

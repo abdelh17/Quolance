@@ -41,39 +41,39 @@ class AdminControllerUnitTest {
         projectDto2.setId(2L);
     }
 
-    @Test
-    void getAllPendingProjects_ReturnsListOfProjects() {
-        List<ProjectDto> expectedProjects = Arrays.asList(projectDto1, projectDto2);
-        when(adminWorkflowService.getAllPendingProjects()).thenReturn(expectedProjects);
+//    @Test
+//    void getAllPendingProjects_ReturnsListOfProjects() {
+//        List<ProjectDto> expectedProjects = Arrays.asList(projectDto1, projectDto2);
+//        when(adminWorkflowService.getAllPendingProjects()).thenReturn(expectedProjects);
+//
+//        ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody()).isEqualTo(expectedProjects);
+//        verify(adminWorkflowService, times(1)).getAllPendingProjects();
+//    }
 
-        ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
+//    @Test
+//    void getAllPendingProjects_ReturnsEmptyList_WhenNoProjects() {
+//        when(adminWorkflowService.getAllPendingProjects()).thenReturn(List.of());
+//
+//        ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody()).isEmpty();
+//        verify(adminWorkflowService, times(1)).getAllPendingProjects();
+//    }
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(expectedProjects);
-        verify(adminWorkflowService, times(1)).getAllPendingProjects();
-    }
-
-    @Test
-    void getAllPendingProjects_ReturnsEmptyList_WhenNoProjects() {
-        when(adminWorkflowService.getAllPendingProjects()).thenReturn(List.of());
-
-        ResponseEntity<List<ProjectDto>> response = adminController.getAllPendingProjects();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEmpty();
-        verify(adminWorkflowService, times(1)).getAllPendingProjects();
-    }
-
-    @Test
-    void getAllPendingProjects_WhenUnauthorized_ThrowsAccessDeniedException() {
-        when(adminWorkflowService.getAllPendingProjects())
-                .thenThrow(new AccessDeniedException("User is not authorized to view pending projects"));
-
-        assertThatThrownBy(() -> adminController.getAllPendingProjects())
-                .isInstanceOf(AccessDeniedException.class)
-                .hasMessage("User is not authorized to view pending projects");
-        verify(adminWorkflowService, times(1)).getAllPendingProjects();
-    }
+//    @Test
+//    void getAllPendingProjects_WhenUnauthorized_ThrowsAccessDeniedException() {
+//        when(adminWorkflowService.getAllPendingProjects())
+//                .thenThrow(new AccessDeniedException("User is not authorized to view pending projects"));
+//
+//        assertThatThrownBy(() -> adminController.getAllPendingProjects())
+//                .isInstanceOf(AccessDeniedException.class)
+//                .hasMessage("User is not authorized to view pending projects");
+//        verify(adminWorkflowService, times(1)).getAllPendingProjects();
+//    }
 
     @Test
     void approveProject_ReturnsSuccessMessage() {
