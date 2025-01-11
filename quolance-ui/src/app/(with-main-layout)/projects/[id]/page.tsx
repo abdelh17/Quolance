@@ -105,7 +105,10 @@ function ProjectPage() {
             <div className='mt-8'>
               {/* Application Form - Only visible to freelancers */}
               {role === Role.FREELANCER && (
-                <FreelancerApplicationForm projectId={project.id} />
+                <FreelancerApplicationForm
+                  projectId={project.id}
+                  projectStatus={project.projectStatus}
+                />
               )}
 
               {/* Submission List - Only visible to clients who own the project */}
