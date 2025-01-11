@@ -6,7 +6,7 @@ import {
   useGetProjectSubmissions,
   useRejectSubmissions,
 } from '@/api/client-api';
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
 import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
 import { DATA_Submissioners } from '@/constants/data';
 import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';

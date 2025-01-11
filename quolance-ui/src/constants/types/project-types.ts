@@ -49,12 +49,7 @@ export type ProjectType = {
     | string;
   expirationDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
-  projectStatus:
-    | 'PENDING'
-    | 'REJECTED_AUTOMATICALLY'
-    | 'APPROVED'
-    | 'REJECTED'
-    | string;
+  projectStatus: ProjectStatus | string;
   clientId: number; // Unique identifier for the client
 };
 

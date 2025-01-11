@@ -20,6 +20,8 @@ public class ApplicationDto {
 
     private Long projectId;
 
+    private String projectTitle;
+
     private Long freelancerId;
 
     private FreelancerProfileDto freelancerProfile;
@@ -29,6 +31,7 @@ public class ApplicationDto {
                 .id(application.getId())
                 .status(application.getApplicationStatus())
                 .projectId(application.getProject() != null ? application.getProject().getId() : null)
+                .projectTitle(application.getProject() != null ? application.getProject().getTitle() : null)
                 .freelancerId(application.getFreelancer() != null ? application.getFreelancer().getId() : null)
                 .freelancerProfile(FreelancerProfileDto.fromEntity(application.getFreelancer()))
                 .build();

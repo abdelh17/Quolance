@@ -1,5 +1,7 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.PageResponseDto;
+import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
@@ -8,13 +10,19 @@ import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/client")
@@ -23,6 +31,7 @@ public class ClientController {
 
     private final ClientWorkflowService clientWorkflowService;
     private final ApplicationProcessWorkflow applicationProcessWorkflow;
+    private final PaginationUtils paginationUtils;
 
     @PostMapping("/create-project")
     @Operation(
@@ -75,10 +84,14 @@ public class ClientController {
             summary = "Get all projects of a client",
             description = "Get all projects of a client"
     )
-    public ResponseEntity<List<ProjectDto>> getAllClientProjects() {
+    public ResponseEntity<PageResponseDto<ProjectDto>> getAllClientProjects(
+            @Valid PageableRequestDto pageableRequest) {
         User client = SecurityUtil.getAuthenticatedUser();
-        List<ProjectDto> projects = clientWorkflowService.getAllClientProjects(client);
-        return ResponseEntity.ok(projects);
+        Page<ProjectDto> projects = clientWorkflowService.getAllClientProjects(
+                client,
+                paginationUtils.createPageable(pageableRequest)
+        );
+        return ResponseEntity.ok(new PageResponseDto<>(projects));
     }
 
     @GetMapping("/projects/{projectId}/applications/all")
