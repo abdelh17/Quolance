@@ -74,7 +74,7 @@ export default function ProjectDetailsHeader({
           user?.role == Role.CLIENT &&
           user?.id === project.clientId && (
             <Tooltip
-              content='Cannot edit project after it is approved'
+              content='Cannot edit project after it has been approved'
               position='bottom-end'
               disabled={project.projectStatus === 'PENDING'}
             >

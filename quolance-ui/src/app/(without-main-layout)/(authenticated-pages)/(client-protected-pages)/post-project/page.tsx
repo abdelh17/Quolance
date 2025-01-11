@@ -32,7 +32,7 @@ function PostsTasksSteps() {
 
   const { user } = useAuthGuard({ middleware: 'auth' });
 
-  const { currentStep, setCurrentStep, formData } = useSteps();
+  const { currentStep, setCurrentStep, formData, resetSteps } = useSteps();
 
   const StepComponent = stepsComponents[currentStep];
 
@@ -51,7 +51,9 @@ function PostsTasksSteps() {
     try {
       console.log('Form submitted:', formData);
       const project: PostProjectType = formData;
-      await mutateProject(project);
+      await mutateProject(project).then(() => {
+        resetSteps();
+      });
 
       // push to home page
       router.push('/dashboard');

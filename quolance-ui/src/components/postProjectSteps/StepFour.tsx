@@ -8,6 +8,7 @@ import {
   EXPERIENCE_LEVEL_OPTIONS,
   getLabelFromValue,
 } from '@/constants/types/form-types';
+import RichTextDisplay from '@/components/ui/RichTextDisplay';
 
 function StepFour({
   handleBack,
@@ -51,7 +52,7 @@ function StepFour({
                 Description
               </dt>
               <dd className='mt-1 whitespace-pre-wrap break-words text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                {formData.projectDescription}
+                <RichTextDisplay htmlContent={formData.projectDescription} />
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -61,7 +62,9 @@ function StepFour({
               </dd>
             </div>
             <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
-              <dt className='text-sm/6 font-medium text-gray-900'>priceRange</dt>
+              <dt className='text-sm/6 font-medium text-gray-900'>
+                priceRange
+              </dt>
               <dd className='mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0'>
                 {getLabelFromValue(BUDGET_OPTIONS, formData.priceRange)}
               </dd>
