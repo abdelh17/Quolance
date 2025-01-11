@@ -1,0 +1,16 @@
+package com.quolance.quolance_api.controllers;
+
+import com.quolance.quolance_api.dtos.BlogCommentDto;
+import com.quolance.quolance_api.services.BlogCommentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/comments")
+public class BlogCommentController {
+
+
+}

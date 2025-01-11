@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "blog_posts")
@@ -25,7 +27,10 @@ public class BlogPost extends AbstractEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Placeholder relationships (null templates for now)
+     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogComment> comments = new ArrayList<>();
+
+// Placeholder relationships (null templates for now)
 //    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Reaction> reactions = new ArrayList<>();
 
