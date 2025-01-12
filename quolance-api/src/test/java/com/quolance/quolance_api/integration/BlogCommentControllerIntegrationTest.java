@@ -55,8 +55,8 @@ public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers
 
     @BeforeEach
     void setUp() throws Exception {
-        blogPostRepository.deleteAll();
         blogCommentRepository.deleteAll();
+        blogPostRepository.deleteAll();
         userRepository.deleteAll();
 
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
