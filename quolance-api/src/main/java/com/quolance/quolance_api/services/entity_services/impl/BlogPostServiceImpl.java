@@ -74,6 +74,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         return BlogPostResponseDto.fromEntity(getBlogPostEntity(id));
     }
 
+
     private BlogPost updateBlogPost(BlogPostUpdateDto updateRequest, BlogPost blogPost) {
         if (updateRequest.getContent() != null)
             blogPost.setContent(updateRequest.getContent());
@@ -86,7 +87,8 @@ public class BlogPostServiceImpl implements BlogPostService {
         return blogPost.getUser().getId().equals(author.getId());
     }
 
-    private BlogPost getBlogPostEntity(Long postId) {
+    @Override
+    public BlogPost getBlogPostEntity(Long postId) {
         return blogPostRepository.findById(postId).orElseThrow(() ->
                 ApiException.builder()
                         .status(HttpServletResponse.SC_NOT_FOUND)

@@ -3,10 +3,8 @@ package com.quolance.quolance_api.helpers;
 import com.quolance.quolance_api.entities.*;
 import com.quolance.quolance_api.entities.enums.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.testcontainers.shaded.org.bouncycastle.asn1.cmp.Challenge;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * Helper class to create entities for testing purposes
@@ -18,6 +16,7 @@ public class EntityCreationHelper {
         application.setFreelancer(freelancer);
         return application;
     }
+
     public static User createAdmin() {
         User admin = new User();
         admin.setFirstName("Admin");
@@ -100,5 +99,13 @@ public class EntityCreationHelper {
         blogPost.setContent("This is a test blog post.");
         blogPost.setUser(user);
         return blogPost;
+    }
+
+    public static BlogComment createBlogComment(User user, BlogPost blogPost) {
+        BlogComment blogComment = new BlogComment();
+        blogComment.setContent("This is a test comment.");
+        blogComment.setUser(user);
+        blogComment.setBlogPost(blogPost);
+        return blogComment;
     }
 }

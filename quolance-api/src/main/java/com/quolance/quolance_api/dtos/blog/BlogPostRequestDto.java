@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +18,8 @@ public class BlogPostRequestDto {
     private String title;
     @NotBlank(message = "Title is required")
     private String content;
+    private List<BlogCommentDto> comments;
+
 
 
     public static BlogPost toEntity(BlogPostRequestDto blogPostRequestDto) {

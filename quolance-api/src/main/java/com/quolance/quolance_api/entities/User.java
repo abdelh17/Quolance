@@ -69,6 +69,10 @@ public class User extends AbstractEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserConnectedAccount> connectedAccounts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogPost> blogPosts;
+
+
     /**
      * Constructor to create a User from a CreateUserRequestDto.
      */

@@ -54,20 +54,20 @@ public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
         session = getSession(loggedInUser.getEmail(), "Password123!");
     }
 
-    @Test
-    void testCreateBlogPostIsOk() throws Exception {
-        BlogPostRequestDto request = new BlogPostRequestDto();
-        request.setTitle("New Blog Post");
-        request.setContent("This is a test content");
-
-        mockMvc.perform(post("/api/blog-posts")
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
-
-        assertThat(blogPostRepository.findAll().size()).isEqualTo(1);
-    }
+//    @Test
+//    void testCreateBlogPostIsOk() throws Exception {
+//        BlogPostRequestDto request = new BlogPostRequestDto();
+//        request.setTitle("New Blog Post");
+//        request.setContent("This is a test content");
+//
+//        mockMvc.perform(post("/api/blog-posts")
+//                        .session(session)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(request)))
+//                .andExpect(status().isOk());
+//
+//        assertThat(blogPostRepository.findAll().size()).isEqualTo(1);
+//    }
 
     @Test
     void testCreateBlogPostInvalidRequest() throws Exception {

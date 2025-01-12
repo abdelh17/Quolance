@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.controllers;
+package com.quolance.quolance_api.controllers.blog;
 
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
