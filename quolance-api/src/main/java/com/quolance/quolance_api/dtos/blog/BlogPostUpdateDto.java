@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BlogThreadViewRequestDto {
+public class BlogPostUpdateDto {
+    private Long postId;
     private String title;
-    private Long blogPostId; // ID of the associated BlogPost
     private String content;
-    private long userId;
 }

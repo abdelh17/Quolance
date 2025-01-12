@@ -1041,10 +1041,7 @@
 							"name": "Get All Blog Posts",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},
@@ -1052,10 +1049,7 @@
 							"name": "Blog Post By ID",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},
@@ -1063,10 +1057,7 @@
 							"name": "Get Blog Post By User ID",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},
@@ -1074,10 +1065,7 @@
 							"name": "Update Blog Post",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},
@@ -1085,10 +1073,15 @@
 							"name": "Delete Blog Post",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "GetPaginatedPosts",
+							"request": {
+								"method": "GET",
+								"header": []
 							},
 							"response": []
 						}
@@ -1125,10 +1118,7 @@
 							"name": "Blog Thread By Thread ID",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},
@@ -1136,10 +1126,7 @@
 							"name": "Get Thread View by BlogPost ID",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},
@@ -1147,10 +1134,7 @@
 							"name": "Update Blog Thread Title",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},
@@ -1158,10 +1142,7 @@
 							"name": "Delete Thread",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
+								"header": []
 							},
 							"response": []
 						},

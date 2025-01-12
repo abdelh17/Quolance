@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class BlogPost extends AbstractEntity {
 
+    @Column(nullable = true, length = 100)
+    private String title;
+
     @Column(nullable = false, length = 10000) // Ensures content has a size limit
     private String content;
 
