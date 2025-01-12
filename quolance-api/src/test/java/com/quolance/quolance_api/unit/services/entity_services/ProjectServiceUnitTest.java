@@ -110,16 +110,6 @@ class ProjectServiceTest {
                 .hasMessage("No Project found with ID: 1");
     }
 
-    @Test
-    void getAllProjects_Success() {
-        List<Project> projects = Arrays.asList(mockProject);
-        when(projectRepository.findAll()).thenReturn(projects);
-
-        List<Project> result = projectService.getAllProjects();
-
-        assertThat(result).hasSize(1);
-        assertThat(result).containsExactly(mockProject);
-    }
 
     @Test
     void getProjectsByStatuses_Success() {

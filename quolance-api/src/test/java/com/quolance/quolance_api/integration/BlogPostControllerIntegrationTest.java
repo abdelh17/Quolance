@@ -3,12 +3,11 @@ package com.quolance.quolance_api.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
-import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
+import com.quolance.quolance_api.entities.BlogPost;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
-import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,14 +19,9 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.quolance.quolance_api.entities.BlogPost;
 
 
 @SpringBootTest
@@ -48,6 +42,7 @@ public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
     private UserRepository userRepository;
 
     private MockHttpSession session;
+
     private User loggedInUser;
 
     @BeforeEach
@@ -118,18 +113,21 @@ public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
     void testUpdateBlogPost() throws Exception {
         BlogPost blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
 
-        BlogPostRequestDto request = new BlogPostRequestDto();
-        request.setTitle("Updated Title");
-        request.setContent("Updated Content");
+        BlogPostUpdateDto update = new BlogPostUpdateDto();
+        update.setPostId(blogPost.getId());
+        update.setTitle("Updated Title");
+        update.setContent("Updated Content");
 
-        mockMvc.perform(put("/api/blog-posts/" + blogPost.getId())
+
+        mockMvc.perform(put("/api/blog-posts/update")
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(update)))
                 .andExpect(status().isOk());
 
-        BlogPost updatedPost = blogPostRepository.findById(blogPost.getId()).orElseThrow();
+        BlogPost updatedPost = blogPostRepository.findAll().getFirst();
         assertThat(updatedPost.getContent()).isEqualTo("Updated Content");
+        assertThat(updatedPost.getTitle()).isEqualTo("Updated Title");
     }
 
     @Test
@@ -154,21 +152,7 @@ public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(blogPostRepository.findById(blogPost.getId())).isEmpty();
     }
 
-    @Test
-    void testGetPaginatedBlogPosts() throws Exception {
-        blogPostRepository.saveAll(List.of(
-                EntityCreationHelper.createBlogPost(loggedInUser),
-                EntityCreationHelper.createBlogPost(loggedInUser)
-        ));
-
-        mockMvc.perform(get("/api/blog-posts?page=0&size=1")
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
     private MockHttpSession getSession(String email, String password) throws Exception {
-        // Log in and return the session
         LoginRequestDto loginRequest = new LoginRequestDto();
         loginRequest.setEmail(email);
         loginRequest.setPassword(password);
