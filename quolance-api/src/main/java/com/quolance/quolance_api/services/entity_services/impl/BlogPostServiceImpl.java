@@ -2,6 +2,7 @@ package com.quolance.quolance_api.services.entity_services.impl;
 
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
+import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.BlogPost;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
@@ -71,23 +72,8 @@ public class BlogPostServiceImpl implements BlogPostService {
     @Override
     public BlogPostResponseDto getBlogPost(Long id) {
         return BlogPostResponseDto.fromEntity(getBlogPostEntity(id));
-    public BlogPostResponseDto mapToResponseDto(BlogPost blogPost) {
-        List<BlogCommentDto> commentDtos = blogPost.getBlogComments().stream()
-                .map(BlogCommentDto::fromEntity)
-                .collect(Collectors.toList());
-
-        return new BlogPostResponseDto(
-                blogPost.getId(),
-                blogPost.getTitle(),
-                blogPost.getContent(),
-                blogPost.getUser().getFirstName() + " " + blogPost.getUser().getLastName(),
-                blogPost.getCreationDate(),
-                commentDtos);
-        // blogPost.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
-        // // Empty if no tags
-        // new ArrayList<>(), // Placeholder for reactions
-        // new ArrayList<>() // Placeholder for replies
     }
+
 
     private BlogPost updateBlogPost(BlogPostUpdateDto updateRequest, BlogPost blogPost) {
         if (updateRequest.getContent() != null)
@@ -101,7 +87,8 @@ public class BlogPostServiceImpl implements BlogPostService {
         return blogPost.getUser().getId().equals(author.getId());
     }
 
-    private BlogPost getBlogPostEntity(Long postId) {
+    @Override
+    public BlogPost getBlogPostEntity(Long postId) {
         return blogPostRepository.findById(postId).orElseThrow(() ->
                 ApiException.builder()
                         .status(HttpServletResponse.SC_NOT_FOUND)

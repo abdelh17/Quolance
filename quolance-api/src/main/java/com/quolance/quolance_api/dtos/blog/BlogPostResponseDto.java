@@ -1,6 +1,5 @@
 package com.quolance.quolance_api.dtos.blog;
 
-import com.quolance.quolance_api.dtos.BlogCommentDto;
 import com.quolance.quolance_api.entities.BlogPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
