@@ -75,6 +75,7 @@ export function UserAuthForm({
               register={register}
               error={formState.errors.email?.message}
               autoComplete='email'
+              data-test = "email-input"
             />
             <FormInput
               id='password'
@@ -83,16 +84,18 @@ export function UserAuthForm({
               isLoading={isLoading}
               register={register}
               error={formState.errors.password?.message}
+              data-test = "password-input"
             />
           </div>
 
-          <ErrorFeedback data={errors} />
+          <ErrorFeedback data-test= "error-message"  data={errors} />
 
           <Button
             disabled={isLoading}
             type='submit'
             className='mt-6 py-4'
             variant={'default'}
+            data-test = "login-submit"
           >
             {isLoading ? 'Signing in...' : 'Sign In with Email'}
           </Button>

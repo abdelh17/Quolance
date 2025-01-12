@@ -87,9 +87,10 @@ export function CreateAdminForm({
             autoCorrect='off'
             disabled={isLoading}
             {...register('email')}
+            data-test="email-input"
           />
           {formState.errors.email && (
-            <small className='text-red-600'>
+            <small data-test="email-error" className='text-red-600'>
               {formState.errors.email.message}
             </small>
           )}
@@ -101,9 +102,10 @@ export function CreateAdminForm({
             type='password'
             disabled={isLoading}
             {...register('temporaryPassword')}
+            data-test="password-input"
           />
           {formState.errors.temporaryPassword && (
-            <small className='text-red-600'>
+            <small data-test="password-error" className='text-red-600'>
               {formState.errors.temporaryPassword.message}
             </small>
           )}
@@ -117,9 +119,10 @@ export function CreateAdminForm({
             type='password'
             disabled={isLoading}
             {...register('passwordConfirmation')}
+            data-test="passwordConfirm-input"
           />
           {formState.errors.passwordConfirmation && (
-            <small className='text-red-600'>
+            <small data-test="passwordConfirm-error" className='text-red-600'>
               {formState.errors.passwordConfirmation.message}
             </small>
           )}
@@ -131,6 +134,7 @@ export function CreateAdminForm({
             type='text'
             disabled={isLoading}
             {...register('firstName')}
+            data-test="firstName-input"
           />
 
           <Label htmlFor='lastName'>Last Name</Label>
@@ -140,12 +144,13 @@ export function CreateAdminForm({
             type='text'
             disabled={isLoading}
             {...register('lastName')}
+            data-test="lastName-input"
           />
         </div>
 
-        <ErrorFeedback data={errors} />
+        <ErrorFeedback data-test="error-message" data={errors} />
 
-        <Button type='submit' disabled={isLoading} variant={'footerColor'}>
+        <Button data-test="create-admin-btn" type='submit' disabled={isLoading} variant={'footerColor'}>
           {isLoading ? 'Creating Admin...' : 'Create Admin'}
         </Button>
       </form>

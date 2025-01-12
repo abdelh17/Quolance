@@ -88,6 +88,7 @@ export function UserRegisterForm({
             Login
           </Link>
         }
+        data-test = "success-message"
       />
       <SocialAuthLogins isLoading={isLoading} />
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -100,6 +101,7 @@ export function UserRegisterForm({
                 type='text'
                 isLoading={isLoading}
                 register={register}
+                data-test = "firstName-input"
               />
               <FormInput
                 id='lastName'
@@ -107,6 +109,7 @@ export function UserRegisterForm({
                 type='text'
                 isLoading={isLoading}
                 register={register}
+                data-test = "lastName-input"
               />
             </div>
 
@@ -119,6 +122,7 @@ export function UserRegisterForm({
               register={register}
               error={formState.errors.email?.message}
               autoComplete='email'
+              data-test = "email-input"
             />
 
             <FormInput
@@ -128,6 +132,7 @@ export function UserRegisterForm({
               isLoading={isLoading}
               register={register}
               error={formState.errors.password?.message}
+              data-test = "password-input"
             />
 
             <FormInput
@@ -137,16 +142,18 @@ export function UserRegisterForm({
               isLoading={isLoading}
               register={register}
               error={formState.errors.passwordConfirmation?.message}
+              data-test = "passwordConfirm-input"
             />
           </div>
 
-          <ErrorFeedback data={errors} />
+          <ErrorFeedback data-test= "error-message" data={errors} />
 
           <Button
             className='mt-6'
             disabled={isLoading}
             animation={'default'}
             type='submit'
+             data-test = "register-submit"
           >
             {isLoading
               ? 'Creating account...'
