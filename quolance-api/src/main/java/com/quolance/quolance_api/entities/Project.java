@@ -92,4 +92,11 @@ public class Project extends AbstractEntity {
         return this.selectedFreelancer != null;
     }
 
+    /**
+     * Gets the owner of the project.
+     *
+     * @return the User who owns the project, or null if no owner is assigned.
+     */
+    public User getOwner() { return this.client; }
+
 }

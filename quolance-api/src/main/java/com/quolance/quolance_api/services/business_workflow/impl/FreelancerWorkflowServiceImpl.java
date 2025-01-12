@@ -17,11 +17,11 @@ import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.ILoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,6 +40,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final ApplicationService applicationService;
     private final UserService userService;
     private final FileService fileService;
+    private final NotificationMessageService notificationMessageService;
 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
@@ -66,6 +67,11 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             application.setProject(project);
 
             applicationService.saveApplication(application);
+
+            // Notify the project owner, commented out for now
+//            User projectOwner = project.getOwner();
+//            String message = freelancer.getFirstName() + " " + freelancer.getLastName() + " has applied to your project: " + project.getTitle();
+//            notificationMessageService.sendNotification(freelancer, projectOwner, message);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
