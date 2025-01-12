@@ -7,6 +7,8 @@ import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,8 +51,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getAllApplicationsByFreelancerId(Long freelancerId) {
-        return applicationRepository.findApplicationsByFreelancerId(freelancerId);
+    public Page<Application> getAllApplicationsByFreelancerId(Long freelancerId, Pageable pageable) {
+        return applicationRepository.findApplicationsByFreelancerId(freelancerId, pageable);
     }
 
     @Override

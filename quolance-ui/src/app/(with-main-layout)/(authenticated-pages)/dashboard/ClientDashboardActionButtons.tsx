@@ -27,6 +27,7 @@ export default function ClientDashboardActionButtons() {
                   variant='default'
                   animation='default'
                   size='sm'
+                  data-test = "post-project-btn"
                 >
                   Post a Project
                 </Button>
@@ -52,6 +53,7 @@ export default function ClientDashboardActionButtons() {
                   variant='default'
                   animation='default'
                   size='sm'
+                  data-test ="check-repository-btn"
                 >
                   Check Repository
                 </Button>

@@ -1,15 +1,3 @@
-export type ProjectFilterOptions = {
-  orderBy: string;
-  order: 'asc' | 'desc';
-  status: string; // We will use a strict type for this in the future
-};
-
-export const ProjectFilterOptionsDefault: ProjectFilterOptions = {
-  orderBy: 'date',
-  order: 'desc',
-  status: 'all',
-};
-
 //This is the raw object that will be returned from the API (used for GET)
 export type ProjectType = {
   tags: string[]; // List of tag names as strings
@@ -49,12 +37,7 @@ export type ProjectType = {
     | string;
   expirationDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
-  projectStatus:
-    | 'PENDING'
-    | 'REJECTED_AUTOMATICALLY'
-    | 'APPROVED'
-    | 'REJECTED'
-    | string;
+  projectStatus: ProjectStatus | string;
   clientId: number; // Unique identifier for the client
 };
 

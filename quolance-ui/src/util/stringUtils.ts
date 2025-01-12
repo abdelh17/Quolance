@@ -1,3 +1,5 @@
+import { ProjectFilterQuery } from '@/api/projects-api';
+
 export const formatEnumString = (enumObj: string): string => {
   return enumObj
     .replace(/_/g, ' ')
@@ -28,4 +30,20 @@ export const formatPriceRange = (priceRange: string) => {
     default:
       return priceRange;
   }
+};
+
+export const formatPriceRangeNoDollar = (priceRange: string) => {
+  return formatPriceRange(priceRange).replace(/\$/g, '');
+};
+
+export const queryToString = (
+  query: { [s: string]: unknown } | ArrayLike<unknown> | ProjectFilterQuery
+): string => {
+  const filteredQuery: Record<string, string> = Object.fromEntries(
+    Object.entries(query).filter(
+      ([_, value]) => value !== undefined && value !== ''
+    )
+  ) as Record<string, string>;
+
+  return new URLSearchParams(filteredQuery).toString();
 };

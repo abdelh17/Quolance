@@ -2,6 +2,7 @@ import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { PaginationParams } from '@/constants/types/pagination-types';
 
 /*--- Hooks ---*/
 export const useGetProjectSubmissions = (projectId: number) => {
@@ -50,9 +51,21 @@ export const useRejectSubmissions = (projectId: number) => {
   });
 };
 
-export const useGetAllClientProjects = () => {
+export const useGetAllClientProjects = (params: PaginationParams) => {
+  const queryString = new URLSearchParams({
+    page: params.page?.toString() || '0',
+    size: params.size?.toString() || '10',
+    sortBy: params.sortBy || 'id',
+    sortDirection: params.sortDirection || 'asc',
+  }).toString();
+
   return useQuery({
-    queryKey: ['all-client-projects'],
-    queryFn: () => httpClient.get('/api/client/projects/all'),
+    queryKey: ['clientProjects', params],
+    queryFn: async () => {
+      const response = await httpClient.get(
+        `/api/client/projects/all?${queryString}`
+      );
+      return response.data; // Return the data from the Axios response
+    },
   });
 };

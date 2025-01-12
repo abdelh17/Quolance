@@ -5,6 +5,9 @@ import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -15,9 +18,9 @@ public interface ProjectService {
     Project getProjectById(Long projectId);
     void updateProject(Project existingProject, ProjectUpdateDto updatedProject);
 
-    List<Project> getAllProjects();
-    List<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses);
-    List<Project> getProjectsByClientId(Long clientId);
+    Page<Project> findAllWithFilters(Specification<Project> spec, Pageable pageable);
+    Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable);
+    Page<Project> getProjectsByClientId(Long clientId, Pageable pageable);
 
     void updateProjectStatus(Project project, ProjectStatus newStatus);
     void updateSelectedFreelancer(Project project, User freelancer);

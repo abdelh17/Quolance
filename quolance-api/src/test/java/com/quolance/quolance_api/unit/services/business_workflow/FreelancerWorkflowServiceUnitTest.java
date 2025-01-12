@@ -1,7 +1,8 @@
-package com.quolance.quolance_api.services.business_workflow.impl;
+package com.quolance.quolance_api.unit.services.business_workflow;
 
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
@@ -9,8 +10,10 @@ import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.services.business_workflow.impl.FreelancerWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,11 +25,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -155,21 +161,26 @@ class FreelancerWorkflowServiceTest {
 
     @Test
     void getAllFreelancerApplications_Success() {
-        when(applicationService.getAllApplicationsByFreelancerId(1L))
-                .thenReturn(Arrays.asList(mockApplication));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Application> applicationPage = new PageImpl<>(List.of(mockApplication), pageable, 1);
 
-        List<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer);
+        when(applicationService.getAllApplicationsByFreelancerId(1L, pageable))
+                .thenReturn(applicationPage);
+
+        Page<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer, pageable);
 
         assertThat(results).hasSize(1);
-        assertThat(results.get(0).getId()).isEqualTo(mockApplication.getId());
+        assertThat(results.getContent().get(0).getId()).isEqualTo(mockApplication.getId());
     }
 
     @Test
     void getAllFreelancerApplications_NoApplications_ReturnsEmptyList() {
-        when(applicationService.getAllApplicationsByFreelancerId(1L))
-                .thenReturn(Collections.emptyList());
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Application> emptyPage = Page.empty(pageable);
+        when(applicationService.getAllApplicationsByFreelancerId(1L, pageable))
+                .thenReturn(emptyPage);
 
-        List<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer);
+        Page<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer, pageable);
 
         assertThat(results).isEmpty();
     }
@@ -194,19 +205,18 @@ class FreelancerWorkflowServiceTest {
                 .visibilityExpirationDate(LocalDate.now().plusDays(2))
                 .build();
 
-        List<Project> mockProjects = new ArrayList<>();
-        mockProjects.add(activeProject);
-        mockProjects.add(expiredProject);
-        mockProjects.add(closedButVisibleProject);
+        List<Project> mockProjects = List.of(activeProject, closedButVisibleProject);
+        Page<Project> mockPage = new PageImpl<>(mockProjects);
+        Pageable pageable = PageRequest.of(0, 10);
+        ProjectFilterDto filters = new ProjectFilterDto();
 
-        when(projectService.getProjectsByStatuses(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED)))
-                .thenReturn(mockProjects);
+        when(projectService.findAllWithFilters(any(Specification.class), eq(pageable))).thenReturn(mockPage);
+        Page<ProjectPublicDto> results = freelancerWorkflowService.getAllAvailableProjects(pageable, filters);
 
-        List<ProjectPublicDto> results = freelancerWorkflowService.getAllAvailableProjects();
-
-        assertThat(results).hasSize(2);
-        assertThat(results.stream().map(ProjectPublicDto::getId))
+        assertThat(results.getContent()).hasSize(2);
+        assertThat(results.getContent().stream().map(ProjectPublicDto::getId))
                 .containsExactlyInAnyOrder(activeProject.getId(), closedButVisibleProject.getId());
+        verify(projectService).findAllWithFilters(any(Specification.class), eq(pageable));
     }
 
     @Test

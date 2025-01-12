@@ -9,7 +9,10 @@ import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,19 +43,21 @@ public class ProjectServiceImpl implements ProjectService {
         return project;
     }
 
+
+
     @Override
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public Page<Project> findAllWithFilters(Specification<Project> spec, Pageable pageable) {
+        return projectRepository.findAll(spec, pageable);
     }
 
     @Override
-    public List<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses) {
-        return projectRepository.findProjectsByProjectStatusIn(projectStatuses);
+    public Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable) {
+        return projectRepository.findProjectsByProjectStatusIn(projectStatuses, pageable);
     }
 
     @Override
-    public List<Project> getProjectsByClientId(Long clientId) {
-        return projectRepository.findProjectsByClientId(clientId);
+    public Page<Project> getProjectsByClientId(Long clientId, Pageable pageable) {
+        return projectRepository.findProjectsByClientId(clientId, pageable);
     }
 
     @Override

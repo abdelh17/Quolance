@@ -25,6 +25,7 @@ export default function FreelancerDashboardActionButtons() {
                   variant='default'
                   animation='default'
                   size='sm'
+                  data-test="see-all-projects-btn"
                 >
                   See all projects
                 </Button>
@@ -51,6 +52,7 @@ export default function FreelancerDashboardActionButtons() {
                   variant='default'
                   animation='default'
                   size='sm'
+                   data-test="build-profile-btn"
                 >
                   Build profile
                 </Button>

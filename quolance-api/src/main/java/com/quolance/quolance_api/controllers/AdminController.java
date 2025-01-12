@@ -2,10 +2,14 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import com.quolance.quolance_api.dtos.PageableRequestDto;
 
 import java.util.List;
 
@@ -14,13 +18,17 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
     private final AdminWorkflowService adminWorkflowService;
+    private final PaginationUtils paginationUtils;
 
     @Operation(
             summary = "Get all pending projects"
     )
     @GetMapping("projects/pending/all")
-    public ResponseEntity<List<ProjectDto>> getAllPendingProjects() {
-        return ResponseEntity.ok(adminWorkflowService.getAllPendingProjects());
+    public ResponseEntity<Page<ProjectDto>> getAllPendingProjects(
+            @Valid PageableRequestDto pageableRequest
+    ) {
+        Page<ProjectDto> pendingProjects = adminWorkflowService.getAllPendingProjects(paginationUtils.createPageable(pageableRequest));
+        return ResponseEntity.ok(pendingProjects);
     }
 
     @Operation(

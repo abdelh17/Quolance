@@ -33,8 +33,9 @@ export const FormInput = ({
   register,
   error,
   autoComplete,
+  ...rest
 }: FormInputProps) => (
-  <div>
+  <div {...rest}>
     <Label htmlFor={id}>{label}</Label>
     <Input
       id={id}

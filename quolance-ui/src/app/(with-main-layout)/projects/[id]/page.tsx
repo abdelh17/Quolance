@@ -9,7 +9,7 @@ import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSu
 import { Role } from '@/constants/models/user/UserResponse';
 import { ProjectType } from '@/constants/types/project-types';
 import ProjectDetailsContent from '@/components/ui/projects/ProjectDetailsContent';
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
 import { useCallback, useEffect, useState } from 'react';
 import { isDeepEqual } from '@/util/objectUtils';
 import { showToast } from '@/util/context/ToastProvider';
@@ -105,7 +105,10 @@ function ProjectPage() {
             <div className='mt-8'>
               {/* Application Form - Only visible to freelancers */}
               {role === Role.FREELANCER && (
-                <FreelancerApplicationForm projectId={project.id} />
+                <FreelancerApplicationForm
+                  projectId={project.id}
+                  projectStatus={project.projectStatus}
+                />
               )}
 
               {/* Submission List - Only visible to clients who own the project */}

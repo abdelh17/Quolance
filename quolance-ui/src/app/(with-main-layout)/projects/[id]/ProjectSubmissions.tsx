@@ -1,4 +1,4 @@
-import {useMemo, useRef, useState} from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { PiSliders, PiUsers, PiX } from 'react-icons/pi';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
 import {
@@ -6,9 +6,8 @@ import {
   useGetProjectSubmissions,
   useRejectSubmissions,
 } from '@/api/client-api';
-import Loading from '@/components/loading';
+import Loading from '@/components/ui/loading/loading';
 import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
-import { DATA_Submissioners } from '@/constants/data';
 import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
 import {
   applySubmissionFilters,
@@ -36,17 +35,19 @@ const initialFilters: ApplicationFilters = {
 };
 
 const NoApplicationsFound = () => (
-  <div className='flex flex-col items-center justify-center px-4 py-16'>
-    <div className='bg-n30 mb-6 rounded-full p-6'>
-      <PiUsers className='text-n300 h-12 w-12' />
+  <div className='border-n40 rounded-2xl border-2 bg-white shadow-sm'>
+    <div className='flex flex-col items-center justify-center px-4 py-16'>
+      <div className='bg-n30 mb-6 rounded-full p-6'>
+        <PiUsers className='text-n300 h-12 w-12' />
+      </div>
+      <h3 className='text-n700 mb-2 text-xl font-semibold'>
+        No Applications Yet
+      </h3>
+      <p className='text-n400 max-w-md text-center'>
+        Your project is waiting for its first applicants. Once freelancers
+        apply, their submissions will appear here.
+      </p>
     </div>
-    <h3 className='text-n700 mb-2 text-xl font-semibold'>
-      No Applications Yet
-    </h3>
-    <p className='text-n400 max-w-md text-center'>
-      Your project is waiting for its first applicants. Once freelancers apply,
-      their submissions will appear here.
-    </p>
   </div>
 );
 
@@ -119,12 +120,11 @@ export default function ProjectSubmissions({
   //This ref is useful since we scroll down to it when a Client clicks on the "View Applicants" button
   const applicantsRef = useRef(null);
 
-
   return (
     <section className='sbp-30 stp-15 container'>
       <div>
         <div className='flex items-center justify-between'>
-          <div ref={applicantsRef} id="applicants-section">
+          <div ref={applicantsRef} id='applicants-section'>
             <h2 className='heading-2 pb-3'>Project Submissions</h2>
             <p className='text-n300 font-medium'>
               Browse and connect with top talent
@@ -201,23 +201,21 @@ export default function ProjectSubmissions({
                           setSelectedSubmissions
                         )
                       }
-                      freelancerName={`Freelancer ID: ${submission.id}`}
+                      freelancerName={`${submission.freelancerProfile.firstName} ${submission.freelancerProfile.lastName}`}
                       canSelect={
                         !filteredSubmissions.some(
                           (submission) => submission.status === 'ACCEPTED'
                         ) && submission.status === 'APPLIED'
                       }
                       img={FreelancerDefaultProfilePic}
-                      {...DATA_Submissioners[idx]}
+                      location={submission.freelancerProfile.state || ''}
                     />
                   </div>
                 )
               )}
             </div>
           ) : (
-            <div className='border-n40 rounded-2xl border-2 bg-white shadow-sm'>
-              <NoApplicationsFound />
-            </div>
+            <NoApplicationsFound />
           )}
         </div>
       </div>

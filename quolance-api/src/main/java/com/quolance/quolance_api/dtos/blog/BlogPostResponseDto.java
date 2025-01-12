@@ -1,5 +1,7 @@
 package com.quolance.quolance_api.dtos.blog;
 
+import com.quolance.quolance_api.dtos.BlogCommentDto;
+import com.quolance.quolance_api.entities.BlogPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,31 +10,27 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.quolance.quolance_api.dtos.BlogCommentDto;
-import com.quolance.quolance_api.entities.BlogComment;
-
 @Getter
 @Setter
 @NoArgsConstructor
-// @AllArgsConstructor
+@AllArgsConstructor
 public class BlogPostResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String authorName; // Derived from User entity
+    private String authorName;
     private LocalDateTime dateCreated;
-    private List<BlogCommentDto> comments; // Placeholder for comments
 
-    public BlogPostResponseDto(Long id, String title, String content, String authorName, LocalDateTime dateCreated, List<BlogCommentDto> commentDtos) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.authorName = authorName;
-        this.dateCreated = dateCreated;
-        this.comments = commentDtos;
+    public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
+        BlogPostResponseDto response = new BlogPostResponseDto();
+        response.setId(blogPost.getId());
+        response.setTitle(blogPost.getTitle());
+        response.setContent(blogPost.getContent());
+        response.setAuthorName(blogPost.getUser().getUsername());
+        response.setDateCreated(blogPost.getCreationDate());
+        return response;
     }
 
+    private List<BlogCommentDto> comments;
 
-
-//    private List<ReplyDto> replies; // Placeholder for replies
 }

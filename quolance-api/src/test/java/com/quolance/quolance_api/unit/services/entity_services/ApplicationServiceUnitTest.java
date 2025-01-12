@@ -12,6 +12,10 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -102,13 +106,18 @@ class ApplicationServiceTest {
 
     @Test
     void getAllApplicationsByFreelancerId_Success() {
-        List<Application> applications = Arrays.asList(mockApplication);
-        when(applicationRepository.findApplicationsByFreelancerId(1L)).thenReturn(applications);
+        List<Application> applications = List.of(mockApplication);
+        Page<Application> expectedPage = new PageImpl<>(applications);
 
-        List<Application> result = applicationService.getAllApplicationsByFreelancerId(1L);
+        when(applicationRepository.findApplicationsByFreelancerId(eq(1L), any(Pageable.class)))
+                .thenReturn(expectedPage);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).containsExactly(mockApplication);
+        Page<Application> result = applicationService.getAllApplicationsByFreelancerId(1L, Pageable.unpaged());
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent()).containsExactly(mockApplication);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        verify(applicationRepository).findApplicationsByFreelancerId(eq(1L), any(Pageable.class));
     }
 
     @Test

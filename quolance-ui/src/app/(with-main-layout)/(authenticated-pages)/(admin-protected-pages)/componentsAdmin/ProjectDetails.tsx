@@ -201,6 +201,7 @@ export const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                onChange={handleReasonChange}
                className="w-full rounded-xl border border-gray-300 p-4"
                rows={5}
+               data-test="rejection-reason-input"
              />
            </div>
          )}
@@ -218,6 +219,7 @@ export const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                      : "bg-blue-500 hover:bg-yellow-500"
                  }`}
                  disabled={isSubmitDisabled}
+                 data-test = "submit-project-btn"
                >
                  Submit
                </button>

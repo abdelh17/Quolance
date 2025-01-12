@@ -13,6 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -67,30 +71,34 @@ class AdminWorkflowServiceTest {
     }
 
     @Test
-    void getAllPendingProjects_ReturnsListOfProjects() {
+    void getAllPendingProjects_ReturnsPageOfProjects() {
         List<Project> mockProjects = Arrays.asList(mockProject1, mockProject2);
-        when(projectService.getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING)))
-                .thenReturn(mockProjects);
+        Page<Project> mockProjectPage = new PageImpl<>(mockProjects);
 
-        List<ProjectDto> result = adminWorkflowService.getAllPendingProjects();
+        when(projectService.getProjectsByStatuses(eq(Collections.singletonList(ProjectStatus.PENDING)), any(Pageable.class)))
+                .thenReturn(mockProjectPage);
 
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getId()).isEqualTo(mockProject1.getId());
-        assertThat(result.get(0).getTitle()).isEqualTo(mockProject1.getTitle());
-        assertThat(result.get(1).getId()).isEqualTo(mockProject2.getId());
-        assertThat(result.get(1).getTitle()).isEqualTo(mockProject2.getTitle());
-        verify(projectService).getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING));
+        Page<ProjectDto> result = adminWorkflowService.getAllPendingProjects(Pageable.unpaged());
+
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent().get(0).getId()).isEqualTo(mockProject1.getId());
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo(mockProject1.getTitle());
+        assertThat(result.getContent().get(1).getId()).isEqualTo(mockProject2.getId());
+        assertThat(result.getContent().get(1).getTitle()).isEqualTo(mockProject2.getTitle());
+        verify(projectService).getProjectsByStatuses(eq(Collections.singletonList(ProjectStatus.PENDING)), any(Pageable.class));
     }
 
     @Test
-    void getAllPendingProjects_WhenNoProjects_ReturnsEmptyList() {
-        when(projectService.getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING)))
-                .thenReturn(Collections.emptyList());
+    void getAllPendingProjects_WhenNoProjects_ReturnsEmptyPage() {
+        Page<Project> emptyPage = Page.empty();
+        when(projectService.getProjectsByStatuses(eq(Collections.singletonList(ProjectStatus.PENDING)), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
-        List<ProjectDto> result = adminWorkflowService.getAllPendingProjects();
+        Page<ProjectDto> result = adminWorkflowService.getAllPendingProjects(Pageable.unpaged());
 
-        assertThat(result).isEmpty();
-        verify(projectService).getProjectsByStatuses(Collections.singletonList(ProjectStatus.PENDING));
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+        verify(projectService).getProjectsByStatuses(eq(Collections.singletonList(ProjectStatus.PENDING)), any(Pageable.class));
     }
 
     @Test
