@@ -1,14 +1,26 @@
-import { useGetAllPublicProjects } from '@/api/projects-api';
-import { ProjectType } from '@/constants/types/project-types';
+'use client';
+import {
+  ProjectFilterQuery,
+  ProjectFilterQueryDefault,
+  useGetAllPublicProjects,
+} from '@/api/projects-api';
 import Loading from '@/components/ui/loading/loading';
-import ProjectCard from '@/components/ui/projects/ProjectCard';
-import ProjectFilter from '@/components/ui/projects/ProjectFilter';
+import ProjectListType from '@/components/ui/projects/projectFIlter/ProjectListType';
 import Link from 'next/link';
 import Image from 'next/image';
 import heroImage2 from '@/public/images/freelancer-hero-img-2.jpg';
+import { useState } from 'react';
+import ProjectListLayout from '@/components/ui/projects/ProjectListLayout';
 
 function ProjectsContainer() {
-  const { data, isLoading, isSuccess } = useGetAllPublicProjects();
+  const [currentListType, setCurrentListType] = useState('All Projects');
+  const [projectQuery, setProjectQuery] = useState<ProjectFilterQuery>(
+    ProjectFilterQueryDefault
+  );
+
+  const { data, isLoading, isSuccess } = useGetAllPublicProjects(projectQuery);
+  const pageMetaData = data?.data.metadata;
+  const projectsData = data?.data.content;
 
   if (isLoading) {
     return <Loading />;
@@ -48,36 +60,19 @@ function ProjectsContainer() {
         </div>
       </div>
 
-      <ProjectFilter />
+      <ProjectListType
+        currentListType={currentListType}
+        setCurrentListType={setCurrentListType}
+      />
 
-      <div className='container mt-8 pb-8'>
-        {isSuccess && data && (
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {data.data.map((project: ProjectType) => (
-              <ProjectCard
-                key={project.id}
-                tags={project.tags}
-                id={project.id}
-                createdAt={project.createdAt}
-                category={project.category}
-                title={project.title}
-                description={project.description}
-                priceRange={project.priceRange}
-                experienceLevel={project.experienceLevel}
-                expectedDeliveryTime={project.expectedDeliveryTime}
-                expirationDate={project.expirationDate}
-                location={project.location}
-                projectStatus={project.projectStatus}
-                clientId={project.clientId}
-              />
-            ))}
-          </div>
-        )}
-
-        {!isLoading && (!data || data.data.length === 0) && (
-          <div className='text-center text-gray-500'>No projects found</div>
-        )}
-      </div>
+      <ProjectListLayout
+        isLoading={isLoading}
+        isSuccess={isSuccess}
+        data={projectsData}
+        query={projectQuery}
+        setQuery={setProjectQuery}
+        pageMetaData={pageMetaData}
+      />
     </>
   );
 }

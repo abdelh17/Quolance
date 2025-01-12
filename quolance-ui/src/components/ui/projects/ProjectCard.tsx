@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, Award, Clock, DollarSign, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { formatEnumString, formatPriceRangeNoDollar } from '@/util/stringUtils';
+import { EXPECTED_DELIVERY_OPTIONS } from '@/constants/types/form-types';
 
 type ProjectCardProps = ProjectType;
 
@@ -53,18 +54,20 @@ const ProjectCard = ({
             </div>
           </div>
           {/* Project Details */}
-          <div className='flex flex-row justify-between gap-4 pt-4'>
-            <div className='flex items-center space-x-2'>
-              <DollarSign className='h-4 w-4 text-gray-400' />
-              <span className='text-sm text-gray-600'>
-                {formatPriceRangeNoDollar(priceRange)}
-              </span>
-            </div>
-            <div className='flex items-center space-x-2'>
-              <Award className='h-4 w-4 text-gray-400' />
-              <span className='text-sm text-gray-600'>
-                {formatEnumString(category)}
-              </span>
+          <div className='space-y-2 pt-4'>
+            <div className='flex flex-row justify-between gap-4'>
+              <div className='flex items-center space-x-2'>
+                <DollarSign className='h-4 w-4 text-gray-400' />
+                <span className='text-sm text-gray-600'>
+                  {formatPriceRangeNoDollar(priceRange)}
+                </span>
+              </div>
+              <div className='flex items-center space-x-2'>
+                <Award className='h-4 w-4 text-gray-400' />
+                <span className='text-sm text-gray-600'>
+                  {formatEnumString(category)}
+                </span>
+              </div>
             </div>
             <div className='flex items-center space-x-2'>
               <MapPin className='h-4 w-4 text-gray-400' />
@@ -89,7 +92,9 @@ const ProjectCard = ({
             <div className='flex items-center space-x-2'>
               <Clock className='h-4 w-4 text-gray-400' />
               <span className='text-sm text-gray-600'>
-                {expectedDeliveryTime}
+                {EXPECTED_DELIVERY_OPTIONS.find(
+                  (option) => option.value === expectedDeliveryTime
+                )?.label ?? ''}
               </span>
             </div>
           </div>
