@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ProjectFilterQuery } from '@/api/projects-api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,14 +29,6 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
     ...defaultQuery,
     ...query,
   });
-
-  useEffect(() => {
-    console.log(query);
-  }, [query]);
-
-  useEffect(() => {
-    console.log('local ', localQuery);
-  }, [localQuery]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalQuery((prev) => ({ ...prev, title: e.target.value }));

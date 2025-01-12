@@ -9,7 +9,7 @@ import ProjectListType from '@/components/ui/projects/projectFIlter/ProjectListT
 import Link from 'next/link';
 import Image from 'next/image';
 import heroImage2 from '@/public/images/freelancer-hero-img-2.jpg';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ProjectListLayout from '@/components/ui/projects/ProjectListLayout';
 
 function ProjectsContainer() {
@@ -21,10 +21,6 @@ function ProjectsContainer() {
   const { data, isLoading, isSuccess } = useGetAllPublicProjects(projectQuery);
   const pageMetaData = data?.data.metadata;
   const projectsData = data?.data.content;
-
-  useEffect(() => {
-    console.log('projectQuery', projectQuery);
-  }, [projectQuery]);
 
   if (isLoading) {
     return <Loading />;
