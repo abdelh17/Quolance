@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.dtos.blog;
 
+import com.quolance.quolance_api.entities.BlogPost;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +16,12 @@ public class BlogPostRequestDto {
     private String title;
     @NotBlank(message = "Title is required")
     private String content;
-    private Long userId; // User ID creating the blog post
+
+
+    public static BlogPost toEntity(BlogPostRequestDto blogPostRequestDto) {
+        return BlogPost.builder()
+                .title(blogPostRequestDto.getTitle())
+                .content(blogPostRequestDto.getContent())
+                .build();
+    }
 }

@@ -43,10 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
         return project;
     }
 
-    @Override
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
-    }
+
 
     @Override
     public Page<Project> findAllWithFilters(Specification<Project> spec, Pageable pageable) {

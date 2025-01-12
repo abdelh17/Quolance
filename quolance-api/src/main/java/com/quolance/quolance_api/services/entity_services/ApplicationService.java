@@ -13,7 +13,6 @@ public interface ApplicationService {
     void saveApplication(Application application);
     void deleteApplication(Application application);
     Application getApplicationById(Long applicationId);
-//    void updateApplication(Application application); Cannot update application for now (refer to: https://github.com/abdelh17/Quolance/wiki/Meeting-Minutes#iteration-5
 
     void updateApplicationStatus(Application application, ApplicationStatus newStatus);
 

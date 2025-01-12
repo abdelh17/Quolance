@@ -18,7 +18,6 @@ public interface ProjectService {
     Project getProjectById(Long projectId);
     void updateProject(Project existingProject, ProjectUpdateDto updatedProject);
 
-    List<Project> getAllProjects();
     Page<Project> findAllWithFilters(Specification<Project> spec, Pageable pageable);
     Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable);
     Page<Project> getProjectsByClientId(Long clientId, Pageable pageable);
