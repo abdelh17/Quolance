@@ -65,14 +65,6 @@ public class BlogCommentController  {
         return ResponseEntity.ok(responses);
     }
 
-    // Get a specific blog comment by ID
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a blog comment by ID")
-    public ResponseEntity<BlogCommentDto> getBlogCommentById(@PathVariable Long id) {
-        BlogCommentDto response = blogCommentService.getBlogCommentById(id);
-        return ResponseEntity.ok(response);
-    }
-
     // Update an existing blog comment
     @PutMapping("/{id}")
     @Operation(summary = "Update a blog comment")

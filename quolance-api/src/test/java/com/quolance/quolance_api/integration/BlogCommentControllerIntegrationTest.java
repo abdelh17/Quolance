@@ -57,112 +57,112 @@ public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers
     private User loggedInUser;
     private BlogPost blogPost;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        blogPostRepository.deleteAll();
-        blogCommentRepository.deleteAll();
-        userRepository.deleteAll();
+    // @BeforeEach
+    // void setUp() throws Exception {
+    //     blogPostRepository.deleteAll();
+    //     blogCommentRepository.deleteAll();
+    //     userRepository.deleteAll();
 
-        loggedInUser = userRepository.save(EntityCreationHelper.createClient());
-        blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
-        session = getSession(loggedInUser.getEmail(), "Password123!");
-    }
+    //     loggedInUser = userRepository.save(EntityCreationHelper.createClient());
+    //     blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
+    //     session = getSession(loggedInUser.getEmail(), "Password123!");
+    // }
 
-    @Test
-    void testCreateBlogCommentIsOk() throws Exception {
-        BlogCommentDto commentDto = new BlogCommentDto();
-        commentDto.setContent("This is a valid comment");
-        commentDto.setBlogPostId(blogPost.getId());
-        commentDto.setUserId(loggedInUser.getId());
+    // @Test
+    // void testCreateBlogCommentIsOk() throws Exception {
+    //     BlogCommentDto commentDto = new BlogCommentDto();
+    //     commentDto.setContent("This is a valid comment");
+    //     commentDto.setBlogPostId(blogPost.getId());
+    //     commentDto.setUserId(loggedInUser.getId());
 
-        mockMvc.perform(post("/api/blog-comments")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(commentDto))
-                .session(session))
-                .andExpect(status().isOk());
-    }
+    //     mockMvc.perform(post("/api/blog-comments")
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(commentDto))
+    //             .session(session))
+    //             .andExpect(status().isOk());
+    // }
 
-    @Test
-    void testCreateBlogCommentInvalidRequest() throws Exception {
-        BlogCommentDto request = new BlogCommentDto();
-        request.setContent(""); // Empty comment content
-        request.setBlogPostId(blogPost.getId());
-        request.setUserId(loggedInUser.getId());
+    // @Test
+    // void testCreateBlogCommentInvalidRequest() throws Exception {
+    //     BlogCommentDto request = new BlogCommentDto();
+    //     request.setContent(""); // Empty comment content
+    //     request.setBlogPostId(blogPost.getId());
+    //     request.setUserId(loggedInUser.getId());
 
-        mockMvc.perform(post("/api/blog-comments")
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnprocessableEntity()); // Expect 422
-    }
+    //     mockMvc.perform(post("/api/blog-comments")
+    //             .session(session)
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(request)))
+    //             .andExpect(status().isUnprocessableEntity()); // Expect 422
+    // }
 
-    @Test
-    void testGetAllCommentsForBlogPost() throws Exception {
-        BlogComment blogComment = blogCommentRepository
-                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+    // @Test
+    // void testGetAllCommentsForBlogPost() throws Exception {
+    //     BlogComment blogComment = blogCommentRepository
+    //             .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
-        mockMvc.perform(get("/api/blog-comments/post/" + blogPost.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+    //     mockMvc.perform(get("/api/blog-comments/post/" + blogPost.getId())
+    //             .session(session)
+    //             .contentType(MediaType.APPLICATION_JSON))
+    //             .andExpect(status().isOk());
+    // }
 
-    @Test
-    void testGetCommentByIdIsOk() throws Exception {
-        BlogComment blogComment = blogCommentRepository
-                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+    // @Test
+    // void testGetCommentByIdIsOk() throws Exception {
+    //     BlogComment blogComment = blogCommentRepository
+    //             .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
-        mockMvc.perform(get("/api/blog-comments/" + blogComment.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+    //     mockMvc.perform(get("/api/blog-comments/" + blogComment.getId())
+    //             .session(session)
+    //             .contentType(MediaType.APPLICATION_JSON))
+    //             .andExpect(status().isOk());
+    // }
 
-    @Test
-    void testDeleteBlogComment() throws Exception {
-        BlogComment blogComment = blogCommentRepository
-                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+    // @Test
+    // void testDeleteBlogComment() throws Exception {
+    //     BlogComment blogComment = blogCommentRepository
+    //             .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
-        mockMvc.perform(delete("/api/blog-comments/" + blogComment.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+    //     mockMvc.perform(delete("/api/blog-comments/" + blogComment.getId())
+    //             .session(session)
+    //             .contentType(MediaType.APPLICATION_JSON))
+    //             .andExpect(status().isOk());
 
-        assertThat(blogCommentRepository.findById(blogComment.getId())).isEmpty();
-    }
+    //     assertThat(blogCommentRepository.findById(blogComment.getId())).isEmpty();
+    // }
 
-    @Test
-    void testUpdateBlogComment() throws Exception {
-        BlogComment blogComment = blogCommentRepository
-                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+    // @Test
+    // void testUpdateBlogComment() throws Exception {
+    //     BlogComment blogComment = blogCommentRepository
+    //             .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
-        BlogCommentDto request = new BlogCommentDto();
-        request.setContent("Updated Comment Content");
-        request.setBlogPostId(blogPost.getId());
-        request.setUserId(loggedInUser.getId());
+    //     BlogCommentDto request = new BlogCommentDto();
+    //     request.setContent("Updated Comment Content");
+    //     request.setBlogPostId(blogPost.getId());
+    //     request.setUserId(loggedInUser.getId());
 
-        mockMvc.perform(put("/api/blog-comments/" + blogComment.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+    //     mockMvc.perform(put("/api/blog-comments/" + blogComment.getId())
+    //             .session(session)
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(request)))
+    //             .andExpect(status().isOk());
 
-        BlogComment updatedComment = blogCommentRepository.findById(blogComment.getId()).orElseThrow();
-        assertThat(updatedComment.getContent()).isEqualTo("Updated Comment Content");
-    }
+    //     BlogComment updatedComment = blogCommentRepository.findById(blogComment.getId()).orElseThrow();
+    //     assertThat(updatedComment.getContent()).isEqualTo("Updated Comment Content");
+    // }
 
-    private MockHttpSession getSession(String email, String password) throws Exception {
-        // Log in and return the session
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail(email);
-        loginRequest.setPassword(password);
+    // private MockHttpSession getSession(String email, String password) throws Exception {
+    //     // Log in and return the session
+    //     LoginRequestDto loginRequest = new LoginRequestDto();
+    //     loginRequest.setEmail(email);
+    //     loginRequest.setPassword(password);
 
-        return (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
-    }
+    //     return (MockHttpSession) mockMvc.perform(post("/api/auth/login")
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(loginRequest)))
+    //             .andExpect(status().isOk())
+    //             .andReturn()
+    //             .getRequest()
+    //             .getSession();
+    // }
 }

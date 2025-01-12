@@ -30,8 +30,7 @@ public class BlogPost extends AbstractEntity {
     private User user;
 
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<BlogComment> blogComments = new ArrayList<>();
+    private List<BlogComment> blogComments = new ArrayList<>(); // Initialize as an empty list
 
     // Placeholder relationships (null templates for now)
 //    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)

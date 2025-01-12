@@ -42,15 +42,6 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .user(user)
                 .build();
 
-        // Handle comments if present
-        if (request.getComments() != null && !request.getComments().isEmpty()) {
-            List<BlogComment> comments = request.getComments().stream()
-                    .map(commentDto -> {
-                        BlogComment comment = commentDto.toEntity(blogPost, user); 
-                        return comment;
-                    }).collect(Collectors.toList());
-    
-            blogPost.setBlogComments(comments);          }
         BlogPost savedBlogPost = blogPostRepository.save(blogPost);
 
         // Return response DTO
@@ -90,17 +81,6 @@ public class BlogPostServiceImpl implements BlogPostService {
         blogPost.setContent(request.getContent());
 
         blogPost.setTitle(request.getTitle());
-
-        // Handle new or updated comments
-        if (request.getComments() != null && !request.getComments().isEmpty()) {
-            List<BlogComment> comments = request.getComments().stream()
-                    .map(commentDto -> {
-                        BlogComment comment = commentDto.toEntity(blogPost, blogPost.getUser());  
-                        return comment;
-                    }).collect(Collectors.toList());
-    
-            blogPost.setBlogComments(comments);   
-        }
 
         // Save the updated blog post
         BlogPost updatedBlogPost = blogPostRepository.save(blogPost);
