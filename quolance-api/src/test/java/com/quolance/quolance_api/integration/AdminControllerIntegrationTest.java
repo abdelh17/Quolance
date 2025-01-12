@@ -76,18 +76,21 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
 
         // Act
         String response = mockMvc.perform(get("/api/admin/projects/pending/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortDirection", "asc")
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        List<Object> responseList = objectMapper.readValue(response, List.class);
+        Map<String,Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String,Object>> content = (List<Map<String, Object>>) responseMap.get("content");
 
         // Assert
-        assertThat(responseList.size()).isEqualTo(1);
+        assertThat(content.size()).isEqualTo(1);
 
-        Map<String, Object> projectResponse = (Map<String, Object>) responseList.get(0);
+        Map<String, Object> projectResponse = (Map<String, Object>) content.get(0);
 
         assertThat(projectResponse.get("id")).isEqualTo(pendingProject.getId().intValue());
         assertThat(projectResponse.get("projectStatus")).isEqualTo("PENDING");

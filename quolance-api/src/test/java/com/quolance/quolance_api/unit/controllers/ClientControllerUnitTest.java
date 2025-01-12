@@ -1,6 +1,8 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.ClientController;
+import com.quolance.quolance_api.dtos.PageResponseDto;
+import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
@@ -9,6 +11,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
+import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +21,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -40,6 +47,10 @@ class ClientControllerUnitTest {
 
     @Mock
     private ApplicationProcessWorkflow applicationProcessWorkflow;
+
+    @Mock
+    private PaginationUtils paginationUtils;
+
 
     @InjectMocks
     private ClientController clientController;
@@ -212,36 +223,46 @@ class ClientControllerUnitTest {
         }
     }
 
-//    @Test
-//    void getAllClientProjects_ReturnsProjectList() {
-//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-//            when(clientWorkflowService.getAllClientProjects(any(User.class)))
-//                    .thenReturn(Arrays.asList(projectDto));
-//
-//            ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
-//
-//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//            assertThat(response.getBody()).hasSize(1);
-//            assertThat(response.getBody().get(0)).isEqualTo(projectDto);
-//            verify(clientWorkflowService).getAllClientProjects(eq(mockClient));
-//        }
-//    }
+    @Test
+    void getAllClientProjects_ReturnsProjectList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            Page<ProjectDto> projectPage = new PageImpl<>(Arrays.asList(projectDto));
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            when(clientWorkflowService.getAllClientProjects(eq(mockClient), any(Pageable.class)))
+                    .thenReturn(projectPage);
 
-//    @Test
-//    void getAllClientProjects_ReturnsEmptyList() {
-//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-//            when(clientWorkflowService.getAllClientProjects(any(User.class)))
-//                    .thenReturn(List.of());
-//
-//            ResponseEntity<List<ProjectDto>> response = clientController.getAllClientProjects();
-//
-//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//            assertThat(response.getBody()).isEmpty();
-//            verify(clientWorkflowService).getAllClientProjects(eq(mockClient));
-//        }
-//    }
+            ResponseEntity<PageResponseDto<ProjectDto>> response = clientController.getAllClientProjects(pageableRequestDto);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            assertThat(response.getBody().getContent().get(0)).isEqualTo(projectDto);
+            verify(clientWorkflowService).getAllClientProjects(eq(mockClient), any(Pageable.class));
+        }
+    }
+
+    @Test
+    void getAllClientProjects_ReturnsEmptyList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            Page<ProjectDto> emptyPage = new PageImpl<>(List.of());
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            when(clientWorkflowService.getAllClientProjects(eq(mockClient), any(Pageable.class)))
+                    .thenReturn(emptyPage);
+
+            ResponseEntity<PageResponseDto<ProjectDto>> response = clientController.getAllClientProjects(pageableRequestDto);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).isEmpty();
+            verify(clientWorkflowService).getAllClientProjects(eq(mockClient), any(Pageable.class));
+        }
+    }
 
     @Test
     void getAllApplicationsToProject_ReturnsApplicationList() {

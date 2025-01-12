@@ -29,3 +29,7 @@ export const formatPriceRange = (priceRange: string) => {
       return priceRange;
   }
 };
+
+export const formatPriceRangeNoDollar = (priceRange: string) => {
+  return formatPriceRange(priceRange).replace(/\$/g, '');
+};

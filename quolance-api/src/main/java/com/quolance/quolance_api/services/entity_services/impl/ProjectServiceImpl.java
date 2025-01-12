@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,8 +49,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses) {
-        return projectRepository.findProjectsByProjectStatusIn(projectStatuses);
+    public Page<Project> findAllWithFilters(Specification<Project> spec, Pageable pageable) {
+        return projectRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable) {
+        return projectRepository.findProjectsByProjectStatusIn(projectStatuses, pageable);
     }
 
     @Override

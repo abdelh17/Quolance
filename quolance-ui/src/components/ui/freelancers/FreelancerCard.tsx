@@ -1,5 +1,5 @@
 'use client';
-import { PiCheckCircle, PiHandshake, PiHeart } from 'react-icons/pi';
+import { PiCheckCircle, PiHandshake } from 'react-icons/pi';
 import 'swiper/css';
 import './freelancerCardStyles.css';
 import badge from '@/public/images/verify-badge.png';
@@ -8,6 +8,7 @@ import { useState } from 'react';
 import ApprovalConfirmationModal from '@/components/ui/freelancers/ApprovalConfirmationModal';
 import { ApplicationStatus } from '@/constants/models/applications/ApplicationResponse';
 import Link from 'next/link';
+import { Send } from 'lucide-react';
 
 interface FreelancerCardProps {
   img: ImageURL | StaticImageData;
@@ -143,7 +144,7 @@ function FreelancerCard({
           )}
         </div>
         <Link href={''}>
-          <div className='mt-5 flex items-center justify-start gap-3 px-3 sm:px-6'>
+          <div className='mt-5 flex items-center justify-start gap-5 px-3 sm:px-6'>
             <div className='relative'>
               <div className='relative h-[88px] w-[88px] rounded-full'>
                 {/* Profile image */}
@@ -155,7 +156,7 @@ function FreelancerCard({
                   priority
                 />
                 {/* Verified badge */}
-                <div className='absolute -bottom-1 -right-1 z-30'>
+                <div className='absolute -bottom-1 -right-1 z-30 hidden'>
                   <Image
                     src={badge}
                     alt='verified badge'
@@ -169,9 +170,9 @@ function FreelancerCard({
               <div className='flex items-center justify-start gap-3'>
                 <h5 className='heading-5'>{freelancerName}</h5>
                 {/* PRO badge */}
-                <p className='bg-y300 rounded-full px-2 py-1 text-xs font-medium'>
-                  PRO
-                </p>
+                {/*<p className='bg-y300 rounded-full px-2 py-1 text-xs font-medium'>*/}
+                {/*  PRO*/}
+                {/*</p>*/}
               </div>
               <p className='text-n500 pt-2'>{location}</p>
             </div>
@@ -224,8 +225,8 @@ function FreelancerCard({
               </button>
             )}
             {canSelect && (
-              <button className='hover:bg-y300 relative flex items-center justify-center rounded-full border p-3 text-xl !leading-none duration-500'>
-                <PiHeart />
+              <button className='hover:bg-n100/20 relative flex items-center justify-center rounded-full border p-3 text-xl !leading-none duration-[400ms]'>
+                <Send />
               </button>
             )}
           </div>

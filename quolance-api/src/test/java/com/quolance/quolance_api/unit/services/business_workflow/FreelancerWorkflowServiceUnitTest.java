@@ -2,6 +2,7 @@ package com.quolance.quolance_api.unit.services.business_workflow;
 
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -203,19 +205,18 @@ class FreelancerWorkflowServiceTest {
                 .visibilityExpirationDate(LocalDate.now().plusDays(2))
                 .build();
 
-        List<Project> mockProjects = new ArrayList<>();
-        mockProjects.add(activeProject);
-        mockProjects.add(expiredProject);
-        mockProjects.add(closedButVisibleProject);
+        List<Project> mockProjects = List.of(activeProject, closedButVisibleProject);
+        Page<Project> mockPage = new PageImpl<>(mockProjects);
+        Pageable pageable = PageRequest.of(0, 10);
+        ProjectFilterDto filters = new ProjectFilterDto();
 
-        when(projectService.getProjectsByStatuses(List.of(ProjectStatus.OPEN, ProjectStatus.CLOSED)))
-                .thenReturn(mockProjects);
+        when(projectService.findAllWithFilters(any(Specification.class), eq(pageable))).thenReturn(mockPage);
+        Page<ProjectPublicDto> results = freelancerWorkflowService.getAllAvailableProjects(pageable, filters);
 
-        List<ProjectPublicDto> results = freelancerWorkflowService.getAllAvailableProjects();
-
-        assertThat(results).hasSize(2);
-        assertThat(results.stream().map(ProjectPublicDto::getId))
+        assertThat(results.getContent()).hasSize(2);
+        assertThat(results.getContent().stream().map(ProjectPublicDto::getId))
                 .containsExactlyInAnyOrder(activeProject.getId(), closedButVisibleProject.getId());
+        verify(projectService).findAllWithFilters(any(Specification.class), eq(pageable));
     }
 
     @Test
