@@ -99,6 +99,9 @@ body {
   .large-container {
     @apply 4xl:max-w-[1760px] mx-auto;
   }
+  .medium-container {
+    @apply 3xl:max-w-[1440px] mx-auto;
+  }
 
   /* stp = section top padding, sbp= section bottom padding */
   .stp-30 {
