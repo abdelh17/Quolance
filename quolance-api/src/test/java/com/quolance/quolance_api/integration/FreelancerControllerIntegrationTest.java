@@ -255,49 +255,53 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         assertThat(applicationResponse2.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
     }
 
-//    @Test
-//    void getAllProjectsReturnsVisibleProjects() throws Exception {
-//        //Arrange
-//        Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
-//
-//        Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
-//
-//        Project project3 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, LocalDate.now().plusDays(7), client));
-//
-//        Project project4 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
-//
-//        Project project5 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().minusDays(7), client));
-//
-//
-//        //Act
-//        String response = mockMvc.perform(get("/api/freelancer/projects/all")
-//                        .session(session))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        List<Object> responseList = objectMapper.readValue(response, List.class);
-//
-//        //Assert
-//        assertThat(responseList).hasSize(3);
-//
-//        Map<String, Object> projectResponse1 = (Map<String, Object>) responseList.get(0);
-//        Map<String, Object> projectResponse2 = (Map<String, Object>) responseList.get(1);
-//        Map<String, Object> projectResponse3 = (Map<String, Object>) responseList.get(2);
-//
-//        assertThat(projectResponse1.get("id")).isEqualTo(project1.getId().intValue());
-//        assertThat(projectResponse1.get("projectStatus")).isEqualTo("OPEN");
-//        assertThat(projectResponse1.get("projectStatus")).isEqualTo(project1.getProjectStatus().name());
-//
-//        assertThat(projectResponse2.get("id")).isEqualTo(project2.getId().intValue());
-//        assertThat(projectResponse2.get("projectStatus")).isEqualTo("CLOSED");
-//        assertThat(projectResponse2.get("projectStatus")).isEqualTo(project2.getProjectStatus().name());
-//
-//        assertThat(projectResponse3.get("id")).isEqualTo(project4.getId().intValue());
-//        assertThat(projectResponse3.get("projectStatus")).isEqualTo("OPEN");
-//        assertThat(projectResponse3.get("projectStatus")).isEqualTo(project4.getProjectStatus().name());
-//    }
+    @Test
+    void getAllProjectsReturnsVisibleProjects() throws Exception {
+        //Arrange
+        Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
+
+        Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
+
+        Project project3 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, LocalDate.now().plusDays(7), client));
+
+        Project project4 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
+
+        Project project5 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().minusDays(7), client));
+
+
+        //Act
+        String response = mockMvc.perform(get("/api/freelancer/projects/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sortDirection", "asc")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+
+        //Assert
+        assertThat(content).hasSize(3);
+
+        Map<String, Object> projectResponse1 = (Map<String, Object>) content.get(0);
+        Map<String, Object> projectResponse2 = (Map<String, Object>) content.get(1);
+        Map<String, Object> projectResponse3 = (Map<String, Object>) content.get(2);
+
+        assertThat(projectResponse1.get("id")).isEqualTo(project1.getId().intValue());
+        assertThat(projectResponse1.get("projectStatus")).isEqualTo("OPEN");
+        assertThat(projectResponse1.get("projectStatus")).isEqualTo(project1.getProjectStatus().name());
+
+        assertThat(projectResponse2.get("id")).isEqualTo(project2.getId().intValue());
+        assertThat(projectResponse2.get("projectStatus")).isEqualTo("CLOSED");
+        assertThat(projectResponse2.get("projectStatus")).isEqualTo(project2.getProjectStatus().name());
+
+        assertThat(projectResponse3.get("id")).isEqualTo(project4.getId().intValue());
+        assertThat(projectResponse3.get("projectStatus")).isEqualTo("OPEN");
+        assertThat(projectResponse3.get("projectStatus")).isEqualTo(project4.getProjectStatus().name());
+    }
 
     @Test
     void getProjectByIdIsOk() throws Exception {

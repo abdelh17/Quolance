@@ -6,6 +6,7 @@ import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
@@ -219,29 +220,46 @@ class FreelancerControllerUnitTest {
         }
     }
 
-//    @Test
-//    void getAllAvailableProjects_ReturnsProjectList() {
-//        List<ProjectPublicDto> projects = Arrays.asList(projectPublicDto);
-//        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(projects);
-//
-//        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
-//
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(response.getBody()).hasSize(1);
-//        assertThat(response.getBody().get(0)).isEqualTo(projectPublicDto);
-//        verify(freelancerWorkflowService).getAllAvailableProjects();
-//    }
+    @Test
+    void getAllAvailableProjects_ReturnsProjectPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            Page<ProjectPublicDto> projectPage = new PageImpl<>(Arrays.asList(projectPublicDto));
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class)))
+                    .thenReturn(projectPage);
 
-//    @Test
-//    void getAllAvailableProjects_ReturnsEmptyList() {
-//        when(freelancerWorkflowService.getAllAvailableProjects()).thenReturn(Collections.emptyList());
-//
-//        ResponseEntity<List<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects();
-//
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(response.getBody()).isEmpty();
-//        verify(freelancerWorkflowService).getAllAvailableProjects();
-//    }
+            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequestDto, new ProjectFilterDto());
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            assertThat(response.getBody().getContent().get(0)).isEqualTo(projectPublicDto);
+            verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class));
+        }
+    }
+
+    @Test
+    void getAllAvailableProjects_ReturnsEmptyPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            Page<ProjectPublicDto> emptyPage = new PageImpl<>(Collections.emptyList());
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class)))
+                    .thenReturn(emptyPage);
+
+            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequestDto, new ProjectFilterDto());
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).isEmpty();
+            verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class));
+        }
+    }
 
     @Test
     void getProjectById_ReturnsProject() {
