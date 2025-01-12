@@ -10,7 +10,7 @@ import { queryToString } from '@/util/stringUtils';
 
 /** Project Filter **/
 export interface ProjectFilterQuery extends PaginationParams {
-  title?: string;
+  searchTitle?: string;
   category?: string;
   priceRange?: string;
   experienceLevel?: string;

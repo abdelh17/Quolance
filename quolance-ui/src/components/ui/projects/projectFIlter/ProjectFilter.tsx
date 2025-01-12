@@ -18,7 +18,7 @@ interface ProjectFilterProps {
 
 const defaultQuery: ProjectFilterQuery = {
   ...PaginationQueryDefault,
-  title: '',
+  searchTitle: '',
   category: '',
   priceRange: '',
   experienceLevel: '',
@@ -31,7 +31,7 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
   });
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalQuery((prev) => ({ ...prev, title: e.target.value }));
+    setLocalQuery((prev) => ({ ...prev, searchTitle: e.target.value }));
   };
 
   const handleApplyFilters = () => {
@@ -55,14 +55,14 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
             <Input
               type='text'
               placeholder='Type to search...'
-              value={localQuery.title || ''}
+              value={localQuery.searchTitle || ''}
               onChange={handleTitleChange}
               className='w-full'
             />
-            {localQuery.title && (
+            {localQuery.searchTitle && (
               <button
                 onClick={() =>
-                  setLocalQuery((prev) => ({ ...prev, title: '' }))
+                  setLocalQuery((prev) => ({ ...prev, searchTitle: '' }))
                 }
                 className='absolute right-2 top-1/2 -translate-y-1/2'
               >
