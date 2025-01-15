@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.controllers;
+package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.PublicController;
 import com.quolance.quolance_api.dtos.PageResponseDto;
