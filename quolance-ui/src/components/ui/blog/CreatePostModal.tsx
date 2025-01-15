@@ -6,7 +6,6 @@ interface CreatePostModalProps {
     open: boolean;
     onClose: () => void;
     children: React.ReactNode;
-    onSubmit: () => void;
 };
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, children }) => {

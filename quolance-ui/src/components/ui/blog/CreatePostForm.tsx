@@ -3,16 +3,18 @@
 import React, { useState } from 'react';
 
 interface CreatePostFormProps {
-  onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
+  // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
+  onSubmit: (postData: { title: string; content: string; }) => void;
   onClose: () => void;
-  user: any;
 }
 
-const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, user }) => {
+const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [tags, setTags] = useState<string>('');
+  //const [tags, setTags] = useState<string>('');
   const [error, setError] = useState('');
+
+  
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,12 +25,13 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, user
     }
 
     // Convert comma-separated tags into an array
-    const tagsArray = tags.split(',').map((tag) => tag.trim()).filter((tag) => tag);
+    //const tagsArray = tags.split(',').map((tag) => tag.trim()).filter((tag) => tag);
 
-    onSubmit({ user, title, content, tags: tagsArray });
+    // onSubmit({ title, content, tags: tagsArray });
+    onSubmit({ title, content });
     setTitle('');
     setContent('');
-    setTags('');
+    //setTags('');
     setError('');
     onClose();
   };
@@ -61,16 +64,19 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, user
         />
       </div>
 
-      <div>
-        <label className="block text-gray-700 font-medium mb-1">Tags</label>
-        <input
-          type="text"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          placeholder="Enter tags (comma separated)"
-          className="w-full p-2 border rounded-md"
-        />
-      </div>
+      {/* 
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">Tags</label>
+          <input
+            type="text"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="Enter tags (comma separated)"
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
+      */}
+      
 
       <div className="flex items-center justify-end space-x-4 mb-4">
         <button

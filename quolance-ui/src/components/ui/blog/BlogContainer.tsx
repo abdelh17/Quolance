@@ -6,7 +6,9 @@ import Tabs from "./Tabs";
 import CreatePostModal from "./CreatePostModal";
 import CreatePostForm from "./CreatePostForm";
 import SearchBar from "./SearchBar";
+import { toast } from "sonner";
 
+import httpClient from '@/lib/httpClient';
 import { useAuthGuard } from "@/api/auth-api";
 
 interface BlogContainerProps {
@@ -24,9 +26,6 @@ interface BlogContainerProps {
 
 const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
     const { user, isLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
-
-    console.log(user);
 
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -35,6 +34,19 @@ const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
     const filteredPosts = selectedTag
         ? blogPosts.filter((post) => post.tags.includes(selectedTag))
         : blogPosts;
+
+
+    async function onSubmit(postData: { title: string; content: string; }) {
+        httpClient
+            .post('/api/blog-posts', {postData})
+            .then((res) => {
+                toast.success("Post created successfully!");
+            })
+            .catch((err) => {
+                toast.error("An error occurred while creating the post.");
+                console.error(err);
+            });
+    }
 
     return (
         <>
@@ -46,12 +58,11 @@ const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
                 ) : !user ? (
                     <CreatePostForm
                         onSubmit={(postData) => {
-                            // Submit the post to the server
                             console.log(postData);
+                            
                             setIsModalOpen(false);
                         }}
                         onClose={() => setIsModalOpen(false)}
-                        user={user}
                     />
                 ) : (
                     <div className="flex justify-center items-center h-full">
