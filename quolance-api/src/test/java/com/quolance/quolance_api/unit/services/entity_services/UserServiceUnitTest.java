@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.PasswordResetToken;
@@ -11,6 +11,7 @@ import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.VerificationCodeRepository;
 import com.quolance.quolance_api.util.exceptions.ApiException;
+import com.quolance.quolance_api.services.entity_services.impl.UserServiceImpl;
 import org.jobrunr.scheduling.BackgroundJobRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
