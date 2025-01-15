@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.unit.jobs;
+package com.quolance.quolance_api.jobs;
 
 import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.entities.User;
