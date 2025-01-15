@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
@@ -7,6 +7,7 @@ import com.quolance.quolance_api.entities.FileEntity;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.FileRepository;
 import com.quolance.quolance_api.util.exceptions.ApiException;
+import com.quolance.quolance_api.services.entity_services.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
