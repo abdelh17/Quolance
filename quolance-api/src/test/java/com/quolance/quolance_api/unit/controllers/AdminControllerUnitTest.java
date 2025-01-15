@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.unit.controllers;
+package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.controllers.AdminController;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
