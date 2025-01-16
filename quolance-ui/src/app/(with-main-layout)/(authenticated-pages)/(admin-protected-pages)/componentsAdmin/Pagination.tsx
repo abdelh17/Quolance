@@ -70,17 +70,20 @@ return (
 
     {/* Desktop View: Full Pagination */}
     <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-between">
-      <div>
+        <div>
         <p className="text-sm text-gray-700">
-          Showing
-          <span className="font-medium"> {(currentPage - 1) * 5 + 1} </span>
-          to
-          <span className="font-medium"> {Math.min(currentPage * 5, totalElements)} </span>
-          of
-          <span className="font-medium"> {totalElements} </span>
+          Showing{" "}
+          <span className="font-medium">{(currentPage - 1) * 5 + 1}</span>{" "}
+          to{" "}
+          <span className="font-medium">
+            {Math.min(currentPage * 5, totalElements)}
+          </span>{" "}
+          of{" "}
+          <span className="font-medium">{totalElements}</span>{" "}
           results
         </p>
       </div>
+
       <div>
         <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
           <button
