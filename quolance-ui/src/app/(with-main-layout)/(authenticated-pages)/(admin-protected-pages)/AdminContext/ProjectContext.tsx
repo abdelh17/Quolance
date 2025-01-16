@@ -25,6 +25,12 @@ type Project = {
 
 interface ProjectContextType {
  projects: Project[];
+ totalPages: number;
+ totalElements:number;
+ currentPage: number;
+ isFirstPage: boolean;
+ isLastPage: boolean;
+ fetchProjects: (page: number, size: number) => void;
  updateProjectStatus: (id: number, status: string) => Promise<void>;
 }
 
@@ -34,48 +40,44 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
  const [projects, setProjects] = useState<Project[]>([]);
+ const [totalElements,setTotalElements] = useState<number>(0);
+ const [totalPages, setTotalPages] = useState<number>(0);
+ const [currentPage, setCurrentPage] = useState<number>(0);
+ const [isFirstPage, setIsFirstPage] = useState<boolean>(true);
+ const [isLastPage, setIsLastPage] = useState<boolean>(false);
+ const initialPage = 0
+ const pageSize = 5
+
+
+ const fetchProjects = async (page: number, size: number) => {
+   try {
+     const response = await httpClient.get(
+       `/api/admin/projects/pending/all?page=${page}&size=${size}`
+     );
+
+
+     const { content,totalElements, totalPages, first, last } = response.data;
+
+
+     setProjects(content);
+     setTotalElements(totalElements);
+     setTotalPages(totalPages);
+     setCurrentPage(page);
+     setIsFirstPage(first);
+     setIsLastPage(last);
+   } catch (error) {
+     console.error("Failed to fetch projects", error);
+   }
+ };
 
 
  useEffect(() => {
-   const fetchProjects = async () => {
-     try {
-       const response = await httpClient.get("/api/admin/projects/pending/all");
-
-
-     
-       const fetchedProjects: Project[] = response.data.map((project: any) => ({
-         id: project.id,
-         title: project.title,
-         description: project.description,
-         expirationDate: project.expirationDate,
-         visibilityExpirationDate: project.visibilityExpirationDate,
-         category: project.category,
-         priceRange: project.priceRange,
-         experienceLevel: project.experienceLevel,
-         expectedDeliveryTime: project.expectedDeliveryTime,
-         projectStatus: project.projectStatus.toLowerCase(),
-         tags: project.tags || [],
-         clientId: project.clientId,
-         selectedFreelancerId: project.selectedFreelancerId,
-         applications: project.applications || [],
-       }));
-
-
-       setProjects(fetchedProjects);
-     } catch (error) {
-       console.error("Failed to fetch projects", error);
-     }
-   };
-
-
-   fetchProjects();
+   fetchProjects(initialPage, pageSize);
  }, []);
 
 
- // Function to update the project status in both the state and the database
  const updateProjectStatus = async (id: number, newStatus: string) => {
    try {
-     // Determine the appropriate API endpoint based on the status
      if (newStatus === "approved") {
        await httpClient.post(`/api/admin/projects/pending/${id}/approve`);
      } else if (newStatus === "rejected") {
@@ -83,7 +85,6 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
      }
 
 
-     // Update the status in the state after a successful API response
      setProjects((prevProjects) =>
        prevProjects.map((project) =>
          project.id === id ? { ...project, projectStatus: newStatus } : project
@@ -96,14 +97,24 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
 
  return (
-   <ProjectContext.Provider value={{ projects, updateProjectStatus }}>
+   <ProjectContext.Provider
+     value={{
+       projects,
+       totalPages,
+       totalElements,
+       currentPage,
+       isFirstPage,
+       isLastPage,
+       fetchProjects,
+       updateProjectStatus,
+     }}
+   >
      {children}
    </ProjectContext.Provider>
  );
 };
 
 
-// Custom hook to use the ProjectContext
 export const useProjectContext = () => {
  const context = useContext(ProjectContext);
  if (context === undefined) {
@@ -111,4 +122,3 @@ export const useProjectContext = () => {
  }
  return context;
 };
-
