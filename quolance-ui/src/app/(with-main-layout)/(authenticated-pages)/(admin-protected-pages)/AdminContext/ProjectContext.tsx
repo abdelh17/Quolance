@@ -30,7 +30,7 @@ interface ProjectContextType {
  currentPage: number;
  isFirstPage: boolean;
  isLastPage: boolean;
- fetchProjects: (page: number, size: number) => void;
+ fetchProjects: (page: number, size: number) => Promise<void>;
  updateProjectStatus: (id: number, status: string) => Promise<void>;
 }
 
