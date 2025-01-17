@@ -4,14 +4,14 @@ import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
-import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
-import com.quolance.quolance_api.dtos.project.ProjectDto;
-import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
+import com.quolance.quolance_api.dtos.project.*;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
 import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -138,6 +138,29 @@ public class ClientController {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.rejectManyApplications(applicationIds, client);
         return ResponseEntity.ok("All selected freelancers rejected successfully");
+    }
+
+    @GetMapping("/freelancers/all")
+    @Operation(
+            summary = "View all available freelancers.",
+            description = "View all freelancers (as a client) based on the provided filters."
+    )
+    public ResponseEntity<Page<FreelancerProfileDto>> getAllAvailableFreelancers(
+            @Valid PageableRequestDto pageableRequest,
+            @Valid FreelancerProfileFilterDto filters) {
+
+        try {
+            Page<FreelancerProfileDto> freelancersPage = clientWorkflowService.getAllAvailableFreelancers(
+                    pageableRequest.toPageRequest(),
+                    filters
+            );
+            return ResponseEntity.ok(freelancersPage);
+        } catch (ApiException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+        return null;
     }
 
 }
