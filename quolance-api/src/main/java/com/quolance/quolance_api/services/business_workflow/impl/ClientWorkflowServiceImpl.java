@@ -2,25 +2,30 @@ package com.quolance.quolance_api.services.business_workflow.impl;
 
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
-import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
-import com.quolance.quolance_api.dtos.project.ProjectDto;
-import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
+import com.quolance.quolance_api.dtos.project.*;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -51,7 +56,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     public void deleteProject(Long projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
-        if(!project.isOwnedBy(client.getId())) {
+        if (!project.isOwnedBy(client.getId())) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
                     .message("You are not authorized to remove this project")
@@ -72,7 +77,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     public List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
-        if(!project.isOwnedBy(client.getId())) {
+        if (!project.isOwnedBy(client.getId())) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
                     .message("You are not authorized to view this project applications")
@@ -98,4 +103,44 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         return ProjectDto.fromEntity(existingProject);
     }
 
+    @Override
+    public Page<FreelancerProfileDto> getAllAvailableFreelancers(Pageable pageable, FreelancerProfileFilterDto filters) {
+        Specification<User> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (filters != null) {
+                if (filters.getSearchName() != null && !filters.getSearchName().trim().isEmpty()) {
+                    predicates.add(criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("username")),
+                            "%" + filters.getSearchName().toLowerCase() + "%"
+                    ));
+                }
+
+                if (filters.getExperienceLevel() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("profile").get("experienceLevel"), filters.getExperienceLevel()));
+                }
+
+                if (filters.getAvailability() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("profile").get("availability"), filters.getAvailability()));
+                }
+
+                if (filters.getSkills() != null && !filters.getSkills().isEmpty()) {
+                    predicates.add(root.join("profile").join("skills").in(filters.getSkills()));
+                }
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<User> userPage = userService.findAllWithFilters(spec, pageable);
+        List<FreelancerProfileDto> freelancerDtos = userPage.stream()
+                .map(user -> user.getProfile() != null ? FreelancerProfileDto.fromEntity(user) : null)
+                .filter(Objects::nonNull)
+                .toList();
+
+        return new PageImpl<>(freelancerDtos, pageable, userPage.getTotalElements());
+    }
+
 }
+
+
+
