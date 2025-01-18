@@ -1,10 +1,11 @@
-package com.quolance.quolance_api.services.business_workflow.impl;
+package com.quolance.quolance_api.unit.services.business_workflow;
 
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.services.business_workflow.impl.ApplicationProcessWorkflowImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
@@ -20,14 +21,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ApplicationProcessWorkflowTest {
+class ApplicationProcessWorkflowUnitTest {
 
     @Mock
     private ApplicationService applicationService;

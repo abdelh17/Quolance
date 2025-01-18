@@ -1,14 +1,11 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.ProjectCategory;
-import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
-import com.quolance.quolance_api.entities.enums.PriceRange;
-import com.quolance.quolance_api.entities.enums.ExpectedDeliveryTime;
-import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.entities.enums.*;
 import com.quolance.quolance_api.repositories.ProjectRepository;
+import com.quolance.quolance_api.services.entity_services.impl.ProjectServiceImpl;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -34,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ProjectServiceTest {
+class ProjectServiceUnitTest {
 
     @Mock
     private ProjectRepository projectRepository;

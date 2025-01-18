@@ -1,10 +1,11 @@
-package com.quolance.quolance_api.services.business_workflow.impl;
+package com.quolance.quolance_api.unit.services.business_workflow;
 
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectCategory;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.services.business_workflow.impl.AdminWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AdminWorkflowServiceTest {
+class AdminWorkflowServiceUnitTest {
 
     @Mock
     private ProjectService projectService;
