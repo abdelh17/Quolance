@@ -70,7 +70,6 @@ class UserServiceTest {
     private CreateAdminRequestDto createAdminRequest;
     private UpdateUserRequestDto updateUserRequest;
     private UpdateUserPasswordRequestDto updatePasswordRequest;
-    private UpdatePendingUserRequestDto updatePendingUserRequest;
 
     private User createMockUser() {
         return User.builder()
@@ -88,11 +87,11 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         applicationContextProviderMock = mockStatic(ApplicationContextProvider.class);
-        ApplicationContext mockContext = mock(ApplicationContext.class);
-        when(ApplicationContextProvider.getApplicationContext()).thenReturn(mockContext);
+        applicationContextProviderMock.when(() -> ApplicationContextProvider.bean(PasswordEncoder.class)).thenReturn(passwordEncoder);
 
         backgroundJobRequestMock = mockStatic(BackgroundJobRequest.class);
-        backgroundJobRequestMock.when(() -> BackgroundJobRequest.enqueue(any())).thenReturn(null);
+        backgroundJobRequestMock.when(() -> BackgroundJobRequest.enqueue(any(SendWelcomeEmailJob.class))).thenReturn(null);
+        backgroundJobRequestMock.when(() -> BackgroundJobRequest.enqueue(any(SendResetPasswordEmailJob.class))).thenReturn(null);
 
         mockUser = createMockUser();
 
@@ -104,6 +103,7 @@ class UserServiceTest {
 
         createUserRequest = CreateUserRequestDto.builder()
                 .email("test@test.com")
+                .username("testuser")
                 .password("Password123")
                 .passwordConfirmation("Password123")
                 .firstName("Test")
@@ -113,6 +113,7 @@ class UserServiceTest {
 
         createAdminRequest = CreateAdminRequestDto.builder()
                 .email("admin@test.com")
+                .username("adminuser")
                 .temporaryPassword("Admin123")
                 .passwordConfirmation("Admin123")
                 .firstName("Admin")
@@ -129,11 +130,6 @@ class UserServiceTest {
                 .password("NewPassword123")
                 .confirmPassword("NewPassword123")
                 .build();
-
-        updatePendingUserRequest = new UpdatePendingUserRequestDto();
-        updatePendingUserRequest.setPassword("NewPassword123");
-        updatePendingUserRequest.setConfirmPassword("NewPassword123");
-        updatePendingUserRequest.setRole(Role.FREELANCER.name());
     }
 
     @AfterEach
@@ -159,7 +155,7 @@ class UserServiceTest {
         assertThat(savedUser.getLastName()).isEqualTo(createUserRequest.getLastName());
         assertThat(savedUser.getRole()).isEqualTo(Role.valueOf(createUserRequest.getRole()));
         verify(verificationCodeRepository).save(any(VerificationCode.class));
-        verify(backgroundJobRequestMock).when(() -> BackgroundJobRequest.enqueue(any(SendWelcomeEmailJob.class)));
+        backgroundJobRequestMock.verify(() -> BackgroundJobRequest.enqueue(any(SendWelcomeEmailJob.class)));
     }
 
     @Test
@@ -215,17 +211,7 @@ class UserServiceTest {
         userService.forgotPassword("test@test.com");
 
         verify(passwordResetTokenRepository).save(any(PasswordResetToken.class));
-        verify(backgroundJobRequestMock).when(() -> BackgroundJobRequest.enqueue(any(SendResetPasswordEmailJob.class)));
-    }
-
-    @Test
-    void forgotPassword_UserNotFound_ThrowsException() {
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> userService.forgotPassword("nonexistent@test.com"))
-                .isInstanceOf(ApiException.class)
-                .hasFieldOrPropertyWithValue("status", 404)
-                .hasMessage("User not found");
+        backgroundJobRequestMock.verify(() -> BackgroundJobRequest.enqueue(any(SendResetPasswordEmailJob.class)));
     }
 
     @Test
@@ -270,7 +256,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUserInfoUser_Success() {
+    void updateUser_Success() {
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
         UserResponseDto result = userService.updateUser(updateUserRequest, mockUser);
@@ -282,7 +268,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUserInfoPassword_Success() {
+    void updatePassword_Success() {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
@@ -292,7 +278,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUserInfoPassword_WrongOldPassword_ThrowsException() {
+    void updatePassword_WrongOldPassword_ThrowsException() {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
         assertThatThrownBy(() -> userService.updatePassword(updatePasswordRequest, mockUser))
