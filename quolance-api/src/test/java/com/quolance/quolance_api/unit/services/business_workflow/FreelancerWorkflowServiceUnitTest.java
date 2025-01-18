@@ -13,8 +13,6 @@ import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.impl.FreelancerWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
-import com.quolance.quolance_api.services.business_workflow.impl.FreelancerWorkflowServiceImpl;
-import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class FreelancerWorkflowServiceTest {
+class FreelancerWorkflowServiceUnitTest {
 
     @Mock
     private ProjectService projectService;

@@ -10,9 +10,9 @@ import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.VerificationCodeRepository;
+import com.quolance.quolance_api.services.entity_services.impl.UserServiceImpl;
 import com.quolance.quolance_api.util.ApplicationContextProvider;
 import com.quolance.quolance_api.util.exceptions.ApiException;
-import com.quolance.quolance_api.services.entity_services.impl.UserServiceImpl;
 import org.jobrunr.scheduling.BackgroundJobRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -34,7 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserServiceUnitTest {
 
     @Mock
     private UserRepository userRepository;
