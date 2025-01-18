@@ -110,10 +110,15 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
             if (filters != null) {
                 if (filters.getSearchName() != null && !filters.getSearchName().trim().isEmpty()) {
-                    predicates.add(criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("username")),
-                            "%" + filters.getSearchName().toLowerCase() + "%"
-                    ));
+                    String searchPattern = "%" + filters.getSearchName().toLowerCase() + "%";
+
+                    Predicate firstNamePredicate = criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("firstName")), searchPattern);
+                    Predicate lastNamePredicate = criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("lastName")), searchPattern);
+
+                    Predicate combinedPredicate = criteriaBuilder.or(firstNamePredicate, lastNamePredicate);
+                    predicates.add(combinedPredicate);
                 }
 
                 if (filters.getExperienceLevel() != null) {

@@ -148,19 +148,11 @@ public class ClientController {
     public ResponseEntity<Page<FreelancerProfileDto>> getAllAvailableFreelancers(
             @Valid PageableRequestDto pageableRequest,
             @Valid FreelancerProfileFilterDto filters) {
-
-        try {
             Page<FreelancerProfileDto> freelancersPage = clientWorkflowService.getAllAvailableFreelancers(
                     pageableRequest.toPageRequest(),
                     filters
             );
             return ResponseEntity.ok(freelancersPage);
-        } catch (ApiException e) {
-            System.out.println(e.getMessage());
-
-        }
-
-        return null;
     }
 
 }
