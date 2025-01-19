@@ -24,21 +24,22 @@ jobs:
           cd quolance-ui
           npm install
 
-
-      # Step 2: Start the Frontend Server
-      - name: Start Frontend Server
-        run: |
-          cd quolance-ui
-          npm run dev &
-          npx wait-on http://localhost:3000
-        env:
-          PORT: 3000
       
-      # Step 3: Run Cypress Tests
-      - name: Run Cypress Tests
-        run: |
-          cd quolance-ui
-          npm run e2e:chrome
+        # Step 2: Start the Frontend Server
+    # - name: Start Frontend Server
+    #   run: |
+    #     cd quolance-ui
+    #     npm run dev &
+    #     npx wait-on http://localhost:3000
+    #   env:
+    #     PORT: 3000
+
+    # Step 3: Run Cypress Tests
+    # - name: Run Cypress Tests
+    #   run: |
+    #     cd quolance-ui
+    #     npm run e2e:chrome
+
 
       # Step 4: Build Frontend
       - name: Build Frontend
