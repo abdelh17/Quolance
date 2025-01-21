@@ -1,32 +1,30 @@
 "use client";
 
 
-import { useState } from "react";
 import { useProjectContext } from "../../AdminContext/ProjectContext";
 import Pagination from "../../componentsAdmin/Pagination";
 import ProjectAdminCard from "../../componentsAdmin/ProjectAdminCard";
-import { FaBan } from 'react-icons/fa';
+import { FaBan } from "react-icons/fa";
 
 
 export default function AdminApproveProject() {
- const { projects } = useProjectContext();
- const [currentPage, setCurrentPage] = useState(1);
- const projectsPerPage = 5;
+ const {
+   projects,
+   totalPages,
+   currentPage,
+   fetchProjects,
+ } = useProjectContext();
 
 
- const pendingProjects = projects.filter((project) => project.projectStatus === "pending");
- const totalPages = Math.ceil(pendingProjects.length / projectsPerPage);
-
-
- const currentProjects = pendingProjects.slice(
-   (currentPage - 1) * projectsPerPage,
-   currentPage * projectsPerPage
- );
+ const pageSize = 5;
 
 
  const handlePageChange = (pageNumber: number) => {
-   if (pageNumber > 0 && pageNumber <= totalPages) {
-     setCurrentPage(pageNumber);
+   if (pageNumber >= 1 && pageNumber <= totalPages) {
+    
+     // The -1 is to start page 0 at number 0.
+     // This is because pagination in backend starts at page 0.
+     fetchProjects(pageNumber - 1, pageSize);
    }
  };
 
@@ -36,15 +34,14 @@ export default function AdminApproveProject() {
      <h1 className="text-center font-medium text-3xl m-10">
        Update Project Status
      </h1>
-      {currentProjects.length > 0 ? (
+     {projects.length > 0 ? (
        <div className="container grid grid-cols-12 gap-6 mb-4">
          <div
            className="col-span-12 rounded-xl border border-gray-300 p-4 sm:p-8 lg:col-span-12 flex flex-col justify-between"
            style={{ minHeight: "650px" }}
          >
-           {/* Project Cards */}
            <div className="flex flex-col gap-4">
-             {currentProjects.map((project, index) => (
+             {projects.map((project, index) => (
                <ProjectAdminCard
                  key={project.id || index}
                  id={project.id}
@@ -56,10 +53,11 @@ export default function AdminApproveProject() {
                />
              ))}
            </div>
-            {/* Pagination */}
            <div className="pt-8">
+
+
              <Pagination
-               currentPage={currentPage}
+               currentPage={currentPage + 1} // The +1 is to start page 0 at number 1.This makes it more readable to start page 1 at number 1.
                totalPages={totalPages}
                onPageChange={handlePageChange}
              />
