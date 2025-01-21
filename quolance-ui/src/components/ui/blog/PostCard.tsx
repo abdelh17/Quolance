@@ -41,7 +41,13 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             <div className="ml-5 mr-5 mb-5">
                 <div className="flex justify-between">
                     {/* <h3 className="text-md font-semibold text-gray-800">[{type}] : {title}</h3> */}
-                    <span className="text-sm text-gray-500">{dateCreated}</span>
+                    <span className="text-sm text-gray-500">
+                        {new Intl.DateTimeFormat("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            }).format(new Date(dateCreated))}
+                    </span>
                 </div>
                 <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
                     <p className="text-gray-700">{content}</p>
