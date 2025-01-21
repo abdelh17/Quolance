@@ -13,7 +13,6 @@ export const useGetAllBlogPosts = (options?: {
         const response = await httpClient.get('/api/blog-posts/all');
         return response.data;
       },
-      onSuccess: options?.onSuccess,
-      onError: options?.onError,
+      ...options,
     });
   };
