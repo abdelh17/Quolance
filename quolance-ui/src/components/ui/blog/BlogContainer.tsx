@@ -21,9 +21,10 @@ const BlogContainer: React.FC = () => {
     );
 
     // Filter posts based on the selected tag
-    const filteredPosts = selectedTag
-        ? blogPosts?.filter((post) => post.tags.includes(selectedTag))
-        : blogPosts;
+    // const filteredPosts = selectedTag
+    //     ? blogPosts?.filter((post) => post.tags.includes(selectedTag))
+    //     : blogPosts;
+    const filteredPosts = blogPosts;
 
     return (
         <>
