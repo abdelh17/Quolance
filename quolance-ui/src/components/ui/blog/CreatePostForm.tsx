@@ -1,20 +1,23 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useAuthGuard } from '@/api/auth-api';
 
 interface CreatePostFormProps {
   // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
-  onSubmit: (postData: { title: string; content: string; }) => void;
+  onSubmit: (postData: { title: string; content: string; userId: number | undefined }) => void;
   onClose: () => void;
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) => {
+  const { user } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   //const [tags, setTags] = useState<string>('');
   const [error, setError] = useState('');
-
   
+
+  //console.log(user?.id);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +31,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
     //const tagsArray = tags.split(',').map((tag) => tag.trim()).filter((tag) => tag);
 
     // onSubmit({ title, content, tags: tagsArray });
-    onSubmit({ title, content });
+    onSubmit({ title, content, userId: user?.id });
     setTitle('');
     setContent('');
     //setTags('');

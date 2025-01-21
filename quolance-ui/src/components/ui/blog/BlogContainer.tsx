@@ -6,10 +6,9 @@ import Tabs from "./Tabs";
 import CreatePostModal from "./CreatePostModal";
 import CreatePostForm from "./CreatePostForm";
 import SearchBar from "./SearchBar";
-import { toast } from "sonner";
-
-import httpClient from '@/lib/httpClient';
 import { useAuthGuard } from "@/api/auth-api";
+import { showToast } from "@/util/context/ToastProvider";
+import { useCreateBlogPost } from "@/api/blog-api";
 
 interface BlogContainerProps {
     blogPosts: {
@@ -35,33 +34,53 @@ const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
         ? blogPosts.filter((post) => post.tags.includes(selectedTag))
         : blogPosts;
 
+    const { mutateAsync: mutateBlogPosts } = useCreateBlogPost({
+        onSuccess: () => {
+            console.log("Post created successfully!");
+            showToast("Post created successfully!", "success");
+        },
+        onError: (error) => {
+            console.error("Error creating post:", error);
+            showToast("Error creating post", "error");
+        }
+    })
 
-    async function onSubmit(postData: { title: string; content: string; }) {
-        httpClient
-            .post('/api/blog-posts', {postData})
-            .then((res) => {
-                toast.success("Post created successfully!");
-            })
-            .catch((err) => {
-                toast.error("An error occurred while creating the post.");
-                console.error(err);
-            });
-    }
+
+    const handleFormSubmit = async (postData: { title: string; content: string; userId: number }) => {
+        try {
+            console.log("Form submitted:", postData);
+            await mutateBlogPosts(postData).then(() => {});
+            console.log("Form submitted:", postData);
+        } catch (err) {
+            console.error(err);
+            showToast("Error creating post", "error");
+    }};
+        
+        
+        
+    //     (postData: { title: string; content: string; userId: number | undefined }) {
+    //     httpClient
+    //         .post('/api/blog-posts', {postData})
+    //         .then((res) => {
+    //             toast.success("Post created successfully!");
+    //             console.log(res.data);
+    //         })
+    //         .catch((err) => {
+    //             toast.error("An error occurred while creating the post.");
+    //             console.error(err);
+    //         });
+    // }
 
     return (
         <>
             {/* Create Post Modal */}
             <CreatePostModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 {/* If the user is not authenticated, show a message to sign in (should be replaced with isLoading || !user) */}
-                {isLoading && false ? (
+                {isLoading ? (
                     <p>Loading...</p>
-                ) : !user ? (
+                ) : user ? (
                     <CreatePostForm
-                        onSubmit={(postData) => {
-                            console.log(postData);
-                            
-                            setIsModalOpen(false);
-                        }}
+                        onSubmit={handleFormSubmit}
                         onClose={() => setIsModalOpen(false)}
                     />
                 ) : (
