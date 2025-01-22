@@ -37,8 +37,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -189,7 +187,7 @@ class FreelancerControllerUnitTest {
             Page<ApplicationDto> applicationPage = new PageImpl<>(applications, pageable, applications.size());
 
             when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
-            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class),eq(pageable))).thenReturn(applicationPage);
+            when(freelancerWorkflowService.getAllFreelancerApplications(any(User.class), eq(pageable))).thenReturn(applicationPage);
 
             ResponseEntity<PageResponseDto<ApplicationDto>> response = freelancerController.getAllFreelancerApplications(new PageableRequestDto());
 

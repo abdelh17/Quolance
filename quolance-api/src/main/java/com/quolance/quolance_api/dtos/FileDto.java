@@ -1,10 +1,10 @@
 package com.quolance.quolance_api.dtos;
 
+import com.quolance.quolance_api.entities.FileEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.quolance.quolance_api.entities.FileEntity;
 
 @Data
 @Builder
@@ -28,6 +28,4 @@ public class FileDto {
     }
 
 
-
-    
 }

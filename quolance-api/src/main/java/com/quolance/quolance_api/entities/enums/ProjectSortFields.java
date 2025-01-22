@@ -15,13 +15,13 @@ public enum ProjectSortFields {
         this.fieldName = fieldName;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
     public static boolean isValidField(String field) {
         return Arrays.stream(values())
                 .map(ProjectSortFields::getFieldName)
                 .anyMatch(name -> name.equals(field));
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 }

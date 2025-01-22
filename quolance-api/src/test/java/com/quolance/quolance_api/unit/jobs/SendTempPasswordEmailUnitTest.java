@@ -24,35 +24,27 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SendTempPasswordEmailUnitTest {
 
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private EmailService emailService;
-
-    @Mock
-    private SpringTemplateEngine templateEngine;
-
-    @Mock
-    private ApplicationProperties applicationProperties;
-
-    @InjectMocks
-    private SendTempPasswordEmailJobHandler jobHandler;
-
-    @Captor
-    private ArgumentCaptor<Context> contextCaptor;
-
-    private User mockUser;
-    private SendTempPasswordEmailJob mockJob;
     private static final String TEMP_PASSWORD = "temp123";
     private static final String APP_NAME = "Quolance";
+    @Mock
+    private UserService userService;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private SpringTemplateEngine templateEngine;
+    @Mock
+    private ApplicationProperties applicationProperties;
+    @InjectMocks
+    private SendTempPasswordEmailJobHandler jobHandler;
+    @Captor
+    private ArgumentCaptor<Context> contextCaptor;
+    private User mockUser;
+    private SendTempPasswordEmailJob mockJob;
 
     @BeforeEach
     void setUp() {

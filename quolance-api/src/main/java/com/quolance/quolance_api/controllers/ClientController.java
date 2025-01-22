@@ -2,27 +2,25 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
-import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
-import com.quolance.quolance_api.dtos.project.*;
+import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
+import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
 import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
-import com.quolance.quolance_api.util.exceptions.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/client")
@@ -148,11 +146,11 @@ public class ClientController {
     public ResponseEntity<Page<FreelancerProfileDto>> getAllAvailableFreelancers(
             @Valid PageableRequestDto pageableRequest,
             @Valid FreelancerProfileFilterDto filters) {
-            Page<FreelancerProfileDto> freelancersPage = clientWorkflowService.getAllAvailableFreelancers(
-                    pageableRequest.toPageRequest(),
-                    filters
-            );
-            return ResponseEntity.ok(freelancersPage);
+        Page<FreelancerProfileDto> freelancersPage = clientWorkflowService.getAllAvailableFreelancers(
+                pageableRequest.toPageRequest(),
+                filters
+        );
+        return ResponseEntity.ok(freelancersPage);
     }
 
 }

@@ -5,8 +5,6 @@ import com.quolance.quolance_api.entities.PasswordResetToken;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
-import java.util.List;
-
 import com.quolance.quolance_api.services.auth.impl.EmailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.jobs.lambdas.JobRequestHandler;
@@ -14,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

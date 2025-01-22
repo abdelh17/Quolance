@@ -6,7 +6,6 @@ import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

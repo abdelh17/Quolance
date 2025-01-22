@@ -28,7 +28,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     public BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
-        if(blogCommentDto.getContent() == null || blogCommentDto.getContent().isEmpty()) {
+        if (blogCommentDto.getContent() == null || blogCommentDto.getContent().isEmpty()) {
             throw new ApiException("Comment content cannot be empty");
         }
         BlogComment blogComment = BlogCommentDto.toEntity(blogCommentDto);

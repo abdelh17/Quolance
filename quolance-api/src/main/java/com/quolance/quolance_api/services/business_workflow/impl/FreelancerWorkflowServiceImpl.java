@@ -6,8 +6,8 @@ import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
-import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
+import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
@@ -18,14 +18,11 @@ import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
-// import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-// import org.slf4j.ILoggerFactory;
-// import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,10 +30,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +48,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
 
-        if(applicationService.getApplicationByFreelancerIdAndProjectId(freelancer.getId(), applicationCreateDto.getProjectId()) != null){
+        if (applicationService.getApplicationByFreelancerIdAndProjectId(freelancer.getId(), applicationCreateDto.getProjectId()) != null) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_CONFLICT)
                     .message("You have already applied to this project.")
@@ -62,7 +59,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             Application application = ApplicationCreateDto.toEntity(applicationCreateDto);
             Project project = projectService.getProjectById(applicationCreateDto.getProjectId());
 
-            if(!project.isProjectApproved()){
+            if (!project.isProjectApproved()) {
                 throw ApiException.builder()
                         .status(HttpServletResponse.SC_CONFLICT)
                         .message("You can't apply to this project.")
@@ -112,7 +109,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
     @Override
     public Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable) {
-        Page < Application > applicationPage = applicationService.getAllApplicationsByFreelancerId(freelancer.getId(), pageable);
+        Page<Application> applicationPage = applicationService.getAllApplicationsByFreelancerId(freelancer.getId(), pageable);
         return applicationPage.map(ApplicationDto::fromEntity);
     }
 
@@ -165,7 +162,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
         Project project = projectService.getProjectById(projectId);
         LocalDate currentDate = LocalDate.now();
 
-        if(project.getProjectStatus().equals(ProjectStatus.PENDING)){
+        if (project.getProjectStatus().equals(ProjectStatus.PENDING)) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_CONFLICT)
                     .message("Project is not yet approved.")
@@ -236,7 +233,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
     @Override
     public void uploadProfilePicture(MultipartFile photo, User freelancer) {
-        try{
+        try {
             Map<String, Object> uploadResult = fileService.uploadFile(photo, freelancer);
             String photoUrl = uploadResult.get("secure_url").toString();
 

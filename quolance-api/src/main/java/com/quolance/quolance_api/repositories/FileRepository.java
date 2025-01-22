@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
     void save(FileDto fileDto);
+
     Page<FileEntity> findFileUploadsByUser(User user, Pageable pageable);
 }

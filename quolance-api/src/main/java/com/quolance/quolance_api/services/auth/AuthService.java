@@ -12,9 +12,9 @@ public interface AuthService {
     /**
      * Authenticates a user and sets a session cookie if the credentials are correct.
      *
-     * @param request the HTTP request
+     * @param request  the HTTP request
      * @param response the HTTP response
-     * @param body the login request containing username and password
+     * @param body     the login request containing username and password
      * @throws AuthenticationException if authentication fails
      */
     void login(HttpServletRequest request, HttpServletResponse response, LoginRequestDto body) throws AuthenticationException;
@@ -31,7 +31,7 @@ public interface AuthService {
     /**
      * Logs out the current user, invalidating the session and removing the authentication context.
      *
-     * @param request the HTTP request
+     * @param request  the HTTP request
      * @param response the HTTP response
      */
     void logout(HttpServletRequest request, HttpServletResponse response);
