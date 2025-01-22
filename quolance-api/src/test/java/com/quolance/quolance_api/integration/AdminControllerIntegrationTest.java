@@ -56,7 +56,7 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
     @BeforeEach
     void setUpSession() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("admin@test.com");
+        loginRequest.setUsername("admin@test.com");
         loginRequest.setPassword("Password123!");
 
         session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")

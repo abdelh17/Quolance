@@ -68,7 +68,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @BeforeEach
     void setUpSession() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("freelancer1@test.com");
+        loginRequest.setUsername("freelancer1@test.com");
         loginRequest.setPassword("Password123!");
 
         session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")

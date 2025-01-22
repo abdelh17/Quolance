@@ -47,7 +47,7 @@ class AuthControllerUnitTest {
     @BeforeEach
     void setUp() {
         loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("test@example.com");
+        loginRequest.setUsername("test@example.com");
         loginRequest.setPassword("password123");
 
         mockUser = new User();

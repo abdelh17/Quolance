@@ -14,7 +14,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -61,11 +60,14 @@ public class SecurityConfiguration {
     };
 
     private final ApplicationProperties applicationProperties;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     private final OAuth2LoginSuccessHandlerImpl oauth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        AuthenticationManager authenticationManager = authenticationManager();
+
         http.authorizeHttpRequests(customizer -> {
                     customizer
                             .requestMatchers(antMatcher(HttpMethod.GET, "/ws/**")).permitAll() // Allow WebSocket handshake
@@ -78,8 +80,6 @@ public class SecurityConfiguration {
                             .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.GET, "/api/public/**")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate")).hasRole("ADMIN")
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
                             .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
                             .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
                             .requestMatchers(antMatcher("api/pending/**")).hasRole("PENDING")
@@ -110,8 +110,8 @@ public class SecurityConfiguration {
             customizer.successHandler(oauth2LoginSuccessHandler);
         });
 
-        http.addFilterBefore(new UsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.userDetailsService(userDetailsService);
+        http.userDetailsService(userDetailsService)
+                .authenticationManager(authenticationManager);
 
         http.csrf(csrf -> csrf.disable());
 
