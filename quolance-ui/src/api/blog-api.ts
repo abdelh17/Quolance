@@ -10,7 +10,7 @@ export const useCreateBlogPost = (options?: {
   }) => {
     return useMutation({
       mutationFn: (blogpost: BlogPostType) =>
-        httpClient.post('/api/blog-posts/', blogpost),
+        httpClient.post('/api/blog-posts', blogpost),
       onSuccess: options?.onSuccess,
       onError: options?.onError,
     });
