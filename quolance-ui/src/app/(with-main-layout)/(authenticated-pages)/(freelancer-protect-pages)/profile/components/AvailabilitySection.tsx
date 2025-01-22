@@ -28,7 +28,7 @@ const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
         />
       ) : (
         <span className="text-gray-700 capitalize">
-          {profile.availability?.toLowerCase().replace("_", " ") || "Not specified"}
+          {profile.availability?.toLowerCase().replace("_", " ") ?? "Not specified"}
         </span>
       )}
     </div>

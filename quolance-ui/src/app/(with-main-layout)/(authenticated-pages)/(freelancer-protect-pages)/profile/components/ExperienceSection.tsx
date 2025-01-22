@@ -28,7 +28,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
         />
       ) : (
         <span className="text-gray-700 capitalize">
-          {profile.experienceLevel?.toLowerCase() || "Not specified"}
+          {profile.experienceLevel?.toLowerCase() ?? "Not specified"}
         </span>
       )}
     </div>

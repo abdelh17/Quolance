@@ -1,8 +1,8 @@
 import React from "react";
 import { User } from "lucide-react";
 import { ProfileImageModal } from "./ProfileImageModal";
-import { FreelancerProfileType } from "@/constants/models/user/UserResponse"; 
-import { UserResponse } from "@/constants/models/user/UserResponse";
+import { UserResponse,FreelancerProfileType } from "@/constants/models/user/UserResponse"; 
+
 
 interface ProfileHeaderProps {
   user: UserResponse | undefined;

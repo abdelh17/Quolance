@@ -3,8 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Mail, MapPin, Briefcase, Calendar, Link, Github, Linkedin,User,Wrench,Book,Users} from 'lucide-react';
-import { ExperienceLevelRadioGroup, AvailabilityRadioGroup } from '@/components/ui/freelancers/FreelancerProfileRadioGroups';
+import { Link, Github, Linkedin} from 'lucide-react';
 import { useAuthGuard } from '@/api/auth-api';
 import { useGetFreelancerProfile,useEditProfile,useUploadProfileImage} from '@/api/freelancer-api';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
