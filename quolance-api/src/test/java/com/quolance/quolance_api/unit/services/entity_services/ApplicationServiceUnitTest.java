@@ -1,8 +1,9 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
+import com.quolance.quolance_api.services.entity_services.impl.ApplicationServiceImpl;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ApplicationServiceTest {
+class ApplicationServiceUnitTest {
 
     @Mock
     private ApplicationRepository applicationRepository;
