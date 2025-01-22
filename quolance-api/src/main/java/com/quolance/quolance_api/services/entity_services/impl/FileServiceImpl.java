@@ -28,7 +28,7 @@ public class FileServiceImpl implements FileService {
 
         Map<String, Object> uploadResult;
         String fileType = file.getContentType();
-        String folder = (fileType != null ? fileType.startsWith("image") : false) ? "images" : "files";
+        String folder = (fileType != null && fileType.startsWith("image")) ? "images" : "files";
 
         try {
             uploadResult = cloudinary.uploader().upload(file.getBytes(), Map.of(

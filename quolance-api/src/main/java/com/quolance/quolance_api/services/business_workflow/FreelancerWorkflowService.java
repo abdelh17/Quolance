@@ -19,7 +19,7 @@ public interface FreelancerWorkflowService {
 
     ApplicationDto getApplication(Long applicationId, User freelancer);
 
-    public Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable);
+    Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable);
 
     Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable, ProjectFilterDto filters);
 
