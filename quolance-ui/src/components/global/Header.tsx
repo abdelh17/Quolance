@@ -214,7 +214,14 @@ function Header() {
                            <MenuItem key={item.name}>
                                {item.action === 'logout' ? (
                                <div
+                                 role="button"
+                                 tabIndex={0}
                                  onClick={() => logout()}
+                                 onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    logout();
+                                  }
+                                }}
                                  className="block px-4 py-2 text-sm text-gray-700 cursor-pointer data-[focus]:bg-gray-100 data-[focus]:outline-none"
                                >
                                  {item.name}

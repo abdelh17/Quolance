@@ -176,7 +176,15 @@ const FreelancerProfile: React.FC = () => {
        {!isImageError && user?.profileImageUrl ? (
              <div
                className={`w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-lg ${editMode ? 'cursor-pointer' : ''}`}
+               role="button" 
+               tabIndex={0}
                onClick={editMode ? handleImageClick : undefined}
+               onKeyDown={(e) => {
+                if (editMode && (e.key === 'Enter' || e.key === ' ')) {
+                  handleImageClick?.();
+                }
+              }}
+              onMouseDown={(e) => e.preventDefault()} 
              >
                <img
                  src={user.profileImageUrl}
@@ -188,7 +196,16 @@ const FreelancerProfile: React.FC = () => {
            ) : (
              <div
                className={`w-32 h-32 rounded-full mx-auto mb-4 bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-4xl shadow-lg ${editMode ? 'cursor-pointer hover:bg-blue-700' : ''}`}
+               role="button" 
+               tabIndex={0}
                onClick={editMode ? handleImageClick : undefined}
+               onKeyDown={(e) => {
+                if (editMode && (e.key === 'Enter' || e.key === ' ')) {
+                  handleImageClick?.();
+                }
+              }}
+              onMouseDown={(e) => e.preventDefault()} 
+
              >
                <User className="w-14 h-14" />
              </div>
