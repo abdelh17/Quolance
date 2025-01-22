@@ -3,6 +3,7 @@ import httpClient from '@/lib/httpClient';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
+import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 
 /*--- Hooks ---*/
 export const useSubmitApplication = (projectId: number) => {
@@ -77,5 +78,68 @@ export const useGetProjectApplication = (projectId: number) => {
     },
   });
 };
+
+export const useGetFreelancerProfile = (username?: string) => {
+  return useQuery({
+    queryKey: ["freelancerProfile", username],
+    queryFn: async () => {
+      if (!username) {
+        throw new Error("Username is required");
+      }
+      const response = await httpClient.get(`api/public/freelancer/profile/${username}`);
+      return response.data;
+    },
+    enabled: !!username,
+  });
+ };
+ 
+ 
+ export const useEditProfile = () => {
+  const queryClient = useQueryClient();
+ 
+ 
+  return useMutation({
+    mutationFn: (profile: FreelancerProfileType) =>
+      httpClient.put(`api/freelancer/profile`, profile),
+    onSuccess: () => {
+      showToast('Profile updated successfully', 'success');
+      queryClient.invalidateQueries({ queryKey: ['freelancerProfile'] });
+    },
+    onError: (error) => {
+      const errorResponse = error.response?.data as { message: string };
+      showToast(`Error updating profile: ${errorResponse?.message || 'Unknown error'}`, 'error');
+    },
+  });
+ };
+ 
+ 
+ export const useUploadProfileImage = () => {
+  const queryClient = useQueryClient();
+ 
+ 
+  return useMutation({
+    mutationFn: (file: File) => {
+      const formData = new FormData();
+      formData.append('photo', file);
+     
+      return httpClient.post('api/freelancer/profile/picture', formData, {
+        headers:{
+          "Content-Type":"multipart/form-data"
+        }
+      });
+     
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['freelancerProfile'] });
+    },
+    onError: (error) => {
+      const errorResponse = error.response?.data as { message: string };
+      showToast(`Error uploading profile image: ${errorResponse?.message || 'Unknown error'}`, 'error');
+    },
+  });
+ };
+ 
+ 
+ 
 
 /*--- Query functions ---*/
