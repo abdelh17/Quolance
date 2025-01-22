@@ -181,7 +181,7 @@ const FreelancerProfile: React.FC = () => {
                onClick={editMode ? handleImageClick : undefined}
                onKeyDown={(e) => {
                 if (editMode && (e.key === 'Enter' || e.key === ' ')) {
-                  handleImageClick?.();
+                  handleImageClick();
                 }
               }}
               onMouseDown={(e) => e.preventDefault()} 
@@ -201,7 +201,7 @@ const FreelancerProfile: React.FC = () => {
                onClick={editMode ? handleImageClick : undefined}
                onKeyDown={(e) => {
                 if (editMode && (e.key === 'Enter' || e.key === ' ')) {
-                  handleImageClick?.();
+                  handleImageClick();
                 }
               }}
               onMouseDown={(e) => e.preventDefault()} 
