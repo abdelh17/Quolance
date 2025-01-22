@@ -464,6 +464,28 @@
 					"response": []
 				},
 				{
+					"name": "Get All Available Freelancers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/projects/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"projects",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Select Freelancer for Project",
 					"request": {
 						"method": "POST",
