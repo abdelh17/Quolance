@@ -46,30 +46,20 @@ const BlogContainer: React.FC<BlogContainerProps> = ({ blogPosts }) => {
     })
 
 
-    const handleFormSubmit = async (postData: { title: string; content: string; userId: number }) => {
+    const handleFormSubmit = async (postData: { title: string; content: string; userId: number | undefined }) => {
+        if (!postData.userId) {
+            console.error("User ID is undefined. User must be logged in.");
+            showToast("Error: User not logged in.", "error");
+            return;
+        }
+    
         try {
             console.log("Form submitted:", postData);
-            await mutateBlogPosts(postData).then(() => {});
-            console.log("Form submitted:", postData);
+            await mutateBlogPosts(postData);
         } catch (err) {
             console.error(err);
-            showToast("Error creating post", "error");
-    }};
-        
-        
-        
-    //     (postData: { title: string; content: string; userId: number | undefined }) {
-    //     httpClient
-    //         .post('/api/blog-posts', {postData})
-    //         .then((res) => {
-    //             toast.success("Post created successfully!");
-    //             console.log(res.data);
-    //         })
-    //         .catch((err) => {
-    //             toast.error("An error occurred while creating the post.");
-    //             console.error(err);
-    //         });
-    // }
+        }
+    };
 
     return (
         <>

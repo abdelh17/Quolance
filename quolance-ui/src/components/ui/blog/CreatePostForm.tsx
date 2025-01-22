@@ -27,6 +27,11 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
       return;
     }
 
+    if (!user?.id) {
+      setError("User is not logged in.");
+      return;
+    }
+
     // Convert comma-separated tags into an array
     //const tagsArray = tags.split(',').map((tag) => tag.trim()).filter((tag) => tag);
 
