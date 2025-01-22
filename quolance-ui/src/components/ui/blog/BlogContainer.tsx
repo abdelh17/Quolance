@@ -16,7 +16,7 @@ import { useCreateBlogPost } from "@/api/blog-api";
 const BlogContainer: React.FC = () => {
     const { user, isLoading: userIsLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
 
-    const [selectedTag, setSelectedTag] = useState<string | null>(null);
+    //const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const { data: blogPosts, isLoading: postIsLoading, error } = useGetAllBlogPosts(
@@ -105,10 +105,10 @@ const BlogContainer: React.FC = () => {
                 </div>
             </div>
             {/* Tabs Component */}
-            <Tabs
+            {/* <Tabs
                 tags={["UX/UI Design", "Backend", "Security", "Finance"]} // each user will have their customized tabs saved in the db and will be fetched on page load
                 onSelectTag={(tag) => setSelectedTag(tag)}
-            />
+            /> */}
 
             {/* Loading State */}
             {postIsLoading && <p className="text-center text-gray-500 mt-4">Loading...</p>}
