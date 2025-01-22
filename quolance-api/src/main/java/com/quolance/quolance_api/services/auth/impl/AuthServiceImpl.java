@@ -34,8 +34,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+    private SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     /**
      * Sets the cookie for the user if the username and password are correct
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
                       LoginRequestDto body
     ) throws AuthenticationException {
 
-        if(!userRepository.existsByEmail(body.getEmail())) {
+        if (!userRepository.existsByEmail(body.getEmail())) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_UNAUTHORIZED)
                     .message("Bad Credentials")

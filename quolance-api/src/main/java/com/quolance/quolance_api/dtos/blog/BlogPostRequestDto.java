@@ -21,7 +21,6 @@ public class BlogPostRequestDto {
     private List<BlogCommentDto> comments;
 
 
-
     public static BlogPost toEntity(BlogPostRequestDto blogPostRequestDto) {
         return BlogPost.builder()
                 .title(blogPostRequestDto.getTitle())

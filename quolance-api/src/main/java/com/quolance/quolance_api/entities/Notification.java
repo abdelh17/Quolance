@@ -34,13 +34,6 @@ public class Notification extends AbstractEntity {
     private LocalDateTime timestamp;
 
     /**
-     * Marks the notification as read.
-     */
-    public void markAsRead() {
-        this.read = true;
-    }
-
-    /**
      * Convenience constructor for creating a Notification.
      *
      * @param message   The content of the notification.
@@ -53,5 +46,12 @@ public class Notification extends AbstractEntity {
         this.recipient = recipient;
         this.timestamp = LocalDateTime.now();
         this.read = false;
+    }
+
+    /**
+     * Marks the notification as read.
+     */
+    public void markAsRead() {
+        this.read = true;
     }
 }

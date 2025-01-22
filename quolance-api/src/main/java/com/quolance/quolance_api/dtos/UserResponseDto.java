@@ -1,15 +1,16 @@
 package com.quolance.quolance_api.dtos;
 
-import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.entities.User;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.quolance.quolance_api.entities.enums.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @Getter

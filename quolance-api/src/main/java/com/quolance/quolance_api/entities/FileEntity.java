@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class FileEntity extends AbstractEntity{
+public class FileEntity extends AbstractEntity {
 
 
     @Id
@@ -18,7 +18,7 @@ public class FileEntity extends AbstractEntity{
     private String fileName;
 
     private String fileUrl;
-    
+
     private String fileType;
 
     @ManyToOne

@@ -5,9 +5,9 @@ import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

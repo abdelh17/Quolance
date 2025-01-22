@@ -97,6 +97,8 @@ public class Project extends AbstractEntity {
      *
      * @return the User who owns the project, or null if no owner is assigned.
      */
-    public User getOwner() { return this.client; }
+    public User getOwner() {
+        return this.client;
+    }
 
 }

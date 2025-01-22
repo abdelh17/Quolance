@@ -149,6 +149,18 @@ public class SecurityConfiguration {
         return new ProviderManager(daoAuthenticationProvider);
     }
 
+    @Bean
+    public SwitchUserFilter switchUserFilter() {
+        SwitchUserFilter filter = new SwitchUserFilter();
+        filter.setUserDetailsService(userDetailsService);
+        filter.setSwitchUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate"));
+        filter.setExitUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit"));
+        filter.setSuccessHandler((request, response, authentication) -> {
+            response.sendRedirect(applicationProperties.getBaseUrl() + "/switch-success");
+        });
+        return filter;
+    }
+
     final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {
         private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
 
@@ -193,17 +205,5 @@ public class SecurityConfiguration {
 
             filterChain.doFilter(request, response);
         }
-    }
-
-    @Bean
-    public SwitchUserFilter switchUserFilter() {
-        SwitchUserFilter filter = new SwitchUserFilter();
-        filter.setUserDetailsService(userDetailsService);
-        filter.setSwitchUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate"));
-        filter.setExitUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit"));
-        filter.setSuccessHandler((request, response, authentication) -> {
-            response.sendRedirect(applicationProperties.getBaseUrl() + "/switch-success");
-        });
-        return filter;
     }
 }

@@ -84,8 +84,8 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        Map<String,Object> responseMap = objectMapper.readValue(response, Map.class);
-        List<Map<String,Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
 
         // Assert
         assertThat(content.size()).isEqualTo(1);
