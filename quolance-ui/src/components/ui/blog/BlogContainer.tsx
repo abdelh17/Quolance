@@ -14,13 +14,12 @@ import { useCreateBlogPost } from "@/api/blog-api";
 
 
 const BlogContainer: React.FC = () => {
-    const { user, isLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
-
+    const { user, isLoading: userIsLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
 
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    const { data: blogPosts, isLoading, error } = useGetAllBlogPosts(
+    const { data: blogPosts, isLoading: postIsLoading, error } = useGetAllBlogPosts(
         {
             onSuccess: (data) => {
                 console.log(data);
@@ -69,7 +68,7 @@ const BlogContainer: React.FC = () => {
             {/* Create Post Modal */}
             <CreatePostModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 {/* If the user is not authenticated, show a message to sign in (should be replaced with isLoading || !user) */}
-                {isLoading ? (
+                {userIsLoading ? (
                     <p>Loading...</p>
                 ) : user ? (
                     <CreatePostForm
@@ -112,7 +111,7 @@ const BlogContainer: React.FC = () => {
             />
 
             {/* Loading State */}
-            {isLoading && <p className="text-center text-gray-500 mt-4">Loading...</p>}
+            {postIsLoading && <p className="text-center text-gray-500 mt-4">Loading...</p>}
 
             {/* Error State */}
             {error && <p className="text-center text-red-500 mt-4">An error occurred.</p>}
@@ -125,7 +124,7 @@ const BlogContainer: React.FC = () => {
             </div>
 
             {/* No Posts Found */}
-            {!isLoading && filteredPosts?.length === 0 && (
+            {!postIsLoading && filteredPosts?.length === 0 && (
                 <p className="text-center text-gray-500 mt-4">No posts found for this tag.</p>
             )}
         </>
