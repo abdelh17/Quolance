@@ -43,10 +43,10 @@ export const ProfileImageModal: React.FC<ConfirmationModalProps> = ({
 
 
  return (
-   <div
+   <dialog
  className="relative z-10"
  aria-labelledby="modal-title"
- role="dialog"
+ open
  aria-modal="true"
 >
  <div
@@ -127,7 +127,7 @@ export const ProfileImageModal: React.FC<ConfirmationModalProps> = ({
      </div>
    </div>
  </div>
-</div>
+</dialog>
 
 
  );
