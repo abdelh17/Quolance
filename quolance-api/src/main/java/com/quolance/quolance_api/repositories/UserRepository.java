@@ -20,5 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     boolean existsByEmail(String email);
 
+    boolean existsByUsername(String username);
+
     List<User> findAll(); // Added for email uniqueness check
 }

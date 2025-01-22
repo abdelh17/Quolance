@@ -1,6 +1,5 @@
 package com.quolance.quolance_api.dtos;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequestDto {
 
-    @Email
     @NotNull
-    private String email;
+    private String username;
 
     private String password;
 }

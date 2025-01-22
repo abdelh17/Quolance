@@ -228,7 +228,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
 
     private MockHttpSession getSession() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("client@test.com");
+        loginRequest.setUsername("client@test.com");
         loginRequest.setPassword("Password123!");
 
         MockHttpSession session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")

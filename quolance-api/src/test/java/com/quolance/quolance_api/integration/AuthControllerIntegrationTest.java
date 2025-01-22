@@ -55,10 +55,10 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    public void testLoginClientIsOk() throws Exception {
+    public void testEmailLoginClientIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("client@test.com");
+        loginRequest.setUsername("client@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
@@ -84,10 +84,39 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    public void testLoginFreelancerIsOk() throws Exception {
+    public void testUsernameLoginClientIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("freelancer1@test.com");
+        loginRequest.setUsername("MyClient123");
+        loginRequest.setPassword("Password123!");
+
+        // Act
+        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getRequest()
+                .getSession();
+
+        SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+
+        // Assert
+        assertThat(securityContext).isNotNull();
+
+        User principal = (User) securityContext.getAuthentication().getPrincipal();
+        assertThat(principal.getUsername()).isEqualTo("MyClient123");
+        assertThat(principal.getRole()).isEqualTo(Role.CLIENT);
+        assertThat(principal.getFirstName()).isEqualTo("Client");
+        assertThat(principal.getLastName()).isEqualTo("Test");
+        assertThat(principal.getId()).isEqualTo(client.getId());
+    }
+
+    @Test
+    public void testEmailLoginFreelancerIsOk() throws Exception {
+        // Arrange
+        LoginRequestDto loginRequest = new LoginRequestDto();
+        loginRequest.setUsername("freelancer1@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
@@ -113,10 +142,39 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
+    public void testUsernameLoginFreelancerIsOk() throws Exception {
+        // Arrange
+        LoginRequestDto loginRequest = new LoginRequestDto();
+        loginRequest.setUsername("MyFreelancer1");
+        loginRequest.setPassword("Password123!");
+
+        // Act
+        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getRequest()
+                .getSession();
+
+        SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+
+        // Assert
+        assertThat(securityContext).isNotNull();
+
+        User principal = (User) securityContext.getAuthentication().getPrincipal();
+        assertThat(principal.getUsername()).isEqualTo("MyFreelancer1");
+        assertThat(principal.getRole()).isEqualTo(Role.FREELANCER);
+        assertThat(principal.getFirstName()).isEqualTo("Freelancer1");
+        assertThat(principal.getLastName()).isEqualTo("Test");
+        assertThat(principal.getId()).isEqualTo(freelancer.getId());
+    }
+
+    @Test
     public void testLoginAdminIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("admin@test.com");
+        loginRequest.setUsername("admin@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
@@ -142,10 +200,10 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    void testLoginWithWrongCredentials() throws Exception {
+    void testLoginWithWrongEmailCredentials() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("admin@test.com");
+        loginRequest.setUsername("admin@test.com");
         loginRequest.setPassword("wrongPassword");
 
         // Act
@@ -163,10 +221,31 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
+    void testLoginWithWrongUsernameCredentials() throws Exception {
+        // Arrange
+        LoginRequestDto loginRequest = new LoginRequestDto();
+        loginRequest.setUsername("WrongUsername");
+        loginRequest.setPassword("wrongPassword");
+
+        // Act
+        String response = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse.get("message")).isEqualTo("Bad Credentials");
+    }
+
+    @Test
     void testLoginWithNonRegisteredEmail() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("doesnotexist@test.com");
+        loginRequest.setUsername("doesnotexist@test.com");
         loginRequest.setPassword("wrongPassword");
 
         // Act
@@ -187,7 +266,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     void testGetSessionIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("client@test.com");
+        loginRequest.setUsername("client@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
