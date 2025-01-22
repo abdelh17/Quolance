@@ -40,7 +40,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             {/* Post Content */}
             <div className="ml-5 mr-5 mb-5">
                 <div className="flex justify-between">
-                    {/* <h3 className="text-md font-semibold text-gray-800">[{type}] : {title}</h3> */}
+                    <h3 className="text-md font-semibold text-gray-800">{title}</h3>
                     <span className="text-sm text-gray-500">
                         {new Intl.DateTimeFormat("en-US", {
                             year: "numeric",
