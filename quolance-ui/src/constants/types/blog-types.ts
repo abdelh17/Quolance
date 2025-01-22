@@ -6,3 +6,9 @@ export type BlogPostViewType = {
     dateCreated: string;
     comments: string[];
 }
+
+export type BlogPostType = {
+    title: string;
+    content: string;
+    userId: number;
+};

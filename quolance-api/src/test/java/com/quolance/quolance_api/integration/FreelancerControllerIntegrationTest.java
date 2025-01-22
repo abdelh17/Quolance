@@ -12,7 +12,6 @@ import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -69,7 +68,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @BeforeEach
     void setUpSession() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("freelancer1@test.com");
+        loginRequest.setUsername("freelancer1@test.com");
         loginRequest.setPassword("Password123!");
 
         session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
