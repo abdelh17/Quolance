@@ -1,6 +1,5 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
-import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
@@ -15,13 +14,11 @@ import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +48,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     public void deleteProject(Long projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
-        if(!project.isOwnedBy(client.getId())) {
+        if (!project.isOwnedBy(client.getId())) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
                     .message("You are not authorized to remove this project")
@@ -72,7 +69,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     public List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
-        if(!project.isOwnedBy(client.getId())) {
+        if (!project.isOwnedBy(client.getId())) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
                     .message("You are not authorized to view this project applications")

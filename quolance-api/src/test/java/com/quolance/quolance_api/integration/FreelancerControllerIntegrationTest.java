@@ -12,7 +12,6 @@ import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

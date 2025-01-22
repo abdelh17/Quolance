@@ -2,7 +2,6 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
-import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
@@ -16,13 +15,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/client")
