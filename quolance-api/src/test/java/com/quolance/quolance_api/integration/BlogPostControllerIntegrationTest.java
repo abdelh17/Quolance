@@ -154,7 +154,7 @@ public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
 
     private MockHttpSession getSession(String email, String password) throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail(email);
+        loginRequest.setUsername(email);
         loginRequest.setPassword(password);
 
         return (MockHttpSession) mockMvc.perform(post("/api/auth/login")

@@ -58,7 +58,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     public void testLoginClientIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("client@test.com");
+        loginRequest.setUsername("client@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
@@ -87,7 +87,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     public void testLoginFreelancerIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("freelancer1@test.com");
+        loginRequest.setUsername("freelancer1@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
@@ -116,7 +116,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     public void testLoginAdminIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("admin@test.com");
+        loginRequest.setUsername("admin@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
@@ -145,7 +145,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     void testLoginWithWrongCredentials() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("admin@test.com");
+        loginRequest.setUsername("admin@test.com");
         loginRequest.setPassword("wrongPassword");
 
         // Act
@@ -166,7 +166,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     void testLoginWithNonRegisteredEmail() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("doesnotexist@test.com");
+        loginRequest.setUsername("doesnotexist@test.com");
         loginRequest.setPassword("wrongPassword");
 
         // Act
@@ -187,7 +187,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     void testGetSessionIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("client@test.com");
+        loginRequest.setUsername("client@test.com");
         loginRequest.setPassword("Password123!");
 
         // Act
