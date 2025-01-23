@@ -90,8 +90,9 @@ class ApplicationServiceUnitTest {
 
         List<Application> result = applicationService.getAllApplications();
 
-        assertThat(result).hasSize(1);
-        assertThat(result).containsExactly(mockApplication);
+        assertThat(result)
+                .hasSize(1)
+                .containsExactly(mockApplication);
     }
 
     @Test
@@ -114,8 +115,9 @@ class ApplicationServiceUnitTest {
 
         Page<Application> result = applicationService.getAllApplicationsByFreelancerId(1L, Pageable.unpaged());
 
-        assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent()).containsExactly(mockApplication);
+        assertThat(result.getContent())
+                .hasSize(1)
+                .containsExactly(mockApplication);
         assertThat(result.getTotalElements()).isEqualTo(1);
         verify(applicationRepository).findApplicationsByFreelancerId(eq(1L), any(Pageable.class));
     }
@@ -127,8 +129,9 @@ class ApplicationServiceUnitTest {
 
         List<Application> result = applicationService.getAllApplicationsByProjectId(1L);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).containsExactly(mockApplication);
+        assertThat(result)
+                .hasSize(1)
+                .containsExactly(mockApplication);
     }
 
     @Test

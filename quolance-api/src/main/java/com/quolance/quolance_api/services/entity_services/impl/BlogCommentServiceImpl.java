@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +63,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
 
         return comments.stream()
                 .map(BlogCommentDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private BlogComment getBlogCommentEntity(Long commentId) {

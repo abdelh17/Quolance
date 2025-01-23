@@ -35,7 +35,6 @@ public class AdminController {
     @PostMapping("projects/pending/{projectId}/approve")
     public ResponseEntity<String> approveProject(@PathVariable(name = "projectId") Long projectId) {
         adminWorkflowService.approveProject(projectId);
-        // TODO: Notify client (using notification service for example)
         return ResponseEntity.ok("Project approved successfully");
     }
 
@@ -45,7 +44,6 @@ public class AdminController {
     @PostMapping("projects/pending/{projectId}/reject")
     public ResponseEntity<String> rejectProject(@PathVariable(name = "projectId") Long projectId) {
         adminWorkflowService.rejectProject(projectId);
-        // TODO: Notify client + a reason of rejection (using notification service for example)
         return ResponseEntity.ok("Project rejected successfully");
     }
 

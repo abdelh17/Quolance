@@ -87,9 +87,9 @@ class SendWelcomeEmailUnitTest {
         assertThat(capturedContext.getVariable("applicationName")).isEqualTo(APP_NAME);
 
         verify(emailService).sendHtmlMessage(
-                eq(List.of(mockUser.getEmail())),
-                eq("Welcome to our platform"),
-                eq(expectedHtmlBody)
+                List.of(mockUser.getEmail()),
+                "Welcome to our platform",
+                expectedHtmlBody
         );
 
         verify(verificationCodeService).updateVerificationCodeStatus(mockVerificationCode);

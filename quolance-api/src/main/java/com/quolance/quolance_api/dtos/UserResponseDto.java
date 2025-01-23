@@ -37,9 +37,9 @@ public class UserResponseDto {
         this.username = user.getUsername();
         this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
-        user.getConnectedAccounts().forEach((provider) -> {
-            this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()));
-        });
+        user.getConnectedAccounts().forEach(provider ->
+                this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()))
+        );
     }
 
     public UserResponseDto(User user, Collection<? extends GrantedAuthority> authorities) {
@@ -51,12 +51,12 @@ public class UserResponseDto {
         this.username = user.getUsername();
         this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
-        user.getConnectedAccounts().forEach((provider) -> {
-            this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()));
-        });
-        authorities.forEach(authority -> {
-            this.authorities.add(authority.getAuthority());
-        });
+        user.getConnectedAccounts().forEach(provider ->
+                this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()))
+        );
+        authorities.forEach(authority ->
+                this.authorities.add(authority.getAuthority())
+        );
     }
 
     public record ConnectedAccountResponse(String provider, LocalDateTime connectedAt) {

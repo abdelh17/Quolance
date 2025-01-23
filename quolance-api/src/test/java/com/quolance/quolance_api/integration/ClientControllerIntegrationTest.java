@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -100,7 +100,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         //Assert
         Project project = projectRepository.findAll().getFirst();
         assertThat(response).isEqualTo("Project created successfully");
-        assertThat(projectRepository.findAll().size()).isEqualTo(1);
+        assertThat(projectRepository.findAll()).hasSize(1);
         assertThat(project.getTitle()).isEqualTo("title");
         assertThat(project.getDescription()).isEqualTo("description");
         assertThat(project.getCategory()).isEqualTo(ProjectCategory.APP_DEVELOPMENT);
@@ -167,7 +167,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
 
         //Assert
-        assertThat(jsonResponse.get("message")).isEqualTo("No Project found with ID: 1");
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: 1");
     }
 
     @Test
@@ -194,46 +194,13 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
 
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(projectResponse.get("title")).isEqualTo("updated title");
-        assertThat(projectResponse.get("description")).isEqualTo("new description");
-        assertThat(projectResponse.get("category")).isEqualTo("CONTENT_WRITING");
-        assertThat(projectResponse.get("priceRange")).isEqualTo("MORE_10000");
-        assertThat(projectResponse.get("experienceLevel")).isEqualTo("EXPERT");
-        assertThat(projectResponse.get("expectedDeliveryTime")).isEqualTo("IMMEDIATELY");
+        assertThat(projectResponse).containsEntry("title", "updated title")
+                .containsEntry("description", "new description")
+                .containsEntry("category", "CONTENT_WRITING")
+                .containsEntry("priceRange", "MORE_10000")
+                .containsEntry("experienceLevel", "EXPERT")
+                .containsEntry("expectedDeliveryTime", "IMMEDIATELY");
     }
-
-//    @Test
-//    void updateProjectWithEmptyFieldsDoesNotUpdateProject() throws Exception {
-//        //Arrange
-//        Project project = Helper.createProject(ProjectStatus.PENDING);
-//
-//        ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
-//                .title("")
-//                .description("")
-//                .category(null)
-//                .priceRange(null)
-//                .experienceLevel(null)
-//                .expectedDeliveryTime(null)
-//                .build();
-//
-//        //Act
-//        String response = mockMvc.perform(put("/api/client/projects/" + project.getId()).session(session)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(updateProjectDto)))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        //Assert
-//        Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-//        assertThat(projectResponse.get("title")).isEqualTo("title");
-//        assertThat(projectResponse.get("description")).isEqualTo("description");
-//        assertThat(projectResponse.get("category")).isEqualTo("APP_DEVELOPMENT");
-//        assertThat(projectResponse.get("priceRange")).isEqualTo("LESS_500");
-//        assertThat(projectResponse.get("experienceLevel")).isEqualTo("JUNIOR");
-//        assertThat(projectResponse.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
-//    }
 
     @ParameterizedTest
     @ValueSource(strings = {"OPEN", "CLOSED", "REJECTED"})
@@ -261,8 +228,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Project can only be updated when in PENDING state");
-        assertThat(project == projectRepository.findById(project.getId()).get());
+        assertThat(jsonResponse).containsEntry("message", "Project can only be updated when in PENDING state");
     }
 
     @Test
@@ -278,12 +244,12 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
 
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(projectResponse.get("title")).isEqualTo("title");
-        assertThat(projectResponse.get("description")).isEqualTo("description");
-        assertThat(projectResponse.get("category")).isEqualTo("APP_DEVELOPMENT");
-        assertThat(projectResponse.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse.get("experienceLevel")).isEqualTo("JUNIOR");
-        assertThat(projectResponse.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
+        assertThat(projectResponse).containsEntry("title", "title")
+                .containsEntry("description", "description")
+                .containsEntry("category", "APP_DEVELOPMENT")
+                .containsEntry("priceRange", "LESS_500")
+                .containsEntry("experienceLevel", "JUNIOR")
+                .containsEntry("expectedDeliveryTime", "FLEXIBLE");
     }
 
     @Test
@@ -298,7 +264,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
 
         List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
-        assertThat(content.size()).isEqualTo(0);
+        assertThat(content).isEmpty();
     }
 
     @Test
@@ -330,25 +296,24 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
 
         //Assert
-        assertThat(content.size()).isEqualTo(2);
+        assertThat(content).hasSize(2);
 
         Map<String, Object> projectResponse1 = content.get(0);
         Map<String, Object> projectResponse2 = content.get(1);
 
-        assertThat(projectResponse1.get("title")).isEqualTo("title");
-        assertThat(projectResponse1.get("description")).isEqualTo("description");
-        assertThat(projectResponse1.get("category")).isEqualTo("APP_DEVELOPMENT");
-        assertThat(projectResponse1.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse1.get("experienceLevel")).isEqualTo("JUNIOR");
-        assertThat(projectResponse1.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
+        assertThat(projectResponse1).containsEntry("title", "title")
+                .containsEntry("description", "description")
+                .containsEntry("category", "APP_DEVELOPMENT")
+                .containsEntry("priceRange", "LESS_500")
+                .containsEntry("experienceLevel", "JUNIOR")
+                .containsEntry("expectedDeliveryTime", "FLEXIBLE");
 
-        assertThat(projectResponse2.get("title")).isEqualTo("title2");
-        assertThat(projectResponse2.get("description")).isEqualTo("description2");
-        assertThat(projectResponse2.get("category")).isEqualTo("APP_DEVELOPMENT");
-        assertThat(projectResponse2.get("priceRange")).isEqualTo("LESS_500");
-        assertThat(projectResponse2.get("experienceLevel")).isEqualTo("JUNIOR");
-        assertThat(projectResponse2.get("expectedDeliveryTime")).isEqualTo("FLEXIBLE");
-
+        assertThat(projectResponse2).containsEntry("title", "title2")
+                .containsEntry("description", "description2")
+                .containsEntry("category", "APP_DEVELOPMENT")
+                .containsEntry("priceRange", "LESS_500")
+                .containsEntry("experienceLevel", "JUNIOR")
+                .containsEntry("expectedDeliveryTime", "FLEXIBLE");
     }
 
 
@@ -378,7 +343,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("No Project found with ID: 1");
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: 1");
     }
 
     @Test
@@ -400,9 +365,11 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         Map<String, Object> applicationReturned = (Map<String, Object>) responseList.get(0);
 
         //Assert
-        assertThat(applicationReturned.get("projectId")).isEqualTo(project.getId().intValue());
-        assertThat(applicationReturned.get("projectTitle")).isEqualTo(project.getTitle());
-        assertThat(applicationReturned.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
+        assertThat(applicationReturned)
+                .containsEntry("projectId", project.getId().intValue())
+                .containsEntry("projectTitle", project.getTitle())
+                .containsEntry("freelancerId", freelancer.getId().intValue());
+
     }
 
     @Test
@@ -419,7 +386,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         List<Object> responseList = objectMapper.readValue(response, List.class);
 
         //Assert
-        assertThat(responseList.size()).isEqualTo(0);
+        assertThat(responseList).isEmpty();
     }
 
 
@@ -500,13 +467,11 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         Application application2 = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer2));
 
         //Act
-        String response = mockMvc.perform(post("/api/client/applications/bulk/reject-freelancer")
+        mockMvc.perform(post("/api/client/applications/bulk/reject-freelancer")
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(List.of(application1.getId(), application2.getId()))))
-                .andExpect(status().isPartialContent())
-                .andReturn()
-                .getResponse().getContentAsString();
+                .andExpect(status().isPartialContent());
 
         //Assert
         assertThat(applicationRepository.findById(application1.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
@@ -527,7 +492,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
 
         //Assert
         Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(profileResponse.get("userId")).isEqualTo(freelancer.getId().intValue());
+        assertThat(profileResponse).containsEntry("userId", freelancer.getId().intValue());
     }
 
     @Test
@@ -544,7 +509,7 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Freelancer not found");
+        assertThat(jsonResponse).containsEntry("message", "Freelancer not found");
     }
 
 

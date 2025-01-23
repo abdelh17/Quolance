@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
@@ -66,7 +65,7 @@ public class SecurityConfiguration {
 
         AuthenticationManager authenticationManager = authenticationManager();
 
-        http.authorizeHttpRequests(customizer -> {
+        http.authorizeHttpRequests(customizer ->
                     customizer
                             .requestMatchers(antMatcher(HttpMethod.GET, "/ws/**")).permitAll() // Allow WebSocket handshake
                             .requestMatchers(WHITE_LIST_URL).permitAll()
@@ -82,8 +81,8 @@ public class SecurityConfiguration {
                             .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
                             .requestMatchers(antMatcher("api/pending/**")).hasRole("PENDING")
                             .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
-                            .anyRequest().authenticated();
-                })
+                            .anyRequest().authenticated()
+                )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             String path = request.getRequestURI();
@@ -99,23 +98,23 @@ public class SecurityConfiguration {
                             }
                         })
                         .authenticationEntryPoint(
-                                (request, response, authException) -> {
-                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, please login");
-                                })
+                                (request, response, authException) ->
+                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, please login")
+                                )
                 );
 
-        http.oauth2Login(customizer -> {
-            customizer.successHandler(oauth2LoginSuccessHandler);
-        });
+        http.oauth2Login(customizer ->
+            customizer.successHandler(oauth2LoginSuccessHandler)
+        );
 
         http.userDetailsService(userDetailsService)
                 .authenticationManager(authenticationManager);
 
         http.csrf(csrf -> csrf.disable());
 
-        http.cors(customizer -> {
-            customizer.configurationSource(corsConfigurationSource());
-        });
+        http.cors(customizer ->
+            customizer.configurationSource(corsConfigurationSource())
+        );
 
         return http.build();
     }
@@ -145,18 +144,6 @@ public class SecurityConfiguration {
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoAuthenticationProvider);
-    }
-
-    @Bean
-    public SwitchUserFilter switchUserFilter() {
-        SwitchUserFilter filter = new SwitchUserFilter();
-        filter.setUserDetailsService(userDetailsService);
-        filter.setSwitchUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate"));
-        filter.setExitUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit"));
-        filter.setSuccessHandler((request, response, authentication) -> {
-            response.sendRedirect(applicationProperties.getBaseUrl() + "/switch-success");
-        });
-        return filter;
     }
 
     final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {

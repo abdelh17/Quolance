@@ -92,7 +92,7 @@ class FreelancerControllerUnitTest {
 
             freelancerController.applyToProject(applicationCreateDto);
 
-            verify(freelancerWorkflowService).submitApplication(eq(applicationCreateDto), eq(mockFreelancer));
+            verify(freelancerWorkflowService).submitApplication(applicationCreateDto, mockFreelancer);
         }
     }
 
@@ -134,7 +134,7 @@ class FreelancerControllerUnitTest {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(applicationDto);
             assertThat(response.getBody().getStatus()).isEqualTo(ApplicationStatus.APPLIED);
-            verify(freelancerWorkflowService).getApplication(eq(1L), eq(mockFreelancer));
+            verify(freelancerWorkflowService).getApplication(1L, mockFreelancer);
         }
     }
 
@@ -161,7 +161,7 @@ class FreelancerControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Application deleted successfully.");
-            verify(applicationProcessWorkflow).cancelApplication(eq(1L), eq(mockFreelancer));
+            verify(applicationProcessWorkflow).cancelApplication(1L, mockFreelancer);
         }
     }
 
@@ -195,7 +195,7 @@ class FreelancerControllerUnitTest {
             assertThat(response.getBody().getContent()).hasSize(1);
             assertThat(response.getBody().getContent().get(0)).isEqualTo(applicationDto);
             assertThat(response.getBody().getContent().get(0).getStatus()).isEqualTo(ApplicationStatus.APPLIED);
-            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer), eq(pageable));
+            verify(freelancerWorkflowService).getAllFreelancerApplications(mockFreelancer, pageable);
         }
     }
 
@@ -214,7 +214,7 @@ class FreelancerControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).isEmpty();
-            verify(freelancerWorkflowService).getAllFreelancerApplications(eq(mockFreelancer), eq(pageable));
+            verify(freelancerWorkflowService).getAllFreelancerApplications(mockFreelancer, pageable);
         }
     }
 

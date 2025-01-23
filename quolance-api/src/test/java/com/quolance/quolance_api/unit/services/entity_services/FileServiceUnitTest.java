@@ -217,7 +217,7 @@ class FileServiceUnitTest {
                 allFiles.size()
         );
 
-        when(fileRepository.findFileUploadsByUser(eq(mockUser), eq(pageRequest)))
+        when(fileRepository.findFileUploadsByUser(mockUser, pageRequest))
                 .thenReturn(firstPage);
 
         Page<FileDto> result = fileService.getAllFileUploadsByUser(mockUser, pageRequest);

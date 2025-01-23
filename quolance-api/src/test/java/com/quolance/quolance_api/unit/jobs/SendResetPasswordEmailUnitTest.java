@@ -82,9 +82,9 @@ class SendResetPasswordEmailUnitTest {
         assertThat(capturedContext.getVariable("link")).isEqualTo(expectedLink);
 
         verify(emailService).sendHtmlMessage(
-                eq(List.of(mockUser.getEmail())),
-                eq("Password reset requested"),
-                eq(expectedHtmlBody)
+                List.of(mockUser.getEmail()),
+                "Password reset requested",
+                expectedHtmlBody
         );
 
         assertThat(mockToken.isEmailSent()).isTrue();

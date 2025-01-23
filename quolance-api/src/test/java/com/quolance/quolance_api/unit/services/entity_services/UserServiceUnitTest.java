@@ -144,7 +144,7 @@ class UserServiceUnitTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.create(createUserRequest);
+        userService.create(createUserRequest);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -169,7 +169,7 @@ class UserServiceUnitTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.createAdmin(createAdminRequest);
+        userService.createAdmin(createAdminRequest);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -256,7 +256,7 @@ class UserServiceUnitTest {
     void updateUser_Success() {
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.updateUser(updateUserRequest, mockUser);
+        userService.updateUser(updateUserRequest, mockUser);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -269,7 +269,7 @@ class UserServiceUnitTest {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.updatePassword(updatePasswordRequest, mockUser);
+        userService.updatePassword(updatePasswordRequest, mockUser);
 
         verify(userRepository).save(any(User.class));
     }
