@@ -14,6 +14,8 @@ import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.scheduling.BackgroundJobRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
     private final VerificationCodeRepository verificationCodeRepository;
@@ -35,12 +38,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto create(CreateUserRequestDto request) {
+        log.debug("Attempting to create new user with email: {}", request.getEmail());
+
         if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("User creation failed - email already exists: {}", request.getEmail());
             throw new ApiException("A user with this email already exists.");
         }
+
         User user = new User(request);
         user = userRepository.save(user);
+        log.info("Successfully created new user with ID: {}", user.getId());
+
         sendVerificationEmail(user);
+        log.debug("Verification email process initiated for user ID: {}", user.getId());
 
         return new UserResponseDto(user);
     }
@@ -48,36 +58,62 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto createAdmin(CreateAdminRequestDto request) {
+        log.debug("Attempting to create new admin user with email: {}", request.getEmail());
+
         if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("Admin creation failed - email already exists: {}", request.getEmail());
             throw new ApiException("A user with this email already exists.");
         }
+
         User user = new User(request);
         user = userRepository.save(user);
+        log.info("Successfully created new admin user with ID: {}", user.getId());
+
         return new UserResponseDto(user);
     }
 
     @Override
     public void updateProfilePicture(User user, String photoUrl) {
+        log.debug("Updating profile picture for user ID: {}", user.getId());
         user.setProfileImageUrl(photoUrl);
         userRepository.save(user);
+        log.info("Successfully updated profile picture for user ID: {}", user.getId());
     }
 
     @Override
     public Page<User> findAllWithFilters(Specification<User> spec, Pageable pageable) {
-        return userRepository.findAll(spec, pageable);
+        log.debug("Fetching users with filters: {}", spec);
+        Page<User> users = userRepository.findAll(spec, pageable);
+        log.debug("Found {} users matching criteria", users.getTotalElements());
+        return users;
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+        log.debug("Looking up user by ID: {}", id);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            log.debug("Found user with ID: {}", id);
+        } else {
+            log.debug("No user found with ID: {}", id);
+        }
+        return user;
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        log.debug("Looking up user by username: {}", username);
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            log.debug("Found user with username: {}", username);
+        } else {
+            log.debug("No user found with username: {}", username);
+        }
+        return user;
     }
 
     private void sendVerificationEmail(User user) {
+        log.debug("Creating verification code for user ID: {}", user.getId());
         VerificationCode verificationCode = new VerificationCode(user);
         user.setVerificationCode(verificationCode);
         verificationCodeRepository.save(verificationCode);
@@ -86,72 +122,116 @@ public class UserServiceImpl implements UserService {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
+            log.warn("Thread interrupted while waiting to send welcome email", e);
             Thread.currentThread().interrupt();
         }
+        log.debug("Enqueueing welcome email job for user ID: {}", user.getId());
         BackgroundJobRequest.enqueue(sendWelcomeEmailJob);
     }
 
     @Override
     @Transactional
     public void verifyEmail(String code) {
+        log.debug("Attempting to verify email with code: {}", code);
         VerificationCode verificationCode = verificationCodeRepository.findByCode(code)
-                .orElseThrow(() -> ApiException.builder().status(HttpServletResponse.SC_BAD_REQUEST).message("Invalid token").build());
+                .orElseThrow(() -> {
+                    log.warn("Email verification failed - invalid code: {}", code);
+                    return ApiException.builder()
+                            .status(HttpServletResponse.SC_BAD_REQUEST)
+                            .message("Invalid token")
+                            .build();
+                });
+
         User user = verificationCode.getUser();
         user.setVerified(true);
         userRepository.save(user);
         verificationCodeRepository.delete(verificationCode);
+        log.info("Successfully verified email for user ID: {}", user.getId());
     }
 
     @Override
     @Transactional
     public void forgotPassword(String email) {
+        log.debug("Processing forgot password request for email: {}", email);
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> ApiException.builder().status(HttpServletResponse.SC_NOT_FOUND).message("User not found").build());
+                .orElseThrow(() -> {
+                    log.warn("Forgot password request failed - user not found: {}", email);
+                    return ApiException.builder()
+                            .status(HttpServletResponse.SC_NOT_FOUND)
+                            .message("User not found")
+                            .build();
+                });
+
         PasswordResetToken passwordResetToken = new PasswordResetToken(user);
         passwordResetTokenRepository.save(passwordResetToken);
+
         SendResetPasswordEmailJob sendResetPasswordEmailJob = new SendResetPasswordEmailJob(passwordResetToken.getId());
         BackgroundJobRequest.enqueue(sendResetPasswordEmailJob);
+        log.info("Password reset email queued for user ID: {}", user.getId());
     }
 
     @Override
     @Transactional
     public void resetPassword(UpdateUserPasswordRequestDto request) {
+        log.debug("Attempting to reset password with token");
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(request.getPasswordResetToken())
-                .orElseThrow(() -> ApiException.builder().status(HttpServletResponse.SC_NOT_FOUND).message("Password reset token not found").build());
+                .orElseThrow(() -> {
+                    log.warn("Password reset failed - token not found");
+                    return ApiException.builder()
+                            .status(HttpServletResponse.SC_NOT_FOUND)
+                            .message("Password reset token not found")
+                            .build();
+                });
 
         if (passwordResetToken.isExpired()) {
-            throw ApiException.builder().status(HttpServletResponse.SC_BAD_REQUEST).message("Password reset token is expired").build();
+            log.warn("Password reset failed - token expired for user ID: {}",
+                    passwordResetToken.getUser().getId());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Password reset token is expired")
+                    .build();
         }
 
         User user = passwordResetToken.getUser();
         user.updatePassword(request.getPassword());
         userRepository.save(user);
+        log.info("Successfully reset password for user ID: {}", user.getId());
     }
 
     @Override
     @Transactional
     public UserResponseDto updateUser(UpdateUserRequestDto request, User user) {
+        log.debug("Updating user information for user ID: {}", user.getId());
         user.updateUserInfo(request);
         user = userRepository.save(user);
+        log.info("Successfully updated user information for user ID: {}", user.getId());
         return new UserResponseDto(user);
     }
 
     @Override
     public void updateUserName(String username, User user) {
+        log.debug("Updating username to '{}' for user ID: {}", username, user.getId());
         user.setUsername(username);
         userRepository.save(user);
+        log.info("Successfully updated username for user ID: {}", user.getId());
     }
 
     @Override
     @Transactional
     public UserResponseDto updatePassword(UpdateUserPasswordRequestDto request, User user) {
+        log.debug("Attempting to update password for user ID: {}", user.getId());
+
         if (user.getPassword() != null && !passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw ApiException.builder().status(HttpServletResponse.SC_BAD_REQUEST).message("Wrong password").build();
+            log.warn("Password update failed - incorrect old password for user ID: {}", user.getId());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Wrong password")
+                    .build();
         }
 
         user.updatePassword(request.getPassword());
         user = userRepository.save(user);
+        log.info("Successfully updated password for user ID: {}", user.getId());
         return new UserResponseDto(user);
     }
-
 }
