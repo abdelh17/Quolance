@@ -3,6 +3,42 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
+import CommentCard from "./CommentCard";
+import { CommentType } from "@/constants/types/blog-types";
+
+const mockComments = [
+    {
+      authorName: "John Doe",
+      profilePicture: "",
+      content: "This is an insightful blog post! I really enjoyed reading it.",
+      dateCreated: "2025-01-21T10:30:00Z",
+    },
+    {
+      authorName: "Jane Smith",
+      profilePicture: "",
+      content: "Thanks for sharing this information. It was very helpful!",
+      dateCreated: "2025-01-20T14:15:00Z",
+    },
+    {
+      authorName: "Alex Johnson",
+      profilePicture: "",
+      content: "I think there’s a lot to learn from this perspective. Great job!",
+      dateCreated: "2025-01-19T18:45:00Z",
+    },
+    {
+      authorName: "Emily Brown",
+      profilePicture: "",
+      content: "Loved this! Keep up the great work.",
+      dateCreated: "2025-01-18T08:20:00Z",
+    },
+    {
+      authorName: "Michael Green",
+      profilePicture: "",
+      content: "A really thought-provoking post. Thanks for sharing your thoughts!",
+      dateCreated: "2025-01-17T21:10:00Z",
+    },
+];
+  
 
 interface PostCardProps {
     id: number;
@@ -10,13 +46,15 @@ interface PostCardProps {
     content: string;
     authorName: string;
     dateCreated: string;
-    comments: string[];
+    comments: CommentType[];
 }
 
 const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, comments }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpand = () => setIsExpanded(!isExpanded);
+
+    comments = mockComments;
 
     return (
         <div className="bg-white shadow-md rounded-md">
@@ -74,6 +112,21 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                         </span>
                     ))}
                 </div> */}
+
+                {/* Comments */}
+                {(comments !== null && comments.length > 0) && (
+                    <div className="mt-4">
+                        {comments.map((comment, index) => (
+                            <CommentCard
+                                key={index}
+                                authorName={comment.authorName}
+                                profilePicture={comment.profilePicture || ''}
+                                content={comment.content}
+                                dateCreated={comment.dateCreated}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
