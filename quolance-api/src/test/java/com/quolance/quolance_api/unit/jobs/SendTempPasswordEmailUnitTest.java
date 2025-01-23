@@ -74,9 +74,9 @@ class SendTempPasswordEmailUnitTest {
         assertThat(capturedContext.getVariable("applicationName")).isEqualTo(APP_NAME);
 
         verify(emailService).sendHtmlMessage(
-                eq(List.of(mockUser.getEmail())),
-                eq("Your Temporary Password for " + APP_NAME),
-                eq(expectedHtmlBody)
+                List.of(mockUser.getEmail()),
+                "Your Temporary Password for " + APP_NAME,
+                expectedHtmlBody
         );
     }
 

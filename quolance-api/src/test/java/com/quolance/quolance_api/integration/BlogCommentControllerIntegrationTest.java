@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
+class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
 
     @Autowired
     private MockMvc mockMvc;
@@ -94,8 +94,7 @@ public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers
 
     @Test
     void testGetAllCommentsForBlogPost() throws Exception {
-        BlogComment blogComment = blogCommentRepository
-                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+        blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
         mockMvc.perform(get("/api/blog-comments/post/" + blogPost.getId())
                         .session(session)

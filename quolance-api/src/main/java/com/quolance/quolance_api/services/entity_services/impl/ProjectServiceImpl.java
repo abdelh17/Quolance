@@ -62,7 +62,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void updateProjectStatus(Project project, ProjectStatus newStatus) {
 
-        // TODO: Handle updating open projects
         if (project.getProjectStatus() == ProjectStatus.CLOSED) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)

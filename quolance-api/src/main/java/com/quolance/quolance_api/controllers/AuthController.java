@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(
+    public ResponseEntity<Void> login(
             HttpServletRequest request, HttpServletResponse response, @Valid @RequestBody LoginRequestDto body) {
         authService.login(request, response, body);
         return ResponseEntity.ok().build();
@@ -42,7 +42,7 @@ public class AuthController {
      * This endpoint should be invoked by the frontend to get the CSRF token.
      */
     @GetMapping("/csrf")
-    public ResponseEntity<?> csrf() {
+    public ResponseEntity<Void> csrf() {
         return ResponseEntity.ok().build();
     }
 }

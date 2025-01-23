@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         List<BlogPost> blogPosts = blogPostRepository.findAll();
         return blogPosts.stream()
                 .map(BlogPostResponseDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -45,7 +44,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         List<BlogPost> blogPosts = blogPostRepository.findByUserId(userId);
         return blogPosts.stream()
                 .map(BlogPostResponseDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

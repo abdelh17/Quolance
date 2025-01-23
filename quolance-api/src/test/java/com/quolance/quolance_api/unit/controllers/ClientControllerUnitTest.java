@@ -105,7 +105,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Project created successfully");
-            verify(clientWorkflowService).createProject(eq(projectCreateDto), eq(mockClient));
+            verify(clientWorkflowService).createProject(projectCreateDto, mockClient);
         }
     }
 
@@ -132,7 +132,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.createProject(projectCreateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to create projects");
-            verify(clientWorkflowService).createProject(eq(projectCreateDto), eq(mockClient));
+            verify(clientWorkflowService).createProject(projectCreateDto, mockClient);
         }
     }
 
@@ -146,7 +146,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(projectDto);
-            verify(clientWorkflowService).getProject(eq(1L), eq(mockClient));
+            verify(clientWorkflowService).getProject(1L, mockClient);
         }
     }
 
@@ -160,7 +160,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.getProject(-1L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid project ID");
-            verify(clientWorkflowService).getProject(eq(-1L), eq(mockClient));
+            verify(clientWorkflowService).getProject(-1L, mockClient);
         }
     }
 
@@ -175,7 +175,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(projectDto);
-            verify(clientWorkflowService).updateProject(eq(1L), eq(projectUpdateDto), eq(mockClient));
+            verify(clientWorkflowService).updateProject(1L, projectUpdateDto, mockClient);
         }
     }
 
@@ -189,7 +189,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.updateProject(1L, projectUpdateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to update this project");
-            verify(clientWorkflowService).updateProject(eq(1L), eq(projectUpdateDto), eq(mockClient));
+            verify(clientWorkflowService).updateProject(1L, projectUpdateDto, mockClient);
         }
     }
 
@@ -203,7 +203,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Project deleted successfully");
-            verify(clientWorkflowService).deleteProject(eq(1L), eq(mockClient));
+            verify(clientWorkflowService).deleteProject(1L, mockClient);
         }
     }
 
@@ -217,7 +217,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.deleteProject(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Project not found");
-            verify(clientWorkflowService).deleteProject(eq(999L), eq(mockClient));
+            verify(clientWorkflowService).deleteProject(999L, mockClient);
         }
     }
 
@@ -274,7 +274,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSize(1);
-            verify(clientWorkflowService).getAllApplicationsToProject(eq(1L), eq(mockClient));
+            verify(clientWorkflowService).getAllApplicationsToProject(1L, mockClient);
         }
     }
 
@@ -288,7 +288,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.getAllApplicationsToProject(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Project not found");
-            verify(clientWorkflowService).getAllApplicationsToProject(eq(999L), eq(mockClient));
+            verify(clientWorkflowService).getAllApplicationsToProject(999L, mockClient);
         }
     }
 
@@ -302,7 +302,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Freelancer selected successfully");
-            verify(applicationProcessWorkflow).selectFreelancer(eq(1L), eq(mockClient));
+            verify(applicationProcessWorkflow).selectFreelancer(1L, mockClient);
         }
     }
 
@@ -316,7 +316,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.selectFreelancer(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application not found");
-            verify(applicationProcessWorkflow).selectFreelancer(eq(999L), eq(mockClient));
+            verify(applicationProcessWorkflow).selectFreelancer(999L, mockClient);
         }
     }
 
@@ -330,7 +330,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Freelancer rejected successfully");
-            verify(applicationProcessWorkflow).rejectApplication(eq(1L), eq(mockClient));
+            verify(applicationProcessWorkflow).rejectApplication(1L, mockClient);
         }
     }
 
@@ -345,7 +345,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("All selected freelancers rejected successfully");
-            verify(applicationProcessWorkflow).rejectManyApplications(eq(applicationIds), eq(mockClient));
+            verify(applicationProcessWorkflow).rejectManyApplications(applicationIds, mockClient);
         }
     }
 
@@ -360,7 +360,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.rejectManyFreelancers(emptyList))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application IDs list cannot be empty");
-            verify(applicationProcessWorkflow).rejectManyApplications(eq(emptyList), eq(mockClient));
+            verify(applicationProcessWorkflow).rejectManyApplications(emptyList, mockClient);
         }
     }
 }

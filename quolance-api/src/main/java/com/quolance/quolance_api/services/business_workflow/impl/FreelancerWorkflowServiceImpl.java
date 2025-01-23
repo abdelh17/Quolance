@@ -1,7 +1,6 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
 import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
-import com.quolance.quolance_api.dtos.UserResponseDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
@@ -43,7 +42,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final ApplicationService applicationService;
     private final UserService userService;
     private final FileService fileService;
-    // private final NotificationMessageService notificationMessageService;
 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
@@ -70,19 +68,12 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             application.setProject(project);
 
             applicationService.saveApplication(application);
-
-            // Notify the project owner, commented out for now
-//            User projectOwner = project.getOwner();
-//            String message = freelancer.getFirstName() + " " + freelancer.getLastName() + " has applied to your project: " + project.getTitle();
-//            notificationMessageService.sendNotification(freelancer, projectOwner, message);
-
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
         }
 
     }
 
-    // Might remove this method
     @Override
     public ApplicationDto getApplication(Long applicationId, User freelancer) {
         Application application = applicationService.getApplicationById(applicationId);
@@ -217,8 +208,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .lastName(updateFreelancerProfileDto.getLastName())
                     .build();
 
-            UserResponseDto UserResponseDto = userService.updateUser(updateUserRequestDto, freelancer);
-            System.out.printf("UserResponseDto: %s", UserResponseDto);
+            userService.updateUser(updateUserRequestDto, freelancer);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);

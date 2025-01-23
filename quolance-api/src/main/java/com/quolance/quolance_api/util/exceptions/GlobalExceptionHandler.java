@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         List<String> generalErrors = new ArrayList<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             if (error instanceof FieldError fieldErr) {
                 String fieldName = fieldErr.getField();
                 String errorMessage = fieldErr.getDefaultMessage();

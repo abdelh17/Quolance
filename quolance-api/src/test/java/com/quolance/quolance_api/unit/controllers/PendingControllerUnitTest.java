@@ -57,7 +57,7 @@ class PendingControllerUnitTest {
     void updatePendingUser_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenReturn(responseDto);
 
             ResponseEntity<UserResponseDto> response = pendingController.updatePendingUser(updateDto);
@@ -67,7 +67,7 @@ class PendingControllerUnitTest {
                     .isNotNull()
                     .usingRecursiveComparison()
                     .isEqualTo(responseDto);
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }
@@ -76,13 +76,13 @@ class PendingControllerUnitTest {
     void updatePendingUser_WithUnauthorizedUser_ThrowsAccessDeniedException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenThrow(new AccessDeniedException("User not authorized to perform this action"));
 
             assertThatThrownBy(() -> pendingController.updatePendingUser(updateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to perform this action");
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }
@@ -92,7 +92,7 @@ class PendingControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
             updateDto.setRole("ADMIN");
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenThrow(ApiException.builder()
                             .message("Invalid role selection for pending user")
                             .status(400)
@@ -101,7 +101,7 @@ class PendingControllerUnitTest {
             assertThatThrownBy(() -> pendingController.updatePendingUser(updateDto))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid role selection for pending user");
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }
@@ -111,7 +111,7 @@ class PendingControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
             updateDto.setPassword("weak");
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenThrow(ApiException.builder()
                             .message("Password does not meet security requirements")
                             .status(400)
@@ -120,7 +120,7 @@ class PendingControllerUnitTest {
             assertThatThrownBy(() -> pendingController.updatePendingUser(updateDto))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Password does not meet security requirements");
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }

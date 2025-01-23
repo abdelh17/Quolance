@@ -111,7 +111,6 @@ public class ClientController {
     public ResponseEntity<String> selectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.selectFreelancer(applicationId, client);
-        // TODO: When a notification/communication service is implemented, send a notification to the freelancer
         return ResponseEntity.ok("Freelancer selected successfully");
     }
 
@@ -123,7 +122,6 @@ public class ClientController {
     public ResponseEntity<String> rejectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.rejectApplication(applicationId, client);
-        // TODO: When a notification/communication service is implemented, send a notification to the freelancer
         return ResponseEntity.ok("Freelancer rejected successfully");
     }
 
