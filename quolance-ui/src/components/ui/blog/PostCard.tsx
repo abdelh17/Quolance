@@ -5,17 +5,15 @@ import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 
 interface PostCardProps {
-    type: string;
+    id: number;
     title: string;
-    body: string;
-    userName: string;
-    fieldOfWork: string;
-    profilePicture: string; // URL
-    date: string;
-    tags: string[];
+    content: string;
+    authorName: string;
+    dateCreated: string;
+    comments: string[];
 }
 
-const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldOfWork, profilePicture, date, tags }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, comments }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -26,15 +24,15 @@ const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldO
             <div className="bg-slate-300 w-full rounded-t-md">
                 <div className="flex items-center mb-4 ml-5 py-5">
                     <Image
-                        alt={`${userName}'s profile`}
+                        alt={`${authorName}'s profile`}
                         src={icon} // profilePicture
                         width={48}
                         height={48}
                         className="rounded-full object-cover"
                     />
                     <div className="ml-4">
-                        <p className="font-semibold text-gray-800">{userName}</p>
-                        <p className="text-sm text-gray-500">{fieldOfWork}</p>
+                        <p className="font-semibold text-gray-800">{authorName}</p>
+                        {/* <p className="text-sm text-gray-500">{fieldOfWork}</p> */}
                     </div>
                 </div>
             </div>
@@ -42,14 +40,20 @@ const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldO
             {/* Post Content */}
             <div className="ml-5 mr-5 mb-5">
                 <div className="flex justify-between">
-                    <h3 className="text-md font-semibold text-gray-800">[{type}] : {title}</h3>
-                    <span className="text-sm text-gray-500">{date}</span>
+                    <h3 className="text-md font-semibold text-gray-800">{title}</h3>
+                    <span className="text-sm text-gray-500">
+                        {new Intl.DateTimeFormat("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            }).format(new Date(dateCreated))}
+                    </span>
                 </div>
                 <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
-                    <p className="text-gray-700">{body}</p>
+                    <p className="text-gray-700">{content}</p>
                 </div>
 
-                {body.length > 300 && (
+                {content.length > 300 && (
                     <button
                     onClick={toggleExpand}
                     className="text-blue-500 text-sm mt-2 focus:outline-none"
@@ -59,7 +63,7 @@ const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldO
                 )}
                 
                 {/* Tags */}
-                <div className="mt-4">
+                {/* <div className="mt-4">
                     <p className="text-sm font-semibold text-grey-800 mb-2">Tags: </p>
                     {tags.map((tag, index) => (
                         <span
@@ -69,7 +73,7 @@ const PostCard: React.FC<PostCardProps> = ({ type, title, body, userName, fieldO
                             {tag}
                         </span>
                     ))}
-                </div>
+                </div> */}
             </div>
         </div>
     );

@@ -1,6 +1,22 @@
-import { useMutation } from '@tanstack/react-query';
+
+import { useQuery, useMutation } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import { BlogPostType } from '@/constants/types/blog-types';
+import { BlogPostType, BlogPostViewType } from '@/constants/types/blog-types';
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+
+export const useGetAllBlogPosts = (options?: {
+    onSuccess?: (data: BlogPostViewType[]) => void;
+    onError?: (error: HttpErrorResponse) => void;
+  }) => {
+    return useQuery<BlogPostViewType[], HttpErrorResponse>({
+      queryKey: ['all-blog-posts'],
+      queryFn: async () => {
+        const response = await httpClient.get('/api/blog-posts/all');
+        return response.data;
+      },
+      ...options,
+    });
+  };
 
 export const useCreateBlogPost = (options?: {
     onSuccess?: () => void;
@@ -17,3 +33,4 @@ export const useCreateBlogPost = (options?: {
         onError: options?.onError,
     });
 };
+
