@@ -9,6 +9,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
+import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.entity_services.BlogCommentService;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,12 +50,16 @@ public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     private MockHttpSession session;
     private User loggedInUser;
     private BlogPost blogPost;
 
     @BeforeEach
     void setUp() throws Exception {
+        projectRepository.deleteAll();
         blogCommentRepository.deleteAll();
         blogPostRepository.deleteAll();
         userRepository.deleteAll();
