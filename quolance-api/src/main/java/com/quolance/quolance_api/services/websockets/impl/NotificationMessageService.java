@@ -4,12 +4,14 @@ import com.quolance.quolance_api.entities.MessageEntity;
 import com.quolance.quolance_api.entities.Notification;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.NotificationRepository;
+import com.quolance.quolance_api.services.entity_services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +19,7 @@ public class NotificationMessageService extends AbstractWebSocketService {
 
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserService userService;
 
     @Override
     public boolean supports(String messageType) {
@@ -27,13 +30,13 @@ public class NotificationMessageService extends AbstractWebSocketService {
      * Overloaded processMessage to handle Notification directly.
      *
      * @param notification The Notification object.
-     * @param userEmail    The recipient's email.
+     * @param userName    The recipient's email.
      */
-    public void processMessage(Notification notification, String userEmail) {
-        log.debug("Processing notification for user: {}", userEmail);
+    public void processNotification(Notification notification, String userName) {
+        log.debug("Processing notification for user: {}", userName);
 
         // Ensure recipient email matches
-        if (!notification.getRecipient().getEmail().equals(userEmail)) {
+        if (!notification.getRecipient().getUsername().equals(userName)) {
             throw new IllegalArgumentException("Recipient email does not match provided user email");
         }
 
@@ -43,21 +46,28 @@ public class NotificationMessageService extends AbstractWebSocketService {
         notificationRepository.save(notification);
 
         // Send the notification via WebSocket
-        messagingTemplate.convertAndSendToUser(userEmail, "/topic/notifications", notification);
+        messagingTemplate.convertAndSendToUser(userName, "/topic/notifications", notification);
     }
 
     /**
      * Process a generic `MessageEntity` and adapt it to a `Notification`.
      *
      * @param message   The incoming message entity.
-     * @param userEmail The recipient's email.
+     * @param userName The recipient's userName.
      */
     @Override
-    public void processMessage(MessageEntity message, String userEmail) {
-        log.debug("Adapting MessageEntity to Notification for user: {}", userEmail);
+    public void processMessage(MessageEntity message, String userName) {
+        log.debug("Adapting MessageEntity to Notification for user: {}", userName);
 
-        User sender = fetchUserByEmail(message.getSender());
-        User recipient = fetchUserByEmail(userEmail);
+        Optional<User> senderOpt = userService.findByUsername(message.getSender());
+        Optional<User> recipientOpt = userService.findByUsername(userName);
+
+        if (!senderOpt.isPresent() || !recipientOpt.isPresent()) {
+            throw new IllegalArgumentException("Sender or recipient not found");
+        }
+
+        User sender = senderOpt.get();
+        User recipient = recipientOpt.get();
 
         // Adapt MessageEntity to Notification
         Notification notification = new Notification();
@@ -66,22 +76,8 @@ public class NotificationMessageService extends AbstractWebSocketService {
         notification.setMessage(message.getMessage());
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
-
         // Process the adapted Notification
-        processMessage(notification, userEmail);
-    }
-
-    /**
-     * Fetch a user by their email (mock or implement retrieval logic).
-     *
-     * @param email The email of the user.
-     * @return The user object.
-     */
-    private User fetchUserByEmail(String email) {
-        // Mocked for now; implement retrieval logic from UserService or UserRepository
-        User user = new User();
-        user.setEmail(email);
-        return user;
+        processNotification(notification, userName);
     }
 
     /**
@@ -113,18 +109,18 @@ public class NotificationMessageService extends AbstractWebSocketService {
      * @param recipient The user receiving the notification.
      * @param message   The notification message.
      */
-    public void sendNotification(User sender, User recipient, String message) {
-        log.debug("Sending notification from {} to {}", sender.getEmail(), recipient.getEmail());
-
-        Notification notification = new Notification();
-        notification.setSender(sender);
-        notification.setRecipient(recipient);
-        notification.setMessage(message);
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setRead(false);
-
-        // Process and send the notification
-        processMessage(notification, recipient.getEmail());
-    }
+//    public void sendNotification(User sender, User recipient, String message) {
+//        log.debug("Sending notification from {} to {}", sender.getEmail(), recipient.getEmail());
+//
+//        Notification notification = new Notification();
+//        notification.setSender(sender);
+//        notification.setRecipient(recipient);
+//        notification.setMessage(message);
+//        notification.setTimestamp(LocalDateTime.now());
+//        notification.setRead(false);
+//
+//        // Process and send the notification
+//        processMessage(notification, recipient.getEmail());
+//    }
 
 }

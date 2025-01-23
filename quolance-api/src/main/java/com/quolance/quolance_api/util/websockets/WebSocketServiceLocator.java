@@ -22,8 +22,8 @@ public class WebSocketServiceLocator {
                 .orElseThrow(() -> new IllegalArgumentException("No handler found for message type: " + messageType));
     }
 
-    public void processMessage(MessageEntity message, String userEmail) {
+    public void processMessage(MessageEntity message, String userName) {
         WebSocketService service = getService(message.getMessageType());
-        service.processMessage(message, userEmail);
+        service.processMessage(message, userName);
     }
 }
