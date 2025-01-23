@@ -3,6 +3,9 @@ package com.quolance.quolance_api.services.entity_services;
 import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.User;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Optional;
 
@@ -29,4 +32,7 @@ public interface UserService {
     UserResponseDto createAdmin(@Valid CreateAdminRequestDto request);
 
     void updateProfilePicture(User user, String photoUrl);
+
+    Page<User> findAllWithFilters(Specification<User> spec, Pageable pageable);
+
 }

@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -84,9 +82,9 @@ class SendResetPasswordEmailUnitTest {
         assertThat(capturedContext.getVariable("link")).isEqualTo(expectedLink);
 
         verify(emailService).sendHtmlMessage(
-                eq(List.of(mockUser.getEmail())),
-                eq("Password reset requested"),
-                eq(expectedHtmlBody)
+                List.of(mockUser.getEmail()),
+                "Password reset requested",
+                expectedHtmlBody
         );
 
         assertThat(mockToken.isEmailSent()).isTrue();

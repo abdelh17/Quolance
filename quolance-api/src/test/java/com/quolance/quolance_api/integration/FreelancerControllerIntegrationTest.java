@@ -12,7 +12,6 @@ import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,14 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class FreelancerControllerIntegrationTest extends AbstractTestcontainers {
+class FreelancerControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private MockMvc mockMvc;
 
@@ -69,7 +68,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
     @BeforeEach
     void setUpSession() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("freelancer1@test.com");
+        loginRequest.setUsername("freelancer1@test.com");
         loginRequest.setPassword("Password123!");
 
         session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
@@ -119,9 +118,9 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("You have already applied to this project.");
+        assertThat(jsonResponse).containsEntry("message", "You have already applied to this project.");
         assertThat(applicationRepository.findAll()).hasSize(1);
-        Application createdApplication = applicationRepository.findAll().get(0);
+        Application createdApplication = applicationRepository.findAll().getFirst();
         assertThat(createdApplication.getCreationDate()).isEqualToIgnoringNanos(application.getCreationDate());
     }
 
@@ -143,7 +142,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("You can't apply to this project.");
+        assertThat(jsonResponse).containsEntry("message", "You can't apply to this project.");
         assertThat(applicationRepository.findAll()).isEmpty();
     }
 
@@ -163,12 +162,13 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(projectResponse.get("id")).isEqualTo(application.getId().intValue());
-        assertThat(projectResponse.get("status")).isEqualTo("APPLIED");
-        assertThat(projectResponse.get("status")).isEqualTo(application.getApplicationStatus().name());
-        assertThat(projectResponse.get("projectId")).isEqualTo(project.getId().intValue());
-        assertThat(projectResponse.get("projectTitle")).isEqualTo(project.getTitle());
-        assertThat(projectResponse.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
+
+        assertThat(projectResponse).containsEntry("id", application.getId().intValue())
+                .containsEntry("status", "APPLIED")
+                .containsEntry("status", application.getApplicationStatus().name())
+                .containsEntry("projectId", project.getId().intValue())
+                .containsEntry("projectTitle", project.getTitle())
+                .containsEntry("freelancerId", freelancer.getId().intValue());
     }
 
     @Test
@@ -208,7 +208,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("You cannot cancel an application that has been accepted");
+        assertThat(jsonResponse).containsEntry("message", "You cannot cancel an application that has been accepted");
         assertThat(applicationRepository.findAll()).hasSize(1);
     }
 
@@ -240,19 +240,21 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         Map<String, Object> applicationResponse1 = content.get(0);
         Map<String, Object> applicationResponse2 = content.get(1);
 
-        assertThat(applicationResponse1.get("id")).isEqualTo(application1.getId().intValue());
-        assertThat(applicationResponse1.get("status")).isEqualTo("APPLIED");
-        assertThat(applicationResponse1.get("status")).isEqualTo(application1.getApplicationStatus().name());
-        assertThat(applicationResponse1.get("projectId")).isEqualTo(project1.getId().intValue());
-        assertThat(applicationResponse1.get("projectTitle")).isEqualTo(project1.getTitle());
-        assertThat(applicationResponse1.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
+        assertThat(applicationResponse1)
+                .containsEntry("id", application1.getId().intValue())
+                .containsEntry("status", "APPLIED")
+                .containsEntry("status", application1.getApplicationStatus().name())
+                .containsEntry("projectId", project1.getId().intValue())
+                .containsEntry("projectTitle", project1.getTitle())
+                .containsEntry("freelancerId", freelancer.getId().intValue());
 
-        assertThat(applicationResponse2.get("id")).isEqualTo(application2.getId().intValue());
-        assertThat(applicationResponse2.get("status")).isEqualTo("APPLIED");
-        assertThat(applicationResponse2.get("status")).isEqualTo(application2.getApplicationStatus().name());
-        assertThat(applicationResponse2.get("projectId")).isEqualTo(project2.getId().intValue());
-        assertThat(applicationResponse2.get("projectTitle")).isEqualTo(project2.getTitle());
-        assertThat(applicationResponse2.get("freelancerId")).isEqualTo(freelancer.getId().intValue());
+        assertThat(applicationResponse2)
+                .containsEntry("id", application2.getId().intValue())
+                .containsEntry("status", "APPLIED")
+                .containsEntry("status", application2.getApplicationStatus().name())
+                .containsEntry("projectId", project2.getId().intValue())
+                .containsEntry("projectTitle", project2.getTitle())
+                .containsEntry("freelancerId", freelancer.getId().intValue());
     }
 
     @Test
@@ -286,21 +288,22 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         //Assert
         assertThat(content).hasSize(3);
 
-        Map<String, Object> projectResponse1 = (Map<String, Object>) content.get(0);
-        Map<String, Object> projectResponse2 = (Map<String, Object>) content.get(1);
-        Map<String, Object> projectResponse3 = (Map<String, Object>) content.get(2);
+        Map<String, Object> projectResponse1 = content.get(0);
+        Map<String, Object> projectResponse2 = content.get(1);
+        Map<String, Object> projectResponse3 = content.get(2);
 
-        assertThat(projectResponse1.get("id")).isEqualTo(project1.getId().intValue());
-        assertThat(projectResponse1.get("projectStatus")).isEqualTo("OPEN");
-        assertThat(projectResponse1.get("projectStatus")).isEqualTo(project1.getProjectStatus().name());
+        assertThat(projectResponse1).containsEntry("id", project1.getId().intValue())
+                .containsEntry("projectStatus", "OPEN")
+                .containsEntry("projectStatus", project1.getProjectStatus().name());
 
-        assertThat(projectResponse2.get("id")).isEqualTo(project2.getId().intValue());
-        assertThat(projectResponse2.get("projectStatus")).isEqualTo("CLOSED");
-        assertThat(projectResponse2.get("projectStatus")).isEqualTo(project2.getProjectStatus().name());
+        assertThat(projectResponse2).containsEntry("id", project2.getId().intValue())
+                .containsEntry("projectStatus", "CLOSED")
+                .containsEntry("projectStatus", project2.getProjectStatus().name());
 
-        assertThat(projectResponse3.get("id")).isEqualTo(project4.getId().intValue());
-        assertThat(projectResponse3.get("projectStatus")).isEqualTo("OPEN");
-        assertThat(projectResponse3.get("projectStatus")).isEqualTo(project4.getProjectStatus().name());
+        assertThat(projectResponse3).containsEntry("id", project4.getId().intValue())
+                .containsEntry("projectStatus", "OPEN")
+                .containsEntry("projectStatus", project4.getProjectStatus().name());
+
     }
 
     @Test
@@ -318,9 +321,9 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(projectResponse.get("id")).isEqualTo(project.getId().intValue());
-        assertThat(projectResponse.get("projectStatus")).isEqualTo("OPEN");
-        assertThat(projectResponse.get("projectStatus")).isEqualTo(project.getProjectStatus().name());
+        assertThat(projectResponse).containsEntry("id", project.getId().intValue())
+                .containsEntry("projectStatus", "OPEN")
+                .containsEntry("projectStatus", project.getProjectStatus().name());
     }
 
     @Test
@@ -338,9 +341,10 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(projectResponse.get("id")).isEqualTo(project.getId().intValue());
-        assertThat(projectResponse.get("projectStatus")).isEqualTo("CLOSED");
-        assertThat(projectResponse.get("projectStatus")).isEqualTo(project.getProjectStatus().name());
+        assertThat(projectResponse)
+                .containsEntry("id", project.getId().intValue())
+                .containsEntry("projectStatus", "CLOSED")
+                .containsEntry("projectStatus", project.getProjectStatus().name());
     }
 
     @Test
@@ -358,8 +362,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Project visibility has expired.");
-
+        assertThat(jsonResponse).containsEntry("message", "Project visibility has expired.");
     }
 
     @Test
@@ -377,7 +380,7 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Project is not yet approved.");
+        assertThat(jsonResponse).containsEntry("message", "Project is not yet approved.");
     }
 
     @Test
@@ -459,9 +462,10 @@ public class FreelancerControllerIntegrationTest extends AbstractTestcontainers 
         //Assert
         Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
 
-        assertThat(profileResponse.get("firstName")).isEqualTo(freelancer.getFirstName());
-        assertThat(profileResponse.get("lastName")).isEqualTo(freelancer.getLastName());
-        assertThat(profileResponse.get("bio")).isEqualTo(freelancer.getProfile().getBio());
+        assertThat(profileResponse)
+                .containsEntry("firstName", freelancer.getFirstName())
+                .containsEntry("lastName", freelancer.getLastName())
+                .containsEntry("bio", freelancer.getProfile().getBio());
     }
 
     @Test

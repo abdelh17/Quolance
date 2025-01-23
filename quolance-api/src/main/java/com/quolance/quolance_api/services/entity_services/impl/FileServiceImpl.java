@@ -8,11 +8,12 @@ import com.quolance.quolance_api.repositories.FileRepository;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,9 +26,9 @@ public class FileServiceImpl implements FileService {
     @Override
     public Map<String, Object> uploadFile(MultipartFile file, User uploadedBy) {
 
-        Map<String, Object> uploadResult ;
+        Map<String, Object> uploadResult;
         String fileType = file.getContentType();
-        String folder = (fileType != null ? fileType.startsWith("image") : false) ? "images" : "files";
+        String folder = (fileType != null && fileType.startsWith("image")) ? "images" : "files";
 
         try {
             uploadResult = cloudinary.uploader().upload(file.getBytes(), Map.of(
@@ -48,13 +49,12 @@ public class FileServiceImpl implements FileService {
             throw new ApiException("Error uploading file");
         }
 
-        return  uploadResult;
+        return uploadResult;
     }
 
     @Override
-    public List<FileDto> getAllFileUploadsByUser(User user) {
-        List<FileEntity> files = fileRepository.findFileUploadsByUser(user);
-        return files.stream().map(FileDto::fromEntity).toList();
+    public Page<FileDto> getAllFileUploadsByUser(User user, Pageable pageable) {
+        Page<FileEntity> files = fileRepository.findFileUploadsByUser(user, pageable);
+        return files.map(FileDto::fromEntity);
     }
-
 }

@@ -26,40 +26,31 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SendWelcomeEmailUnitTest {
 
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private VerificationCodeService verificationCodeService;
-
-    @Mock
-    private SpringTemplateEngine templateEngine;
-
-    @Mock
-    private EmailService emailService;
-
-    @Mock
-    private ApplicationProperties applicationProperties;
-
-    @InjectMocks
-    private SendWelcomeEmailJobHandler jobHandler;
-
-    @Captor
-    private ArgumentCaptor<Context> contextCaptor;
-
-    private User mockUser;
-    private VerificationCode mockVerificationCode;
-    private SendWelcomeEmailJob mockJob;
     private static final String APP_NAME = "Quolance";
     private static final String BASE_URL = "http://localhost:8080";
     private static final String VERIFICATION_CODE = "123456";
+    @Mock
+    private UserService userService;
+    @Mock
+    private VerificationCodeService verificationCodeService;
+    @Mock
+    private SpringTemplateEngine templateEngine;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private ApplicationProperties applicationProperties;
+    @InjectMocks
+    private SendWelcomeEmailJobHandler jobHandler;
+    @Captor
+    private ArgumentCaptor<Context> contextCaptor;
+    private User mockUser;
+    private VerificationCode mockVerificationCode;
+    private SendWelcomeEmailJob mockJob;
 
     @BeforeEach
     void setUp() {
@@ -96,9 +87,9 @@ class SendWelcomeEmailUnitTest {
         assertThat(capturedContext.getVariable("applicationName")).isEqualTo(APP_NAME);
 
         verify(emailService).sendHtmlMessage(
-                eq(List.of(mockUser.getEmail())),
-                eq("Welcome to our platform"),
-                eq(expectedHtmlBody)
+                List.of(mockUser.getEmail()),
+                "Welcome to our platform",
+                expectedHtmlBody
         );
 
         verify(verificationCodeService).updateVerificationCodeStatus(mockVerificationCode);

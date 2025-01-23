@@ -9,6 +9,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
+import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.entity_services.BlogCommentService;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
+class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,12 +50,16 @@ public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     private MockHttpSession session;
     private User loggedInUser;
     private BlogPost blogPost;
 
     @BeforeEach
     void setUp() throws Exception {
+        projectRepository.deleteAll();
         blogCommentRepository.deleteAll();
         blogPostRepository.deleteAll();
         userRepository.deleteAll();
@@ -94,8 +99,7 @@ public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers
 
     @Test
     void testGetAllCommentsForBlogPost() throws Exception {
-        BlogComment blogComment = blogCommentRepository
-                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+        blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
         mockMvc.perform(get("/api/blog-comments/post/" + blogPost.getId())
                         .session(session)
@@ -138,7 +142,7 @@ public class BlogCommentControllerIntegrationTest extends AbstractTestcontainers
 
     private MockHttpSession getSession(String email, String password) throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail(email);
+        loginRequest.setUsername(email);
         loginRequest.setPassword(password);
 
         return (MockHttpSession) mockMvc.perform(post("/api/auth/login")

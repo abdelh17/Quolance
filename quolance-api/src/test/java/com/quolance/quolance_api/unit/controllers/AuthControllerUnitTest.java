@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.unit;
+package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.AuthController;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
@@ -47,7 +47,7 @@ class AuthControllerUnitTest {
     @BeforeEach
     void setUp() {
         loginRequest = new LoginRequestDto();
-        loginRequest.setEmail("test@example.com");
+        loginRequest.setUsername("test@example.com");
         loginRequest.setPassword("password123");
 
         mockUser = new User();

@@ -19,6 +19,7 @@ public class BlogPostResponseDto {
     private String content;
     private String authorName;
     private LocalDateTime dateCreated;
+    private List<BlogCommentDto> comments;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
         BlogPostResponseDto response = new BlogPostResponseDto();
@@ -29,7 +30,5 @@ public class BlogPostResponseDto {
         response.setDateCreated(blogPost.getCreationDate());
         return response;
     }
-
-    private List<BlogCommentDto> comments;
 
 }

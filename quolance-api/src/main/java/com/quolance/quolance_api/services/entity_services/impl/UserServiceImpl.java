@@ -14,7 +14,9 @@ import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.scheduling.BackgroundJobRequest;
-import org.jobrunr.scheduling.BackgroundJob;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto create(CreateUserRequestDto request) {
-        if(userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new ApiException("A user with this email already exists.");
         }
         User user = new User(request);
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto createAdmin(CreateAdminRequestDto request) {
-        if(userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new ApiException("A user with this email already exists.");
         }
         User user = new User(request);
@@ -58,6 +60,11 @@ public class UserServiceImpl implements UserService {
     public void updateProfilePicture(User user, String photoUrl) {
         user.setProfileImageUrl(photoUrl);
         userRepository.save(user);
+    }
+
+    @Override
+    public Page<User> findAllWithFilters(Specification<User> spec, Pageable pageable) {
+        return userRepository.findAll(spec, pageable);
     }
 
     @Override

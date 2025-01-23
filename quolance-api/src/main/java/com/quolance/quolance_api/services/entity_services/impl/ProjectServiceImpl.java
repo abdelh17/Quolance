@@ -11,8 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -44,7 +44,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-
     @Override
     public Page<Project> findAllWithFilters(Specification<Project> spec, Pageable pageable) {
         return projectRepository.findAll(spec, pageable);
@@ -63,7 +62,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void updateProjectStatus(Project project, ProjectStatus newStatus) {
 
-        // TODO: Handle updating open projects
         if (project.getProjectStatus() == ProjectStatus.CLOSED) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)

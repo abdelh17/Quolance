@@ -2,8 +2,9 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
-import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
@@ -16,13 +17,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/client")
@@ -113,7 +111,6 @@ public class ClientController {
     public ResponseEntity<String> selectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.selectFreelancer(applicationId, client);
-        // TODO: When a notification/communication service is implemented, send a notification to the freelancer
         return ResponseEntity.ok("Freelancer selected successfully");
     }
 
@@ -125,7 +122,6 @@ public class ClientController {
     public ResponseEntity<String> rejectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.rejectApplication(applicationId, client);
-        // TODO: When a notification/communication service is implemented, send a notification to the freelancer
         return ResponseEntity.ok("Freelancer rejected successfully");
     }
 
@@ -138,6 +134,21 @@ public class ClientController {
         User client = SecurityUtil.getAuthenticatedUser();
         applicationProcessWorkflow.rejectManyApplications(applicationIds, client);
         return ResponseEntity.ok("All selected freelancers rejected successfully");
+    }
+
+    @GetMapping("/freelancers/all")
+    @Operation(
+            summary = "View all available freelancers.",
+            description = "View all freelancers (as a client) based on the provided filters."
+    )
+    public ResponseEntity<Page<FreelancerProfileDto>> getAllAvailableFreelancers(
+            @Valid PageableRequestDto pageableRequest,
+            @Valid FreelancerProfileFilterDto filters) {
+        Page<FreelancerProfileDto> freelancersPage = clientWorkflowService.getAllAvailableFreelancers(
+                pageableRequest.toPageRequest(),
+                filters
+        );
+        return ResponseEntity.ok(freelancersPage);
     }
 
 }

@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidSortField {
     String message() default "Invalid sort field";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

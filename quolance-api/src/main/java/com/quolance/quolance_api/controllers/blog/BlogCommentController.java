@@ -21,7 +21,7 @@ public class BlogCommentController {
 
     @PostMapping("/{postId}")
     @Operation(summary = "Create a new blog comment")
-    public ResponseEntity<?> createBlogComment(@PathVariable Long postId, @Valid @RequestBody BlogCommentDto request) {
+    public ResponseEntity<BlogCommentDto> createBlogComment(@PathVariable Long postId, @Valid @RequestBody BlogCommentDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         BlogCommentDto response = blogCommentService.createBlogComment(postId, author, request);
         return ResponseEntity.ok(response);

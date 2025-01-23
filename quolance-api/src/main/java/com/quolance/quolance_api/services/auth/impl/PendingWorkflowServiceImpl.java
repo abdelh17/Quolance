@@ -23,8 +23,8 @@ public class PendingWorkflowServiceImpl implements PendingWorkflowService {
     /**
      * Updates the password and role of a PENDING user in a single operation.
      *
-     * @param user                  The authenticated user.
-     * @param updatePendingUserDto  DTO containing the new password and role.
+     * @param user                 The authenticated user.
+     * @param updatePendingUserDto DTO containing the new password and role.
      * @return Updated user response DTO.
      */
     @Override

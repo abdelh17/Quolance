@@ -41,7 +41,7 @@ export const useAuthGuard = ({
       onError(undefined);
       await httpClient
         .post<HttpErrorResponse>('/api/auth/login', {
-          email: props.email,
+          username: props.email,
           password: props.password,
         })
         .then(() => mutate())

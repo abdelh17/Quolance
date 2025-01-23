@@ -12,7 +12,7 @@ public class SecurityUtil {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User user) {
             return user;
-        }else {
+        } else {
             log.error("User requested but not found in SecurityContextHolder");
             throw ApiException.builder().status(HttpServletResponse.SC_UNAUTHORIZED).message("Authentication required").build();
         }

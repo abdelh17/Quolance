@@ -14,13 +14,9 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
@@ -61,12 +57,15 @@ public class SecurityConfiguration {
     };
 
     private final ApplicationProperties applicationProperties;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     private final OAuth2LoginSuccessHandlerImpl oauth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(customizer -> {
+
+        AuthenticationManager authenticationManager = authenticationManager();
+
+        http.authorizeHttpRequests(customizer ->
                     customizer
                             .requestMatchers(antMatcher(HttpMethod.GET, "/ws/**")).permitAll() // Allow WebSocket handshake
                             .requestMatchers(WHITE_LIST_URL).permitAll()
@@ -78,14 +77,12 @@ public class SecurityConfiguration {
                             .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.GET, "/api/public/**")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate")).hasRole("ADMIN")
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
                             .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
                             .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
                             .requestMatchers(antMatcher("api/pending/**")).hasRole("PENDING")
                             .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
-                            .anyRequest().authenticated();
-                })
+                            .anyRequest().authenticated()
+                )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             String path = request.getRequestURI();
@@ -101,23 +98,23 @@ public class SecurityConfiguration {
                             }
                         })
                         .authenticationEntryPoint(
-                                (request, response, authException) -> {
-                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, please login");
-                                })
+                                (request, response, authException) ->
+                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, please login")
+                                )
                 );
 
-        http.oauth2Login(customizer -> {
-            customizer.successHandler(oauth2LoginSuccessHandler);
-        });
+        http.oauth2Login(customizer ->
+            customizer.successHandler(oauth2LoginSuccessHandler)
+        );
 
-        http.addFilterBefore(new UsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.userDetailsService(userDetailsService);
+        http.userDetailsService(userDetailsService)
+                .authenticationManager(authenticationManager);
 
         http.csrf(csrf -> csrf.disable());
 
-        http.cors(customizer -> {
-            customizer.configurationSource(corsConfigurationSource());
-        });
+        http.cors(customizer ->
+            customizer.configurationSource(corsConfigurationSource())
+        );
 
         return http.build();
     }
@@ -193,17 +190,5 @@ public class SecurityConfiguration {
 
             filterChain.doFilter(request, response);
         }
-    }
-
-    @Bean
-    public SwitchUserFilter switchUserFilter() {
-        SwitchUserFilter filter = new SwitchUserFilter();
-        filter.setUserDetailsService(userDetailsService);
-        filter.setSwitchUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate"));
-        filter.setExitUserMatcher(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit"));
-        filter.setSuccessHandler((request, response, authentication) -> {
-            response.sendRedirect(applicationProperties.getBaseUrl() + "/switch-success");
-        });
-        return filter;
     }
 }

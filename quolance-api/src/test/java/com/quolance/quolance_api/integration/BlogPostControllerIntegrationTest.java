@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
+class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
 
     @Autowired
     private MockMvc mockMvc;
@@ -53,21 +53,6 @@ public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
         session = getSession(loggedInUser.getEmail(), "Password123!");
     }
-
-//    @Test
-//    void testCreateBlogPostIsOk() throws Exception {
-//        BlogPostRequestDto request = new BlogPostRequestDto();
-//        request.setTitle("New Blog Post");
-//        request.setContent("This is a test content");
-//
-//        mockMvc.perform(post("/api/blog-posts")
-//                        .session(session)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(request)))
-//                .andExpect(status().isOk());
-//
-//        assertThat(blogPostRepository.findAll().size()).isEqualTo(1);
-//    }
 
     @Test
     void testCreateBlogPostInvalidRequest() throws Exception {
@@ -154,7 +139,7 @@ public class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
 
     private MockHttpSession getSession(String email, String password) throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setEmail(email);
+        loginRequest.setUsername(email);
         loginRequest.setPassword(password);
 
         return (MockHttpSession) mockMvc.perform(post("/api/auth/login")

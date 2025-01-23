@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -71,7 +70,7 @@ public class NotificationRestController {
         List<Notification> notifications = notificationMessageService.getNotificationsForUser(recipient.getId());
         List<NotificationResponseDto> response = notifications.stream()
                 .map(NotificationResponseDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(response);
     }
 }

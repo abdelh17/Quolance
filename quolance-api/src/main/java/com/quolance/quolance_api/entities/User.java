@@ -145,7 +145,6 @@ public class User extends AbstractEntity implements UserDetails {
 
     /**
      * Updates the user's password.
-     *
      */
     public void updatePassword(String newPassword) {
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);

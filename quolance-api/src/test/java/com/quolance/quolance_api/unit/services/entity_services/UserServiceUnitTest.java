@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.PasswordResetToken;
@@ -10,15 +10,15 @@ import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.VerificationCodeRepository;
+import com.quolance.quolance_api.services.entity_services.impl.UserServiceImpl;
+import com.quolance.quolance_api.util.ApplicationContextProvider;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.jobrunr.scheduling.BackgroundJobRequest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -28,12 +28,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserServiceUnitTest {
 
     @Mock
     private UserRepository userRepository;
@@ -49,6 +47,9 @@ class UserServiceTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+    private MockedStatic<ApplicationContextProvider> applicationContextProviderMock;
+    private MockedStatic<BackgroundJobRequest> backgroundJobRequestMock;
 
     @Captor
     private ArgumentCaptor<User> userCaptor;
@@ -66,7 +67,6 @@ class UserServiceTest {
     private CreateAdminRequestDto createAdminRequest;
     private UpdateUserRequestDto updateUserRequest;
     private UpdateUserPasswordRequestDto updatePasswordRequest;
-    private UpdatePendingUserRequestDto updatePendingUserRequest;
 
     private User createMockUser() {
         return User.builder()
@@ -83,6 +83,13 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
+        applicationContextProviderMock = mockStatic(ApplicationContextProvider.class);
+        applicationContextProviderMock.when(() -> ApplicationContextProvider.bean(PasswordEncoder.class)).thenReturn(passwordEncoder);
+
+        backgroundJobRequestMock = mockStatic(BackgroundJobRequest.class);
+        backgroundJobRequestMock.when(() -> BackgroundJobRequest.enqueue(any(SendWelcomeEmailJob.class))).thenReturn(null);
+        backgroundJobRequestMock.when(() -> BackgroundJobRequest.enqueue(any(SendResetPasswordEmailJob.class))).thenReturn(null);
+
         mockUser = createMockUser();
 
         mockVerificationCode = new VerificationCode(mockUser);
@@ -93,6 +100,7 @@ class UserServiceTest {
 
         createUserRequest = CreateUserRequestDto.builder()
                 .email("test@test.com")
+                .username("testuser")
                 .password("Password123")
                 .passwordConfirmation("Password123")
                 .firstName("Test")
@@ -102,6 +110,7 @@ class UserServiceTest {
 
         createAdminRequest = CreateAdminRequestDto.builder()
                 .email("admin@test.com")
+                .username("adminuser")
                 .temporaryPassword("Admin123")
                 .passwordConfirmation("Admin123")
                 .firstName("Admin")
@@ -118,11 +127,16 @@ class UserServiceTest {
                 .password("NewPassword123")
                 .confirmPassword("NewPassword123")
                 .build();
+    }
 
-        updatePendingUserRequest = new UpdatePendingUserRequestDto();
-        updatePendingUserRequest.setPassword("NewPassword123");
-        updatePendingUserRequest.setConfirmPassword("NewPassword123");
-        updatePendingUserRequest.setRole(Role.FREELANCER.name());
+    @AfterEach
+    void tearDown() {
+        if (applicationContextProviderMock != null) {
+            applicationContextProviderMock.close();
+        }
+        if (backgroundJobRequestMock != null) {
+            backgroundJobRequestMock.close();
+        }
     }
 
     @Test
@@ -130,7 +144,7 @@ class UserServiceTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.create(createUserRequest);
+        userService.create(createUserRequest);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -138,6 +152,7 @@ class UserServiceTest {
         assertThat(savedUser.getLastName()).isEqualTo(createUserRequest.getLastName());
         assertThat(savedUser.getRole()).isEqualTo(Role.valueOf(createUserRequest.getRole()));
         verify(verificationCodeRepository).save(any(VerificationCode.class));
+        backgroundJobRequestMock.verify(() -> BackgroundJobRequest.enqueue(any(SendWelcomeEmailJob.class)));
     }
 
     @Test
@@ -154,7 +169,7 @@ class UserServiceTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.createAdmin(createAdminRequest);
+        userService.createAdmin(createAdminRequest);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -193,16 +208,7 @@ class UserServiceTest {
         userService.forgotPassword("test@test.com");
 
         verify(passwordResetTokenRepository).save(any(PasswordResetToken.class));
-    }
-
-    @Test
-    void forgotPassword_UserNotFound_ThrowsException() {
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> userService.forgotPassword("nonexistent@test.com"))
-                .isInstanceOf(ApiException.class)
-                .hasFieldOrPropertyWithValue("status", 404)
-                .hasMessage("User not found");
+        backgroundJobRequestMock.verify(() -> BackgroundJobRequest.enqueue(any(SendResetPasswordEmailJob.class)));
     }
 
     @Test
@@ -247,10 +253,10 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUserInfoUser_Success() {
+    void updateUser_Success() {
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.updateUser(updateUserRequest, mockUser);
+        userService.updateUser(updateUserRequest, mockUser);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -259,17 +265,17 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUserInfoPassword_Success() {
+    void updatePassword_Success() {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.updatePassword(updatePasswordRequest, mockUser);
+        userService.updatePassword(updatePasswordRequest, mockUser);
 
         verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void updateUserInfoPassword_WrongOldPassword_ThrowsException() {
+    void updatePassword_WrongOldPassword_ThrowsException() {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
         assertThatThrownBy(() -> userService.updatePassword(updatePasswordRequest, mockUser))

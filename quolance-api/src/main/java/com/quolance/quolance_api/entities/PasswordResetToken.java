@@ -1,16 +1,13 @@
 package com.quolance.quolance_api.entities;
 
-import com.quolance.quolance_api.entities.AbstractEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "password_reset_token")
