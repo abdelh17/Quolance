@@ -25,31 +25,58 @@ const PostReaction: React.FC<PostReactionProps> = ({
     onReactionClick, 
 }) => {
     const renderReactionIcon = () => {
+        const commonProps = {
+          size: 24,
+          style: { cursor: "pointer" },
+        };
         switch (reaction) {
             case "like":
-                return userReaction ? <BiSolidLike /> : <BiLike />;
+              return userReaction ? (
+                <BiSolidLike {...commonProps} style={{ color: "blue" }} />
+              ) : (
+                <BiLike {...commonProps} />
+              );
             case "love":
-                return userReaction ? <BiSolidHeart /> : <BiHeart />;
+              return userReaction ? (
+                <BiSolidHeart {...commonProps} style={{ color: "red" }} />
+              ) : (
+                <BiHeart {...commonProps} />
+              );
             case "laugh":
-                return userReaction ? <BiSolidLaugh /> : <BiLaugh />;
+              return userReaction ? (
+                <BiSolidLaugh {...commonProps} style={{ color: "yellow" }} />
+              ) : (
+                <BiLaugh {...commonProps} />
+              );
             case "shocked":
-                return userReaction ? <BiSolidShocked /> : <BiShocked />;
+              return userReaction ? (
+                <BiSolidShocked {...commonProps} style={{ color: "yellow" }} />
+              ) : (
+                <BiShocked {...commonProps} />
+              );
             case "sad":
-                return userReaction ? <BiSolidSad /> : <BiSad />;
+              return userReaction ? (
+                <BiSolidSad {...commonProps} style={{ color: "yellow" }} />
+              ) : (
+                <BiSad {...commonProps} />
+              );
             case "angry":
-                return userReaction ? <BiSolidAngry /> : <BiAngry />;
-        }
-    }
-
-    return (
-        <button
-            onClick={onReactionClick}
-            className="flex items-center gap-1 px-2 py-1 text-gray-700 hover:text-blue-500 focus:outline-none"
-        >
-            {renderReactionIcon()}
-            <p className="ml-1">{reactionCount}</p>
-        </button>
-    );
-}
-
-export default PostReaction;
+              return userReaction ? (
+                <BiSolidAngry {...commonProps} style={{ color: "yellow" }} />
+              ) : (
+                <BiAngry {...commonProps} />
+              );
+          }
+        };
+      
+        return (
+          <div className="flex items-center">
+            <button onClick={onReactionClick} className="focus:outline-none">
+              {renderReactionIcon()}
+            </button>
+            <p className="ml-1">{reactionCount}&nbsp;&nbsp;</p>
+          </div>
+        );
+      };
+      
+      export default PostReaction;

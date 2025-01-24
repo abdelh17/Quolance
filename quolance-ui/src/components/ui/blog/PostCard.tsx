@@ -40,32 +40,32 @@ const PostCard: React.FC<PostCardProps> = ({
 
     const handleReactionClick = (reactionType: string) => {
         setReactions((prevReactions) => {
-            const newReactions = { ...prevReactions };
+            const oldReactions = { ...prevReactions };
 
-            if (newReactions[reactionType].userReacted){
+            if (oldReactions[reactionType].userReacted){
                 return {
-                    ...newReactions,
+                    ...oldReactions,
                     [reactionType]: {
-                        ...newReactions[reactionType],
-                        count: newReactions[reactionType].count - 1,
+                        ...oldReactions[reactionType],
+                        count: oldReactions[reactionType].count - 1,
                         userReacted: false,
                 }}
             } else {
-                const updatedReactions = Object.keys(newReactions).reduce((reaction, key) => {
-                    if (key === reactionType) {
-                        reaction[key] = {
-                            count: newReactions[key].count + 1,
+                const updatedReactions = Object.keys(oldReactions).reduce((acc, reaction) => {
+                    if (reaction === reactionType) {
+                        acc[reaction] = {
+                            count: oldReactions[reaction].count + 1,
                             userReacted: true,
                         };
-                    } else if (newReactions[key].userReacted) {
-                        reaction[key] = {
-                            count: newReactions[key].count - 1,
+                    } else if (oldReactions[reaction].userReacted) {
+                        acc[reaction] = {
+                            count: oldReactions[reaction].count - 1,
                             userReacted: false,
                         };
                     } else {
-                        reaction[key] = newReactions[key];
+                        acc[reaction] = oldReactions[reaction];
                     }
-                    return reaction;
+                    return acc;
                 }, {} as ReactionState);
                 return updatedReactions;
             }
