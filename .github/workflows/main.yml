@@ -33,7 +33,7 @@ jobs:
         run: |
           cd quolance-ui
           npm run e2e:headless # Generate coverage
-          sonar-scanner \
+          npx sonarqube-scanner \
             -Dsonar.organization=abdelh17 \
             -Dsonar.projectKey=abdelh17_Quolance_ui \
             -Dsonar.sources=. \
