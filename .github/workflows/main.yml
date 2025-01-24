@@ -45,11 +45,6 @@ jobs:
           ls -l coverage
           ls -l .nyc_output
 
-      # Step 5: Build Frontend
-      - name: Build Frontend
-        run: |
-          cd quolance-ui
-          npm run build
 
       # Step 6: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
