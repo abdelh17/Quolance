@@ -54,16 +54,14 @@ class BlogReactionIntegrationTest extends AbstractTestcontainers {
     private User loggedInUser;
     private BlogPost blogPost;
     private BlogComment blogComment;
-    @Autowired
-    private ProjectRepository projectRepository;
 
     @BeforeEach
     void setUp() throws Exception {
         // Delete related entities first
-        projectRepository.deleteAll();  // Delete all projects first
+        reactionRepository.deleteAll();
         blogCommentRepository.deleteAll();
         blogPostRepository.deleteAll();
-        userRepository.deleteAll();  // Now delete users
+        userRepository.deleteAll();
 
         // Create test data
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
