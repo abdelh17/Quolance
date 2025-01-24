@@ -1,10 +1,10 @@
 package com.quolance.quolance_api.services.entity_services.impl;
 
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
-import com.quolance.quolance_api.entities.BlogComment;
-import com.quolance.quolance_api.entities.BlogPost;
+import com.quolance.quolance_api.entities.blog.BlogComment;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.repositories.BlogCommentRepository;
+import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
 import com.quolance.quolance_api.services.entity_services.BlogCommentService;
 import com.quolance.quolance_api.services.entity_services.BlogPostService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
@@ -22,6 +22,12 @@ public class BlogCommentServiceImpl implements BlogCommentService {
 
     private final BlogCommentRepository blogCommentRepository;
     private final BlogPostService blogPostService;
+
+    @Override
+    public BlogComment getCommentEntity(Long commentId) {
+        return blogCommentRepository.findById(commentId)
+                .orElseThrow(() -> new ApiException("BlogComment not found with ID: " + commentId));
+    }
 
     @Override
     public BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto) {

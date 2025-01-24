@@ -3,7 +3,7 @@ package com.quolance.quolance_api.services.entity_services;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
-import com.quolance.quolance_api.entities.BlogPost;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.User;
 import jakarta.validation.Valid;
 
