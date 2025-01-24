@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.websockets.impl;
 
+import com.quolance.quolance_api.dtos.websocket.NotificationResponseDto;
 import com.quolance.quolance_api.entities.MessageEntity;
 import com.quolance.quolance_api.entities.Notification;
 import com.quolance.quolance_api.entities.User;
@@ -45,8 +46,11 @@ public class NotificationMessageService extends AbstractWebSocketService {
         notification.setRead(false);
         notificationRepository.save(notification);
 
-        // Send the notification via WebSocket
-        messagingTemplate.convertAndSendToUser(userName, "/topic/notifications", notification);
+        // Convert the Notification entity to a NotificationResponseDto
+        NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
+
+        // Send the NotificationResponseDto via WebSocket
+        messagingTemplate.convertAndSendToUser(userName, "/topic/notifications", responseDto);
     }
 
     /**
