@@ -101,6 +101,7 @@
     "postcss": "^8",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.1.13",
+    "sonarqube-scanner": "^4.2.6",
     "start-server-and-test": "^2.0.10",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
