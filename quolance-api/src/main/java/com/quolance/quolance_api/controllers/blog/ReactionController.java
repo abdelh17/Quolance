@@ -34,6 +34,11 @@ public class ReactionController {
             @PathVariable Long blogPostId,
             @Valid @RequestBody ReactionDto reactionDto,
             @AuthenticationPrincipal User user) {
+        System.out.println("ReactionDto received: " + reactionDto);
+        System.out.println("BlogPostId: " + reactionDto.getBlogPostId());
+        System.out.println("UserId: " + reactionDto.getUserId());
+        System.out.println("Reaction Type: " + reactionDto.getReactionType());
+
         ReactionDto savedReaction = reactionService.addReaction(blogPostId, user, reactionDto);
         return ResponseEntity.ok(savedReaction);
     }
