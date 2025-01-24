@@ -3,6 +3,12 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
+import PostReaction from "./PostReaction";
+import { update } from "node_modules/cypress/types/lodash";
+
+interface ReactionState {
+    [key: string]: { count: number; userReacted: boolean };
+}
 
 interface PostCardProps {
     id: number;
@@ -13,8 +19,58 @@ interface PostCardProps {
     comments: string[];
 }
 
-const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, comments }) => {
+const PostCard: React.FC<PostCardProps> = ({ 
+    id, 
+    title, 
+    content, 
+    authorName, 
+    dateCreated, 
+    comments 
+}) => {
     const [isExpanded, setIsExpanded] = useState(false);
+
+    const [reactions, setReactions] = useState<ReactionState>({
+        like: { count: 5, userReacted: false },
+        love: { count: 2, userReacted: true },
+        laugh: { count: 3, userReacted: false },
+        shocked: { count: 1, userReacted: false },
+        sad: { count: 0, userReacted: false },
+        angry: { count: 0, userReacted: false },
+    });
+
+    const handleReactionClick = (reactionType: string) => {
+        setReactions((prevReactions) => {
+            const newReactions = { ...prevReactions };
+
+            if (newReactions[reactionType].userReacted){
+                return {
+                    ...newReactions,
+                    [reactionType]: {
+                        ...newReactions[reactionType],
+                        count: newReactions[reactionType].count - 1,
+                        userReacted: false,
+                }}
+            } else {
+                const updatedReactions = Object.keys(newReactions).reduce((reaction, key) => {
+                    if (key === reactionType) {
+                        reaction[key] = {
+                            count: newReactions[key].count + 1,
+                            userReacted: true,
+                        };
+                    } else if (newReactions[key].userReacted) {
+                        reaction[key] = {
+                            count: newReactions[key].count - 1,
+                            userReacted: false,
+                        };
+                    } else {
+                        reaction[key] = newReactions[key];
+                    }
+                    return reaction;
+                }, {} as ReactionState);
+                return updatedReactions;
+            }
+        });
+    };
 
     const toggleExpand = () => setIsExpanded(!isExpanded);
 
@@ -74,6 +130,19 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                         </span>
                     ))}
                 </div> */}
+
+                {/* Reaction Buttons */}
+                <div className="mt-4 flex items-center gap-1">
+                    {Object.keys(reactions).map((reaction) => (
+                        <PostReaction
+                            key={reaction}
+                            reaction={reaction}
+                            reactionCount={reactions[reaction].count}
+                            userReaction={reactions[reaction].userReacted}
+                            onReactionClick={() => handleReactionClick(reaction)}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );
