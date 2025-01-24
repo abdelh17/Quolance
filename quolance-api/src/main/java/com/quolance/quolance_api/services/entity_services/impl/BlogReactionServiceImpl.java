@@ -31,8 +31,14 @@ public class BlogReactionServiceImpl implements BlogReactionService {
     private void updateReactionCount(Map<BlogReactionType, Long> reactionCounts, BlogReactionType oldReaction, BlogReactionType newReaction) {
         if (oldReaction != null) {
             reactionCounts.put(oldReaction, reactionCounts.getOrDefault(oldReaction, 1L) - 1);
+            if (reactionCounts.get(oldReaction) <= 0) {
+                reactionCounts.remove(oldReaction); // Remove entry if count reaches 0
+            }
         }
-        reactionCounts.put(newReaction, reactionCounts.getOrDefault(newReaction, 0L) + 1);
+
+        if (newReaction != null) {
+            reactionCounts.put(newReaction, reactionCounts.getOrDefault(newReaction, 0L) + 1);
+        }
     }
 
     @Override
