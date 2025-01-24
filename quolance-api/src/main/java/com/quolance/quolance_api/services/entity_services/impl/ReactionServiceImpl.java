@@ -34,28 +34,24 @@ public class ReactionServiceImpl implements ReactionService {
 
         BlogPost blogPost = getBlogPostEntity(blogPostId);
 
-        // Check if the user has already reacted to this blog post
         Reaction reaction = reactionRepository.findByBlogPostIdAndUserId(blogPost.getId(), user.getId())
                 .orElse(new Reaction());
 
-        // Update reaction details
         reaction.setBlogPost(blogPost);
         reaction.setUser(user);
         reaction.setType(reactionDto.getReactionType());
 
-        // Save reaction
         Reaction savedReaction = reactionRepository.save(reaction);
         return ReactionDto.fromEntity(savedReaction);
     }
 
     @Override
     public void deleteReaction(Long blogPostId, Long userId) {
-        // Find the reaction by BlogPost ID and User ID
+
         Reaction reaction = reactionRepository.findByBlogPostIdAndUserId(blogPostId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Reaction not found for BlogPost ID: " + blogPostId + " and User ID: " + userId));
 
-        // Delete the reaction
         reactionRepository.delete(reaction);
     }
 
@@ -63,10 +59,8 @@ public class ReactionServiceImpl implements ReactionService {
     public List<ReactionDto> getReactionsByBlogPostId(Long blogPostId) {
         BlogPost blogPost = getBlogPostEntity(blogPostId);
 
-        // Fetch all reactions for the blog post
         List<Reaction> reactions = reactionRepository.findByBlogPost(blogPost);
 
-        // Map to DTOs
         return reactions.stream()
                 .map(ReactionDto::fromEntity)
                 .collect(Collectors.toList());
@@ -74,17 +68,15 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public ReactionDto updateReaction(Long reactionId, ReactionDto reactionDto) {
-        // Validate the ReactionType in DTO
+
         if (reactionDto.getReactionType() == null) {
             throw new ApiException("Reaction type cannot be null");
         }
 
         Reaction reaction = getReactionEntity(reactionId);
 
-        // Update reaction type
         reaction.setType(reactionDto.getReactionType());
 
-        // Save updated reaction
         Reaction updatedReaction = reactionRepository.save(reaction);
         return ReactionDto.fromEntity(updatedReaction);
     }
