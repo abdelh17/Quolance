@@ -31,7 +31,7 @@ export default function AdminApproveProject() {
 
  return (
    <>
-     <h1 className="text-center font-medium text-3xl m-10">
+     <h1  data-test="update-project-status"  className="text-center font-medium text-3xl m-10">
        Update Project Status
      </h1>
      {projects.length > 0 ? (

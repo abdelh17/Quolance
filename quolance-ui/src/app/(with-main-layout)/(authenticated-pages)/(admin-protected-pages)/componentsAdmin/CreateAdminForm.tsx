@@ -144,7 +144,7 @@ export function CreateAdminForm({
            disabled={isLoading}
            {...register('username')}
            onChange={() => clearErrors("username")}
-           data-test="email-input"
+           data-test="username-input"
          />
          {formState.errors.username && (
            <small data-test="username-error" className='text-red-600'>
