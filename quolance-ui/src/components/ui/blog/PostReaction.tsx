@@ -32,37 +32,37 @@ const PostReaction: React.FC<PostReactionProps> = ({
         switch (reaction) {
             case "like":
               return userReaction ? (
-                <BiSolidLike {...commonProps} style={{ color: "blue" }} />
+                <BiSolidLike {...commonProps} style={{ color: "#1500FF" }} />
               ) : (
                 <BiLike {...commonProps} />
               );
             case "love":
               return userReaction ? (
-                <BiSolidHeart {...commonProps} style={{ color: "red" }} />
+                <BiSolidHeart {...commonProps} style={{ color: "#FF3300" }} />
               ) : (
                 <BiHeart {...commonProps} />
               );
             case "laugh":
               return userReaction ? (
-                <BiSolidLaugh {...commonProps} style={{ color: "yellow" }} />
+                <BiSolidLaugh {...commonProps} style={{ color: "#DABC00" }} />
               ) : (
                 <BiLaugh {...commonProps} />
               );
             case "shocked":
               return userReaction ? (
-                <BiSolidShocked {...commonProps} style={{ color: "yellow" }} />
+                <BiSolidShocked {...commonProps} style={{ color: "#DABC00" }} />
               ) : (
                 <BiShocked {...commonProps} />
               );
             case "sad":
               return userReaction ? (
-                <BiSolidSad {...commonProps} style={{ color: "yellow" }} />
+                <BiSolidSad {...commonProps} style={{ color: "#DABC00" }} />
               ) : (
                 <BiSad {...commonProps} />
               );
             case "angry":
               return userReaction ? (
-                <BiSolidAngry {...commonProps} style={{ color: "yellow" }} />
+                <BiSolidAngry {...commonProps} style={{ color: "#DABC00" }} />
               ) : (
                 <BiAngry {...commonProps} />
               );
