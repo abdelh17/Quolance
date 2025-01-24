@@ -8,6 +8,7 @@ import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.BlogReactionType;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import com.quolance.quolance_api.repositories.blog.BlogReactionRepository;
@@ -53,14 +54,18 @@ class BlogReactionIntegrationTest extends AbstractTestcontainers {
     private User loggedInUser;
     private BlogPost blogPost;
     private BlogComment blogComment;
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @BeforeEach
     void setUp() throws Exception {
-        reactionRepository.deleteAll();
+        // Delete related entities first
+        projectRepository.deleteAll();  // Delete all projects first
         blogCommentRepository.deleteAll();
         blogPostRepository.deleteAll();
-        userRepository.deleteAll();
+        userRepository.deleteAll();  // Now delete users
 
+        // Create test data
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
         blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
         blogComment = blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
