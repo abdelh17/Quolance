@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 import PostReaction from "./PostReaction";
-import { update } from "node_modules/cypress/types/lodash";
 
 interface ReactionState {
     [key: string]: { count: number; userReacted: boolean };
