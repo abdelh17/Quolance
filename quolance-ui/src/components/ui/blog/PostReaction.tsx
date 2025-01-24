@@ -32,13 +32,13 @@ const PostReaction: React.FC<PostReactionProps> = ({
         switch (reaction) {
             case "like":
               return userReaction ? (
-                <BiSolidLike {...commonProps} style={{ color: "#1500FF" }} />
+                <BiSolidLike {...commonProps} style={{ color: "#0218AF" }} />
               ) : (
                 <BiLike {...commonProps} />
               );
             case "love":
               return userReaction ? (
-                <BiSolidHeart {...commonProps} style={{ color: "#FF3300" }} />
+                <BiSolidHeart {...commonProps} style={{ color: "#AF0500" }} />
               ) : (
                 <BiHeart {...commonProps} />
               );
