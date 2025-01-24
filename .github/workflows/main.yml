@@ -10,7 +10,7 @@ on:
 
 jobs:
   frontend-build-test:
-    name: Build, Test, and Run E2E for Frontend
+    name: Build, Test, and Scan Frontend
     runs-on: ubuntu-latest
 
     steps:
@@ -25,40 +25,19 @@ jobs:
           cd quolance-ui
           npm install
 
-      # Step 2: Override .gitignore to include coverage and .nyc_output
-      - name: Allow Coverage Files in CI/CD
-        run: |
-          cd quolance-ui
-          echo "!/coverage" >> .gitignore
-          echo "!/.nyc_output" >> .gitignore
-
-      # Step 3: Run Cypress Tests in Headless Mode with Coverage
-      - name: Run Cypress Tests in Headless Mode with Coverage
-        run: |
-          cd quolance-ui
-          npm run e2e:headless
-
-      # Step 4: Verify Coverage Files Exist
-      - name: Verify Coverage Files
-        run: |
-          cd quolance-ui
-          ls -l coverage
-          ls -l .nyc_output
-
-
-      # Step 6: SonarCloud Scan for Frontend
-      - name: SonarCloud Scan Frontend
-        uses: SonarSource/sonarqube-scan-action@master
+      # Step 2: Run Cypress Tests and SonarCloud Scan Together
+      - name: Run Tests and SonarCloud Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: quolance-ui
-          args: >
-            -Dsonar.organization=abdelh17
-            -Dsonar.projectKey=abdelh17_Quolance_ui
-            -Dsonar.sources=.
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+        run: |
+          cd quolance-ui
+          npm run e2e:headless # Generate coverage
+          sonar-scanner \
+            -Dsonar.organization=abdelh17 \
+            -Dsonar.projectKey=abdelh17_Quolance_ui \
+            -Dsonar.sources=. \
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
             -Dsonar.host.url=https://sonarcloud.io
 
   backend-build-test:
