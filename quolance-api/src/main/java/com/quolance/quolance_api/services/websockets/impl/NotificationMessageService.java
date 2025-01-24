@@ -113,18 +113,18 @@ public class NotificationMessageService extends AbstractWebSocketService {
      * @param recipient The user receiving the notification.
      * @param message   The notification message.
      */
-//    public void sendNotification(User sender, User recipient, String message) {
-//        log.debug("Sending notification from {} to {}", sender.getEmail(), recipient.getEmail());
-//
-//        Notification notification = new Notification();
-//        notification.setSender(sender);
-//        notification.setRecipient(recipient);
-//        notification.setMessage(message);
-//        notification.setTimestamp(LocalDateTime.now());
-//        notification.setRead(false);
-//
-//        // Process and send the notification
-//        processMessage(notification, recipient.getEmail());
-//    }
+    public void sendNotification(User sender, User recipient, String message) {
+        log.debug("Sending notification from {} to {}", sender.getEmail(), recipient.getEmail());
+
+        Notification notification = new Notification();
+        notification.setSender(sender);
+        notification.setRecipient(recipient);
+        notification.setMessage(message);
+        notification.setTimestamp(LocalDateTime.now());
+        notification.setRead(false);
+
+        // Process and send the notification
+        processNotification(notification, recipient.getUsername());
+    }
 
 }
