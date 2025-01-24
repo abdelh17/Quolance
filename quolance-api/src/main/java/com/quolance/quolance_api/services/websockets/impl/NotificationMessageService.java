@@ -49,8 +49,13 @@ public class NotificationMessageService extends AbstractWebSocketService {
         // Convert the Notification entity to a NotificationResponseDto
         NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
 
+        //TODO: Test endpoint for SPECIFIC user, have a SENDALLNOTIF, and SENDNOTIFTOUSER(s) ENDPOINT where it might take an array of usernames
+        //TODO: Look at documentation and modify frontned to handle this
         // Send the NotificationResponseDto via WebSocket
-        messagingTemplate.convertAndSendToUser(userName, "/topic/notifications", responseDto);
+        //messagingTemplate.convertAndSendToUser(userName, "/topic/notifications", responseDto);
+
+        // Broadcasting the Notification to all users for testing
+        messagingTemplate.convertAndSend("/topic/notifications", responseDto);
     }
 
     /**
