@@ -120,4 +120,35 @@ class SendTempPasswordEmailUnitTest {
 
         verify(templateEngine).process(eq("generated-password-email"), any(IContext.class));
     }
+
+    @Test
+    void run_WithInvalidUserId_ThrowsException() {
+        SendTempPasswordEmailJob invalidJob = new SendTempPasswordEmailJob(-1L, TEMP_PASSWORD);
+        when(userService.findById(-1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> jobHandler.run(invalidJob))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("User not found");
+
+        verify(userService).findById(-1L);
+        verifyNoMoreInteractions(userService, emailService, templateEngine);
+    }
+
+    @Test
+    void run_WithInvalidEmailAddress_ThrowsException() throws MessagingException {
+        String invalidEmail = "invalid-email";
+        mockUser.setEmail(invalidEmail);
+
+        when(userService.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
+        when(templateEngine.process(eq("generated-password-email"), any(IContext.class))).thenReturn("<html></html>");
+        doThrow(new MessagingException("Invalid email address"))
+                .when(emailService).sendHtmlMessage(any(), any(), any());
+
+        assertThatThrownBy(() -> jobHandler.run(mockJob))
+                .isInstanceOf(MessagingException.class)
+                .hasMessage("Invalid email address");
+
+        verify(templateEngine).process(eq("generated-password-email"), any(IContext.class));
+    }
 }

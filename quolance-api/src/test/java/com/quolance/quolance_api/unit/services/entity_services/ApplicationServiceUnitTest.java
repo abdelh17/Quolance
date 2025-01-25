@@ -123,6 +123,19 @@ class ApplicationServiceUnitTest {
     }
 
     @Test
+    void getAllApplicationsByFreelancerId_NoApplicationsFound_ReturnsEmptyPage() {
+        Page<Application> emptyPage = Page.empty();
+        when(applicationRepository.findApplicationsByFreelancerId(eq(1L), any(Pageable.class)))
+                .thenReturn(emptyPage);
+
+        Page<Application> result = applicationService.getAllApplicationsByFreelancerId(1L, Pageable.unpaged());
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+        verify(applicationRepository).findApplicationsByFreelancerId(eq(1L), any(Pageable.class));
+    }
+
+    @Test
     void getAllApplicationsByProjectId_Success() {
         List<Application> applications = Arrays.asList(mockApplication);
         when(applicationRepository.findApplicationsByProjectId(1L)).thenReturn(applications);
@@ -132,6 +145,16 @@ class ApplicationServiceUnitTest {
         assertThat(result)
                 .hasSize(1)
                 .containsExactly(mockApplication);
+    }
+
+    @Test
+    void getAllApplicationsByProjectId_NoApplicationsFound_ReturnsEmptyList() {
+        when(applicationRepository.findApplicationsByProjectId(1L)).thenReturn(List.of());
+
+        List<Application> result = applicationService.getAllApplicationsByProjectId(1L);
+
+        assertThat(result).isEmpty();
+        verify(applicationRepository).findApplicationsByProjectId(1L);
     }
 
     @Test

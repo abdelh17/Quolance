@@ -5,11 +5,13 @@ import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
+import com.quolance.quolance_api.entities.enums.ProjectCategory;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
@@ -260,6 +262,28 @@ class FreelancerControllerUnitTest {
     }
 
     @Test
+    void getAllAvailableProjects_WithSpecificFilters_ReturnsFilteredProjectList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            ProjectFilterDto filters = new ProjectFilterDto();
+            filters.setCategory(ProjectCategory.WEB_DEVELOPMENT);
+            Page<ProjectPublicDto> projectPage = new PageImpl<>(List.of(projectPublicDto));
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), eq(filters)))
+                    .thenReturn(projectPage);
+
+            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), eq(filters));
+        }
+    }
+
+    @Test
     void getProjectById_ReturnsProject() {
         when(freelancerWorkflowService.getProject(1L)).thenReturn(projectPublicDto);
 
@@ -279,5 +303,21 @@ class FreelancerControllerUnitTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid project ID");
         verify(freelancerWorkflowService).getProject(-1L);
+    }
+
+    @Test
+    void updateFreelancerProfile_WithInvalidData_ReturnsBadRequest() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            UpdateFreelancerProfileDto invalidProfileDto = new UpdateFreelancerProfileDto();
+            invalidProfileDto.setContactEmail("invalid-email");
+
+            doThrow(new ApiException("Invalid profile data"))
+                    .when(freelancerWorkflowService).updateFreelancerProfile(eq(invalidProfileDto), any(User.class));
+
+            assertThatThrownBy(() -> freelancerController.updateFreelancerProfile(invalidProfileDto))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Invalid profile data");
+        }
     }
 }

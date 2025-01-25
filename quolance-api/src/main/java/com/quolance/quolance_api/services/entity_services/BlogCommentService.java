@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.services.entity_services;
 
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
+import com.quolance.quolance_api.entities.BlogComment;
 import com.quolance.quolance_api.entities.User;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface BlogCommentService {
     void deleteBlogComment(Long commentId);
 
     List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId);
+
+    BlogComment getBlogCommentEntity(Long blogCommentId);
 }

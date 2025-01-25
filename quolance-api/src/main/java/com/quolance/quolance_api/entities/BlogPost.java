@@ -32,4 +32,7 @@ public class BlogPost extends AbstractEntity {
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogComment> blogComments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reaction> reactions = new ArrayList<>();
+
 }
