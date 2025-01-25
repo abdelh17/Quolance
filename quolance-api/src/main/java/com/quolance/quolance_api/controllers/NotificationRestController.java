@@ -46,7 +46,7 @@ public class NotificationRestController {
             notification.setRead(false);
 
             // Save and send notification
-            notificationMessageService.processMessage(notification, recipient.getEmail());
+//            notificationMessageService.processNotification(notification, recipient.getEmail());
         });
 
         return ResponseEntity.ok().build();
