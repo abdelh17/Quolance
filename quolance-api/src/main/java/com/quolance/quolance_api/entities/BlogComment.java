@@ -29,5 +29,4 @@ public class BlogComment {
     @ManyToOne
     @JoinColumn(name = "blog_post_id")
     private BlogPost blogPost;
-
 }

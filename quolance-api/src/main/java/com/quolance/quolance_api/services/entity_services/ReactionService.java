@@ -1,11 +1,10 @@
 package com.quolance.quolance_api.services.entity_services;
 
-import java.util.List;
-
 import com.quolance.quolance_api.dtos.blog.ReactionRequestDto;
 import com.quolance.quolance_api.dtos.blog.ReactionResponseDto;
-import com.quolance.quolance_api.entities.Reaction;
 import com.quolance.quolance_api.entities.User;
+
+import java.util.List;
 
 public interface  ReactionService {
     

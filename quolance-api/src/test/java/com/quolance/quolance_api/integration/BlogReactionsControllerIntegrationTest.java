@@ -2,8 +2,6 @@ package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
-import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
-import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.dtos.blog.ReactionRequestDto;
 import com.quolance.quolance_api.entities.BlogComment;
 import com.quolance.quolance_api.entities.BlogPost;
@@ -26,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,8 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class BlogReactionsControllerIntegrationTest extends AbstractTestcontainers {
-
+class BlogReactionsControllerIntegrationTest extends AbstractTestcontainers {
     
     @Autowired
     private MockMvc mockMvc;
