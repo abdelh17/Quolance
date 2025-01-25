@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 @RestController
@@ -65,5 +68,20 @@ public class BlogPostController {
         User author = SecurityUtil.getAuthenticatedUser();
         blogPostService.deletePost(postId, author);
         return ResponseEntity.ok("The post was successfully deleted");
+    }
+
+    @PutMapping("/tags/{postId}")
+    public ResponseEntity<Map<String, Object>> updateTagsForPost(
+            @PathVariable Long postId,
+            @RequestBody List<String> tagNames) {
+        // Call the service to update tags
+        Set<String> updatedTags = blogPostService.updateTagsForPost(postId, tagNames);
+
+        // Create response with a success message and updated tags
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Tags updated successfully");
+        response.put("updatedTags", updatedTags);
+
+        return ResponseEntity.ok(response);
     }
 }
