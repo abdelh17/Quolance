@@ -10,12 +10,9 @@ import { Button } from '@/components/ui/button';
 import { PiPaperPlaneRight, PiX } from 'react-icons/pi';
 import { useState } from 'react';
 import Modal from '@/components/ui/Modal';
-import {
-  formatStatusLabel,
-  StatusColors,
-} from '@/components/ui/freelancers/FreelancerCard';
 import { IoMdLock } from 'react-icons/io';
 import { ProjectStatus } from '@/constants/types/project-types';
+import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStatusBadge';
 
 type ApplicationFormProps = {
   projectId: number;
@@ -37,6 +34,8 @@ export default function FreelancerApplicationForm({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const { data: application } = useGetProjectApplication(projectId);
+
+  console.log('application', application);
 
   const onSubmit: SubmitHandler<ApplicationFormFields> = async (data) => {
     if (!user) return;
@@ -125,13 +124,7 @@ export default function FreelancerApplicationForm({
             <div className='border-n30 rounded-lg border bg-white'>
               {/* Status Badge Section */}
               <div className='border-n30 border-b px-6 py-4'>
-                <div
-                  className={`w-fit rounded-full px-3.5 py-1.5 text-sm font-semibold 
-                    ${StatusColors[application.status].badge}
-                  `}
-                >
-                  {formatStatusLabel(application.status)}
-                </div>
+                <ApplicationStatusBadge status={application.status} />
               </div>
 
               {/* Application Content */}
