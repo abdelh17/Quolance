@@ -1,7 +1,6 @@
 package com.quolance.quolance_api.services.entity_services;
 
 import com.quolance.quolance_api.dtos.*;
-import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

@@ -9,8 +9,8 @@ public interface PendingWorkflowService {
     /**
      * Updates the password and role of a PENDING user.
      *
-     * @param user                  The authenticated user.
-     * @param updatePendingUserDto  DTO containing the new password and role.
+     * @param user                 The authenticated user.
+     * @param updatePendingUserDto DTO containing the new password and role.
      * @return Updated user response DTO.
      */
     UserResponseDto updatePendingUser(User user, UpdatePendingUserRequestDto updatePendingUserDto);

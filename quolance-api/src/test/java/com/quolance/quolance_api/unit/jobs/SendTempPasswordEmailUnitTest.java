@@ -24,35 +24,27 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SendTempPasswordEmailUnitTest {
 
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private EmailService emailService;
-
-    @Mock
-    private SpringTemplateEngine templateEngine;
-
-    @Mock
-    private ApplicationProperties applicationProperties;
-
-    @InjectMocks
-    private SendTempPasswordEmailJobHandler jobHandler;
-
-    @Captor
-    private ArgumentCaptor<Context> contextCaptor;
-
-    private User mockUser;
-    private SendTempPasswordEmailJob mockJob;
     private static final String TEMP_PASSWORD = "temp123";
     private static final String APP_NAME = "Quolance";
+    @Mock
+    private UserService userService;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private SpringTemplateEngine templateEngine;
+    @Mock
+    private ApplicationProperties applicationProperties;
+    @InjectMocks
+    private SendTempPasswordEmailJobHandler jobHandler;
+    @Captor
+    private ArgumentCaptor<Context> contextCaptor;
+    private User mockUser;
+    private SendTempPasswordEmailJob mockJob;
 
     @BeforeEach
     void setUp() {
@@ -82,9 +74,9 @@ class SendTempPasswordEmailUnitTest {
         assertThat(capturedContext.getVariable("applicationName")).isEqualTo(APP_NAME);
 
         verify(emailService).sendHtmlMessage(
-                eq(List.of(mockUser.getEmail())),
-                eq("Your Temporary Password for " + APP_NAME),
-                eq(expectedHtmlBody)
+                List.of(mockUser.getEmail()),
+                "Your Temporary Password for " + APP_NAME,
+                expectedHtmlBody
         );
     }
 
@@ -125,6 +117,37 @@ class SendTempPasswordEmailUnitTest {
         assertThatThrownBy(() -> jobHandler.run(mockJob))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Email service failed");
+
+        verify(templateEngine).process(eq("generated-password-email"), any(IContext.class));
+    }
+
+    @Test
+    void run_WithInvalidUserId_ThrowsException() {
+        SendTempPasswordEmailJob invalidJob = new SendTempPasswordEmailJob(-1L, TEMP_PASSWORD);
+        when(userService.findById(-1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> jobHandler.run(invalidJob))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("User not found");
+
+        verify(userService).findById(-1L);
+        verifyNoMoreInteractions(userService, emailService, templateEngine);
+    }
+
+    @Test
+    void run_WithInvalidEmailAddress_ThrowsException() throws MessagingException {
+        String invalidEmail = "invalid-email";
+        mockUser.setEmail(invalidEmail);
+
+        when(userService.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
+        when(templateEngine.process(eq("generated-password-email"), any(IContext.class))).thenReturn("<html></html>");
+        doThrow(new MessagingException("Invalid email address"))
+                .when(emailService).sendHtmlMessage(any(), any(), any());
+
+        assertThatThrownBy(() -> jobHandler.run(mockJob))
+                .isInstanceOf(MessagingException.class)
+                .hasMessage("Invalid email address");
 
         verify(templateEngine).process(eq("generated-password-email"), any(IContext.class));
     }

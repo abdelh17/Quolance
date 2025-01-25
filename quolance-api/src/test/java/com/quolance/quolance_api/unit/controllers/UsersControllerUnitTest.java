@@ -22,7 +22,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,13 +60,13 @@ class UsersControllerUnitTest {
                 .role("CLIENT")
                 .build();
 
-        when(userService.create(eq(createRequest))).thenReturn(mockUserResponse);
+        when(userService.create(createRequest)).thenReturn(mockUserResponse);
 
         ResponseEntity<UserResponseDto> response = usersController.create(createRequest);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(mockUserResponse);
-        verify(userService).create(eq(createRequest));
+        verify(userService).create(createRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -81,7 +80,7 @@ class UsersControllerUnitTest {
                 .lastName("Doe")
                 .build();
 
-        when(userService.create(eq(invalidRequest)))
+        when(userService.create(invalidRequest))
                 .thenThrow(ApiException.builder()
                         .message("Invalid email format")
                         .status(400)
@@ -90,7 +89,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.create(invalidRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid email format");
-        verify(userService).create(eq(invalidRequest));
+        verify(userService).create(invalidRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -104,7 +103,7 @@ class UsersControllerUnitTest {
                 .lastName("Doe")
                 .build();
 
-        when(userService.create(eq(invalidRequest)))
+        when(userService.create(invalidRequest))
                 .thenThrow(ApiException.builder()
                         .message("Passwords do not match")
                         .status(400)
@@ -113,7 +112,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.create(invalidRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Passwords do not match");
-        verify(userService).create(eq(invalidRequest));
+        verify(userService).create(invalidRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -127,7 +126,7 @@ class UsersControllerUnitTest {
                 .lastName("Doe")
                 .build();
 
-        when(userService.create(eq(invalidRequest)))
+        when(userService.create(invalidRequest))
                 .thenThrow(ApiException.builder()
                         .message("Password does not meet security requirements")
                         .status(400)
@@ -136,7 +135,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.create(invalidRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Password does not meet security requirements");
-        verify(userService).create(eq(invalidRequest));
+        verify(userService).create(invalidRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -151,7 +150,7 @@ class UsersControllerUnitTest {
                 .role("INVALID_ROLE")
                 .build();
 
-        when(userService.create(eq(invalidRequest)))
+        when(userService.create(invalidRequest))
                 .thenThrow(ApiException.builder()
                         .message("Invalid role")
                         .status(400)
@@ -160,7 +159,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.create(invalidRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid role");
-        verify(userService).create(eq(invalidRequest));
+        verify(userService).create(invalidRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -174,13 +173,13 @@ class UsersControllerUnitTest {
                 .lastName("User")
                 .build();
 
-        when(userService.createAdmin(eq(createRequest))).thenReturn(mockUserResponse);
+        when(userService.createAdmin(createRequest)).thenReturn(mockUserResponse);
 
         ResponseEntity<UserResponseDto> response = usersController.createAdmin(createRequest);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(mockUserResponse);
-        verify(userService).createAdmin(eq(createRequest));
+        verify(userService).createAdmin(createRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -194,7 +193,7 @@ class UsersControllerUnitTest {
                 .lastName("User")
                 .build();
 
-        when(userService.createAdmin(eq(invalidRequest)))
+        when(userService.createAdmin(invalidRequest))
                 .thenThrow(ApiException.builder()
                         .message("Invalid email format")
                         .status(400)
@@ -203,7 +202,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.createAdmin(invalidRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid email format");
-        verify(userService).createAdmin(eq(invalidRequest));
+        verify(userService).createAdmin(invalidRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -217,7 +216,7 @@ class UsersControllerUnitTest {
                 .lastName("User")
                 .build();
 
-        when(userService.createAdmin(eq(invalidRequest)))
+        when(userService.createAdmin(invalidRequest))
                 .thenThrow(ApiException.builder()
                         .message("Password does not meet security requirements")
                         .status(400)
@@ -226,7 +225,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.createAdmin(invalidRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Password does not meet security requirements");
-        verify(userService).createAdmin(eq(invalidRequest));
+        verify(userService).createAdmin(invalidRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -240,7 +239,7 @@ class UsersControllerUnitTest {
                 .lastName("User")
                 .build();
 
-        when(userService.createAdmin(eq(invalidRequest)))
+        when(userService.createAdmin(invalidRequest))
                 .thenThrow(ApiException.builder()
                         .message("Passwords do not match")
                         .status(400)
@@ -249,7 +248,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.createAdmin(invalidRequest))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Passwords do not match");
-        verify(userService).createAdmin(eq(invalidRequest));
+        verify(userService).createAdmin(invalidRequest);
         verifyNoMoreInteractions(userService);
     }
 
@@ -263,7 +262,7 @@ class UsersControllerUnitTest {
         RedirectView response = usersController.verifyEmail(token);
 
         assertThat(response.getUrl()).isEqualTo(loginPageUrl);
-        verify(userService).verifyEmail(eq(token));
+        verify(userService).verifyEmail(token);
         verifyNoMoreInteractions(userService);
     }
 
@@ -279,7 +278,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.verifyEmail(invalidToken))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid token");
-        verify(userService).verifyEmail(eq(invalidToken));
+        verify(userService).verifyEmail(invalidToken);
         verifyNoMoreInteractions(userService);
     }
 
@@ -293,7 +292,7 @@ class UsersControllerUnitTest {
         ResponseEntity<Void> response = usersController.forgotPassword(request);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(userService).forgotPassword(eq(request.getEmail()));
+        verify(userService).forgotPassword(request.getEmail());
         verifyNoMoreInteractions(userService);
     }
 
@@ -311,7 +310,7 @@ class UsersControllerUnitTest {
         assertThatThrownBy(() -> usersController.forgotPassword(request))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid email format");
-        verify(userService).forgotPassword(eq(request.getEmail()));
+        verify(userService).forgotPassword(request.getEmail());
         verifyNoMoreInteractions(userService);
     }
 
@@ -320,12 +319,12 @@ class UsersControllerUnitTest {
         UpdateUserPasswordRequestDto request = new UpdateUserPasswordRequestDto();
         request.setPassword("newPassword123");
 
-        doNothing().when(userService).resetPassword(eq(request));
+        doNothing().when(userService).resetPassword(request);
 
         ResponseEntity<Void> response = usersController.resetPassword(request);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(userService).resetPassword(eq(request));
+        verify(userService).resetPassword(request);
         verifyNoMoreInteractions(userService);
     }
 
@@ -338,12 +337,12 @@ class UsersControllerUnitTest {
                 .message("Invalid or expired token")
                 .status(400)
                 .build())
-                .when(userService).resetPassword(eq(request));
+                .when(userService).resetPassword(request);
 
         assertThatThrownBy(() -> usersController.resetPassword(request))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid or expired token");
-        verify(userService).resetPassword(eq(request));
+        verify(userService).resetPassword(request);
         verifyNoMoreInteractions(userService);
     }
 
@@ -356,13 +355,13 @@ class UsersControllerUnitTest {
             request.setFirstName("John");
             request.setLastName("Doe");
 
-            when(userService.updateUser(eq(request), eq(mockUser))).thenReturn(mockUserResponse);
+            when(userService.updateUser(request, mockUser)).thenReturn(mockUserResponse);
 
             ResponseEntity<UserResponseDto> response = usersController.update(request);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(mockUserResponse);
-            verify(userService).updateUser(eq(request), eq(mockUser));
+            verify(userService).updateUser(request, mockUser);
             verifyNoMoreInteractions(userService);
         }
     }
@@ -373,13 +372,13 @@ class UsersControllerUnitTest {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
 
             UpdateUserRequestDto request = new UpdateUserRequestDto();
-            when(userService.updateUser(eq(request), eq(mockUser)))
+            when(userService.updateUser(request, mockUser))
                     .thenThrow(new AccessDeniedException("Not authorized to update user"));
 
             assertThatThrownBy(() -> usersController.update(request))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("Not authorized to update user");
-            verify(userService).updateUser(eq(request), eq(mockUser));
+            verify(userService).updateUser(request, mockUser);
             verifyNoMoreInteractions(userService);
         }
     }
@@ -392,13 +391,13 @@ class UsersControllerUnitTest {
             UpdateUserPasswordRequestDto request = new UpdateUserPasswordRequestDto();
             request.setPassword("newPassword123");
 
-            when(userService.updatePassword(eq(request), eq(mockUser))).thenReturn(mockUserResponse);
+            when(userService.updatePassword(request, mockUser)).thenReturn(mockUserResponse);
 
             ResponseEntity<UserResponseDto> response = usersController.updatePassword(request);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(mockUserResponse);
-            verify(userService).updatePassword(eq(request), eq(mockUser));
+            verify(userService).updatePassword(request, mockUser);
             verifyNoMoreInteractions(userService);
         }
     }
@@ -412,7 +411,7 @@ class UsersControllerUnitTest {
             request.setPassword("newPassword123");
             request.setOldPassword("wrongPassword");
 
-            when(userService.updatePassword(eq(request), eq(mockUser)))
+            when(userService.updatePassword(request, mockUser))
                     .thenThrow(ApiException.builder()
                             .message("Invalid current password")
                             .status(400)
@@ -421,7 +420,7 @@ class UsersControllerUnitTest {
             assertThatThrownBy(() -> usersController.updatePassword(request))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid current password");
-            verify(userService).updatePassword(eq(request), eq(mockUser));
+            verify(userService).updatePassword(request, mockUser);
             verifyNoMoreInteractions(userService);
         }
     }

@@ -72,6 +72,7 @@ jobs:
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       CLOUDINARY_API_ENV_VAR: ${{ secrets.CLOUDINARY_API_ENV_VAR }}
+      LOG_FILE: "./logs/quolance.log"
 
     steps:
       - uses: actions/checkout@v3

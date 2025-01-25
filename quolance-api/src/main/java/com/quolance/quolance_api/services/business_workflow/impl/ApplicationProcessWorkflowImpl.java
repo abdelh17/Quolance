@@ -1,6 +1,5 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
@@ -16,7 +15,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -44,7 +45,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
 
             // Reject all other applications
             applicationService.getAllApplicationsByProjectId(project.getId()).forEach(app -> {
-                if(!app.getId().equals(applicationId)){
+                if (!app.getId().equals(applicationId)) {
                     applicationService.updateApplicationStatus(app, ApplicationStatus.REJECTED);
                 }
             });

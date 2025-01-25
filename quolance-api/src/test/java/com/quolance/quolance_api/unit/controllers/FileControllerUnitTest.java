@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,7 +86,7 @@ class FileControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("http://example.com/file.pdf");
-            verify(fileService).uploadFile(eq(mockFile), eq(mockUser));
+            verify(fileService).uploadFile(mockFile, mockUser);
         }
     }
 
@@ -104,7 +102,7 @@ class FileControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(response.getBody()).isEqualTo("Invalid file type");
-            verify(fileService).uploadFile(eq(mockFile), eq(mockUser));
+            verify(fileService).uploadFile(mockFile, mockUser);
         }
     }
 
@@ -117,7 +115,7 @@ class FileControllerUnitTest {
             Page<FileDto> filePage = new PageImpl<>(files);
             PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
 
-            when(fileService.getAllFileUploadsByUser(eq(mockUser), eq(pageRequest)))
+            when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
             ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "desc");
@@ -126,7 +124,7 @@ class FileControllerUnitTest {
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getContent()).hasSize(2);
             assertThat(response.getBody().getContent()).containsExactly(fileDto1, fileDto2);
-            verify(fileService).getAllFileUploadsByUser(eq(mockUser), eq(pageRequest));
+            verify(fileService).getAllFileUploadsByUser(mockUser, pageRequest);
         }
     }
 
@@ -138,7 +136,7 @@ class FileControllerUnitTest {
             Page<FileDto> emptyPage = new PageImpl<>(List.of());
             PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
 
-            when(fileService.getAllFileUploadsByUser(eq(mockUser), eq(pageRequest)))
+            when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(emptyPage);
 
             ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "desc");
@@ -146,7 +144,7 @@ class FileControllerUnitTest {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getContent()).isEmpty();
-            verify(fileService).getAllFileUploadsByUser(eq(mockUser), eq(pageRequest));
+            verify(fileService).getAllFileUploadsByUser(mockUser, pageRequest);
         }
     }
 
@@ -159,7 +157,7 @@ class FileControllerUnitTest {
             Page<FileDto> filePage = new PageImpl<>(files);
             PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id"));
 
-            when(fileService.getAllFileUploadsByUser(eq(mockUser), eq(pageRequest)))
+            when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
             ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 5, "id", "desc");
@@ -181,7 +179,7 @@ class FileControllerUnitTest {
             Page<FileDto> filePage = new PageImpl<>(files);
             PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "fileName"));
 
-            when(fileService.getAllFileUploadsByUser(eq(mockUser), eq(pageRequest)))
+            when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
             ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "fileName", "desc");
@@ -203,7 +201,7 @@ class FileControllerUnitTest {
             Page<FileDto> filePage = new PageImpl<>(files);
             PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
-            when(fileService.getAllFileUploadsByUser(eq(mockUser), eq(pageRequest)))
+            when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
             ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "asc");

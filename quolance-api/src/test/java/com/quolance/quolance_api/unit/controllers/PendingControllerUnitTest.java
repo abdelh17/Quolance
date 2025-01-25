@@ -21,7 +21,6 @@ import org.springframework.security.access.AccessDeniedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +57,7 @@ class PendingControllerUnitTest {
     void updatePendingUser_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenReturn(responseDto);
 
             ResponseEntity<UserResponseDto> response = pendingController.updatePendingUser(updateDto);
@@ -68,7 +67,7 @@ class PendingControllerUnitTest {
                     .isNotNull()
                     .usingRecursiveComparison()
                     .isEqualTo(responseDto);
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }
@@ -77,13 +76,13 @@ class PendingControllerUnitTest {
     void updatePendingUser_WithUnauthorizedUser_ThrowsAccessDeniedException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenThrow(new AccessDeniedException("User not authorized to perform this action"));
 
             assertThatThrownBy(() -> pendingController.updatePendingUser(updateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to perform this action");
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }
@@ -93,7 +92,7 @@ class PendingControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
             updateDto.setRole("ADMIN");
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenThrow(ApiException.builder()
                             .message("Invalid role selection for pending user")
                             .status(400)
@@ -102,7 +101,7 @@ class PendingControllerUnitTest {
             assertThatThrownBy(() -> pendingController.updatePendingUser(updateDto))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid role selection for pending user");
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }
@@ -112,7 +111,7 @@ class PendingControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
             updateDto.setPassword("weak");
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(updateDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, updateDto))
                     .thenThrow(ApiException.builder()
                             .message("Password does not meet security requirements")
                             .status(400)
@@ -121,7 +120,29 @@ class PendingControllerUnitTest {
             assertThatThrownBy(() -> pendingController.updatePendingUser(updateDto))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Password does not meet security requirements");
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(updateDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, updateDto);
+            verifyNoMoreInteractions(pendingWorkflowService);
+        }
+    }
+
+    @Test
+    void updatePendingUser_WithInvalidRequestBody_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+            UpdatePendingUserRequestDto invalidDto = new UpdatePendingUserRequestDto();
+            invalidDto.setPassword("short");
+            invalidDto.setRole("INVALID_ROLE");
+
+            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(invalidDto)))
+                    .thenThrow(ApiException.builder()
+                            .message("Invalid request data")
+                            .status(400)
+                            .build());
+
+            assertThatThrownBy(() -> pendingController.updatePendingUser(invalidDto))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Invalid request data");
+            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(invalidDto));
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }

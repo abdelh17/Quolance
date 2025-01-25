@@ -1,15 +1,16 @@
 package com.quolance.quolance_api.dtos;
 
-import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.entities.User;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.quolance.quolance_api.entities.enums.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @Getter
@@ -36,9 +37,9 @@ public class UserResponseDto {
         this.username = user.getUsername();
         this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
-        user.getConnectedAccounts().forEach((provider) -> {
-            this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()));
-        });
+        user.getConnectedAccounts().forEach(provider ->
+                this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()))
+        );
     }
 
     public UserResponseDto(User user, Collection<? extends GrantedAuthority> authorities) {
@@ -50,12 +51,12 @@ public class UserResponseDto {
         this.username = user.getUsername();
         this.verified = user.isVerified();
         this.profileImageUrl = user.getProfileImageUrl();
-        user.getConnectedAccounts().forEach((provider) -> {
-            this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()));
-        });
-        authorities.forEach(authority -> {
-            this.authorities.add(authority.getAuthority());
-        });
+        user.getConnectedAccounts().forEach(provider ->
+                this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()))
+        );
+        authorities.forEach(authority ->
+                this.authorities.add(authority.getAuthority())
+        );
     }
 
     public record ConnectedAccountResponse(String provider, LocalDateTime connectedAt) {

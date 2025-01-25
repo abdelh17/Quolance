@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     public BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
-        if(blogCommentDto.getContent() == null || blogCommentDto.getContent().isEmpty()) {
+        if (blogCommentDto.getContent() == null || blogCommentDto.getContent().isEmpty()) {
             throw new ApiException("Comment content cannot be empty");
         }
         BlogComment blogComment = BlogCommentDto.toEntity(blogCommentDto);
@@ -64,7 +63,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
 
         return comments.stream()
                 .map(BlogCommentDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public BlogComment getBlogCommentEntity(Long commentId) {

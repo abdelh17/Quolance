@@ -21,7 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class AdminControllerIntegrationTest extends AbstractTestcontainers {
+class AdminControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private MockMvc mockMvc;
 
@@ -72,7 +72,7 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
     void getAllPendingProjectIsOk() throws Exception {
         // Arrange
         Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-        Project openProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
+        projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
 
         // Act
         String response = mockMvc.perform(get("/api/admin/projects/pending/all")
@@ -84,16 +84,17 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        Map<String,Object> responseMap = objectMapper.readValue(response, Map.class);
-        List<Map<String,Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
 
         // Assert
-        assertThat(content.size()).isEqualTo(1);
+        assertThat(content).hasSize(1);
 
-        Map<String, Object> projectResponse = (Map<String, Object>) content.get(0);
+        Map<String, Object> projectResponse = content.getFirst();
 
-        assertThat(projectResponse.get("id")).isEqualTo(pendingProject.getId().intValue());
-        assertThat(projectResponse.get("projectStatus")).isEqualTo("PENDING");
+        assertThat(projectResponse)
+                .containsEntry("id", pendingProject.getId().intValue())
+                .containsEntry("projectStatus", "PENDING");
     }
 
     @Test
@@ -131,7 +132,7 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Project is already in status: OPEN");
+        assertThat(jsonResponse).containsEntry("message", "Project is already in status: OPEN");
     }
 
     @Test
@@ -149,7 +150,7 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Project is closed and cannot be updated.");
+        assertThat(jsonResponse).containsEntry("message", "Project is closed and cannot be updated.");
         assertThat(projectRepository.findById(closedProject.getId()).get().getProjectStatus()).isEqualTo(ProjectStatus.CLOSED);
     }
 
@@ -189,7 +190,7 @@ public class AdminControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Project is closed and cannot be updated.");
+        assertThat(jsonResponse).containsEntry("message", "Project is closed and cannot be updated.");
         assertThat(projectRepository.findById(closedProject.getId()).get().getProjectStatus()).isEqualTo(ProjectStatus.CLOSED);
     }
 

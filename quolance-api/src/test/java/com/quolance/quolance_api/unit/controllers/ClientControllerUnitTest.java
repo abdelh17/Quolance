@@ -4,6 +4,8 @@ import com.quolance.quolance_api.controllers.ClientController;
 import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
@@ -35,8 +37,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -107,7 +107,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Project created successfully");
-            verify(clientWorkflowService).createProject(eq(projectCreateDto), eq(mockClient));
+            verify(clientWorkflowService).createProject(projectCreateDto, mockClient);
         }
     }
 
@@ -134,7 +134,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.createProject(projectCreateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to create projects");
-            verify(clientWorkflowService).createProject(eq(projectCreateDto), eq(mockClient));
+            verify(clientWorkflowService).createProject(projectCreateDto, mockClient);
         }
     }
 
@@ -148,7 +148,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(projectDto);
-            verify(clientWorkflowService).getProject(eq(1L), eq(mockClient));
+            verify(clientWorkflowService).getProject(1L, mockClient);
         }
     }
 
@@ -162,7 +162,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.getProject(-1L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid project ID");
-            verify(clientWorkflowService).getProject(eq(-1L), eq(mockClient));
+            verify(clientWorkflowService).getProject(-1L, mockClient);
         }
     }
 
@@ -177,7 +177,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(projectDto);
-            verify(clientWorkflowService).updateProject(eq(1L), eq(projectUpdateDto), eq(mockClient));
+            verify(clientWorkflowService).updateProject(1L, projectUpdateDto, mockClient);
         }
     }
 
@@ -191,7 +191,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.updateProject(1L, projectUpdateDto))
                     .isInstanceOf(AccessDeniedException.class)
                     .hasMessage("User not authorized to update this project");
-            verify(clientWorkflowService).updateProject(eq(1L), eq(projectUpdateDto), eq(mockClient));
+            verify(clientWorkflowService).updateProject(1L, projectUpdateDto, mockClient);
         }
     }
 
@@ -205,7 +205,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Project deleted successfully");
-            verify(clientWorkflowService).deleteProject(eq(1L), eq(mockClient));
+            verify(clientWorkflowService).deleteProject(1L, mockClient);
         }
     }
 
@@ -219,7 +219,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.deleteProject(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Project not found");
-            verify(clientWorkflowService).deleteProject(eq(999L), eq(mockClient));
+            verify(clientWorkflowService).deleteProject(999L, mockClient);
         }
     }
 
@@ -276,7 +276,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).hasSize(1);
-            verify(clientWorkflowService).getAllApplicationsToProject(eq(1L), eq(mockClient));
+            verify(clientWorkflowService).getAllApplicationsToProject(1L, mockClient);
         }
     }
 
@@ -290,7 +290,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.getAllApplicationsToProject(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Project not found");
-            verify(clientWorkflowService).getAllApplicationsToProject(eq(999L), eq(mockClient));
+            verify(clientWorkflowService).getAllApplicationsToProject(999L, mockClient);
         }
     }
 
@@ -304,7 +304,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Freelancer selected successfully");
-            verify(applicationProcessWorkflow).selectFreelancer(eq(1L), eq(mockClient));
+            verify(applicationProcessWorkflow).selectFreelancer(1L, mockClient);
         }
     }
 
@@ -318,7 +318,7 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.selectFreelancer(999L))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application not found");
-            verify(applicationProcessWorkflow).selectFreelancer(eq(999L), eq(mockClient));
+            verify(applicationProcessWorkflow).selectFreelancer(999L, mockClient);
         }
     }
 
@@ -332,7 +332,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Freelancer rejected successfully");
-            verify(applicationProcessWorkflow).rejectApplication(eq(1L), eq(mockClient));
+            verify(applicationProcessWorkflow).rejectApplication(1L, mockClient);
         }
     }
 
@@ -347,7 +347,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("All selected freelancers rejected successfully");
-            verify(applicationProcessWorkflow).rejectManyApplications(eq(applicationIds), eq(mockClient));
+            verify(applicationProcessWorkflow).rejectManyApplications(applicationIds, mockClient);
         }
     }
 
@@ -362,7 +362,106 @@ class ClientControllerUnitTest {
             assertThatThrownBy(() -> clientController.rejectManyFreelancers(emptyList))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application IDs list cannot be empty");
-            verify(applicationProcessWorkflow).rejectManyApplications(eq(emptyList), eq(mockClient));
+            verify(applicationProcessWorkflow).rejectManyApplications(emptyList, mockClient);
         }
     }
+
+    @Test
+    void getAllAvailableFreelancers_ReturnsFreelancerPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> freelancerPage = new PageImpl<>(List.of(new FreelancerProfileDto()));
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(freelancerPage);
+
+            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithInvalidFilters_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto invalidFilters = new FreelancerProfileFilterDto();
+            doThrow(new ApiException("Invalid filters"))
+                    .when(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(invalidFilters));
+
+            assertThatThrownBy(() -> clientController.getAllAvailableFreelancers(pageableRequestDto, invalidFilters))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Invalid filters");
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(invalidFilters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithPagination_ReturnsPaginatedFreelancerList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(1);
+            pageableRequestDto.setSize(5);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> freelancerPage = new PageImpl<>(List.of(new FreelancerProfileDto()));
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(freelancerPage);
+
+            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithSorting_ReturnsSortedFreelancerList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> freelancerPage = new PageImpl<>(List.of(new FreelancerProfileDto()));
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(freelancerPage);
+
+            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WhenNoFreelancersAvailable_ReturnsEmptyList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> emptyPage = new PageImpl<>(List.of());
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(emptyPage);
+
+            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).isEmpty();
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
 }

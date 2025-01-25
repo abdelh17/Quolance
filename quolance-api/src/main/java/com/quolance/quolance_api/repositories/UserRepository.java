@@ -1,6 +1,5 @@
 package com.quolance.quolance_api.repositories;
 
-import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

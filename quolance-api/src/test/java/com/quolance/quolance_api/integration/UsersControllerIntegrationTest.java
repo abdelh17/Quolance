@@ -21,14 +21,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class UsersControllerIntegrationTest extends AbstractTestcontainers {
+class UsersControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private MockMvc mockMvc;
 
@@ -66,13 +66,14 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .getResponse().getContentAsString();
 
         Map<String, Object> userResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(userResponse.get("email")).isEqualTo("test@test.com");
-        assertThat(userResponse.get("username")).isEqualTo("MyClient123");
-        assertThat(userResponse.get("firstName")).isEqualTo("Test");
-        assertThat(userResponse.get(("lastName"))).isEqualTo("Test");
-        assertThat(userResponse.get("role")).isEqualTo("CLIENT");
 
-        assertThat(userRepository.findAll().size()).isEqualTo(1);
+        assertThat(userResponse).containsEntry("email", "test@test.com")
+                .containsEntry("username", "MyClient123")
+                .containsEntry("firstName", "Test")
+                .containsEntry("lastName", "Test")
+                .containsEntry("role", "CLIENT");
+
+        assertThat(userRepository.findAll()).hasSize(1);
         User savedUser = userRepository.findByEmail("test@test.com").get();
         assertThat(savedUser.getFirstName()).isEqualTo("Test");
         assertThat(savedUser.getLastName()).isEqualTo("Test");
@@ -104,8 +105,8 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(userRepository.findAll().size()).isEqualTo(1);
-        assertThat(jsonResponse.get("message")).isEqualTo("A user with this email already exists.");
+        assertThat(userRepository.findAll()).hasSize(1);
+        assertThat(jsonResponse).containsEntry("message", "A user with this email already exists.");
     }
 
     @Test
@@ -125,7 +126,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
 
-        assertThat(userRepository.findAll().size()).isEqualTo(1);
+        assertThat(userRepository.findAll()).hasSize(1);
         User savedUser = userRepository.findByEmail("test@test.com").get();
         assertThat(savedUser.getRole()).isEqualTo(Role.ADMIN);
     }
@@ -149,7 +150,7 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .andExpect(status().isForbidden());
 
         // Assert
-        assertThat(userRepository.findAll().size()).isEqualTo(0);
+        assertThat(userRepository.findAll()).isEmpty();
     }
 
     @Test
@@ -172,8 +173,10 @@ public class UsersControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> userResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(userResponse.get("firstName")).isEqualTo("NEW");
-        assertThat(userResponse.get("lastName")).isEqualTo("NEW");
+        assertThat(userResponse)
+                .containsEntry("firstName", "NEW")
+                .containsEntry("lastName", "NEW");
+
         User updatedUser = userRepository.findByEmail("client@test.com").get();
         assertThat(updatedUser.getFirstName()).isEqualTo("NEW");
         assertThat(updatedUser.getLastName()).isEqualTo("NEW");

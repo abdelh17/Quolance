@@ -28,8 +28,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -146,7 +144,7 @@ class UserServiceUnitTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.create(createUserRequest);
+        userService.create(createUserRequest);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -171,7 +169,7 @@ class UserServiceUnitTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.createAdmin(createAdminRequest);
+        userService.createAdmin(createAdminRequest);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -258,7 +256,7 @@ class UserServiceUnitTest {
     void updateUser_Success() {
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.updateUser(updateUserRequest, mockUser);
+        userService.updateUser(updateUserRequest, mockUser);
 
         verify(userRepository).save(userCaptor.capture());
         User savedUser = userCaptor.getValue();
@@ -271,7 +269,7 @@ class UserServiceUnitTest {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        UserResponseDto result = userService.updatePassword(updatePasswordRequest, mockUser);
+        userService.updatePassword(updatePasswordRequest, mockUser);
 
         verify(userRepository).save(any(User.class));
     }
@@ -284,5 +282,47 @@ class UserServiceUnitTest {
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", 400)
                 .hasMessage("Wrong password");
+    }
+
+    @Test
+    void findById_UserFound_ReturnsUser() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+
+        Optional<User> result = userService.findById(1L);
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(mockUser);
+        verify(userRepository).findById(1L);
+    }
+
+    @Test
+    void findById_UserNotFound_ReturnsEmpty() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Optional<User> result = userService.findById(1L);
+
+        assertThat(result).isNotPresent();
+        verify(userRepository).findById(1L);
+    }
+
+    @Test
+    void findByUsername_UserFound_ReturnsUser() {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
+
+        Optional<User> result = userService.findByUsername("testuser");
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(mockUser);
+        verify(userRepository).findByUsername("testuser");
+    }
+
+    @Test
+    void findByUsername_UserNotFound_ReturnsEmpty() {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        Optional<User> result = userService.findByUsername("testuser");
+
+        assertThat(result).isNotPresent();
+        verify(userRepository).findByUsername("testuser");
     }
 }

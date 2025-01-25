@@ -5,12 +5,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
     Page<Application> findApplicationsByFreelancerId(Long freelancerId, Pageable pageable);
+
     List<Application> findApplicationsByProjectId(Long projectId);
+
     Application findApplicationByFreelancerIdAndProjectId(Long freelancerId, Long projectId);
 }

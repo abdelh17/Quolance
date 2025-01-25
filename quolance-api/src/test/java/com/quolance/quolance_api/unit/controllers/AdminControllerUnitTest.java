@@ -1,11 +1,11 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.AdminController;
-import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
+import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
-import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.PaginationUtils;
+import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -159,6 +159,53 @@ class AdminControllerUnitTest {
         assertThat(response.getBody().getSize()).isEqualTo(10);
         verify(adminWorkflowService).getAllPendingProjects(pageable);
     }
+
+    @Test
+    void getAllPendingProjects_WithLargePageSize_ReturnsLimitedResults() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setPage(0);
+        pageableRequest.setSize(1000);
+
+
+        Pageable pageable = PageRequest.of(0, 50);
+        when(paginationUtils.createPageable(pageableRequest)).thenReturn(pageable);
+
+
+        List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
+        Page<ProjectDto> expectedPage = new PageImpl<>(projectList, pageable, projectList.size());
+        when(adminWorkflowService.getAllPendingProjects(pageable)).thenReturn(expectedPage);
+
+
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(pageableRequest);
+
+
+        assertThat(response.getBody().getSize()).isEqualTo(50);
+        verify(adminWorkflowService).getAllPendingProjects(pageable);
+    }
+
+    @Test
+    void getAllPendingProjects_SingleProjectInResult() {
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setPage(0);
+        pageableRequest.setSize(10);
+        Pageable pageable = PageRequest.of(0, 10);
+        when(paginationUtils.createPageable(pageableRequest)).thenReturn(pageable);
+
+
+        List<ProjectDto> projectList = List.of(projectDto1);
+        Page<ProjectDto> expectedPage = new PageImpl<>(projectList, pageable, projectList.size());
+        when(adminWorkflowService.getAllPendingProjects(pageable)).thenReturn(expectedPage);
+
+
+        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(pageableRequest);
+
+
+        assertThat(response.getBody().getTotalElements()).isEqualTo(1);
+        assertThat(response.getBody().getContent().get(0).getId()).isEqualTo(1L);
+        verify(adminWorkflowService).getAllPendingProjects(pageable);
+    }
+
+
 
     @Test
     void approveProject_ReturnsSuccessMessage() {

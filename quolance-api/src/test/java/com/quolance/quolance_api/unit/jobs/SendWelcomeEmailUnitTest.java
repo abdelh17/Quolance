@@ -26,40 +26,31 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SendWelcomeEmailUnitTest {
 
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private VerificationCodeService verificationCodeService;
-
-    @Mock
-    private SpringTemplateEngine templateEngine;
-
-    @Mock
-    private EmailService emailService;
-
-    @Mock
-    private ApplicationProperties applicationProperties;
-
-    @InjectMocks
-    private SendWelcomeEmailJobHandler jobHandler;
-
-    @Captor
-    private ArgumentCaptor<Context> contextCaptor;
-
-    private User mockUser;
-    private VerificationCode mockVerificationCode;
-    private SendWelcomeEmailJob mockJob;
     private static final String APP_NAME = "Quolance";
     private static final String BASE_URL = "http://localhost:8080";
     private static final String VERIFICATION_CODE = "123456";
+    @Mock
+    private UserService userService;
+    @Mock
+    private VerificationCodeService verificationCodeService;
+    @Mock
+    private SpringTemplateEngine templateEngine;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private ApplicationProperties applicationProperties;
+    @InjectMocks
+    private SendWelcomeEmailJobHandler jobHandler;
+    @Captor
+    private ArgumentCaptor<Context> contextCaptor;
+    private User mockUser;
+    private VerificationCode mockVerificationCode;
+    private SendWelcomeEmailJob mockJob;
 
     @BeforeEach
     void setUp() {
@@ -96,9 +87,9 @@ class SendWelcomeEmailUnitTest {
         assertThat(capturedContext.getVariable("applicationName")).isEqualTo(APP_NAME);
 
         verify(emailService).sendHtmlMessage(
-                eq(List.of(mockUser.getEmail())),
-                eq("Welcome to our platform"),
-                eq(expectedHtmlBody)
+                List.of(mockUser.getEmail()),
+                "Welcome to our platform",
+                expectedHtmlBody
         );
 
         verify(verificationCodeService).updateVerificationCodeStatus(mockVerificationCode);
@@ -171,6 +162,40 @@ class SendWelcomeEmailUnitTest {
         assertThatThrownBy(() -> jobHandler.run(mockJob))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Email service failed");
+
+        verify(templateEngine).process(eq("welcome-email"), any(IContext.class));
+        verify(verificationCodeService, never()).updateVerificationCodeStatus(any());
+        assertThat(mockVerificationCode.isEmailSent()).isFalse();
+    }
+
+    @Test
+    void run_WithInvalidUserId_ThrowsException() {
+        SendWelcomeEmailJob invalidJob = new SendWelcomeEmailJob(-1L);
+        when(userService.findById(-1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> jobHandler.run(invalidJob))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("User not found");
+
+        verify(userService).findById(-1L);
+        verifyNoMoreInteractions(userService, emailService, templateEngine, verificationCodeService);
+    }
+
+    @Test
+    void run_WithInvalidEmailAddress_ThrowsException() throws MessagingException {
+        String invalidEmail = "invalid-email";
+        mockUser.setEmail(invalidEmail);
+
+        when(userService.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(applicationProperties.getBaseUrl()).thenReturn(BASE_URL);
+        when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
+        when(templateEngine.process(eq("welcome-email"), any(IContext.class))).thenReturn("<html></html>");
+        doThrow(new MessagingException("Invalid email address"))
+                .when(emailService).sendHtmlMessage(any(), any(), any());
+
+        assertThatThrownBy(() -> jobHandler.run(mockJob))
+                .isInstanceOf(MessagingException.class)
+                .hasMessage("Invalid email address");
 
         verify(templateEngine).process(eq("welcome-email"), any(IContext.class));
         verify(verificationCodeService, never()).updateVerificationCodeStatus(any());

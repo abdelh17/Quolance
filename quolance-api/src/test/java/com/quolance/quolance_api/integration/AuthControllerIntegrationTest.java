@@ -21,7 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class AuthControllerIntegrationTest extends AbstractTestcontainers {
+class AuthControllerIntegrationTest extends AbstractTestcontainers {
     private MockHttpSession session;
     @Autowired
     private MockMvc mockMvc;
@@ -55,7 +55,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    public void testEmailLoginClientIsOk() throws Exception {
+    void testEmailLoginClientIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
         loginRequest.setUsername("client@test.com");
@@ -84,7 +84,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    public void testUsernameLoginClientIsOk() throws Exception {
+    void testUsernameLoginClientIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
         loginRequest.setUsername("MyClient123");
@@ -113,7 +113,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    public void testEmailLoginFreelancerIsOk() throws Exception {
+    void testEmailLoginFreelancerIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
         loginRequest.setUsername("freelancer1@test.com");
@@ -142,7 +142,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    public void testUsernameLoginFreelancerIsOk() throws Exception {
+    void testUsernameLoginFreelancerIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
         loginRequest.setUsername("MyFreelancer1");
@@ -171,7 +171,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
-    public void testLoginAdminIsOk() throws Exception {
+    void testLoginAdminIsOk() throws Exception {
         // Arrange
         LoginRequestDto loginRequest = new LoginRequestDto();
         loginRequest.setUsername("admin@test.com");
@@ -217,7 +217,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Bad credentials");
+        assertThat(jsonResponse).containsEntry("message", "Bad credentials");
     }
 
     @Test
@@ -238,7 +238,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Bad Credentials");
+        assertThat(jsonResponse).containsEntry("message", "Bad Credentials");
     }
 
     @Test
@@ -259,7 +259,7 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse.get("message")).isEqualTo("Bad Credentials");
+        assertThat(jsonResponse).containsEntry("message", "Bad Credentials");
     }
 
     @Test
@@ -286,11 +286,11 @@ public class AuthControllerIntegrationTest extends AbstractTestcontainers {
                 .getContentAsString();
 
         Map<String, Object> sessionResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(sessionResponse.get("id")).isEqualTo(client.getId().intValue());
-        assertThat(sessionResponse.get("email")).isEqualTo("client@test.com");
-        assertThat(sessionResponse.get("role")).isEqualTo("CLIENT");
-        assertThat(sessionResponse.get("firstName")).isEqualTo("Client");
-        assertThat(sessionResponse.get("lastName")).isEqualTo("Test");
+        assertThat(sessionResponse).containsEntry("id", client.getId().intValue())
+                .containsEntry("email", "client@test.com")
+                .containsEntry("role", "CLIENT")
+                .containsEntry("firstName", "Client")
+                .containsEntry("lastName", "Test");
 
     }
 

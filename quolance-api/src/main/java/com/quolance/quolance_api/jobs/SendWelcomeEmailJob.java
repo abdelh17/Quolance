@@ -12,10 +12,10 @@ import org.jobrunr.jobs.lambdas.JobRequestHandler;
 @NoArgsConstructor
 public class SendWelcomeEmailJob implements JobRequest {
 
-  private Long userId;
+    private Long userId;
 
-  @Override
-  public Class<? extends JobRequestHandler> getJobRequestHandler() {
-    return SendWelcomeEmailJobHandler.class;
-  }
+    @Override
+    public Class<? extends JobRequestHandler> getJobRequestHandler() {
+        return SendWelcomeEmailJobHandler.class;
+    }
 }

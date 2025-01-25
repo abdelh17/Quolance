@@ -6,15 +6,12 @@ import com.quolance.quolance_api.entities.UserConnectedAccount;
 import com.quolance.quolance_api.jobs.SendTempPasswordEmailJob;
 import com.quolance.quolance_api.repositories.ConnectedAccountRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import com.quolance.quolance_api.services.auth.EmailService;
 import com.quolance.quolance_api.services.auth.OAuth2LoginSuccessHandler;
 import com.quolance.quolance_api.util.ApplicationContextProvider;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jobrunr.scheduling.BackgroundJobRequest;
-import org.jobrunr.scheduling.JobScheduler;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,11 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.context.Context;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 /**

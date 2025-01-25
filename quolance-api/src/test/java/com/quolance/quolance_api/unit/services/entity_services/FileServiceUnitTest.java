@@ -31,8 +31,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -170,6 +168,26 @@ class FileServiceUnitTest {
     }
 
     @Test
+    void uploadFile_UnsupportedContentType_ThrowsException() throws IOException {
+        MultipartFile unsupportedFile = new MockMultipartFile(
+                "test-file.xyz",
+                "test-file.xyz",
+                "application/xyz",
+                "test content".getBytes()
+        );
+
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.upload(any(byte[].class), any(Map.class)))
+                .thenThrow(new IOException("Unsupported file type"));
+
+        assertThatThrownBy(() -> fileService.uploadFile(unsupportedFile, mockUser))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Error uploading file");
+
+        verify(fileRepository, never()).save(any(FileEntity.class));
+    }
+
+    @Test
     void getAllFileUploadsByUser_Success() {
         FileEntity file1 = new FileEntity();
         file1.setId(1L);
@@ -219,7 +237,7 @@ class FileServiceUnitTest {
                 allFiles.size()
         );
 
-        when(fileRepository.findFileUploadsByUser(eq(mockUser), eq(pageRequest)))
+        when(fileRepository.findFileUploadsByUser(mockUser, pageRequest))
                 .thenReturn(firstPage);
 
         Page<FileDto> result = fileService.getAllFileUploadsByUser(mockUser, pageRequest);
@@ -228,5 +246,18 @@ class FileServiceUnitTest {
         assertThat(result.getTotalElements()).isEqualTo(3);
         assertThat(result.getTotalPages()).isEqualTo(2);
         assertThat(result.hasNext()).isTrue();
+    }
+
+    @Test
+    void getAllFileUploadsByUser_NoFilesFound_ReturnsEmptyPage() {
+        Page<FileEntity> emptyPage = Page.empty();
+        when(fileRepository.findFileUploadsByUser(eq(mockUser), any(Pageable.class)))
+                .thenReturn(emptyPage);
+
+        Page<FileDto> result = fileService.getAllFileUploadsByUser(mockUser, Pageable.unpaged());
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+        verify(fileRepository).findFileUploadsByUser(eq(mockUser), any(Pageable.class));
     }
 }
