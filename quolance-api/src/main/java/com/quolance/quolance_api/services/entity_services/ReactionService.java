@@ -9,15 +9,13 @@ import com.quolance.quolance_api.entities.User;
 
 public interface  ReactionService {
     
-    ReactionResponseDto createReaction(Long blogPostId, Long blogCommentId, User user, ReactionRequestDto request);
+    ReactionResponseDto reactToPost(ReactionRequestDto requestDto, User user);
 
-    ReactionResponseDto updateReaction(Long reactionId, ReactionRequestDto request);
-
-    void deleteReaction(Long reactionId);
-
+    ReactionResponseDto reactToComment(ReactionRequestDto requestDto, User user);
+    
     List<ReactionResponseDto> getReactionsByBlogPostId(Long blogPostId);
-
+    
     List<ReactionResponseDto> getReactionsByBlogCommentId(Long blogCommentId);
-
-    Reaction getReactionEntity(Long reactionId);
+    
+    void deleteReaction(Long reactionId, User user);
 }
