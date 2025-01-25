@@ -50,16 +50,12 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
-
     private MockHttpSession session;
     private User loggedInUser;
     private BlogPost blogPost;
 
     @BeforeEach
     void setUp() throws Exception {
-        projectRepository.deleteAll();
         blogCommentRepository.deleteAll();
         blogPostRepository.deleteAll();
         userRepository.deleteAll();

@@ -7,12 +7,16 @@ import com.quolance.quolance_api.entities.blog.BlogComment;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.BlogReactionType;
+import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import com.quolance.quolance_api.repositories.blog.BlogReactionRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
+import com.quolance.quolance_api.util.exceptions.ApiException;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +24,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -54,6 +61,8 @@ class BlogReactionIntegrationTest extends AbstractTestcontainers {
     private User loggedInUser;
     private BlogPost blogPost;
     private BlogComment blogComment;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -61,10 +70,22 @@ class BlogReactionIntegrationTest extends AbstractTestcontainers {
         reactionRepository.deleteAll();
         blogCommentRepository.deleteAll();
         blogPostRepository.deleteAll();
-        userRepository.deleteAll();
 
-        // Create test data
-        loggedInUser = userRepository.save(EntityCreationHelper.createClient());
+        // Find and delete the specific test user if it exists
+        userRepository.findByUsername("test_user").ifPresent(userRepository::delete);
+
+        // Create the test user
+        loggedInUser = userRepository.save(
+                User.builder()
+                        .firstName("John")
+                        .lastName("Doe")
+                        .username("test_user") // Use a consistent username for the test user
+                        .email("test-user@example.com")
+                        .password(passwordEncoder.encode("Password123!"))
+                        .role(Role.CLIENT)
+                        .build()
+        );
+
         blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
         blogComment = blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
         session = getSession(loggedInUser.getEmail(), "Password123!");
@@ -76,20 +97,6 @@ class BlogReactionIntegrationTest extends AbstractTestcontainers {
         reactionRequest.setReactionType(BlogReactionType.valueOf("LIKE"));
 
         mockMvc.perform(post("/api/reactions/post/" + blogPost.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reactionRequest)))
-                .andExpect(status().isOk());
-
-        assertThat(reactionRepository.findAll()).hasSize(1);
-    }
-
-    @Test
-    void testAddReactionToComment() throws Exception {
-        ReactionRequestDto reactionRequest = new ReactionRequestDto();
-        reactionRequest.setReactionType(BlogReactionType.valueOf("HEART"));
-
-        mockMvc.perform(post("/api/reactions/comment/" + blogComment.getId())
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reactionRequest)))
@@ -143,6 +150,64 @@ class BlogReactionIntegrationTest extends AbstractTestcontainers {
     }
 
     @Test
+    void testAddReactionToComment() throws Exception {
+        ReactionRequestDto reactionRequest = new ReactionRequestDto();
+        reactionRequest.setReactionType(BlogReactionType.valueOf("HEART"));
+
+        mockMvc.perform(post("/api/reactions/comment/" + blogComment.getId())
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reactionRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(reactionRepository.findAll()).hasSize(1);
+    }
+
+    @Test
+    void testUpdateReactionForComment() throws Exception {
+        // Add a reaction first
+        ReactionRequestDto reactionRequest = new ReactionRequestDto();
+        reactionRequest.setReactionType(BlogReactionType.valueOf("LIKE"));
+
+        mockMvc.perform(post("/api/reactions/comment/" + blogComment.getId())
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reactionRequest)))
+                .andExpect(status().isOk());
+
+        // Update the reaction
+        reactionRequest.setReactionType(BlogReactionType.valueOf("ANGRY"));
+        mockMvc.perform(post("/api/reactions/comment/" + blogComment.getId())
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reactionRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(reactionRepository.findAll().getFirst().getReactionType()).isEqualTo(BlogReactionType.valueOf("ANGRY"));
+    }
+
+    @Test
+    void testRemoveReactionFromComment() throws Exception {
+        // Add a reaction first
+        ReactionRequestDto reactionRequest = new ReactionRequestDto();
+        reactionRequest.setReactionType(BlogReactionType.valueOf("LIKE"));
+
+        mockMvc.perform(post("/api/reactions/comment/" + blogComment.getId())
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reactionRequest)))
+                .andExpect(status().isOk());
+
+        // Remove the reaction
+        mockMvc.perform(delete("/api/reactions/comment/" + blogComment.getId())
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        assertThat(reactionRepository.findAll()).isEmpty();
+    }
+
+    @Test
     void testInvalidEntityType() throws Exception {
         ReactionRequestDto reactionRequest = new ReactionRequestDto();
         reactionRequest.setReactionType(BlogReactionType.valueOf("LIKE"));
@@ -153,6 +218,19 @@ class BlogReactionIntegrationTest extends AbstractTestcontainers {
                         .content(objectMapper.writeValueAsString(reactionRequest)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void testRemoveNonexistentReactionFromPost() throws Exception {
+        mockMvc.perform(delete("/api/reactions/post/" + blogPost.getId())
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertThat(result.getResolvedException())
+                        .isInstanceOf(ApiException.class)
+                        .hasMessageContaining("No reaction found for this post by the user"));
+    }
+
+
 
     private MockHttpSession getSession(String email, String password) throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();

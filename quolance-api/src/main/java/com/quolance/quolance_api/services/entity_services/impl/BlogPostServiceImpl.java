@@ -62,6 +62,8 @@ public class BlogPostServiceImpl implements BlogPostService {
     public void deletePost(Long id, User author) {
         BlogPost blogPost = getBlogPostEntity(id);
 
+        blogPost.getReactionCounts().clear();
+        blogPostRepository.save(blogPost); // Save changes to remove reaction counts
         if (!isAuthorOfPost(blogPost, author)) {
             throw new ApiException("You cannot delete a project that does not belong to you.");
         }

@@ -26,10 +26,10 @@ public class Reaction extends AbstractEntity {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = true)
     private BlogPost post;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "comment_id", nullable = true)
     private BlogComment comment;
 }

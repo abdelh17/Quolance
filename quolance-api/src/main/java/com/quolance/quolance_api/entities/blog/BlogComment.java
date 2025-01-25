@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -35,6 +37,9 @@ public class BlogComment extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "blog_post_id")
     private BlogPost blogPost;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reaction> reactions = new ArrayList<>();
 
     // Reaction counts map
     @ElementCollection

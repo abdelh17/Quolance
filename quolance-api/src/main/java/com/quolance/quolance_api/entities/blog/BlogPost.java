@@ -37,6 +37,9 @@ public class BlogPost extends AbstractEntity {
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogComment> blogComments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reaction> reactions = new ArrayList<>();
+
     // Reaction counts map
     @ElementCollection
     @CollectionTable(name = "post_reaction_counts", joinColumns = @JoinColumn(name = "post_id"))
