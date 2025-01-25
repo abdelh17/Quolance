@@ -13,17 +13,11 @@ import com.quolance.quolance_api.entities.User;
 
 @Repository
 public interface ReactionRepository extends JpaRepository<Reaction, Long> {
-    List<Reaction> findByBlogPostId(Long blogPostId);
-
-    Optional<Reaction> findByBlogPostIdAndUserId(Long blogPostId, Long userId);
-
-    List<Reaction> findByBlogPost(BlogComment blogComment);
-
     Optional<Reaction> findByUserAndBlogPost(User user, BlogPost blogPost);
 
-        // Find reactions by BlogPost
-        List<Reaction> findByBlogPost(BlogPost blogPost);
+    Optional<Reaction> findByUserAndBlogComment(User user, BlogComment blogComment);
 
-        // Find reactions by BlogComment
-        List<Reaction> findByBlogComment(BlogComment blogComment);
+    List<Reaction> findByBlogPost(BlogPost blogPost);
+
+    List<Reaction> findByBlogComment(BlogComment blogComment);
 }
