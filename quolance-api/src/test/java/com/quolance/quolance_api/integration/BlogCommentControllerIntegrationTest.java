@@ -6,6 +6,7 @@ import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
 import com.quolance.quolance_api.entities.blog.BlogComment;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -53,15 +55,34 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
     private MockHttpSession session;
     private User loggedInUser;
     private BlogPost blogPost;
+    private BlogComment blogComment;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @BeforeEach
     void setUp() throws Exception {
         blogCommentRepository.deleteAll();
         blogPostRepository.deleteAll();
-        userRepository.deleteAll();
 
-        loggedInUser = userRepository.save(EntityCreationHelper.createClient());
+        // Find and delete the specific test user if it exists
+        userRepository.findByUsername("test_user").ifPresent(userRepository::delete);
+
+        // Create the test user
+        loggedInUser = userRepository.save(
+                User.builder()
+                        .firstName("John")
+                        .lastName("Doe")
+                        .username("test_user") // Use a consistent username for the test user
+                        .email("test-user@example.com")
+                        .password(passwordEncoder.encode("Password123!"))
+                        .role(Role.CLIENT)
+                        .build()
+        );
+
         blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
+        blogComment = blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
         session = getSession(loggedInUser.getEmail(), "Password123!");
     }
 
@@ -118,21 +139,19 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testUpdateBlogComment() throws Exception {
-        BlogComment blogComment = blogCommentRepository
-                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
-
-        BlogCommentDto blogCommentDto = new BlogCommentDto();
-        blogCommentDto.setContent("Updated Comment Content");
-        blogCommentDto.setBlogPostId(blogPost.getId());
-        blogCommentDto.setUserId(loggedInUser.getId());
+        BlogCommentDto updatedCommentDto = new BlogCommentDto();
+        updatedCommentDto.setContent("Updated Comment Content");
 
         mockMvc.perform(put("/api/blog-comments/" + blogComment.getId())
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(blogCommentDto)))
+                        .content(objectMapper.writeValueAsString(updatedCommentDto)))
                 .andExpect(status().isOk());
 
-        BlogComment updatedComment = blogCommentRepository.findAll().getFirst();
+        // Fetch the updated comment
+        BlogComment updatedComment = blogCommentRepository.findById(blogComment.getId())
+                .orElseThrow(() -> new AssertionError("Comment not found"));
+
         assertThat(updatedComment.getContent()).isEqualTo("Updated Comment Content");
     }
 
