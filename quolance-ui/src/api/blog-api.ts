@@ -34,3 +34,44 @@ export const useCreateBlogPost = (options?: {
     });
 };
 
+export interface ReactionResponseDto {
+  id: number;
+  reactionType: string;
+  userId: number;
+  userName: string;
+  blogPostId: number;
+}
+
+
+export const useGetReactionsByPostId = (postId: number, options?: {
+  onSuccess?: (data: ReactionResponseDto[]) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useQuery<ReactionResponseDto[], HttpErrorResponse>({
+    queryKey: ['post-reactions', postId],
+    queryFn: async () => {
+      const response = await httpClient.get(`/api/blog-posts/reactions/post/${postId}`);
+      return response.data;
+    },
+    enabled: !!postId, // Only fetch if postId is defined
+    ...options,
+  });
+};
+
+export interface ReactionRequestDto {
+  reactionType: string;
+  blogPostId: number;
+}
+
+export const useReactToPost = (options?: {
+  onSuccess?: (data: ReactionResponseDto) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<ReactionResponseDto, HttpErrorResponse, ReactionRequestDto>({
+    mutationFn: async (reactionRequest) => {
+      const response = await httpClient.post('/api/blog-posts/reactions/post', reactionRequest);
+      return response.data;
+    },
+    ...options,
+  });
+};
