@@ -3,70 +3,73 @@ package com.quolance.quolance_api.controllers.blog;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cloudinary.api.exceptions.ApiException;
 import com.quolance.quolance_api.dtos.blog.ReactionRequestDto;
 import com.quolance.quolance_api.dtos.blog.ReactionResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.entity_services.ReactionService;
 import com.quolance.quolance_api.util.SecurityUtil;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
-@RequestMapping("/api/reactions")
+@RequestMapping("/api/blog-posts/reactions")
 @RequiredArgsConstructor
 public class ReactionController {
 
     private final ReactionService reactionService;
 
-    @PostMapping
-    public ResponseEntity<ReactionResponseDto> createReaction(
-            @RequestBody ReactionRequestDto requestDto) {
-        User user = SecurityUtil.getAuthenticatedUser();
-        ReactionResponseDto response = reactionService.createReaction(
-                requestDto.getBlogPostId(),
-                requestDto.getBlogCommentId(),
-                user,
-                requestDto
-        );
+    @PostMapping("/post")
+    public ResponseEntity<ReactionResponseDto> reactToPost(
+            @Valid @RequestBody ReactionRequestDto requestDto,
+            @AuthenticationPrincipal User user) throws ApiException {
+        if (requestDto.getBlogPostId() == null) {
+            throw new ApiException("BlogPostId must be provided for reacting to a post.");
+        }
+        ReactionResponseDto response = reactionService.reactToPost(requestDto, user);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{reactionId}")
-    public ResponseEntity<ReactionResponseDto> updateReaction(
-            @PathVariable Long reactionId,
-            @RequestBody ReactionRequestDto requestDto) {
-        ReactionResponseDto response = reactionService.updateReaction(reactionId, requestDto);
+    @PostMapping("/comment")
+    public ResponseEntity<ReactionResponseDto> reactToComment(
+            @Valid @RequestBody ReactionRequestDto requestDto,
+            @AuthenticationPrincipal User user) throws ApiException {
+        if (requestDto.getBlogCommentId() == null) {
+            throw new ApiException("BlogCommentId must be provided for reacting to a comment.");
+        }
+        ReactionResponseDto response = reactionService.reactToComment(requestDto, user);
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<List<ReactionResponseDto>> getReactionsByPost(@PathVariable Long postId) {
+        List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogPostId(postId);
+        return ResponseEntity.ok(reactions);
+    }
+
+    @GetMapping("/comment/{commentId}")
+    public ResponseEntity<List<ReactionResponseDto>> getReactionsByComment(@PathVariable Long commentId) {
+        List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogCommentId(commentId);
+        return ResponseEntity.ok(reactions);
     }
 
     @DeleteMapping("/{reactionId}")
-    public ResponseEntity<String> deleteReaction(@PathVariable Long reactionId) {
-        reactionService.deleteReaction(reactionId);
-        return ResponseEntity.ok("Reaction deleted successfully");
-    }
-
-    @GetMapping("/posts/{blogPostId}")
-    public ResponseEntity<List<ReactionResponseDto>> getReactionsByBlogPostId(
-            @PathVariable Long blogPostId) {
-        List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogPostId(blogPostId);
-        return ResponseEntity.ok(reactions);
-    }
-
-    @GetMapping("/comments/{blogCommentId}")
-    public ResponseEntity<List<ReactionResponseDto>> getReactionsByBlogCommentId(
-            @PathVariable Long blogCommentId) {
-        List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogCommentId(blogCommentId);
-        return ResponseEntity.ok(reactions);
+    public ResponseEntity<String> deleteReaction(
+            @PathVariable Long reactionId,
+            @AuthenticationPrincipal User user) {
+        reactionService.deleteReaction(reactionId, user);
+        return ResponseEntity.ok("Reaction deleted successfully.");
     }
 
 }
