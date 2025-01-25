@@ -141,14 +141,14 @@ public class ClientController {
             summary = "View all available freelancers.",
             description = "View all freelancers (as a client) based on the provided filters."
     )
-    public ResponseEntity<Page<FreelancerProfileDto>> getAllAvailableFreelancers(
+    public ResponseEntity<PageResponseDto<FreelancerProfileDto>> getAllAvailableFreelancers(
             @Valid PageableRequestDto pageableRequest,
             @Valid FreelancerProfileFilterDto filters) {
         Page<FreelancerProfileDto> freelancersPage = clientWorkflowService.getAllAvailableFreelancers(
                 pageableRequest.toPageRequest(),
                 filters
         );
-        return ResponseEntity.ok(freelancersPage);
+        return ResponseEntity.ok(new PageResponseDto<>(freelancersPage));
     }
 
 }

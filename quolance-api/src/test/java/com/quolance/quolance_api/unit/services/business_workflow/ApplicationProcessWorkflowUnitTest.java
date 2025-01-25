@@ -199,4 +199,17 @@ class ApplicationProcessWorkflowUnitTest {
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("The resource was modified by another user. Please refresh the page and try again.");
     }
+
+    @Test
+    void cancelApplication_WhenApplicationNotCancelable_ThrowsException() {
+        mockApplication.setApplicationStatus(ApplicationStatus.ACCEPTED);
+        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+
+        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(1L, mockFreelancer))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("You cannot cancel an application that has been accepted");
+
+        verify(applicationService).getApplicationById(1L);
+        verify(applicationService, never()).deleteApplication(any());
+    }
 }
