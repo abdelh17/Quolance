@@ -42,13 +42,13 @@ const PostReaction: React.FC<PostReactionProps> = ({
               ) : (
                 <BiHeart {...commonProps} />
               );
-            case "laugh":
+            case "haha":
               return userReaction ? (
                 <BiSolidLaugh {...commonProps} style={{ color: "#DABC00" }} />
               ) : (
                 <BiLaugh {...commonProps} />
               );
-            case "shocked":
+            case "wow":
               return userReaction ? (
                 <BiSolidShocked {...commonProps} style={{ color: "#DABC00" }} />
               ) : (
