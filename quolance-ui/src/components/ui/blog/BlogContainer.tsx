@@ -112,14 +112,14 @@ const BlogContainer: React.FC = () => {
                         )}
                     </CreatePostModal>
                     {/* Create Post Button and Search Bar*/}
-                    <div className="relative flex items-center">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-2 sm:justify-between w-full mt-4">
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className="absolute left-0 px-4 py-2 bg-blue-500 text-white rounded-md"
+                            className="px-4 py-2 bg-blue-500 text-white rounded-md whitespace-nowrap sm:w-auto text-center"
                         >
                             Create New Post
                         </button>
-                        <div className="flex-grow mx-auto max-w-lg">
+                        <div className="md:w-[450px] sm:w-full sm:max-w-lg">
                             <SearchBar />
                         </div>
                     </div>
