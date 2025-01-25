@@ -1,9 +1,9 @@
 package com.quolance.quolance_api.unit.services.business_workflow;
 
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
-import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
-import com.quolance.quolance_api.dtos.project.ProjectDto;
-import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
+import com.quolance.quolance_api.dtos.project.*;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
@@ -12,7 +12,9 @@ import com.quolance.quolance_api.entities.enums.*;
 import com.quolance.quolance_api.services.business_workflow.impl.ClientWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,11 +26,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,6 +47,9 @@ class ClientWorkflowServiceUnitTest {
 
     @Mock
     private ApplicationService applicationService;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private ClientWorkflowServiceImpl clientWorkflowService;
@@ -65,6 +73,9 @@ class ClientWorkflowServiceUnitTest {
 
         mockFreelancer = User.builder()
                 .id(2L)
+                .role(Role.FREELANCER)
+                .firstName("John")
+                .lastName("Doe")
                 .email("freelancer@test.com")
                 .profile(new Profile())
                 .build();
@@ -140,6 +151,19 @@ class ClientWorkflowServiceUnitTest {
     }
 
     @Test
+    void createProject_WhenProjectCreationFails_ThrowsException() {
+        doThrow(new ApiException("Project creation failed"))
+                .when(projectService).saveProject(any(Project.class));
+
+        assertThatThrownBy(() -> clientWorkflowService.createProject(mockProjectCreateDto, mockClient))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Project creation failed");
+
+        verify(projectService).saveProject(any(Project.class));
+    }
+
+
+    @Test
     void getProject_Success() {
         when(projectService.getProjectById(1L)).thenReturn(mockProject);
 
@@ -169,6 +193,20 @@ class ClientWorkflowServiceUnitTest {
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
                 .hasMessage("You are not authorized to remove this project");
+    }
+
+    @Test
+    void deleteProject_WhenProjectDeletionFails_ThrowsException() {
+        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        doThrow(new ApiException("Project deletion failed"))
+                .when(projectService).deleteProject(mockProject);
+
+        assertThatThrownBy(() -> clientWorkflowService.deleteProject(1L, mockClient))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Project deletion failed");
+
+        verify(projectService).getProjectById(1L);
+        verify(projectService).deleteProject(mockProject);
     }
 
     @Test
@@ -242,4 +280,89 @@ class ClientWorkflowServiceUnitTest {
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
                 .hasMessage("You don't have permission to update this project");
     }
+
+    @Test
+    void updateProject_WhenProjectUpdateFails_ThrowsException() {
+        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        doThrow(new ApiException("Project update failed"))
+                .when(projectService).updateProject(any(Project.class), any(ProjectUpdateDto.class));
+
+        assertThatThrownBy(() -> clientWorkflowService.updateProject(1L, mockProjectUpdateDto, mockClient))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Project update failed");
+
+        verify(projectService).getProjectById(1L);
+        verify(projectService).updateProject(any(Project.class), any(ProjectUpdateDto.class));
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithSearchNameFilter_ReturnsFilteredFreelancers() {
+
+        List<User> mockFreelancers = List.of(mockFreelancer);
+        Page<User> mockPage = new PageImpl<>(mockFreelancers);
+        Pageable pageable = PageRequest.of(0, 10);
+        FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+        filters.setSearchName("John");
+
+        when(userService.findAllWithFilters(any(Specification.class), eq(pageable))).thenReturn(mockPage);
+        Page<FreelancerProfileDto> results = clientWorkflowService.getAllAvailableFreelancers(pageable, filters);
+
+        assertThat(results.getContent()).hasSize(1);
+        assertThat(results.getContent().stream().map(FreelancerProfileDto::getFirstName)).containsExactly("John");
+        assertThat(results.getContent().stream().map(FreelancerProfileDto::getLastName)).containsExactly("Doe");
+        verify(userService).findAllWithFilters(any(Specification.class), eq(pageable));
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithExperienceLevelFilter_ReturnsFilteredFreelancers() {
+        FreelancerProfileFilterDto filterDto = new FreelancerProfileFilterDto();
+        filterDto.setExperienceLevel(FreelancerExperienceLevel.EXPERT);
+
+        mockFreelancer.getProfile().setExperienceLevel(FreelancerExperienceLevel.EXPERT);
+        Page<User> userPage = new PageImpl<>(List.of(mockFreelancer));
+        when(userService.findAllWithFilters(any(Specification.class), any(Pageable.class)))
+                .thenReturn(userPage);
+
+        Page<FreelancerProfileDto> result = clientWorkflowService.getAllAvailableFreelancers(Pageable.unpaged(), filterDto);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.EXPERT);
+        verify(userService).findAllWithFilters(any(Specification.class), any(Pageable.class));
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithAvailabilityFilter_ReturnsFilteredFreelancers() {
+        FreelancerProfileFilterDto filterDto = new FreelancerProfileFilterDto();
+        filterDto.setAvailability(Availability.FULL_TIME);
+
+        mockFreelancer.getProfile().setAvailability(Availability.FULL_TIME);
+        Page<User> userPage = new PageImpl<>(List.of(mockFreelancer));
+        when(userService.findAllWithFilters(any(Specification.class), any(Pageable.class)))
+                .thenReturn(userPage);
+
+        Page<FreelancerProfileDto> result = clientWorkflowService.getAllAvailableFreelancers(Pageable.unpaged(), filterDto);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getAvailability()).isEqualTo(Availability.FULL_TIME);
+        verify(userService).findAllWithFilters(any(Specification.class), any(Pageable.class));
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithSkillsFilter_ReturnsFilteredFreelancers() {
+        FreelancerProfileFilterDto filterDto = new FreelancerProfileFilterDto();
+        filterDto.setSkills(Set.of(Tag.JAVA, Tag.JAVASCRIPT));
+
+        mockFreelancer.getProfile().setSkills(Set.of(Tag.JAVA, Tag.JAVASCRIPT));
+        Page<User> userPage = new PageImpl<>(List.of(mockFreelancer));
+        when(userService.findAllWithFilters(any(Specification.class), any(Pageable.class)))
+                .thenReturn(userPage);
+
+        Page<FreelancerProfileDto> result = clientWorkflowService.getAllAvailableFreelancers(Pageable.unpaged(), filterDto);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getSkills()).containsExactlyInAnyOrder(Tag.JAVA, Tag.JAVASCRIPT);
+        verify(userService).findAllWithFilters(any(Specification.class), any(Pageable.class));
+    }
+
+
 }

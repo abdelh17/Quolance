@@ -34,6 +34,8 @@ public class SendWelcomeEmailJobHandler implements JobRequestHandler<SendWelcome
     public void run(SendWelcomeEmailJob sendWelcomEmailJob) throws Exception {
         Long userId = sendWelcomEmailJob.getUserId();
 
+        Thread.sleep(5000);
+
         User user = userService.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

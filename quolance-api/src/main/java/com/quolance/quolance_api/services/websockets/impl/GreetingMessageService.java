@@ -23,9 +23,9 @@ public class GreetingMessageService extends AbstractWebSocketService {
     }
 
     @Override
-    public void processMessage(MessageEntity message, String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("User not found for email: " + userEmail));
+    public void processMessage(MessageEntity message, String userName) {
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new IllegalArgumentException("User not found for username: " + userName));
 
         if (message.getSender() == null || message.getSender().isEmpty()) {
             message.setSender(user.getUserEmail());

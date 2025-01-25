@@ -4,6 +4,8 @@ import com.quolance.quolance_api.controllers.ClientController;
 import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
@@ -363,4 +365,103 @@ class ClientControllerUnitTest {
             verify(applicationProcessWorkflow).rejectManyApplications(emptyList, mockClient);
         }
     }
+
+    @Test
+    void getAllAvailableFreelancers_ReturnsFreelancerPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> freelancerPage = new PageImpl<>(List.of(new FreelancerProfileDto()));
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(freelancerPage);
+
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithInvalidFilters_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto invalidFilters = new FreelancerProfileFilterDto();
+            doThrow(new ApiException("Invalid filters"))
+                    .when(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(invalidFilters));
+
+            assertThatThrownBy(() -> clientController.getAllAvailableFreelancers(pageableRequestDto, invalidFilters))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Invalid filters");
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(invalidFilters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithPagination_ReturnsPaginatedFreelancerList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(1);
+            pageableRequestDto.setSize(5);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> freelancerPage = new PageImpl<>(List.of(new FreelancerProfileDto()));
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(freelancerPage);
+
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WithSorting_ReturnsSortedFreelancerList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> freelancerPage = new PageImpl<>(List.of(new FreelancerProfileDto()));
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(freelancerPage);
+
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
+    @Test
+    void getAllAvailableFreelancers_WhenNoFreelancersAvailable_ReturnsEmptyList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(10);
+            FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+            Page<FreelancerProfileDto> emptyPage = new PageImpl<>(List.of());
+            when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
+                    .thenReturn(emptyPage);
+
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getContent()).isEmpty();
+            verify(clientWorkflowService).getAllAvailableFreelancers(any(PageRequest.class), eq(filters));
+        }
+    }
+
 }

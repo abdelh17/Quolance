@@ -80,7 +80,7 @@ const UserRoleSelection = ({
             ? 'Create an account'
             : selected === Role.CLIENT
             ? 'Join as a client'
-            : 'Apply as a freelancer'}
+            : 'Join as a freelancer'}
         </Button>
       </div>
       <div className={'mt-6 flex w-full flex-row justify-center'}>

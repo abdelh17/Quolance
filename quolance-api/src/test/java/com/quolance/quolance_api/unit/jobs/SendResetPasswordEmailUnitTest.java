@@ -129,4 +129,36 @@ class SendResetPasswordEmailUnitTest {
         assertThat(mockToken.isEmailSent()).isFalse();
         verify(passwordResetTokenRepository, never()).save(any());
     }
+
+    @Test
+    void run_WithInvalidUserId_ThrowsException() {
+        SendResetPasswordEmailJob invalidJob = new SendResetPasswordEmailJob(-1L);
+        when(passwordResetTokenRepository.findById(-1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> jobHandler.run(invalidJob))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Token not found");
+
+        verify(passwordResetTokenRepository).findById(-1L);
+        verifyNoMoreInteractions(passwordResetTokenRepository, emailService, templateEngine);
+    }
+
+    @Test
+    void run_WithValidTokenButEmailSendingFails_ThrowsException() {
+        String baseUrl = "http://localhost:8080";
+        String expectedHtmlBody = "<html>Test email body</html>";
+
+        when(passwordResetTokenRepository.findById(1L)).thenReturn(Optional.of(mockToken));
+        when(applicationProperties.getBaseUrl()).thenReturn(baseUrl);
+        when(templateEngine.process(eq("password-reset"), any(Context.class))).thenReturn(expectedHtmlBody);
+        doThrow(new RuntimeException("Email service failed"))
+                .when(emailService).sendHtmlMessage(any(), any(), any());
+
+        assertThatThrownBy(() -> jobHandler.run(mockJob))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Email service failed");
+
+        assertThat(mockToken.isEmailSent()).isFalse();
+        verify(passwordResetTokenRepository, never()).save(any());
+    }
 }
