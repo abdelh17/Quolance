@@ -67,7 +67,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
                 .collect(Collectors.toList());
     }
 
-    private BlogComment getBlogCommentEntity(Long commentId) {
+    public BlogComment getBlogCommentEntity(Long commentId) {
         BlogComment blogComment = blogCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "BlogComment not found with ID: " + commentId));
