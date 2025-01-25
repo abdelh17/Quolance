@@ -3,6 +3,7 @@ package com.quolance.quolance_api.unit.controllers;
 import com.quolance.quolance_api.controllers.PublicController;
 import com.quolance.quolance_api.dtos.PageResponseDto;
 import com.quolance.quolance_api.dtos.PageableRequestDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
@@ -161,4 +162,41 @@ class PublicControllerUnitTest {
         verify(freelancerWorkflowService).getProject(1L);
         verifyNoMoreInteractions(freelancerWorkflowService);
     }
+
+    @Test
+    void getFreelancerProfile_ShouldReturnProfile_WhenUsernameIsValid() {
+        String validUsername = "validUser";
+        FreelancerProfileDto profile = FreelancerProfileDto.builder()
+                .username(validUsername)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+        when(freelancerWorkflowService.getFreelancerProfile(validUsername)).thenReturn(profile);
+
+        ResponseEntity<FreelancerProfileDto> response = publicController.getFreelancerProfile(validUsername);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody())
+                .isNotNull()
+                .isEqualTo(profile);
+        verify(freelancerWorkflowService).getFreelancerProfile(validUsername);
+        verifyNoMoreInteractions(freelancerWorkflowService);
+    }
+
+    @Test
+    void getFreelancerProfile_ShouldThrowApiException_WhenUsernameIsInvalid() {
+        String invalidUsername = "invalidUser";
+        when(freelancerWorkflowService.getFreelancerProfile(invalidUsername))
+                .thenThrow(ApiException.builder()
+                        .message("Freelancer profile not found")
+                        .status(404)
+                        .build());
+
+        assertThatThrownBy(() -> publicController.getFreelancerProfile(invalidUsername))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Freelancer profile not found");
+        verify(freelancerWorkflowService).getFreelancerProfile(invalidUsername);
+        verifyNoMoreInteractions(freelancerWorkflowService);
+    }
+
 }

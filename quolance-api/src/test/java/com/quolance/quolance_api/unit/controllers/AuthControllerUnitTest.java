@@ -9,6 +9,7 @@ import com.quolance.quolance_api.services.auth.AuthService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,6 +97,17 @@ class AuthControllerUnitTest {
     }
 
     @Test
+    void login_WhenValidationException_ThrowsValidationException() {
+        doThrow(new ValidationException("Validation failed"))
+                .when(authService).login(request, response, loginRequest);
+
+        assertThatThrownBy(() -> authController.login(request, response, loginRequest))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Validation failed");
+        verify(authService, times(1)).login(request, response, loginRequest);
+    }
+
+    @Test
     void getSession_ReturnsUserResponse() {
         when(authService.getSession(request)).thenReturn(userResponse);
 
@@ -119,6 +131,17 @@ class AuthControllerUnitTest {
         assertThatThrownBy(() -> authController.getSession(request))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("No active session found");
+        verify(authService, times(1)).getSession(request);
+    }
+
+    @Test
+    void getSession_WhenValidationException_ThrowsValidationException() {
+        when(authService.getSession(request))
+                .thenThrow(new ValidationException("Validation failed"));
+
+        assertThatThrownBy(() -> authController.getSession(request))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Validation failed");
         verify(authService, times(1)).getSession(request);
     }
 
@@ -149,4 +172,5 @@ class AuthControllerUnitTest {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
 }
