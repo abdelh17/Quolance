@@ -378,7 +378,7 @@ class ClientControllerUnitTest {
             when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
                     .thenReturn(freelancerPage);
 
-            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).hasSize(1);
@@ -416,7 +416,7 @@ class ClientControllerUnitTest {
             when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
                     .thenReturn(freelancerPage);
 
-            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).hasSize(1);
@@ -436,7 +436,7 @@ class ClientControllerUnitTest {
             when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
                     .thenReturn(freelancerPage);
 
-            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).hasSize(1);
@@ -456,7 +456,7 @@ class ClientControllerUnitTest {
             when(clientWorkflowService.getAllAvailableFreelancers(any(PageRequest.class), eq(filters)))
                     .thenReturn(emptyPage);
 
-            ResponseEntity<Page<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
+            ResponseEntity<PageResponseDto<FreelancerProfileDto>> response = clientController.getAllAvailableFreelancers(pageableRequestDto, filters);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).isEmpty();
