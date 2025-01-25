@@ -2,7 +2,7 @@ package com.quolance.quolance_api.dtos.blog;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.quolance.quolance_api.entities.Reaction;
-import com.quolance.quolance_api.entities.enums.ReactionTypeConstants;
+import com.quolance.quolance_api.entities.enums.ReactionType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import lombok.Setter;
 public class ReactionRequestDto {
 
     @JsonProperty("reactionType")
-    private ReactionTypeConstants reactionType; 
+    private ReactionType reactionType; 
 
     @JsonProperty("blogPostId")
     private Long blogPostId; 

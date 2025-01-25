@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.dtos.blog;
 
 import com.quolance.quolance_api.entities.Reaction;
-import com.quolance.quolance_api.entities.enums.ReactionTypeConstants;
+import com.quolance.quolance_api.entities.enums.ReactionType;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +12,7 @@ public class ReactionResponseDto {
 
     private Long id;
     private String userName;
-    private ReactionTypeConstants reactionType;
+    private ReactionType reactionType;
     private Long blogPostId;
     private Long blogCommentId;
 
