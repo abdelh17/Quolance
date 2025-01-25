@@ -75,3 +75,42 @@ export const useReactToPost = (options?: {
     ...options,
   });
 };
+
+export interface CommentResponseDto {
+  commentId: number;
+  blogPostId: number;
+  userId: number;
+  content: string;
+}
+
+export const useGetCommentsByPostId = (postId: number, options?: {
+  onSuccess?: (data: CommentResponseDto[]) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useQuery<CommentResponseDto[], HttpErrorResponse>({
+    queryKey: ['comments', postId],
+    queryFn: async () => {
+      const response = await httpClient.get(`/api/blog-comments/post/${postId}`);
+      return response.data;
+    },
+    enabled: !!postId, // Only fetch if postId is defined
+    ...options,
+  });
+};
+
+export interface CommentRequestDto {
+  content: string;
+}
+
+export const useAddComment = (postId: number, options?: {
+  onSuccess?: (data: CommentResponseDto) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<CommentResponseDto, HttpErrorResponse, CommentRequestDto>({
+    mutationFn: async (newComment) => {
+      const response = await httpClient.post(`/api/blog-comments/${postId}`, newComment);
+      return response.data;
+    },
+    ...options,
+  });
+};
