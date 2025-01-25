@@ -6,7 +6,7 @@ import com.quolance.quolance_api.entities.BlogComment;
 import com.quolance.quolance_api.entities.BlogPost;
 import com.quolance.quolance_api.entities.Reaction;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.ReactionTypeConstants;
+import com.quolance.quolance_api.entities.enums.ReactionType;
 import com.quolance.quolance_api.repositories.ReactionRepository;
 import com.quolance.quolance_api.services.entity_services.BlogCommentService;
 import com.quolance.quolance_api.services.entity_services.BlogPostService;
@@ -33,6 +33,10 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public ReactionResponseDto reactToPost(ReactionRequestDto requestDto, User user) {
+        if (requestDto.getBlogPostId() == null) {
+            throw new ApiException("BlogPostId must be provided for reacting to a post.");
+        }
+
         validateReactionType(requestDto.getReactionType());
 
         BlogPost blogPost = blogPostService.getBlogPostEntity(requestDto.getBlogPostId());
@@ -58,6 +62,11 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public ReactionResponseDto reactToComment(ReactionRequestDto requestDto, User user) {
+
+        if (requestDto.getBlogCommentId() == null) {
+            throw new ApiException("BlogCommentId must be provided for reacting to a comment.");
+        }
+        
         validateReactionType(requestDto.getReactionType());
 
         BlogComment blogComment = blogCommentService.getBlogCommentEntity(requestDto.getBlogCommentId());
@@ -115,9 +124,9 @@ public class ReactionServiceImpl implements ReactionService {
         reactionRepository.delete(reaction);
     }
 
-    private void validateReactionType(ReactionTypeConstants reactionType) {
+    private void validateReactionType(ReactionType reactionType) {
         try {
-            ReactionTypeConstants.valueOf(reactionType.name());
+            ReactionType.valueOf(reactionType.name());
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new ApiException("Invalid reaction type: " + reactionType);
         }

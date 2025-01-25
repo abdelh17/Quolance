@@ -33,25 +33,20 @@ public class ReactionController {
 
     @PostMapping("/post")
     public ResponseEntity<ReactionResponseDto> reactToPost(
-            @Valid @RequestBody ReactionRequestDto requestDto,
-            @AuthenticationPrincipal User user) throws ApiException {
-        if (requestDto.getBlogPostId() == null) {
-            throw new ApiException("BlogPostId must be provided for reacting to a post.");
-        }
+            @Valid @RequestBody ReactionRequestDto requestDto) throws ApiException {
+        User user = SecurityUtil.getAuthenticatedUser();
         ReactionResponseDto response = reactionService.reactToPost(requestDto, user);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/comment")
     public ResponseEntity<ReactionResponseDto> reactToComment(
-            @Valid @RequestBody ReactionRequestDto requestDto,
-            @AuthenticationPrincipal User user) throws ApiException {
-        if (requestDto.getBlogCommentId() == null) {
-            throw new ApiException("BlogCommentId must be provided for reacting to a comment.");
-        }
+            @Valid @RequestBody ReactionRequestDto requestDto) throws ApiException {
+        User user = SecurityUtil.getAuthenticatedUser();
         ReactionResponseDto response = reactionService.reactToComment(requestDto, user);
         return ResponseEntity.ok(response);
     }
+    
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<ReactionResponseDto>> getReactionsByPost(@PathVariable Long postId) {
         List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogPostId(postId);
@@ -65,9 +60,8 @@ public class ReactionController {
     }
 
     @DeleteMapping("/{reactionId}")
-    public ResponseEntity<String> deleteReaction(
-            @PathVariable Long reactionId,
-            @AuthenticationPrincipal User user) {
+    public ResponseEntity<String> deleteReaction(@PathVariable Long reactionId) {
+        User user = SecurityUtil.getAuthenticatedUser();
         reactionService.deleteReaction(reactionId, user);
         return ResponseEntity.ok("Reaction deleted successfully.");
     }
