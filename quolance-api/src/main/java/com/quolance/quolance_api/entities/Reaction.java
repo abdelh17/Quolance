@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.quolance.quolance_api.entities.enums.ReactionTypeConstants;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,9 +31,6 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "blog_reactions")
 public class Reaction extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "blog_post_id")
@@ -45,10 +44,9 @@ public class Reaction extends AbstractEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Enumerated(EnumType.STRING) // Ensure that the enum is stored as a string in the database
     @Column(nullable = false)
-    private String reactionType; 
+    private ReactionTypeConstants reactionType; 
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
 
 }
