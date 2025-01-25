@@ -98,24 +98,7 @@ public class NotificationMessageService extends AbstractWebSocketService {
     public List<Notification> getNotificationsForUser(Long userId) {
         return notificationRepository.findByRecipientId(userId);
     }
-
-    /**
-     * Send a notification to all users.
-     *
-     * @param message The notification message.
-     */
-    public void sendNotificationToAll(String message) {
-        log.debug("Sending notification to all users.");
-
-        // Iterate through all users and send the notification
-        List<User> allUsers = userService.findAllUsers();
-        for (User user : allUsers) {
-            Notification notification = new Notification();
-            notification.setRecipient(user);
-            notification.setMessage(message);
-            processNotification(notification);
-        }
-    }
+    
 
     /**
      * Send notifications to multiple users.
