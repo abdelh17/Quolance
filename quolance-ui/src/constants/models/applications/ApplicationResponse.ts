@@ -11,7 +11,5 @@ export interface ApplicationResponse {
 export enum ApplicationStatus {
   APPLIED = 'APPLIED',
   REJECTED = 'REJECTED',
-  PENDING_CONFIRMATION = 'PENDING_CONFIRMATION',
   ACCEPTED = 'ACCEPTED',
-  CANCELLED = 'CANCELLED',
 }
