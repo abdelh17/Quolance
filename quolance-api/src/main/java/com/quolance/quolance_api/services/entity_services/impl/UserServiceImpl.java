@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
             throw new ApiException("A user with this email already exists.");
         }
 
+        if (userRepository.existsByUsername(request.getUsername())) {
+            log.warn("User creation failed - username already exists: {}", request.getUsername());
+            throw new ApiException("A user with this username already exists.");
+        }
+
         User user = new User(request);
         user = userRepository.save(user);
         log.info("Successfully created new user with ID: {}", user.getId());
