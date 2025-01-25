@@ -50,11 +50,9 @@ public class ReactionServiceImpl implements ReactionService {
             return ReactionResponseDto.fromEntity(updatedReaction);
         }
 
-        Reaction newReaction = Reaction.builder()
-                .reactionType(requestDto.getReactionType())
-                .blogPost(blogPost)
-                .user(user)
-                .build();
+        Reaction newReaction = ReactionRequestDto.toEntity(requestDto);
+        newReaction.setBlogPost(blogPost);
+        newReaction.setUser(user);
 
         Reaction savedReaction = reactionRepository.save(newReaction);
         return ReactionResponseDto.fromEntity(savedReaction);
@@ -66,7 +64,7 @@ public class ReactionServiceImpl implements ReactionService {
         if (requestDto.getBlogCommentId() == null) {
             throw new ApiException("BlogCommentId must be provided for reacting to a comment.");
         }
-        
+
         validateReactionType(requestDto.getReactionType());
 
         BlogComment blogComment = blogCommentService.getBlogCommentEntity(requestDto.getBlogCommentId());
@@ -80,11 +78,9 @@ public class ReactionServiceImpl implements ReactionService {
             return ReactionResponseDto.fromEntity(updatedReaction);
         }
 
-        Reaction newReaction = Reaction.builder()
-                .reactionType(requestDto.getReactionType())
-                .blogComment(blogComment)
-                .user(user)
-                .build();
+        Reaction newReaction = ReactionRequestDto.toEntity(requestDto);
+        newReaction.setBlogComment(blogComment);
+        newReaction.setUser(user);
 
         Reaction savedReaction = reactionRepository.save(newReaction);
         return ReactionResponseDto.fromEntity(savedReaction);
