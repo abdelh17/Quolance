@@ -9,7 +9,7 @@ import com.quolance.quolance_api.entities.BlogComment;
 import com.quolance.quolance_api.entities.BlogPost;
 import com.quolance.quolance_api.entities.Reaction;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.ReactionTypeConstants;
+import com.quolance.quolance_api.entities.enums.ReactionType;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
@@ -77,7 +77,7 @@ public class BlogReactionsControllerIntegrationTest extends AbstractTestcontaine
     @Test
     void testReactToPost() throws Exception {
         ReactionRequestDto requestDto = new ReactionRequestDto();
-        requestDto.setReactionType(ReactionTypeConstants.LIKE);
+        requestDto.setReactionType(ReactionType.LIKE);
         requestDto.setBlogPostId(blogPost.getId());
 
         mockMvc.perform(post("/api/blog-posts/reactions/post")
@@ -90,7 +90,7 @@ public class BlogReactionsControllerIntegrationTest extends AbstractTestcontaine
     @Test
     void testReactToComment() throws Exception {
         ReactionRequestDto requestDto = new ReactionRequestDto();
-        requestDto.setReactionType(ReactionTypeConstants.LIKE);
+        requestDto.setReactionType(ReactionType.LIKE);
         requestDto.setBlogCommentId(blogComment.getId());
 
         mockMvc.perform(post("/api/blog-posts/reactions/comment")
@@ -104,7 +104,7 @@ public class BlogReactionsControllerIntegrationTest extends AbstractTestcontaine
     void testGetReactionsByPost() throws Exception {
         Reaction reaction = reactionRepository.save(
                 Reaction.builder()
-                        .reactionType(ReactionTypeConstants.LIKE)
+                        .reactionType(ReactionType.LIKE)
                         .blogPost(blogPost)
                         .user(loggedInUser)
                         .build()
@@ -120,7 +120,7 @@ public class BlogReactionsControllerIntegrationTest extends AbstractTestcontaine
     void testGetReactionsByComment() throws Exception {
         Reaction reaction = reactionRepository.save(
                 Reaction.builder()
-                        .reactionType(ReactionTypeConstants.LIKE)
+                        .reactionType(ReactionType.LIKE)
                         .blogComment(blogComment)
                         .user(loggedInUser)
                         .build()
@@ -136,7 +136,7 @@ public class BlogReactionsControllerIntegrationTest extends AbstractTestcontaine
     void testDeleteReactionByOwner() throws Exception {
         Reaction reaction = reactionRepository.save(
                 Reaction.builder()
-                        .reactionType(ReactionTypeConstants.LIKE)
+                        .reactionType(ReactionType.LIKE)
                         .blogPost(blogPost)
                         .user(loggedInUser)
                         .build()
@@ -155,7 +155,7 @@ public class BlogReactionsControllerIntegrationTest extends AbstractTestcontaine
         User anotherUser = userRepository.save(EntityCreationHelper.createFreelancer(0));
         Reaction reaction = reactionRepository.save(
                 Reaction.builder()
-                        .reactionType(ReactionTypeConstants.LIKE)
+                        .reactionType(ReactionType.LIKE)
                         .blogPost(blogPost)
                         .user(anotherUser)
                         .build()

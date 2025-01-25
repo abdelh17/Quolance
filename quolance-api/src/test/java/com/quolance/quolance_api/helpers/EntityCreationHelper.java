@@ -109,7 +109,7 @@ public class EntityCreationHelper {
         return blogComment;
     }
 
-    public static Reaction createReaction(User user, BlogPost blogPost, ReactionTypeConstants reactionType) {
+    public static Reaction createReaction(User user, BlogPost blogPost, ReactionType reactionType) {
 
         Reaction reaction = new Reaction();
 
