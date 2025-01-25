@@ -27,6 +27,7 @@ type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
 const registerSchema = z
   .object({
     email: z.string().email(),
+    username: z.string().min(8),
     password: z.string().min(8),
     passwordConfirmation: z.string().min(8),
     firstName: z.string().optional(),
@@ -124,6 +125,18 @@ export function UserRegisterForm({
               autoComplete='email'
               data-test = "email-input"
             />
+
+              <FormInput
+                  id='username'
+                  label='Username'
+                  type='text'
+                  placeholder='johndoe99'
+                  isLoading={isLoading}
+                  register={register}
+                  error={formState.errors.username?.message}
+                  autoComplete='username'
+                  data-test = "username-input"
+              />
 
             <FormInput
               id='password'
