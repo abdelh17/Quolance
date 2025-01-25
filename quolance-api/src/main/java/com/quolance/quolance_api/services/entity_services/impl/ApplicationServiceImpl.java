@@ -23,7 +23,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void saveApplication(Application application) {
-        log.debug("Saving application for freelancer ID: {}", application.getFreelancer().getId());
         applicationRepository.save(application);
         log.info("Successfully saved application with ID: {}", application.getId());
 
@@ -31,7 +30,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void deleteApplication(Application application) {
-        log.debug("Deleting application with ID: {} for freelancer with ID: {}", application.getId(),application.getFreelancer().getId());
         applicationRepository.delete(application);
         log.info("Successfully deleted application with ID: {}", application.getId());
     }
@@ -46,7 +44,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .message("No Application found with ID: " + applicationId)
                     .build();
         });
-        log.debug("Found application: {} of freelancer with ID: {}", application, application.getFreelancer().getId());
+//        log.debug("Found application: {} of freelancer with ID: {}", application, application.getFreelancer().getId());
         return application;
     }
 
