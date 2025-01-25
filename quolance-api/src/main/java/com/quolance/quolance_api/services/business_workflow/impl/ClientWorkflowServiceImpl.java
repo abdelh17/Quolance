@@ -35,12 +35,12 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     private final ProjectService projectService;
     private final ApplicationService applicationService;
     private final UserService userService;
-    private final NotificationMessageService notificationMessageService;
+//    private final NotificationMessageService notificationMessageService;
 
     @Override
     public void createProject(ProjectCreateDto projectCreateDto, User client) {
 
-        notificationMessageService.sendNotification(client, client, "NEW Project created!");
+//        notificationMessageService.sendNotification(client, client, "NEW Project created!");
 
         Project projectToSave = ProjectCreateDto.toEntity(projectCreateDto);
         projectToSave.setExpirationDate(projectCreateDto.getExpirationDate() != null ? projectCreateDto.getExpirationDate() : LocalDate.now().plusDays(7));

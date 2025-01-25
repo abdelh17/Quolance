@@ -98,7 +98,7 @@ public class NotificationMessageService extends AbstractWebSocketService {
     public List<Notification> getNotificationsForUser(Long userId) {
         return notificationRepository.findByRecipientId(userId);
     }
-    
+
 
     /**
      * Send notifications to multiple users.
