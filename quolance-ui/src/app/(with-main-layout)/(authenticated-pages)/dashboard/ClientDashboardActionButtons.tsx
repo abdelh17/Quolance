@@ -49,7 +49,7 @@ export default function ClientDashboardActionButtons() {
               </div>
               <div className='mt-5 sm:ml-6 sm:mt-0 sm:flex sm:shrink-0 sm:items-center'>
                 <Button
-                  onClick={() => router.push('/post-project')}
+                  onClick={() => router.push('/candidates')}
                   variant='default'
                   animation='default'
                   size='sm'
