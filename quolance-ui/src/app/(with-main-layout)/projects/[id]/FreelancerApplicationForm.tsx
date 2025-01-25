@@ -35,8 +35,6 @@ export default function FreelancerApplicationForm({
 
   const { data: application } = useGetProjectApplication(projectId);
 
-  console.log('application', application);
-
   const onSubmit: SubmitHandler<ApplicationFormFields> = async (data) => {
     if (!user) return;
     submitApplication(); // Add data to submitApplication
