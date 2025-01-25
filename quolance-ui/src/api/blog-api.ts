@@ -79,7 +79,7 @@ export const useReactToPost = (options?: {
 export interface CommentResponseDto {
   commentId: number;
   blogPostId: number;
-  userId: number;
+  authorName: string;
   content: string;
 }
 

@@ -41,12 +41,12 @@ interface PostCardProps {
     useEffect(() => {
     if (reactionData) {
         const initialReactions: ReactionState = {
-        like: { count: 0, userReacted: false },
-        love: { count: 0, userReacted: false },
-        haha: { count: 0, userReacted: false },
-        wow: { count: 0, userReacted: false },
-        sad: { count: 0, userReacted: false },
-        angry: { count: 0, userReacted: false },
+            like: { count: 0, userReacted: false },
+            love: { count: 0, userReacted: false },
+            haha: { count: 0, userReacted: false },
+            wow: { count: 0, userReacted: false },
+            sad: { count: 0, userReacted: false },
+            angry: { count: 0, userReacted: false },
         };
 
         reactionData.forEach((reaction) => {
@@ -62,32 +62,32 @@ interface PostCardProps {
     }, [reactionData, user]);
 
     const handleReactionClick = (reactionType: string) => {
-    if (!reactions) return;
+        if (!reactions) return;
 
-    const userReacted = reactions[reactionType].userReacted;
+        const userReacted = reactions[reactionType].userReacted;
 
-    const updatedReactions = Object.keys(reactions).reduce((acc, key) => {
-        acc[key] = { ...reactions[key] };
+        const updatedReactions = Object.keys(reactions).reduce((acc, key) => {
+            acc[key] = { ...reactions[key] };
 
-        if (key === reactionType) {
-        acc[key].userReacted = !userReacted;
-        acc[key].count += userReacted ? -1 : 1;
-        } else if (reactions[key].userReacted) {
-        acc[key].userReacted = false;
-        acc[key].count -= 1;
-        }
+            if (key === reactionType) {
+            acc[key].userReacted = !userReacted;
+            acc[key].count += userReacted ? -1 : 1;
+            } else if (reactions[key].userReacted) {
+            acc[key].userReacted = false;
+            acc[key].count -= 1;
+            }
 
-        return acc;
-    }, {} as ReactionState);
+            return acc;
+        }, {} as ReactionState);
 
-    setReactions(updatedReactions);
-    reactToPost({ reactionType: reactionType.toUpperCase(), blogPostId: id });
+        setReactions(updatedReactions);
+        reactToPost({ reactionType: reactionType.toUpperCase(), blogPostId: id });
     };
 
     const handleAddComment = () => {
-    if (!newComment.trim() || !user) return;
+        if (!newComment.trim() || !user) return;
 
-    addComment({ content: newComment });
+        addComment({ content: newComment });
     };
 
     const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -164,7 +164,7 @@ interface PostCardProps {
                     {commentsData?.map((comment) => (
                     <CommentCard
                         key={comment.commentId}
-                        authorName={`User #${comment.userId}`}
+                        authorName={`${comment.authorName}`}
                         profilePicture=""
                         content={comment.content}
                         dateCreated={new Date().toISOString()}
