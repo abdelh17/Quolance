@@ -2,6 +2,8 @@ package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.LoginRequestDto;
+import com.quolance.quolance_api.dtos.PageableRequestDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Application;
@@ -512,5 +514,69 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(jsonResponse).containsEntry("message", "Freelancer not found");
     }
 
+    @Test
+    void getAllAvailableFreelancersReturnsOk() throws Exception {
+        // Arrange
+        User freelancer1 = userRepository.save(EntityCreationHelper.createFreelancer(1));
+        User freelancer2 = userRepository.save(EntityCreationHelper.createFreelancer(2));
 
+        FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setPage(0);
+        pageableRequest.setSize(10);
+
+        // Act
+        String response = mockMvc.perform(get("/api/client/freelancers/all")
+                        .session(session)
+                        .param("page", String.valueOf(pageableRequest.getPage()))
+                        .param("size", String.valueOf(pageableRequest.getSize()))
+                        .param("sortDirection", "asc")
+                        .content(objectMapper.writeValueAsString(filters)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+
+        assertThat(content).hasSize(2);
+
+        Map<String, Object> freelancerResponse1 = content.get(0);
+        Map<String, Object> freelancerResponse2 = content.get(1);
+
+        assertThat(freelancerResponse1).containsEntry("userId", freelancer1.getId().intValue());
+
+        assertThat(freelancerResponse2).containsEntry("userId", freelancer2.getId().intValue());
+
+
+    }
+
+    @Test
+    void getAllAvailableFreelancersWithNoFreelancersReturnsEmptyList() throws Exception {
+        // Arrange
+        FreelancerProfileFilterDto filters = new FreelancerProfileFilterDto();
+        PageableRequestDto pageableRequest = new PageableRequestDto();
+        pageableRequest.setPage(0);
+        pageableRequest.setSize(10);
+
+        // Act
+        String response = mockMvc.perform(get("/api/client/freelancers/all")
+                        .session(session)
+                        .param("page", String.valueOf(pageableRequest.getPage()))
+                        .param("size", String.valueOf(pageableRequest.getSize()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filters)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+
+        assertThat(content).isEmpty();
+    }
 }

@@ -283,4 +283,46 @@ class UserServiceUnitTest {
                 .hasFieldOrPropertyWithValue("status", 400)
                 .hasMessage("Wrong password");
     }
+
+    @Test
+    void findById_UserFound_ReturnsUser() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+
+        Optional<User> result = userService.findById(1L);
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(mockUser);
+        verify(userRepository).findById(1L);
+    }
+
+    @Test
+    void findById_UserNotFound_ReturnsEmpty() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Optional<User> result = userService.findById(1L);
+
+        assertThat(result).isNotPresent();
+        verify(userRepository).findById(1L);
+    }
+
+    @Test
+    void findByUsername_UserFound_ReturnsUser() {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(mockUser));
+
+        Optional<User> result = userService.findByUsername("testuser");
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(mockUser);
+        verify(userRepository).findByUsername("testuser");
+    }
+
+    @Test
+    void findByUsername_UserNotFound_ReturnsEmpty() {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        Optional<User> result = userService.findByUsername("testuser");
+
+        assertThat(result).isNotPresent();
+        verify(userRepository).findByUsername("testuser");
+    }
 }

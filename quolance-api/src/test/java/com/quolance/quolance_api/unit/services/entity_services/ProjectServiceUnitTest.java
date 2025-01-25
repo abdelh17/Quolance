@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -125,6 +126,20 @@ class ProjectServiceUnitTest {
     }
 
     @Test
+    void getProjectsByStatuses_NoProjectsFound_ReturnsEmptyPage() {
+        Page<Project> emptyPage = Page.empty();
+        List<ProjectStatus> statuses = Arrays.asList(ProjectStatus.PENDING, ProjectStatus.OPEN);
+        when(projectRepository.findProjectsByProjectStatusIn(eq(statuses), any(Pageable.class)))
+                .thenReturn(emptyPage);
+
+        Page<Project> result = projectService.getProjectsByStatuses(statuses, Pageable.unpaged());
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+        verify(projectRepository).findProjectsByProjectStatusIn(eq(statuses), any(Pageable.class));
+    }
+
+    @Test
     void getProjectsByClientId_Success() {
         List<Project> projects = List.of(mockProject);
         Page<Project> expectedPage = new PageImpl<>(projects);
@@ -138,6 +153,32 @@ class ProjectServiceUnitTest {
         assertThat(result.getContent()).containsExactly(mockProject);
         assertThat(result.getTotalElements()).isEqualTo(1);
         verify(projectRepository).findProjectsByClientId(eq(1L), any(Pageable.class));
+    }
+
+    @Test
+    void getProjectsByClientId_NoProjectsFound_ReturnsEmptyPage() {
+        Page<Project> emptyPage = Page.empty();
+        when(projectRepository.findProjectsByClientId(eq(1L), any(Pageable.class)))
+                .thenReturn(emptyPage);
+
+        Page<Project> result = projectService.getProjectsByClientId(1L, Pageable.unpaged());
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+        verify(projectRepository).findProjectsByClientId(eq(1L), any(Pageable.class));
+    }
+
+    @Test
+    void findAllWithFilters_NoProjectsFound_ReturnsEmptyPage() {
+        Page<Project> emptyPage = Page.empty();
+        when(projectRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(emptyPage);
+
+        Page<Project> result = projectService.findAllWithFilters(mock(Specification.class), Pageable.unpaged());
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+        verify(projectRepository).findAll(any(Specification.class), any(Pageable.class));
     }
 
     @Test
