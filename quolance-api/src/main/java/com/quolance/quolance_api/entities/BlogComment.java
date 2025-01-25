@@ -1,8 +1,6 @@
 package com.quolance.quolance_api.entities;
 
-import java.sql.Date;
-// import java.util.ArrayList;
-// import java.util.List;
+
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +29,4 @@ public class BlogComment {
     @JoinColumn(name = "blog_post_id")
     private BlogPost blogPost;
 
-    // @OneToMany(mappedBy = "blogComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Reaction> reactions = new ArrayList<>();
 }
