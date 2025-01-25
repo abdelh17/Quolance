@@ -64,10 +64,15 @@ org:
       enabled: true
 
 logging:
+  file:
+    name: ${LOG_FILE}
   level:
+    root: INFO
     org.springframework.security: DEBUG
     org.springframework.web.socket: DEBUG
     org.springframework.messaging: DEBUG
+    com.quolance: DEBUG
+    org.springframework.web: ERROR
 
 server:
   port: 8081
