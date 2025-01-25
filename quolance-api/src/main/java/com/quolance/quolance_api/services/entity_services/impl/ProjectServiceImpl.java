@@ -28,16 +28,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void saveProject(Project project) {
-        log.debug("Saving project: {}", project.getTitle());
+        log.debug("Saving project: {} for user ID: {}", project.getTitle(), project.getClient().getId());
         projectRepository.save(project);
-        log.info("Successfully saved project with ID: {}", project.getId());
+        log.info("Successfully saved project with ID: {} for user ID: {}", project.getId(), project.getClient().getId());
     }
 
     @Override
     public void deleteProject(Project project) {
-        log.debug("Deleting project with ID: {}", project.getId());
+        log.debug("Deleting project with ID: {} for user ID: {}", project.getId(), project.getClient().getId());
         projectRepository.delete(project);
-        log.info("Successfully deleted project with ID: {}", project.getId());
+        log.info("Successfully deleted project with ID: {} for user ID: {}", project.getId(), project.getClient().getId());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .message("No Project found with ID: " + projectId)
                     .build();
         });
-        log.debug("Found project: {}", project.getTitle());
+        log.debug("Found project: {} for user ID: {}", project.getTitle(), project.getClient().getId());
         return project;
     }
 
@@ -74,17 +74,18 @@ public class ProjectServiceImpl implements ProjectService {
     public Page<Project> getProjectsByClientId(Long clientId, Pageable pageable) {
         log.debug("Fetching projects for client ID: {}", clientId);
         Page<Project> projects = projectRepository.findProjectsByClientId(clientId, pageable);
-        log.debug("Found {} projects for client", projects.getTotalElements());
+        log.debug("Found {} projects for client ID: {}", projects.getTotalElements(), clientId);
         return projects;
     }
 
     @Override
     public void updateProjectStatus(Project project, ProjectStatus newStatus) {
-        log.debug("Attempting to update project {} status from {} to {}",
-                project.getId(), project.getProjectStatus(), newStatus);
+        log.debug("Attempting to update project {} status from {} to {} for user ID: {}",
+                project.getId(), project.getProjectStatus(), newStatus, project.getClient().getId());
 
         if (project.getProjectStatus() == ProjectStatus.CLOSED) {
-            log.warn("Status update failed - project {} is already closed", project.getId());
+            log.warn("Status update failed - project {} is already closed for user ID: {}",
+                    project.getId(), project.getClient().getId());
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
                     .message("Project is closed and cannot be updated.")
@@ -92,8 +93,8 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         if (project.getProjectStatus() == newStatus) {
-            log.warn("Status update failed - project {} is already in status {}",
-                    project.getId(), newStatus);
+            log.warn("Status update failed - project {} is already in status {} for user ID: {}",
+                    project.getId(), newStatus, project.getClient().getId());
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_CONFLICT)
                     .message("Project is already in status: " + newStatus)
@@ -105,7 +106,7 @@ public class ProjectServiceImpl implements ProjectService {
                 if (project.getProjectStatus() == ProjectStatus.PENDING) {
                     project.setProjectStatus(ProjectStatus.OPEN);
                     projectRepository.save(project);
-                    log.info("Project {} status updated to OPEN", project.getId());
+                    log.info("Project {} status updated to OPEN for user ID: {}", project.getId(), project.getClient().getId());
                 }
                 break;
 
@@ -115,8 +116,8 @@ public class ProjectServiceImpl implements ProjectService {
                     project.setProjectStatus(ProjectStatus.CLOSED);
                     project.setVisibilityExpirationDate(LocalDate.now().plusDays(3));
                     projectRepository.save(project);
-                    log.info("Project {} status updated to CLOSED with visibility expiration date",
-                            project.getId());
+                    log.info("Project {} status updated to CLOSED with visibility expiration date for user ID: {}",
+                            project.getId(), project.getClient().getId());
                 }
                 break;
 
@@ -124,13 +125,13 @@ public class ProjectServiceImpl implements ProjectService {
                 if (project.getProjectStatus() == ProjectStatus.PENDING) {
                     project.setProjectStatus(ProjectStatus.REJECTED);
                     projectRepository.save(project);
-                    log.info("Project {} status updated to REJECTED", project.getId());
+                    log.info("Project {} status updated to REJECTED for user ID: {}", project.getId(), project.getClient().getId());
                 }
                 break;
 
             default:
-                log.warn("Invalid status update attempt for project {}: {}",
-                        project.getId(), newStatus);
+                log.warn("Invalid status update attempt for project {}: {} for user ID: {}",
+                        project.getId(), newStatus, project.getClient().getId());
                 throw ApiException.builder()
                         .status(HttpServletResponse.SC_BAD_REQUEST)
                         .message("Invalid status update request.")
@@ -140,24 +141,25 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateSelectedFreelancer(Project project, User freelancer) {
-        log.debug("Updating selected freelancer for project {} to user {}",
-                project.getId(), freelancer.getId());
+        log.debug("Updating selected freelancer for project {} to user {} for client ID: {}",
+                project.getId(), freelancer.getId(), project.getClient().getId());
         project.setSelectedFreelancer(freelancer);
         projectRepository.save(project);
-        log.info("Successfully updated selected freelancer for project {}", project.getId());
+        log.info("Successfully updated selected freelancer for project {} for client ID: {}",
+                project.getId(), project.getClient().getId());
     }
 
     @Override
     public void updateProject(Project existingProject, ProjectUpdateDto updateDto) {
-        log.debug("Attempting to update project: {}", existingProject.getId());
+        log.debug("Attempting to update project: {} for user ID: {}", existingProject.getId(), existingProject.getClient().getId());
 
         // First validate update DTO
         validateUpdateDto(updateDto);
 
         // Validate project status
         if (existingProject.getProjectStatus() != ProjectStatus.PENDING) {
-            log.warn("Project update failed - project {} is not in PENDING state",
-                    existingProject.getId());
+            log.warn("Project update failed - project {} is not in PENDING state for user ID: {}",
+                    existingProject.getId(), existingProject.getClient().getId());
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
                     .message("Project can only be updated when in PENDING state")
@@ -167,7 +169,7 @@ public class ProjectServiceImpl implements ProjectService {
         // Proceed with update
         updateProjectFields(existingProject, updateDto);
         projectRepository.save(existingProject);
-        log.info("Successfully updated project: {}", existingProject.getId());
+        log.info("Successfully updated project: {} for user ID: {}", existingProject.getId(), existingProject.getClient().getId());
     }
 
     private void validateUpdateDto(ProjectUpdateDto updateDto) {
@@ -220,38 +222,38 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void updateProjectFields(Project project, ProjectUpdateDto updateDto) {
-        log.debug("Updating fields for project: {}", project.getId());
+        log.debug("Updating fields for project: {} for user ID: {}", project.getId(), project.getClient().getId());
 
         if (updateDto.getTitle() != null) {
             project.setTitle(updateDto.getTitle().trim());
-            log.debug("Updated project title");
+            log.debug("Updated project title for user ID: {}", project.getClient().getId());
         }
 
         if (updateDto.getDescription() != null) {
             project.setDescription(updateDto.getDescription().trim());
-            log.debug("Updated project description");
+            log.debug("Updated project description for user ID: {}", project.getClient().getId());
         }
 
         if (updateDto.getCategory() != null) {
             project.setCategory(updateDto.getCategory());
-            log.debug("Updated project category");
+            log.debug("Updated project category for user ID: {}", project.getClient().getId());
         }
 
         if (updateDto.getPriceRange() != null) {
             project.setPriceRange(updateDto.getPriceRange());
-            log.debug("Updated project price range");
+            log.debug("Updated project price range for user ID: {}", project.getClient().getId());
         }
 
         if (updateDto.getExpectedDeliveryTime() != null) {
             project.setExpectedDeliveryTime(updateDto.getExpectedDeliveryTime());
-            log.debug("Updated project expected delivery time");
+            log.debug("Updated project expected delivery time for user ID: {}", project.getClient().getId());
         }
 
         if (updateDto.getExperienceLevel() != null) {
             project.setExperienceLevel(updateDto.getExperienceLevel());
-            log.debug("Updated project experience level");
+            log.debug("Updated project experience level for user ID: {}", project.getClient().getId());
         }
 
-        log.debug("Completed updating project fields");
+        log.debug("Completed updating project fields for user ID: {}", project.getClient().getId());
     }
 }

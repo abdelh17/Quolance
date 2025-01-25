@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Looking up user by username: {}", username);
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
-            log.debug("Found user with username: {}", username);
+            log.debug("Found user with username: {} and ID: {}", username, user.get().getId());
         } else {
             log.debug("No user found with username: {}", username);
         }
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            log.warn("Thread interrupted while waiting to send welcome email", e);
+            log.warn("Thread interrupted while waiting to send welcome email for user ID: {}", user.getId(), e);
             Thread.currentThread().interrupt();
         }
         log.debug("Enqueueing welcome email job for user ID: {}", user.getId());
