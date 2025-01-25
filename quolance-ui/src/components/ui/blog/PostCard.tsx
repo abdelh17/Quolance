@@ -6,15 +6,8 @@ import icon from "@/public/images/freelancer_default_icon.png";
 import PostReaction from "./PostReaction";
 import { useGetReactionsByPostId, useReactToPost } from "@/api/blog-api";
 import { useAuthGuard } from "@/api/auth-api";
-
-interface ReactionState {
-    [key: string]: { count: number; userReacted: boolean };
-  }
-  
-  interface PostCardProps {
 import CommentCard from "./CommentCard";
 import { CommentType } from "@/constants/types/blog-types";
-import { useAuthGuard } from "@/api/auth-api";
 
 const mockComments = [
     {
@@ -50,21 +43,17 @@ const mockComments = [
     },
 ];
 
+interface ReactionState {
+    [key: string]: { count: number; userReacted: boolean };
+}
+
+
 interface PostCardProps {
     id: number;
     title: string;
     content: string;
     authorName: string;
     dateCreated: string;
-  }
-  
-  const PostCard: React.FC<PostCardProps> = ({
-    id,
-    title,
-    content,
-    authorName,
-    dateCreated,
-  }) => {
     comments: CommentType[];
 }
 
@@ -78,10 +67,14 @@ const PostCard: React.FC<PostCardProps> = ({
     }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [reactions, setReactions] = useState<ReactionState | null>(null);
+    const [showComments, setShowComments] = useState(false);
+    const [newComment, setNewComment] = useState<string>("");
+    const [allComments, setAllComments] = useState<CommentType[]>(mockComments);
   
     const { data: reactionData } = useGetReactionsByPostId(id);
     const { mutate: reactToPost } = useReactToPost();
     const { user } = useAuthGuard({ middleware: "auth" });
+    
   
     // Initialize reactions when data is fetched
     useEffect(() => {
@@ -132,10 +125,7 @@ const PostCard: React.FC<PostCardProps> = ({
       reactToPost({ reactionType: reactionType.toUpperCase(), blogPostId: id });
     };
   
-    const [showComments, setShowComments] = useState(false);
-    const [newComment, setNewComment] = useState<string>("");
-    const [allComments, setAllComments] = useState<CommentType[]>(mockComments);
-    const { user } = useAuthGuard({ middleware: "auth" });
+
 
     const toggleExpand = () => setIsExpanded(!isExpanded);
       const toggleComments = () => setShowComments(!showComments);
