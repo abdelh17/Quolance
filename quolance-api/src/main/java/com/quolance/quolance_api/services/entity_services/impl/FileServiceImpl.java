@@ -8,6 +8,8 @@ import com.quolance.quolance_api.repositories.FileRepository;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,9 +24,11 @@ public class FileServiceImpl implements FileService {
 
     private final Cloudinary cloudinary;
     private final FileRepository fileRepository;
+    private static final Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 
     @Override
     public Map<String, Object> uploadFile(MultipartFile file, User uploadedBy) {
+        log.debug("Attempting to upload file: {} by user ID: {}", file.getOriginalFilename(), uploadedBy.getId());
 
         Map<String, Object> uploadResult;
         String fileType = file.getContentType();
@@ -36,7 +40,7 @@ public class FileServiceImpl implements FileService {
                     "folder", folder
             ));
 
-            // save to database
+            // Save to database
             FileEntity fileEntity = new FileEntity();
             fileEntity.setUser(uploadedBy);
             fileEntity.setFileUrl((String) uploadResult.get("secure_url"));
@@ -45,7 +49,11 @@ public class FileServiceImpl implements FileService {
 
             fileRepository.save(fileEntity);
 
+            log.info("Successfully uploaded file: {} by user ID: {}", file.getOriginalFilename(), uploadedBy.getId());
+            log.debug("File details: {}", fileEntity);
+
         } catch (IOException e) {
+            log.error("Error uploading file: {} by user ID: {}", file.getOriginalFilename(), uploadedBy.getId(), e);
             throw new ApiException("Error uploading file");
         }
 
@@ -54,7 +62,14 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Page<FileDto> getAllFileUploadsByUser(User user, Pageable pageable) {
+        log.debug("Fetching all file uploads by user ID: {}", user.getId());
+
         Page<FileEntity> files = fileRepository.findFileUploadsByUser(user, pageable);
-        return files.map(FileDto::fromEntity);
+        Page<FileDto> fileDtos = files.map(FileDto::fromEntity);
+
+        log.info("Successfully fetched {} file uploads by user ID: {}", fileDtos.getTotalElements(), user.getId());
+        log.debug("File uploads details: {}", fileDtos);
+
+        return fileDtos;
     }
 }
