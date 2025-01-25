@@ -108,4 +108,18 @@ public class EntityCreationHelper {
         blogComment.setBlogPost(blogPost);
         return blogComment;
     }
+
+    public static Reaction createReaction(User user, BlogPost blogPost, ReactionTypeConstants reactionType) {
+
+        Reaction reaction = new Reaction();
+
+        reaction.setUser(user);
+
+        reaction.setBlogPost(blogPost);
+
+        reaction.setReactionType(reactionType);
+
+        return reaction;
+
+    }
 }
