@@ -164,7 +164,7 @@ interface PostCardProps {
                     {commentsData?.map((comment) => (
                     <CommentCard
                         key={comment.commentId}
-                        authorName={`${comment.authorName}`}
+                        authorName={`User #${comment.userId}`}
                         profilePicture=""
                         content={comment.content}
                         dateCreated={new Date().toISOString()}
