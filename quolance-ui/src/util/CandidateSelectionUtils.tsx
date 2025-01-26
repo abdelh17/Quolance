@@ -18,12 +18,6 @@ export const applySubmissionFilters = (
     ) {
       return false;
     }
-    if (
-      !filters.viewCancelled &&
-      submission.status === ApplicationStatus.CANCELLED
-    ) {
-      return false;
-    }
     return true;
   });
 };

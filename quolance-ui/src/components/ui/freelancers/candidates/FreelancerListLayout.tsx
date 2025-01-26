@@ -49,7 +49,9 @@ const FreelancerListLayout = ({
                 <FreelancerCatalogCard
                   key={candidate.id}
                   freelancer={candidate}
-                  onMessageClick={() => {}}
+                  onMessageClick={() => {
+                    console.log('Message clicked');
+                  }}
                 />
               ))}
             </div>
