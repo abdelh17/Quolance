@@ -14,6 +14,14 @@ import AvailabilitySection from './components/AvailabilitySection';
 import SkillsSection from './components/SkillsSection';
 import ContactSection from './components/ContactSection';
 
+const AVAILABLE_SKILLS = [
+    "JAVA", "PYTHON", "HTML", "CSS", "JAVASCRIPT", "TYPESCRIPT", "C", "CPLUSPLUS",
+    "CSHARP", "GO", "RUST", "SWIFT", "KOTLIN", "PHP", "RUBY", "REACT", "ANGULAR",
+    "VUE", "NEXTJS", "NUXTJS", "SPRING", "DJANGO", "FLASK", "EXPRESS", "NESTJS",
+    "SQL", "MONGODB", "POSTGRESQL", "MYSQL", "REDIS", "AWS", "AZURE", "GCP",
+    "DOCKER", "KUBERNETES", "JENKINS", "TERRAFORM", "REACTNATIVE", "FLUTTER",
+    "IOS", "ANDROID"
+];
 
 const FreelancerProfile: React.FC = () => {
  const searchParams = useSearchParams();
@@ -128,10 +136,12 @@ const FreelancerProfile: React.FC = () => {
  };
 
 
- const handleSkillsChange = (skillInput: string) => {
-   const skillsArray = skillInput.split(',').map(skill => skill.trim().toUpperCase());
-   handleInputChange('skills', skillsArray);
- };
+    const handleSkillsChange = (skillInput: string) => {
+        const skillsArray = skillInput.split(',').filter(skill =>
+            AVAILABLE_SKILLS.includes(skill.trim().toUpperCase())
+        );
+        handleInputChange('skills', skillsArray);
+    };
 
 
  const handleSocialLinksChange = (linksInput: string) => {
@@ -207,6 +217,7 @@ const FreelancerProfile: React.FC = () => {
               editMode={editMode}
               handleSkillsChange={handleSkillsChange}
               inputClassName={inputClassName}
+                availableSkills={AVAILABLE_SKILLS}
             />
 
        {/* Contact Section */}
