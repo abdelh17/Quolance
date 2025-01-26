@@ -56,7 +56,20 @@ export const PROJECT_STATUS_OPTIONS: FormFieldOption[] = [
 export const AVAILABILITY_OPTIONS = [
   { id: 'full-time', value: 'FULL_TIME', label: 'Full Time' },
   { id: 'part-time', value: 'PART_TIME', label: 'Part Time' },
-  { id: 'contract', value: 'CONTRACT', label: 'Contract' }
+  { id: 'contract', value: 'CONTRACT', label: 'Contract' },
+];
+
+export const SKILLS_OPTIONS = [
+  { id: 'java', value: 'JAVA', label: 'Java' },
+  { id: 'python', value: 'PYTHON', label: 'Python' },
+  { id: 'javascript', value: 'JAVASCRIPT', label: 'JavaScript' },
+  { id: 'typescript', value: 'TYPESCRIPT', label: 'TypeScript' },
+  { id: 'react', value: 'REACT', label: 'React' },
+  { id: 'node', value: 'NODE', label: 'Node.js' },
+  { id: 'css', value: 'CSS', label: 'CSS' },
+  { id: 'html', value: 'HTML', label: 'HTML' },
+  { id: 'sql', value: 'SQL', label: 'SQL' },
+  { id: 'aws', value: 'AWS', label: 'AWS' },
 ];
 
 export const getLabelFromValue = (

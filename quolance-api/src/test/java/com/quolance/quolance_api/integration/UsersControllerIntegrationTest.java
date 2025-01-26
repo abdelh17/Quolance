@@ -5,7 +5,6 @@ import com.quolance.quolance_api.dtos.*;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,12 +36,9 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ProjectRepository projectRepository;
 
     @BeforeEach
     void setUp() {
-        projectRepository.deleteAll();
         userRepository.deleteAll();
     }
 

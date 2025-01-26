@@ -44,7 +44,7 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
   };
 
   return (
-    <div className='w-full space-y-6 rounded-lg bg-white p-4'>
+    <div className='w-full space-y-6 rounded-lg bg-white p-6'>
       <div className='space-y-4'>
         {/* Title Search */}
         <div>

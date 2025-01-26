@@ -32,8 +32,8 @@ const ProjectCard = ({
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Header (Title + Badge) */}
-        <div className='bg-b10/20 flex items-center justify-between rounded-t-2xl p-6'>
-          <h3 className='text-n600 text-xl font-semibold duration-150 group-hover:text-blue-600'>
+        <div className='flex items-center justify-between rounded-t-2xl bg-gradient-to-r from-blue-200/20 to-blue-300/20 p-5'>
+          <h3 className='text-n600 text-lg font-semibold duration-150 group-hover:text-blue-600'>
             {title}
           </h3>
           <ArrowRight

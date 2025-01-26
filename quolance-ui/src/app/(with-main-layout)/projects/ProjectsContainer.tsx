@@ -22,10 +22,6 @@ function ProjectsContainer() {
   const pageMetaData = data?.data.metadata;
   const projectsData = data?.data.content;
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <div className='relative bg-gray-900'>
@@ -45,10 +41,9 @@ function ProjectsContainer() {
               Find Your Next Project Today
             </p>
             <p className='mt-6 text-base/7 text-gray-300'>
-              Find trusted freelancers and contractors with ease. Our extensive
-              network of skilled local experts—from programming and design to
-              writing and beyond—is here to help you succeed, no matter the
-              project.
+              Discover projects that match your skills and passions. Connect
+              with clients seeking talented professionals like you, and turn
+              your expertise into meaningful opportunities.
             </p>
             <Link
               href='/auth/register'
@@ -60,19 +55,24 @@ function ProjectsContainer() {
         </div>
       </div>
 
-      <ProjectListType
-        currentListType={currentListType}
-        setCurrentListType={setCurrentListType}
-      />
-
-      <ProjectListLayout
-        isLoading={isLoading}
-        isSuccess={isSuccess}
-        data={projectsData}
-        query={projectQuery}
-        setQuery={setProjectQuery}
-        pageMetaData={pageMetaData}
-      />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <ProjectListType
+            currentListType={currentListType}
+            setCurrentListType={setCurrentListType}
+          />
+          <ProjectListLayout
+            isLoading={isLoading}
+            isSuccess={isSuccess}
+            data={projectsData}
+            query={projectQuery}
+            setQuery={setProjectQuery}
+            pageMetaData={pageMetaData}
+          />
+        </>
+      )}
     </>
   );
 }

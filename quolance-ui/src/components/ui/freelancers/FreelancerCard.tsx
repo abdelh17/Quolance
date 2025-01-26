@@ -9,6 +9,7 @@ import ApprovalConfirmationModal from '@/components/ui/freelancers/ApprovalConfi
 import { ApplicationStatus } from '@/constants/models/applications/ApplicationResponse';
 import Link from 'next/link';
 import { Send } from 'lucide-react';
+import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStatusBadge';
 
 interface FreelancerCardProps {
   img: ImageURL | StaticImageData;
@@ -29,36 +30,24 @@ type ImageURL = {
 
 export const StatusColors = {
   APPLIED: {
-    badge: 'bg-blue-500/20 text-blue-900',
+    checkbox_outline: 'border-blue-400',
     outline: 'ring-blue-400',
-    header: 'bg-blue-700/10',
+    header: 'from-blue-200/90 to-blue-300/90 bg-gradient-to-r',
     container: 'ring-0 bg-white ring-blue-700/10',
   },
   REJECTED: {
-    badge: 'bg-red-500/20 text-red-900',
+    checkbox_outline: 'border-red-400',
     outline: 'ring-red-400',
-    header: 'bg-red-700/10',
+    header: 'bg-red-600/5 bg-gradient-to-r',
     container: 'ring-0 bg-white ring-red-700/10',
   },
-  PENDING_CONFIRMATION: {
-    badge: 'bg-yellow-500/20 text-yellow-900',
-    outline: 'ring-yellow-700/10',
-    header: 'bg-yellow-700/10',
-    container: 'ring-0 bg-white ring-yellow-700/10',
-  },
   ACCEPTED: {
-    badge: 'bg-green-500/20 text-green-900',
+    checkbox_outline: 'border-green-400',
     outline: 'ring-green-400',
-    header: 'border-green-200 bg-green-700/10',
+    header: 'bg-green-600/5 bg-gradient-to-r',
     container: 'ring-1 ring-green-700/10',
   },
-  CANCELLED: {
-    badge: 'bg-gray-500/20 text-gray-900',
-    outline: 'ring-gray-400',
-    header: 'bg-gray-700/10',
-    container: 'ring-0 bg-white ring-gray-700/10',
-  },
-} as const;
+};
 
 const getStatusConfig = (status: ApplicationStatus) => {
   return {
@@ -119,12 +108,7 @@ function FreelancerCard({
             ${statusConfig.classes.header}`}
         >
           {/* Status badge */}
-          <div
-            className={`w-fit rounded-full px-3.5 py-1.5 text-sm font-semibold 
-              ${statusConfig.classes.badge}`}
-          >
-            {statusConfig?.label}
-          </div>
+          <ApplicationStatusBadge status={status} className={''} />
           {/* Checkbox for selecting a submission */}
           {canSelect && (
             <label className='relative z-10 -mt-[2px] mr-1 inline-flex cursor-pointer items-center'>
@@ -136,7 +120,7 @@ function FreelancerCard({
               />
               <span
                 className={`
-                  peer relative z-50 h-[20px] w-[20px] rounded border-2 border-gray-300 bg-white
+                  peer relative z-50 h-[20px] w-[20px] rounded border-2 ${statusConfig.classes.checkbox_outline} bg-white
                   after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-3 after:-translate-x-1/2 after:-translate-y-1/2 after:bg-blue-500 after:opacity-0 after:transition-opacity peer-checked:border-blue-500 peer-checked:after:opacity-100
                 `}
               ></span>

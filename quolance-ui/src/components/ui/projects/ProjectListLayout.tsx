@@ -4,6 +4,7 @@ import ProjectCard from '@/components/ui/projects/ProjectCard';
 import { ProjectFilterQuery } from '@/api/projects-api';
 import Pagination from '@/components/ui/Pagination';
 import { PageMetaData } from '@/constants/types/pagination-types';
+import SortControls from '@/components/ui/pagination/SortControls';
 
 interface ProjectListLayoutProps {
   isLoading: boolean;
@@ -13,6 +14,12 @@ interface ProjectListLayoutProps {
   setQuery: (query: ProjectFilterQuery) => void;
   pageMetaData: PageMetaData;
 }
+
+const ProjectSortOptions = [
+  { value: 'title', label: 'Title' },
+  { value: 'id', label: 'Published date' },
+  { value: 'expirationDate', label: 'Expiration date' },
+];
 
 const ProjectListLayout = ({
   isLoading,
@@ -33,9 +40,15 @@ const ProjectListLayout = ({
         </div>
 
         {/* Main content area */}
-        <div className='flex-1'>
+        <div className='flex-1 px-6'>
+          <SortControls
+            query={query}
+            setQuery={setQuery}
+            sortOptions={ProjectSortOptions}
+            metadata={pageMetaData}
+          />
           {isSuccess && data && (
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
+            <div className='mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
               {data.map((project: ProjectType) => (
                 <ProjectCard
                   key={project.id}

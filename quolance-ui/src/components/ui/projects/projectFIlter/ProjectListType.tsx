@@ -1,7 +1,7 @@
 import { Role } from '@/constants/models/user/UserResponse';
 import { useAuthGuard } from '@/api/auth-api';
 
-const FreelancerListTypes = ['All Projects', 'Applied', 'Favorite'];
+const FreelancerListTypes = ['All Projects', 'Applied'];
 const ClientListTypes = ['All Projects', 'Posted', 'Completed'];
 const PublicListTypes = ['All Projects'];
 
@@ -26,12 +26,32 @@ export default function ProjectListType({
   setCurrentListType,
 }: ProjectListTypeProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
+  const listType = getProjectListTypeFromRole(user?.role);
+  return (
+    <GenericListTypeComponent
+      listType={listType}
+      currentListType={currentListType}
+      setCurrentListType={setCurrentListType}
+    />
+  );
+}
 
+interface GenericListTypeComponentProps {
+  listType: string[];
+  currentListType: string;
+  setCurrentListType: (value: string) => void;
+}
+
+export const GenericListTypeComponent = ({
+  listType,
+  currentListType,
+  setCurrentListType,
+}: GenericListTypeComponentProps) => {
   return (
     <nav className='border-b'>
       <div className='medium-container'>
-        <div className='flex px-1'>
-          {getProjectListTypeFromRole(user?.role).map((type) => (
+        <div className='flex px-6'>
+          {listType.map((type) => (
             <button
               key={type}
               onClick={() => setCurrentListType(type)}
@@ -52,4 +72,4 @@ export default function ProjectListType({
       </div>
     </nav>
   );
-}
+};

@@ -11,7 +11,6 @@ import com.quolance.quolance_api.repositories.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import com.quolance.quolance_api.services.entity_services.BlogCommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +41,6 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
 
     @Autowired
     private BlogCommentRepository blogCommentRepository;
-
-    @Autowired
-    private BlogCommentService blogCommentService;
-
 
     @Autowired
     private UserRepository userRepository;

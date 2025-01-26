@@ -7,7 +7,8 @@ interface PaginationProps {
 }
 
 function Pagination({ metadata, onPageChange }: PaginationProps) {
-  const { pageNumber, totalPages, first, last, totalElements } = metadata;
+  if (!metadata) return null;
+  const { pageNumber, totalPages, first, last } = metadata;
 
   const getPageNumbers = () => {
     const delta = 2;
@@ -86,6 +87,7 @@ function Pagination({ metadata, onPageChange }: PaginationProps) {
 }
 
 export const PageInfoResults = ({ metadata }: { metadata: PageMetaData }) => {
+  if (!metadata) return null;
   const { pageNumber, totalElements, pageSize } = metadata;
 
   return (

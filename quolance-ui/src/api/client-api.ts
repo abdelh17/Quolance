@@ -2,7 +2,27 @@ import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
-import { PaginationParams } from '@/constants/types/pagination-types';
+import {
+  PaginationParams,
+  PaginationQueryDefault,
+} from '@/constants/types/pagination-types';
+import { queryToString } from '@/util/stringUtils';
+
+/*--- Filters ---*/
+export interface CandidateFilterQuery extends PaginationParams {
+  searchName?: string;
+  experienceLevel?: string;
+  availability?: string;
+  skills?: string[];
+}
+
+export const CandidateFilterQueryDefault = {
+  ...PaginationQueryDefault,
+  searchName: '',
+  experienceLevel: '',
+  availability: '',
+  skills: [],
+};
 
 /*--- Hooks ---*/
 export const useGetProjectSubmissions = (projectId: number) => {
@@ -67,5 +87,13 @@ export const useGetAllClientProjects = (params: PaginationParams) => {
       );
       return response.data; // Return the data from the Axios response
     },
+  });
+};
+
+export const useGetAllCandidates = (query: CandidateFilterQuery) => {
+  return useQuery({
+    queryKey: ['all-candidates', query],
+    queryFn: () =>
+      httpClient.get(`/api/client/freelancers/all?${queryToString(query)}`),
   });
 };
