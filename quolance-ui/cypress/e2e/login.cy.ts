@@ -45,7 +45,7 @@ describe("Login Flow", () => {
       );
       cy.contains(/Create your project/i).should('be.visible');
       cy.get('[data-test="post-project-btn"]').contains(/Post a Project/i);
-      cy.contains(/Browse candidats/i).should('be.visible');
+      cy.contains(/Browse candidates/i).should('be.visible');
       cy.get('[data-test="check-repository-btn"]').contains(/Check Repository/i);
      });
      it("No Error Login Flow As A Freelancer", () => {

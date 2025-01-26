@@ -16,18 +16,20 @@ describe('Registration Flow', () => {
       cy.get('[data-test="select-role"]').contains(/Join as a client/i);
       // Verify proper label of 'Apply as a freelancer' on button when clicking on 'I'm a freelancer...' card.
       cy.get('[data-test="freelancer-role"]').click();
-      cy.get('[data-test="select-role"]').contains(/Apply as a freelancer/i);
+      cy.get('[data-test="select-role"]').contains(/Join as a freelancer/i);
       // Verify proper errors shown when submit button clicked with no inputs added to email, username, password, and confirm password fields.
       cy.get('[data-test="select-role"]').click();
       cy.get('[data-test="register-submit"]').contains(/Register as a freelancer/i);
       cy.get('[data-test="register-submit"]').click();
       cy.get('[data-test="email-input"]').contains(/Invalid email/i);
+      cy.get('[data-test="username-input"]').contains(/String must contain at least 8 character\(s\)/i);
       cy.get('[data-test="password-input"]').contains(/String must contain at least 8 character\(s\)/i);
       cy.get('[data-test="passwordConfirm-input"]').contains(/String must contain at least 8 character\(s\)/i);
       // Verify the passwords not matching error is displayed
       cy.get('[data-test="firstName-input"]').type("John");
       cy.get('[data-test="lastName-input"]').type("Doe");
       cy.get('[data-test="email-input"]').type("freelancer@freelancer.com");
+      cy.get('[data-test="username-input"]').type("Username12345");
       cy.get('[data-test="password-input"]').type("Test1234!");
       cy.get('[data-test="passwordConfirm-input"]').type("Test1234");
       cy.get('[data-test="register-submit"]').click();
@@ -57,6 +59,7 @@ describe('Registration Flow', () => {
       cy.get('[data-test="firstName-input"]').type("John");
       cy.get('[data-test="lastName-input"]').type("Doe");
       cy.get('[data-test="email-input"]').type("freelancer@freelancer.com");
+      cy.get('[data-test="username-input"]').type("Username12345");
       cy.get('[data-test="password-input"]').type("Test1234!");
       cy.get('[data-test="passwordConfirm-input"]').type("Test1234!");
       // Submit the form
