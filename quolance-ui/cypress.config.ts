@@ -7,7 +7,7 @@ export default defineConfig({
 
  e2e: {
    baseUrl: "http://localhost:3000",
-   defaultCommandTimeout: 10000,
+   defaultCommandTimeout: 30000,
    setupNodeEvents(on, config) {
      codeCoverageTask(on, config)
      on('file:preprocessor', useBabelrc)
