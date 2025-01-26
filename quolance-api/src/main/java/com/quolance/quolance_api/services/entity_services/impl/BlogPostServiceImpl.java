@@ -93,8 +93,12 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public Set<String> updateTagsForPost(Long postId, List<String> tagNames) {
-        BlogPost blogPost = blogPostRepository.findById(postId)
-                .orElseThrow(() -> new ApiException("Post not found with ID: " + postId));
+        BlogPost blogPost;
+        try {
+             blogPost = getBlogPostEntity(postId);
+        } catch (ApiException e) {
+            throw new ApiException(e.getMessage());
+        }
 
         // Validate and convert the provided tag names into BlogTags enums
         Set<String> invalidTags = new HashSet<>();

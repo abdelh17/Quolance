@@ -43,5 +43,5 @@ public class BlogPost extends AbstractEntity {
     @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "tag")
-    private Set<BlogTags> tags = new HashSet<>();
+    private Set<BlogTags> tags;
 }

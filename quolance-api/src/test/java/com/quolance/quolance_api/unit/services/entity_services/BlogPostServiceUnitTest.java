@@ -87,7 +87,7 @@ class BlogPostServiceUnitTest {
         // Call the method with a non-existent post ID
         assertThatThrownBy(() -> blogPostService.updateTagsForPost(999L, List.of("QUESTION")))
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining("Post not found with ID: 999");
+                .hasMessageContaining("No blog post found with ID: 999");
 
         // Verify the repository is not saved
         verify(blogPostRepository, never()).save(any());

@@ -37,10 +37,8 @@ public class BlogPostRequestDto {
                     .map(BlogTagDto::getName)
                     .map(tag -> {
                         try {
-                            System.out.println("TAG ENCOUNTERED " + tag);
                             return BlogTags.valueOf(tag.toUpperCase());
                         } catch (IllegalArgumentException e) {
-                            System.out.println("Invalid tag encountered: " + tag); // Debugging log
                             throw new InvalidBlogTagException("Invalid tag: " + tag);
                         }
                     })

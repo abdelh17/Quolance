@@ -5,7 +5,6 @@ import com.quolance.quolance_api.entities.enums.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 /**
  * Helper class to create entities for testing purposes

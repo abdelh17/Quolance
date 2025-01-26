@@ -71,17 +71,10 @@ public class BlogPostController {
     }
 
     @PutMapping("/tags/{postId}")
-    public ResponseEntity<Map<String, Object>> updateTagsForPost(
+    public ResponseEntity<String> updateTagsForPost(
             @PathVariable Long postId,
             @RequestBody List<String> tagNames) {
-        // Call the service to update tags
-        Set<String> updatedTags = blogPostService.updateTagsForPost(postId, tagNames);
-
-        // Create response with a success message and updated tags
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Tags updated successfully");
-        response.put("updatedTags", updatedTags);
-
-        return ResponseEntity.ok(response);
+        blogPostService.updateTagsForPost(postId, tagNames);
+        return ResponseEntity.ok("Tags updated successfully");
     }
 }

@@ -1,34 +1,23 @@
 package com.quolance.quolance_api.entities.enums;
 
 public enum BlogTags {
-    QUESTION("Questions"),
-    SUPPORT("Support"),
-    FREELANCING("Freelancing"),
-    SKILL_MATCHING("Skill Matching"),
-    REMOTE_WORK("Remote Work"),
-    AI_SUGGESTIONS("AI-Driven Suggestions"),
-    SECURITY("Security"),
-    TALENT_MARKETPLACE("Talent Marketplace"),
-    GLOBAL_OPPORTUNITIES("Global Opportunities"),
-    VERIFIED_PROFILES("Verified Profiles"),
-    COLLABORATION_TOOLS("Collaboration Tools"),
-    PROFESSIONAL_NETWORK("Professional Network"),
-    BILLING("Billing");
-
-    private final String displayName;
-
-    // Constructor
-    BlogTags(String displayName) {
-        this.displayName = displayName;
-    }
-
-    // Getter
-    public String getDisplayName() {
-        return displayName;
-    }
+    QUESTION,
+    SUPPORT,
+    FREELANCING,
+    SKILL_MATCHING,
+    REMOTE_WORK,
+    AI_SUGGESTIONS,
+    SECURITY,
+    TALENT_MARKETPLACE,
+    GLOBAL_OPPORTUNITIES,
+    VERIFIED_PROFILES,
+    COLLABORATION_TOOLS,
+    PROFESSIONAL_NETWORK,
+    BILLING;
 
     @Override
     public String toString() {
-        return displayName;
+        // Replace underscores with spaces and capitalize words for display purposes
+        return name().replace('_', ' ').toLowerCase();
     }
 }
