@@ -2,7 +2,7 @@
 
 import LoadingSpinner1 from "@/components/ui/loading/loadingSpinner1";
 import Link from 'next/link';
-import { useGetAllFreelancerApplications } from '@/api/freelancer-api';
+import {useCancelApplication, useGetAllFreelancerApplications} from '@/api/freelancer-api';
 import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import ApplicationStatusBadge, { ApplicationStatus } from '@/components/ui/applications/ApplicationStatusBadge';
@@ -20,6 +20,7 @@ export default function FreelancerDashboardTable() {
   const [sortBy, setSortBy] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
   const pageSize = 2;
+
 
   const { data, isLoading } = useGetAllFreelancerApplications({
     page,
@@ -146,7 +147,7 @@ export default function FreelancerDashboardTable() {
                             View project
                           </Link>
                           <Link
-                              href={canWithdrawApplication(application.status) ? `/applications/${application.id}?withdraw=true` : '#'}
+                              href="#"
                               className={`${
                                   canWithdrawApplication(application.status)
                                       ? 'text-red-600 hover:text-red-800'
@@ -156,6 +157,9 @@ export default function FreelancerDashboardTable() {
                                 if (!canWithdrawApplication(application.status)) {
                                   e.preventDefault();
                                 }
+                                const { mutate: cancelApplication } = useCancelApplication(application.projectId);
+                                cancelApplication(application.id);
+
                               }}
                           >
                             Withdraw submission
