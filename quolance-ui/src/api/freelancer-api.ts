@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
-import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 
 /*--- Hooks ---*/
@@ -59,7 +58,9 @@ export const useGetAllFreelancerApplications = (params: PaginationParams) => {
   return useQuery({
     queryKey: ['freelancerApplications', params],
     queryFn: async () => {
-      const response = await httpClient.get(`/api/freelancer/applications/all?${queryString}`);
+      const response = await httpClient.get(
+        `/api/freelancer/applications/all?${queryString}`
+      );
       return response.data;
     },
   });
@@ -68,12 +69,13 @@ export const useGetAllFreelancerApplications = (params: PaginationParams) => {
 export const useGetProjectApplication = (projectId: number) => {
   return useQuery({
     queryKey: ['applications', projectId],
-    queryFn: async (): Promise<ApplicationResponse | null> => {
-      const { data } = await httpClient.get<ApplicationResponse[]>(
-        'api/freelancer/applications/all'
-      );
+    queryFn: async () => {
+      const { data } = await httpClient.get('api/freelancer/applications/all');
       return (
-        data.find((application) => application.projectId === projectId) || null
+        data.content.find(
+          (application: { projectId: number }) =>
+            application.projectId === projectId
+        ) || null
       );
     },
   });
@@ -81,23 +83,23 @@ export const useGetProjectApplication = (projectId: number) => {
 
 export const useGetFreelancerProfile = (username?: string) => {
   return useQuery({
-    queryKey: ["freelancerProfile", username],
+    queryKey: ['freelancerProfile', username],
     queryFn: async () => {
       if (!username) {
-        throw new Error("Username is required");
+        throw new Error('Username is required');
       }
-      const response = await httpClient.get(`api/public/freelancer/profile/${username}`);
+      const response = await httpClient.get(
+        `api/public/freelancer/profile/${username}`
+      );
       return response.data;
     },
     enabled: !!username,
   });
- };
- 
- 
- export const useEditProfile = () => {
+};
+
+export const useEditProfile = () => {
   const queryClient = useQueryClient();
- 
- 
+
   return useMutation({
     mutationFn: (profile: FreelancerProfileType) =>
       httpClient.put(`api/freelancer/profile`, profile),
@@ -107,39 +109,41 @@ export const useGetFreelancerProfile = (username?: string) => {
     },
     onError: (error) => {
       const errorResponse = error.response?.data as { message: string };
-      showToast(`Error updating profile: ${errorResponse?.message || 'Unknown error'}`, 'error');
+      showToast(
+        `Error updating profile: ${errorResponse?.message || 'Unknown error'}`,
+        'error'
+      );
     },
   });
- };
- 
- 
- export const useUploadProfileImage = () => {
+};
+
+export const useUploadProfileImage = () => {
   const queryClient = useQueryClient();
- 
- 
+
   return useMutation({
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append('photo', file);
-     
+
       return httpClient.post('api/freelancer/profile/picture', formData, {
-        headers:{
-          "Content-Type":"multipart/form-data"
-        }
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-     
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['freelancerProfile'] });
     },
     onError: (error) => {
       const errorResponse = error.response?.data as { message: string };
-      showToast(`Error uploading profile image: ${errorResponse?.message || 'Unknown error'}`, 'error');
+      showToast(
+        `Error uploading profile image: ${
+          errorResponse?.message || 'Unknown error'
+        }`,
+        'error'
+      );
     },
   });
- };
- 
- 
- 
+};
 
 /*--- Query functions ---*/
