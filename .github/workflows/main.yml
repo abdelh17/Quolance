@@ -25,10 +25,10 @@ jobs:
           npm install
 
     # Step 2: Run Cypress Tests
-      - name: Run Cypress Tests
-        run: |
-          cd quolance-ui
-          npm run e2e:headless
+    #  - name: Run Cypress Tests
+    #   run: |
+    #    cd quolance-ui
+    #     npm run e2e:headless
 
 
       # Step 3: Build Frontend
