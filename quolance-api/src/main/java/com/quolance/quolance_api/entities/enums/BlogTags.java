@@ -14,10 +14,4 @@ public enum BlogTags {
     COLLABORATION_TOOLS,
     PROFESSIONAL_NETWORK,
     BILLING;
-
-    @Override
-    public String toString() {
-        // Replace underscores with spaces and capitalize words for display purposes
-        return name().replace('_', ' ').toLowerCase();
-    }
 }

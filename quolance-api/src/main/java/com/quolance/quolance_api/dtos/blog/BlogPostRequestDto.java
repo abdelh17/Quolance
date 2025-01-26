@@ -24,7 +24,7 @@ public class BlogPostRequestDto {
     @NotBlank(message = "Title is required")
     private String content;
     private List<BlogCommentDto> comments;
-    private Set<BlogTagDto> tags;
+    private Set<BlogTags> tags;
 
     public static BlogPost toEntity(BlogPostRequestDto blogPostRequestDto) {
         BlogPost blogPost = BlogPost.builder()
@@ -32,17 +32,19 @@ public class BlogPostRequestDto {
                 .content(blogPostRequestDto.getContent())
                 .build();
 
+        // Map tag strings to BlogTags, validate them, and collect into a set
         if (blogPostRequestDto.getTags() != null) {
-            blogPost.setTags(blogPostRequestDto.getTags().stream()
-                    .map(BlogTagDto::getName)
+            Set<BlogTags> validTags = blogPostRequestDto.getTags().stream()
                     .map(tag -> {
                         try {
-                            return BlogTags.valueOf(tag.toUpperCase());
+                            return tag; // Convert string to BlogTags enum
                         } catch (IllegalArgumentException e) {
-                            throw new InvalidBlogTagException("Invalid tag: " + tag);
+                            throw new InvalidBlogTagException("Invalid tag: " + tag); // Handle invalid tag
                         }
                     })
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet());
+
+            blogPost.setTags(validTags); // Set valid tags
         } else {
             blogPost.setTags(new HashSet<>()); // Ensure it's initialized as empty
         }
