@@ -8,6 +8,7 @@ import { useGetReactionsByPostId, useReactToPost, useGetCommentsByPostId, useAdd
 import { useAuthGuard } from "@/api/auth-api";
 import CommentCard from "./CommentCard";
 import { CommentType } from "@/constants/types/blog-types";
+import UpdateTagsButton from "./UpdateTagButton";
 
 interface ReactionState {
     [key: string]: { count: number; userReacted: boolean };
@@ -19,9 +20,10 @@ interface PostCardProps {
     content: string;
     authorName: string;
     dateCreated: string;
+    currentTags: string[];
     }
 
-    const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated }) => {
+    const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, currentTags}) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [newComment, setNewComment] = useState<string>("");
@@ -37,6 +39,12 @@ interface PostCardProps {
     },
     });
     const { user } = useAuthGuard({ middleware: "auth" });
+
+    const [tags, setTags] = useState<string[]>(currentTags); // Manage tags in the PostCard
+
+    const handleTagsUpdate = (updatedTags: string[]) => {
+        setTags(updatedTags); // Update local tags when tags are updated
+    };
 
     useEffect(() => {
     if (reactionData) {
@@ -110,6 +118,7 @@ interface PostCardProps {
                 </div>
             </div>
             </div>
+            
 
             {/* Post Content */}
             <div className="ml-5 mr-5 mb-5">
@@ -125,6 +134,21 @@ interface PostCardProps {
             </div>
             <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
                 <p className="text-gray-700">{content}</p>
+            </div>
+
+            {/* Display tags */}
+            <div className="mt-2">
+                <h4 className="font-semibold">Tags:</h4>
+                <div className="flex gap-2 flex-wrap">
+                {tags.map((tag) => (
+                    <span
+                    key={tag}
+                    className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs font-medium"
+                    >
+                    {tag}
+                    </span>
+                ))}
+                </div>
             </div>
 
             {content.length > 300 && (
@@ -149,6 +173,7 @@ interface PostCardProps {
                     />
                 ))}
             </div>
+
 
             {/* Comments Section */}
             <div className="mt-4">
@@ -189,7 +214,12 @@ interface PostCardProps {
                     </div>
                 </div>
                 )}
+                
             </div>
+             {/* Show UpdateTagsButton only if the user is the post author */}
+            {user?.username === authorName && (
+                <UpdateTagsButton postId={id} currentTags={tags} onUpdateTags={handleTagsUpdate} />
+            )}
             </div>
         </div>
     );

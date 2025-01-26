@@ -1,0 +1,8 @@
+export enum BlogTags {
+    QUESTION = "QUESTION",
+    SUPPORT = "SUPPORT",
+    ANNOUNCEMENT = "ANNOUNCEMENT",
+    TUTORIAL = "TUTORIAL",
+    GENERAL = "GENERAL",
+    FEEDBACK = "FEEDBACK",
+  }

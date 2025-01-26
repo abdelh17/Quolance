@@ -114,3 +114,16 @@ export const useAddComment = (postId: number, options?: {
     ...options,
   });
 };
+
+export const useUpdateTagsForPost = (options?: {
+  onSuccess?: (updatedTags: string[]) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<string[], HttpErrorResponse, { postId: number; tags: string[] }>({
+    mutationFn: async ({ postId, tags }) => {
+      const response = await httpClient.put(`/api/blog-posts/tags/${postId}`, tags);
+      return response.data; // Assuming API responds with updated tags as an array
+    },
+    ...options,
+  });
+};

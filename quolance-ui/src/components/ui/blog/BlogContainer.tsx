@@ -138,7 +138,7 @@ const BlogContainer: React.FC = () => {
                     {/* Posts Grid */}
                     <div className="grid sm:grid-cols-1 lg:grid-cols-1 gap-6">
                         {filteredPosts?.slice().reverse().map((post, index) => (
-                            <PostCard key={index} {...post} />
+                            <PostCard key={index} {...post} currentTags={[]}/>
                         ))}
                     </div>
 
