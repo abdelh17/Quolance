@@ -74,7 +74,7 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
         BlogCommentDto commentDto = new BlogCommentDto();
         commentDto.setContent("This is a valid comment");
         commentDto.setBlogPostId(blogPost.getId());
-        commentDto.setUserId(loggedInUser.getId());
+        commentDto.setAuthorName(loggedInUser.getUsername());
 
         mockMvc.perform(post("/api/blog-comments/" + blogPost.getId())
                         .contentType(MediaType.APPLICATION_JSON)
