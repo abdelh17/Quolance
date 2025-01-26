@@ -8,6 +8,7 @@ import com.quolance.quolance_api.entities.User;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Set;
 
 public interface BlogPostService {
 
@@ -24,4 +25,6 @@ public interface BlogPostService {
     void deletePost(Long id, User author);
 
     BlogPostResponseDto getBlogPost(Long id);
+
+    Set<String> updateTagsForPost(Long postId, List<String> tagNames);
 }

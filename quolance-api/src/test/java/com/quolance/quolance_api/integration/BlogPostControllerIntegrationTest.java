@@ -6,9 +6,13 @@ import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.BlogPost;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.BlogTags;
+import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
 import com.quolance.quolance_api.repositories.BlogPostRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +20,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,6 +51,8 @@ class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
     private MockHttpSession session;
 
     private User loggedInUser;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -68,6 +77,7 @@ class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testGetAllBlogPosts() throws Exception {
+
         blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
 
         mockMvc.perform(get("/api/blog-posts/all")
