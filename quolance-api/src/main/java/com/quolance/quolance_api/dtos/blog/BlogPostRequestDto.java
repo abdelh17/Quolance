@@ -1,6 +1,6 @@
 package com.quolance.quolance_api.dtos.blog;
 
-import com.quolance.quolance_api.entities.BlogPost;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.BlogTags;
 import com.quolance.quolance_api.util.exceptions.InvalidBlogTagException;
 import jakarta.validation.constraints.NotBlank;

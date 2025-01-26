@@ -44,9 +44,6 @@ public class NotificationRestController {
             notification.setMessage(request.getMessage());
             notification.setTimestamp(java.time.LocalDateTime.now());
             notification.setRead(false);
-
-            // Save and send notification
-//            notificationMessageService.processNotification(notification, recipient.getEmail());
         });
 
         return ResponseEntity.ok().build();

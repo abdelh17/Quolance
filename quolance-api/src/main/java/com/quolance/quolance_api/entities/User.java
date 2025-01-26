@@ -1,8 +1,9 @@
 package com.quolance.quolance_api.entities;
 
-import com.quolance.quolance_api.dtos.CreateAdminRequestDto;
-import com.quolance.quolance_api.dtos.CreateUserRequestDto;
-import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
+import com.quolance.quolance_api.dtos.users.CreateAdminRequestDto;
+import com.quolance.quolance_api.dtos.users.CreateUserRequestDto;
+import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.util.ApplicationContextProvider;
 import jakarta.persistence.*;

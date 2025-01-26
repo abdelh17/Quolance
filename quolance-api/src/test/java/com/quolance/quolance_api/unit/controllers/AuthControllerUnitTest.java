@@ -1,8 +1,8 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.AuthController;
-import com.quolance.quolance_api.dtos.LoginRequestDto;
-import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.dtos.users.LoginRequestDto;
+import com.quolance.quolance_api.dtos.users.UserResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.auth.AuthService;

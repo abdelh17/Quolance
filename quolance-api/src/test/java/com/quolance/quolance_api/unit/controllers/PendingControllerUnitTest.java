@@ -1,8 +1,8 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.PendingController;
-import com.quolance.quolance_api.dtos.UpdatePendingUserRequestDto;
-import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.dtos.users.UpdatePendingUserRequestDto;
+import com.quolance.quolance_api.dtos.users.UserResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.auth.PendingWorkflowService;
@@ -133,7 +133,7 @@ class PendingControllerUnitTest {
             invalidDto.setPassword("short");
             invalidDto.setRole("INVALID_ROLE");
 
-            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(invalidDto)))
+            when(pendingWorkflowService.updatePendingUser(mockUser, invalidDto))
                     .thenThrow(ApiException.builder()
                             .message("Invalid request data")
                             .status(400)
@@ -142,7 +142,7 @@ class PendingControllerUnitTest {
             assertThatThrownBy(() -> pendingController.updatePendingUser(invalidDto))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Invalid request data");
-            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(invalidDto));
+            verify(pendingWorkflowService).updatePendingUser(mockUser, invalidDto);
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }

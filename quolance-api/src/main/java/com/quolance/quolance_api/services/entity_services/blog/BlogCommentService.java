@@ -1,8 +1,8 @@
-package com.quolance.quolance_api.services.entity_services;
+package com.quolance.quolance_api.services.entity_services.blog;
 
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
-import com.quolance.quolance_api.entities.BlogComment;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogComment;
 
 import java.util.List;
 

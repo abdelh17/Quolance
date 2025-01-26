@@ -1,12 +1,12 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
-import com.quolance.quolance_api.dtos.UpdateUserRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;

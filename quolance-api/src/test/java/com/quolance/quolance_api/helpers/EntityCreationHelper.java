@@ -1,6 +1,12 @@
 package com.quolance.quolance_api.helpers;
 
-import com.quolance.quolance_api.entities.*;
+import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Profile;
+import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogComment;
+import com.quolance.quolance_api.entities.blog.BlogPost;
+import com.quolance.quolance_api.entities.blog.Reaction;
 import com.quolance.quolance_api.entities.enums.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

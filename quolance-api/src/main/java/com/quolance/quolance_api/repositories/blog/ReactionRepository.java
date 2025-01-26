@@ -1,9 +1,9 @@
-package com.quolance.quolance_api.repositories;
+package com.quolance.quolance_api.repositories.blog;
 
-import com.quolance.quolance_api.entities.BlogComment;
-import com.quolance.quolance_api.entities.BlogPost;
-import com.quolance.quolance_api.entities.Reaction;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogComment;
+import com.quolance.quolance_api.entities.blog.BlogPost;
+import com.quolance.quolance_api.entities.blog.Reaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

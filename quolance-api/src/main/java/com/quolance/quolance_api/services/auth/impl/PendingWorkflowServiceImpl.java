@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.services.auth.impl;
 
-import com.quolance.quolance_api.dtos.UpdatePendingUserRequestDto;
-import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.dtos.users.UpdatePendingUserRequestDto;
+import com.quolance.quolance_api.dtos.users.UserResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.repositories.UserRepository;

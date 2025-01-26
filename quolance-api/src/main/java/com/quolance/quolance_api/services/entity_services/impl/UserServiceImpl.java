@@ -1,6 +1,6 @@
 package com.quolance.quolance_api.services.entity_services.impl;
 
-import com.quolance.quolance_api.dtos.*;
+import com.quolance.quolance_api.dtos.users.*;
 import com.quolance.quolance_api.entities.PasswordResetToken;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.VerificationCode;

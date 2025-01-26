@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.controllers;
 
-import com.quolance.quolance_api.dtos.LoginRequestDto;
-import com.quolance.quolance_api.dtos.UserResponseDto;
+import com.quolance.quolance_api.dtos.users.LoginRequestDto;
+import com.quolance.quolance_api.dtos.users.UserResponseDto;
 import com.quolance.quolance_api.services.auth.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

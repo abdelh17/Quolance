@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.dtos;
+package com.quolance.quolance_api.dtos.paging;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;

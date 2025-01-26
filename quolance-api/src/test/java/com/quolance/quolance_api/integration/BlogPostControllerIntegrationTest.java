@@ -1,18 +1,14 @@
 package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
-import com.quolance.quolance_api.entities.BlogPost;
+import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.BlogTags;
-import com.quolance.quolance_api.entities.enums.Role;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.repositories.BlogPostRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import jakarta.transaction.Transactional;
-import org.hibernate.Hibernate;
+import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +19,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

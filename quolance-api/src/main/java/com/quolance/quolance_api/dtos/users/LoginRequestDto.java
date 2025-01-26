@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.dtos;
+package com.quolance.quolance_api.dtos.users;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

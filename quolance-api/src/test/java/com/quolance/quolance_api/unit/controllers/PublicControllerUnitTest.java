@@ -1,8 +1,8 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.PublicController;
-import com.quolance.quolance_api.dtos.PageResponseDto;
-import com.quolance.quolance_api.dtos.PageableRequestDto;
+import com.quolance.quolance_api.dtos.paging.PageResponseDto;
+import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;

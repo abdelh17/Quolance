@@ -1,9 +1,9 @@
 package com.quolance.quolance_api.unit.services.entity_services;
 
-import com.quolance.quolance_api.entities.BlogPost;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.BlogTags;
-import com.quolance.quolance_api.repositories.BlogPostRepository;
-import com.quolance.quolance_api.services.entity_services.impl.BlogPostServiceImpl;
+import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
+import com.quolance.quolance_api.services.entity_services.impl.blog.BlogPostServiceImpl;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.exceptions.InvalidBlogTagException;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,6 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class BlogPostServiceUnitTest {

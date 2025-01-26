@@ -1,13 +1,13 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.services.entity_services.impl.blog;
 
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
-import com.quolance.quolance_api.entities.BlogPost;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.BlogTags;
-import com.quolance.quolance_api.repositories.BlogPostRepository;
-import com.quolance.quolance_api.services.entity_services.BlogPostService;
+import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
+import com.quolance.quolance_api.services.entity_services.blog.BlogPostService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.exceptions.InvalidBlogTagException;
 import jakarta.servlet.http.HttpServletResponse;
