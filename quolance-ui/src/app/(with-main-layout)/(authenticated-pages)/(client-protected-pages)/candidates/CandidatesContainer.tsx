@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import heroImage3 from '@/public/images/freelancer-hero-img-3.jpg';
-import Link from 'next/link';
 import FreelancerCatalogListType from '@/components/ui/freelancers/candidates/candidateFilter/FreelancerCatalogListType';
 import FreelancerListLayout from '@/components/ui/freelancers/candidates/FreelancerListLayout';
 import {
@@ -46,12 +45,6 @@ function CandidatesContainer() {
               writing and beyond—is here to help you succeed, no matter the
               project.
             </p>
-            <Link
-              href='/auth/register'
-              className='bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
-            >
-              <span className='relative z-10'>Sign Up For Free</span>
-            </Link>
           </div>
         </div>
       </div>

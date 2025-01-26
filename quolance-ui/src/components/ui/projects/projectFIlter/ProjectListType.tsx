@@ -1,7 +1,7 @@
 import { Role } from '@/constants/models/user/UserResponse';
 import { useAuthGuard } from '@/api/auth-api';
 
-const FreelancerListTypes = ['All Projects', 'Applied', 'Favorite'];
+const FreelancerListTypes = ['All Projects', 'Applied'];
 const ClientListTypes = ['All Projects', 'Posted', 'Completed'];
 const PublicListTypes = ['All Projects'];
 
