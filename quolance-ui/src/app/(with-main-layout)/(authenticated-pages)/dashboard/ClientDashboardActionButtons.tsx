@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -27,7 +27,7 @@ export default function ClientDashboardActionButtons() {
                   variant='default'
                   animation='default'
                   size='sm'
-                  data-test = "post-project-btn"
+                  data-test='post-project-btn'
                 >
                   Post a Project
                 </Button>
@@ -38,7 +38,7 @@ export default function ClientDashboardActionButtons() {
         <div className='bg-white shadow-md sm:rounded-lg'>
           <div className='px-4 py-5 sm:p-6'>
             <h3 className='text-base font-semibold text-gray-900'>
-              Browse candidats
+              Browse candidates
             </h3>
             <div className='mt-2 sm:flex sm:items-start sm:justify-between'>
               <div className='max-w-xl text-sm text-gray-500'>
@@ -49,11 +49,11 @@ export default function ClientDashboardActionButtons() {
               </div>
               <div className='mt-5 sm:ml-6 sm:mt-0 sm:flex sm:shrink-0 sm:items-center'>
                 <Button
-                  onClick={() => router.push('/post-project')}
+                  onClick={() => router.push('/candidates')}
                   variant='default'
                   animation='default'
                   size='sm'
-                  data-test ="check-repository-btn"
+                  data-test='check-repository-btn'
                 >
                   Check Repository
                 </Button>

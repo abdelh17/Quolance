@@ -34,3 +34,83 @@ export const useCreateBlogPost = (options?: {
     });
 };
 
+export interface ReactionResponseDto {
+  id: number;
+  reactionType: string;
+  userId: number;
+  userName: string;
+  blogPostId: number;
+}
+
+
+export const useGetReactionsByPostId = (postId: number, options?: {
+  onSuccess?: (data: ReactionResponseDto[]) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useQuery<ReactionResponseDto[], HttpErrorResponse>({
+    queryKey: ['post-reactions', postId],
+    queryFn: async () => {
+      const response = await httpClient.get(`/api/blog-posts/reactions/post/${postId}`);
+      return response.data;
+    },
+    enabled: !!postId, // Only fetch if postId is defined
+    ...options,
+  });
+};
+
+export interface ReactionRequestDto {
+  reactionType: string;
+  blogPostId: number;
+}
+
+export const useReactToPost = (options?: {
+  onSuccess?: (data: ReactionResponseDto) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<ReactionResponseDto, HttpErrorResponse, ReactionRequestDto>({
+    mutationFn: async (reactionRequest) => {
+      const response = await httpClient.post('/api/blog-posts/reactions/post', reactionRequest);
+      return response.data;
+    },
+    ...options,
+  });
+};
+
+export interface CommentResponseDto {
+  commentId: number;
+  blogPostId: number;
+  userId: number;
+  content: string;
+}
+
+export const useGetCommentsByPostId = (postId: number, options?: {
+  onSuccess?: (data: CommentResponseDto[]) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useQuery<CommentResponseDto[], HttpErrorResponse>({
+    queryKey: ['comments', postId],
+    queryFn: async () => {
+      const response = await httpClient.get(`/api/blog-comments/post/${postId}`);
+      return response.data;
+    },
+    enabled: !!postId, // Only fetch if postId is defined
+    ...options,
+  });
+};
+
+export interface CommentRequestDto {
+  content: string;
+}
+
+export const useAddComment = (postId: number, options?: {
+  onSuccess?: (data: CommentResponseDto) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<CommentResponseDto, HttpErrorResponse, CommentRequestDto>({
+    mutationFn: async (newComment) => {
+      const response = await httpClient.post(`/api/blog-comments/${postId}`, newComment);
+      return response.data;
+    },
+    ...options,
+  });
+};

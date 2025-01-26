@@ -4,7 +4,7 @@ export type BlogPostViewType = {
     content: string;
     authorName: string;
     dateCreated: string;
-    comments: string[];
+    comments: CommentType[];
 }
 
 export type BlogPostType = {
@@ -12,3 +12,10 @@ export type BlogPostType = {
     content: string;
     userId: number;
 };
+
+export type CommentType = {
+    authorName: string;
+    profilePicture?: string;
+    content: string;
+    dateCreated: string;
+}

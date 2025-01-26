@@ -5,7 +5,6 @@ import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,12 +41,8 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
-
     @BeforeEach
     void setUp() {
-        projectRepository.deleteAll();
         userRepository.deleteAll();
         client = userRepository.save(EntityCreationHelper.createClient());
         freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));

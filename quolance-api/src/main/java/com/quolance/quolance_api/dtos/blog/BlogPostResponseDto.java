@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -20,6 +23,7 @@ public class BlogPostResponseDto {
     private String authorName;
     private LocalDateTime dateCreated;
     private List<BlogCommentDto> comments;
+    private Set<String> tags;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
         BlogPostResponseDto response = new BlogPostResponseDto();
@@ -28,6 +32,11 @@ public class BlogPostResponseDto {
         response.setContent(blogPost.getContent());
         response.setAuthorName(blogPost.getUser().getUsername());
         response.setDateCreated(blogPost.getCreationDate());
+        response.setTags(blogPost.getTags() != null
+                ? blogPost.getTags().stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet())
+                : Collections.emptySet());
         return response;
     }
 

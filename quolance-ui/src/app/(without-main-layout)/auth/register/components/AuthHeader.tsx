@@ -8,7 +8,7 @@ const getPropsFromUserRole = (userRole: RegistrationUserType) => {
     case Role.CLIENT:
       return {
         title: 'Here to hire talent?',
-        linkText: 'Apply as a freelancer',
+        linkText: 'Join as a freelancer',
       };
     case Role.FREELANCER:
       return {

@@ -1,15 +1,18 @@
 package com.quolance.quolance_api.services.websockets.impl;
 
+import com.quolance.quolance_api.dtos.websocket.NotificationResponseDto;
 import com.quolance.quolance_api.entities.MessageEntity;
 import com.quolance.quolance_api.entities.Notification;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.NotificationRepository;
+import com.quolance.quolance_api.services.entity_services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ public class NotificationMessageService extends AbstractWebSocketService {
 
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserService userService;
 
     @Override
     public boolean supports(String messageType) {
@@ -24,64 +28,53 @@ public class NotificationMessageService extends AbstractWebSocketService {
     }
 
     /**
-     * Overloaded processMessage to handle Notification directly.
+     * Overloaded processNotification to handle Notification directly.
      *
      * @param notification The Notification object.
-     * @param userEmail    The recipient's email.
      */
-    public void processMessage(Notification notification, String userEmail) {
-        log.debug("Processing notification for user: {}", userEmail);
-
-        // Ensure recipient email matches
-        if (!notification.getRecipient().getEmail().equals(userEmail)) {
-            throw new IllegalArgumentException("Recipient email does not match provided user email");
-        }
+    private void processNotification(Notification notification) {
+        log.debug("Processing notification for user: {}", notification.getRecipient().getUsername());
 
         // Save the notification to the database
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
         notificationRepository.save(notification);
 
-        // Send the notification via WebSocket
-        messagingTemplate.convertAndSendToUser(userEmail, "/topic/notifications", notification);
+        // Convert the Notification entity to a NotificationResponseDto
+        NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
+
+        // Send the NotificationResponseDto via WebSocket to the specific user
+        messagingTemplate.convertAndSendToUser(notification.getRecipient().getUsername(), "/topic/notifications", responseDto);
     }
 
     /**
      * Process a generic `MessageEntity` and adapt it to a `Notification`.
      *
      * @param message   The incoming message entity.
-     * @param userEmail The recipient's email.
+     * @param userName The recipient's userName.
      */
     @Override
-    public void processMessage(MessageEntity message, String userEmail) {
-        log.debug("Adapting MessageEntity to Notification for user: {}", userEmail);
+    public void processMessage(MessageEntity message, String userName) {
+        log.debug("Adapting MessageEntity to Notification for user: {}", userName);
 
-        User sender = fetchUserByEmail(message.getSender());
-        User recipient = fetchUserByEmail(userEmail);
+        Optional<User> senderOpt = userService.findByUsername(message.getSender());
+        Optional<User> recipientOpt = userService.findByUsername(userName);
+
+        if (!senderOpt.isPresent() || !recipientOpt.isPresent()) {
+            throw new IllegalArgumentException("Sender or recipient not found");
+        }
+
+        User sender = senderOpt.get();
+        User recipient = recipientOpt.get();
 
         // Adapt MessageEntity to Notification
         Notification notification = new Notification();
         notification.setSender(sender);
         notification.setRecipient(recipient);
         notification.setMessage(message.getMessage());
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setRead(false);
 
         // Process the adapted Notification
-        processMessage(notification, userEmail);
-    }
-
-    /**
-     * Fetch a user by their email (mock or implement retrieval logic).
-     *
-     * @param email The email of the user.
-     * @return The user object.
-     */
-    private User fetchUserByEmail(String email) {
-        // Mocked for now; implement retrieval logic from UserService or UserRepository
-        User user = new User();
-        user.setEmail(email);
-        return user;
+        processNotification(notification);
     }
 
     /**
@@ -106,25 +99,54 @@ public class NotificationMessageService extends AbstractWebSocketService {
         return notificationRepository.findByRecipientId(userId);
     }
 
+
     /**
-     * Send a notification from a sender to a recipient with a given message.
+     * Send notifications to multiple users.
      *
-     * @param sender    The user sending the notification.
-     * @param recipient The user receiving the notification.
+     * @param recipients List of recipient users to send the notification to.
+     * @param message    The notification message.
+     */
+    public void sendNotificationToUsers(List<User> recipients, String message) {
+        log.debug("Sending notification to multiple users.");
+
+        for (User recipient : recipients) {
+            Notification notification = new Notification();
+            notification.setRecipient(recipient);
+            notification.setMessage(message);
+            processNotification(notification);
+        }
+    }
+
+    /**
+     * Send a notification to a single user.
+     *
+     * @param recipient The recipient user.
+     * @param message   The notification message.
+     */
+    public void sendNotificationToUser(User recipient, String message) {
+        log.debug("Sending notification to user: {}", recipient.getUsername());
+
+        Notification notification = new Notification();
+        notification.setRecipient(recipient);
+        notification.setMessage(message);
+        processNotification(notification);
+    }
+
+    /**
+     * Send notifications with an optional sender.
+     *
+     * @param sender    The sender of the notification (optional).
+     * @param recipient The recipient user.
      * @param message   The notification message.
      */
     public void sendNotification(User sender, User recipient, String message) {
-        log.debug("Sending notification from {} to {}", sender.getEmail(), recipient.getEmail());
+        log.debug("Sending notification from {} to {}",
+                sender != null ? sender.getUsername() : "System", recipient.getUsername());
 
         Notification notification = new Notification();
         notification.setSender(sender);
         notification.setRecipient(recipient);
         notification.setMessage(message);
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setRead(false);
-
-        // Process and send the notification
-        processMessage(notification, recipient.getEmail());
+        processNotification(notification);
     }
-
 }

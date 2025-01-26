@@ -124,4 +124,26 @@ class PendingControllerUnitTest {
             verifyNoMoreInteractions(pendingWorkflowService);
         }
     }
+
+    @Test
+    void updatePendingUser_WithInvalidRequestBody_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+            UpdatePendingUserRequestDto invalidDto = new UpdatePendingUserRequestDto();
+            invalidDto.setPassword("short");
+            invalidDto.setRole("INVALID_ROLE");
+
+            when(pendingWorkflowService.updatePendingUser(eq(mockUser), eq(invalidDto)))
+                    .thenThrow(ApiException.builder()
+                            .message("Invalid request data")
+                            .status(400)
+                            .build());
+
+            assertThatThrownBy(() -> pendingController.updatePendingUser(invalidDto))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Invalid request data");
+            verify(pendingWorkflowService).updatePendingUser(eq(mockUser), eq(invalidDto));
+            verifyNoMoreInteractions(pendingWorkflowService);
+        }
+    }
 }

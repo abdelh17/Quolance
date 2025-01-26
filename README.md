@@ -114,6 +114,13 @@ Before running the script, ensure the following:
    ADMIN_EMAIL=admin@quolance.com
    ADMIN_PASSWORD=admin
 
+   CLOUDINARY_CLOUD_NAME=cloud_name
+   CLOUDINARY_API_KEY=cloudinary_api_key
+   CLOUDINARY_API_SECRET=cloudinary_api_secret
+   CLOUDINARY_API_ENV_VAR=CLOUDINARY_URL=cloudinary_url
+
+   LOG_FILE=./logs/quolance.log
+
    GITHUB_CLIENT_ID=github_id
    GITHUB_CLIENT_SECRET=github_secret
    GOOGLE_CLIENT_ID=google_id
