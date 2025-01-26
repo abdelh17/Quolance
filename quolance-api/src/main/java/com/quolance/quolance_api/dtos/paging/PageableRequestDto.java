@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.dtos;
+package com.quolance.quolance_api.dtos.paging;
 
 import com.quolance.quolance_api.util.validators.ValidSortField;
 import jakarta.validation.constraints.Max;

@@ -1,8 +1,7 @@
 package com.quolance.quolance_api.dtos.blog;
 
-import com.quolance.quolance_api.entities.Reaction;
+import com.quolance.quolance_api.entities.blog.Reaction;
 import com.quolance.quolance_api.entities.enums.ReactionType;
-
 import lombok.Builder;
 import lombok.Data;
 

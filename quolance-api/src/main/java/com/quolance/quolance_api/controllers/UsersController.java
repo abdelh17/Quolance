@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.configs.ApplicationProperties;
-import com.quolance.quolance_api.dtos.*;
+import com.quolance.quolance_api.dtos.users.*;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.SecurityUtil;

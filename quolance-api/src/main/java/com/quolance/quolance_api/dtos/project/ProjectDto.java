@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -64,7 +63,7 @@ public class ProjectDto {
                 .selectedFreelancerId(project.getSelectedFreelancer() != null ? project.getSelectedFreelancer().getId() : null)
                 .applications(project.getApplications() != null ? project.getApplications().stream()
                         .map(ApplicationDto::fromEntity)
-                        .collect(Collectors.toList()) : null)
+                        .toList() : null)
                 .build();
     }
 }

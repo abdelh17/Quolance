@@ -1,5 +1,6 @@
-package com.quolance.quolance_api.entities;
+package com.quolance.quolance_api.entities.blog;
 
+import com.quolance.quolance_api.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

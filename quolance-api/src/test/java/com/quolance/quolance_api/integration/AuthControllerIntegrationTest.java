@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quolance.quolance_api.dtos.LoginRequestDto;
+import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;

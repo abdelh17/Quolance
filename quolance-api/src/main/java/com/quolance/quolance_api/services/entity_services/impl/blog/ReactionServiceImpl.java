@@ -1,16 +1,16 @@
-package com.quolance.quolance_api.services.entity_services.impl;
+package com.quolance.quolance_api.services.entity_services.impl.blog;
 
 import com.quolance.quolance_api.dtos.blog.ReactionRequestDto;
 import com.quolance.quolance_api.dtos.blog.ReactionResponseDto;
-import com.quolance.quolance_api.entities.BlogComment;
-import com.quolance.quolance_api.entities.BlogPost;
-import com.quolance.quolance_api.entities.Reaction;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogComment;
+import com.quolance.quolance_api.entities.blog.BlogPost;
+import com.quolance.quolance_api.entities.blog.Reaction;
 import com.quolance.quolance_api.entities.enums.ReactionType;
-import com.quolance.quolance_api.repositories.ReactionRepository;
-import com.quolance.quolance_api.services.entity_services.BlogCommentService;
-import com.quolance.quolance_api.services.entity_services.BlogPostService;
+import com.quolance.quolance_api.repositories.blog.ReactionRepository;
 import com.quolance.quolance_api.services.entity_services.ReactionService;
+import com.quolance.quolance_api.services.entity_services.blog.BlogCommentService;
+import com.quolance.quolance_api.services.entity_services.blog.BlogPostService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -91,7 +90,7 @@ public class ReactionServiceImpl implements ReactionService {
 
         return reactionRepository.findByBlogPost(blogPost).stream()
                 .map(ReactionResponseDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -100,7 +99,7 @@ public class ReactionServiceImpl implements ReactionService {
 
         return reactionRepository.findByBlogComment(blogComment).stream()
                 .map(ReactionResponseDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

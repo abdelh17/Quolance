@@ -1,9 +1,9 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.ClientController;
-import com.quolance.quolance_api.dtos.PageResponseDto;
-import com.quolance.quolance_api.dtos.PageableRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
+import com.quolance.quolance_api.dtos.paging.PageResponseDto;
+import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;

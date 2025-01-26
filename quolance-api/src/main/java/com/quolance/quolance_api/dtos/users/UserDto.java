@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.dtos;
+package com.quolance.quolance_api.dtos.users;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.quolance.quolance_api.entities.User;

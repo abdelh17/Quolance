@@ -1,9 +1,8 @@
 package com.quolance.quolance_api.dtos.blog;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.quolance.quolance_api.entities.Reaction;
+import com.quolance.quolance_api.entities.blog.Reaction;
 import com.quolance.quolance_api.entities.enums.ReactionType;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

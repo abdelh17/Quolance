@@ -1,18 +1,18 @@
 package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.blog.ReactionRequestDto;
-import com.quolance.quolance_api.entities.BlogComment;
-import com.quolance.quolance_api.entities.BlogPost;
-import com.quolance.quolance_api.entities.Reaction;
+import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogComment;
+import com.quolance.quolance_api.entities.blog.BlogPost;
+import com.quolance.quolance_api.entities.blog.Reaction;
 import com.quolance.quolance_api.entities.enums.ReactionType;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.repositories.BlogCommentRepository;
-import com.quolance.quolance_api.repositories.BlogPostRepository;
-import com.quolance.quolance_api.repositories.ReactionRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
+import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
+import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
+import com.quolance.quolance_api.repositories.blog.ReactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +98,7 @@ class BlogReactionsControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testGetReactionsByPost() throws Exception {
-        Reaction reaction = reactionRepository.save(
+        reactionRepository.save(
                 Reaction.builder()
                         .reactionType(ReactionType.LIKE)
                         .blogPost(blogPost)
@@ -114,7 +114,7 @@ class BlogReactionsControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testGetReactionsByComment() throws Exception {
-        Reaction reaction = reactionRepository.save(
+        reactionRepository.save(
                 Reaction.builder()
                         .reactionType(ReactionType.LIKE)
                         .blogComment(blogComment)

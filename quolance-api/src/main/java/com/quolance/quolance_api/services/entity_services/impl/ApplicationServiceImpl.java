@@ -44,7 +44,6 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .message("No Application found with ID: " + applicationId)
                     .build();
         });
-//        log.debug("Found application: {} of freelancer with ID: {}", application, application.getFreelancer().getId());
         return application;
     }
 

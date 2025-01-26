@@ -1,5 +1,7 @@
-package com.quolance.quolance_api.entities;
+package com.quolance.quolance_api.entities.blog;
 
+import com.quolance.quolance_api.entities.AbstractEntity;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.BlogTags;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +11,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

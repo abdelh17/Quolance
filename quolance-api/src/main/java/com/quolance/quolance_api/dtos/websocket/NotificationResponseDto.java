@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.dtos.websocket;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.quolance.quolance_api.dtos.UserDto;
+import com.quolance.quolance_api.dtos.users.UserDto;
 import com.quolance.quolance_api.entities.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

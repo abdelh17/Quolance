@@ -1,9 +1,9 @@
 package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quolance.quolance_api.dtos.LoginRequestDto;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
+import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;

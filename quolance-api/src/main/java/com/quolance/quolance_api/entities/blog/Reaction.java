@@ -1,5 +1,7 @@
-package com.quolance.quolance_api.entities;
+package com.quolance.quolance_api.entities.blog;
 
+import com.quolance.quolance_api.entities.AbstractEntity;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ReactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

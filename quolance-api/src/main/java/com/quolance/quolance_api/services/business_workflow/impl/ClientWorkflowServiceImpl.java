@@ -12,7 +12,6 @@ import com.quolance.quolance_api.services.business_workflow.ClientWorkflowServic
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
-import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,12 +34,9 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     private final ProjectService projectService;
     private final ApplicationService applicationService;
     private final UserService userService;
-//    private final NotificationMessageService notificationMessageService;
 
     @Override
     public void createProject(ProjectCreateDto projectCreateDto, User client) {
-
-//        notificationMessageService.sendNotification(client, client, "NEW Project created!");
 
         Project projectToSave = ProjectCreateDto.toEntity(projectCreateDto);
         projectToSave.setExpirationDate(projectCreateDto.getExpirationDate() != null ? projectCreateDto.getExpirationDate() : LocalDate.now().plusDays(7));

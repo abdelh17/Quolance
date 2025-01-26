@@ -1,7 +1,7 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.AdminController;
-import com.quolance.quolance_api.dtos.PageableRequestDto;
+import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
 import com.quolance.quolance_api.util.PaginationUtils;
