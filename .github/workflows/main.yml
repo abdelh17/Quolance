@@ -24,30 +24,20 @@ jobs:
           cd quolance-ui
           npm install
 
-      
-        # Step 2: Start the Frontend Server
-    # - name: Start Frontend Server
+    # Step 2: Run Cypress Tests
+    #  - name: Run Cypress Tests
     #   run: |
-    #     cd quolance-ui
-    #     npm run dev &
-    #     npx wait-on http://localhost:3000
-    #   env:
-    #     PORT: 3000
-
-    # Step 3: Run Cypress Tests
-    # - name: Run Cypress Tests
-    #   run: |
-    #     cd quolance-ui
-    #     npm run e2e:chrome
+    #    cd quolance-ui
+    #     npm run e2e:headless
 
 
-      # Step 4: Build Frontend
+      # Step 3: Build Frontend
       - name: Build Frontend
         run: |
           cd quolance-ui
           npm run build
 
-      # Step 5: SonarCloud Scan for Frontend
+      # Step 4: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarqube-scan-action@master
         env:
@@ -97,3 +87,4 @@ jobs:
             -Dsonar.organization=abdelh17 \
             -Dsonar.projectKey=abdelh17_Quolance_api \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+

@@ -28,8 +28,9 @@ const nextConfig = {
     ],
   },
 
-  // Enable SVG handling with SVGR
+  // Unified webpack configuration
   webpack(config) {
+    // Add the SVG loader
     config.module.rules.push({
       test: /\.svg$/i, // Match .svg files
       issuer: /\.[jt]sx?$/, // Ensure they are imported in TSX/JSX files
@@ -44,8 +45,29 @@ const nextConfig = {
       ],
     });
 
+    // Add the Babel loader only when NEXT_TEST is set to '1'
+    if (process.env.NEXT_TEST === '1') {
+      config.module.rules.push({
+        test: /\.tsx$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ["next/babel"],
+            plugins: [
+              ["istanbul", {
+                exclude: ["**/*.cy.tsx"]
+              }]
+            ]
+          }
+        }
+      });
+    }
+
     return config;
   },
 };
 
 module.exports = nextConfig;
+
+ 

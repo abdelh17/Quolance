@@ -14,6 +14,9 @@
     "test": "jest",
     "cy:open": "cypress open",
     "e2e:chrome": "cypress run --browser chrome",
+    "e2e:headless": "cross-env NEXT_TEST=1 start-server-and-test dev http://localhost:3000 \"cypress run --e2e --env coverage=true\"",
+    "coverage-report": "nyc report --reported=text",
+    "coverage:report": "nyc report --reporter=lcov --report-dir=coverage",
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "postbuild": "next-sitemap --config next-sitemap.config.js"
@@ -65,8 +68,10 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.13.10",
     "@svgr/webpack": "^6.5.1",
     "@tailwindcss/forms": "^0.5.4",
+    "@testing-library/cypress": "^10.0.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/matter-js": "^0.19.6",
@@ -79,19 +84,27 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "autoprefixer": "^10.4.14",
+    "babel-loader": "^9.2.1",
+    "babel-plugin-istanbul": "^7.0.0",
+    "cross-env": "^7.0.3",
     "cypress": "^13.17.0",
     "eslint": "^8.45.0",
     "eslint-config-next": "14.2.1",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "istanbul-lib-coverage": "^3.2.2",
     "jest": "^27.5.1",
     "next-router-mock": "^0.7.5",
     "next-sitemap": "^2.5.28",
+    "nyc": "^17.1.0",
     "postcss": "^8",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.1.13",
+    "sonarqube-scanner": "^4.2.6",
+    "start-server-and-test": "^2.0.10",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "webpack": "^5.97.1"
   }
 }

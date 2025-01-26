@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Montserrat } from 'next/font/google';
+// import { Montserrat } from 'next/font/google';
 
 import './globals.css';
 
@@ -9,11 +9,13 @@ import { StepsProvider } from '@/util/context/StepsContext';
 import ToastProvider from '@/util/context/ToastProvider';
 import ReactQueryProvider from '@/util/context/ReactQueryProvider';
 
+/*
 const monsterratFont = Montserrat({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
   variable: '--main-font',
 });
+*/
 
 export const metadata: Metadata = {
   title: 'Quolance',
@@ -28,7 +30,8 @@ export default function RootLayout({
   return (
     <html lang='en' dir='ltr'>
       <body
-        className={`${monsterratFont.variable} ${monsterratFont.className} flex min-h-screen flex-col`}
+        // className={`${monsterratFont.variable} ${monsterratFont.className} flex min-h-screen flex-col`}
+        className='flex min-h-screen flex-col'
       >
         <ToastProvider>
           <ReactQueryProvider>
@@ -42,3 +45,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+
