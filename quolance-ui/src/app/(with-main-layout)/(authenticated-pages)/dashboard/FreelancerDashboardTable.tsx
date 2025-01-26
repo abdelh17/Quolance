@@ -6,6 +6,8 @@ import {useCancelApplication, useGetAllFreelancerApplications} from '@/api/freel
 import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import ApplicationStatusBadge, { ApplicationStatus } from '@/components/ui/applications/ApplicationStatusBadge';
+import Modal from '@/components/ui/Modal';
+import { PiX } from 'react-icons/pi';
 
 interface Application {
   id: number;
@@ -19,8 +21,9 @@ export default function FreelancerDashboardTable() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const pageSize = 2;
-
 
   const { data, isLoading } = useGetAllFreelancerApplications({
     page,
@@ -53,6 +56,23 @@ export default function FreelancerDashboardTable() {
 
   const canWithdrawApplication = (status: ApplicationStatus) => {
     return status === 'APPLIED';
+  };
+
+  const handleWithdrawClick = (application: Application, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!canWithdrawApplication(application.status)) return;
+    setSelectedApplication(application);
+    setIsDeleteModalOpen(true);
+  };
+
+  const { mutate: cancelApplication } = useCancelApplication(selectedApplication?.projectId || 0);
+
+  const handleConfirmWithdraw = () => {
+    if (selectedApplication) {
+      cancelApplication(selectedApplication.id);
+      setIsDeleteModalOpen(false);
+      setSelectedApplication(null);
+    }
   };
 
   if (isLoading) {
@@ -153,14 +173,7 @@ export default function FreelancerDashboardTable() {
                                       ? 'text-red-600 hover:text-red-800'
                                       : 'text-gray-400 cursor-not-allowed'
                               }`}
-                              onClick={(e) => {
-                                if (!canWithdrawApplication(application.status)) {
-                                  e.preventDefault();
-                                }
-                                const { mutate: cancelApplication } = useCancelApplication(application.projectId);
-                                cancelApplication(application.id);
-
-                              }}
+                              onClick={(e) => handleWithdrawClick(application, e)}
                           >
                             Withdraw submission
                           </Link>
@@ -234,6 +247,26 @@ export default function FreelancerDashboardTable() {
               </div>
           )}
         </div>
+
+        <Modal
+            isOpen={isDeleteModalOpen}
+            setIsOpen={setIsDeleteModalOpen}
+            title='Withdraw Application'
+            icon={<PiX />}
+            iconColor='text-red-600'
+            confirmText='Withdraw Application'
+            confirmButtonColor='bg-red-600'
+            onConfirm={handleConfirmWithdraw}
+        >
+          <p className='text-n300 text-lg'>
+            Are you sure you want to withdraw your application? This action:
+          </p>
+          <ul className='text-n300 mt-4 list-disc pl-6'>
+            <li>Cannot be undone</li>
+            <li>Will remove your application from consideration</li>
+            <li>Will allow you to apply again if you change your mind</li>
+          </ul>
+        </Modal>
       </div>
   );
 }
