@@ -10,11 +10,10 @@ on:
 
 jobs:
   frontend-build-test:
-    name: Build, Test, and Scan Frontend
+    name: Build, Test, and Run E2E for Frontend
     runs-on: ubuntu-latest
 
     steps:
-      # Step 0: Checkout Code
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -25,19 +24,32 @@ jobs:
           cd quolance-ui
           npm install
 
-      # Step 2: Run Cypress Tests and SonarCloud Scan Together
-      - name: Run Tests and SonarCloud Scan
+    # Step 2: Run Cypress Tests
+      - name: Run Cypress Tests
+        run: |
+          cd quolance-ui
+          npm run e2e:headless
+
+
+      # Step 3: Build Frontend
+      - name: Build Frontend
+        run: |
+          cd quolance-ui
+          npm run build
+
+      # Step 4: SonarCloud Scan for Frontend
+      - name: SonarCloud Scan Frontend
+        uses: SonarSource/sonarqube-scan-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          cd quolance-ui
-          npm run e2e:headless # Generate coverage
-          npx sonarqube-scanner \
-            -Dsonar.organization=abdelh17 \
-            -Dsonar.projectKey=abdelh17_Quolance_ui \
-            -Dsonar.sources=. \
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+        with:
+          projectBaseDir: quolance-ui
+          args: >
+            -Dsonar.organization=abdelh17
+            -Dsonar.projectKey=abdelh17_Quolance_ui
+            -Dsonar.sources=.
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.host.url=https://sonarcloud.io
 
   backend-build-test:
@@ -50,6 +62,7 @@ jobs:
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       CLOUDINARY_API_ENV_VAR: ${{ secrets.CLOUDINARY_API_ENV_VAR }}
+      LOG_FILE: "./logs/quolance.log"
 
     steps:
       - uses: actions/checkout@v3
@@ -63,7 +76,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # Build, Test, and Analyze Backend
       - name: Build, Test, and Analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
