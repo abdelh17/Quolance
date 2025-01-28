@@ -1,14 +1,13 @@
-package com.quolance.quolance_api.integration;
+package com.quolance.quolance_api.integration.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.blog.ReactionRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogComment;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.blog.Reaction;
 import com.quolance.quolance_api.entities.enums.ReactionType;
-import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.helpers.SessionCreationHelper;
+import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
@@ -16,28 +15,14 @@ import com.quolance.quolance_api.repositories.blog.ReactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class BlogReactionsControllerIntegrationTest extends AbstractTestcontainers {
-    
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class BlogReactionsControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private ReactionRepository reactionRepository;
@@ -50,9 +35,6 @@ class BlogReactionsControllerIntegrationTest extends AbstractTestcontainers {
 
     @Autowired
     private UserRepository userRepository;
-
-    private MockHttpSession session;
-    private SessionCreationHelper sessionCreationHelper;
 
     private User loggedInUser;
     private BlogPost blogPost;
@@ -69,7 +51,6 @@ class BlogReactionsControllerIntegrationTest extends AbstractTestcontainers {
         blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
         blogComment = blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
-        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
         session = sessionCreationHelper.getSession("client@test.com", "Password123!");
 
     }

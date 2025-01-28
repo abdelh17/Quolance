@@ -1,6 +1,5 @@
-package com.quolance.quolance_api.integration;
+package com.quolance.quolance_api.integration.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
@@ -9,8 +8,8 @@ import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
-import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.helpers.SessionCreationHelper;
+import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
@@ -19,12 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -36,15 +30,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class ClientControllerIntegrationTest extends AbstractTestcontainers {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private ApplicationRepository applicationRepository;
@@ -55,9 +42,6 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
-    private MockHttpSession session;
-    private SessionCreationHelper sessionCreationHelper;
-
     private User client;
 
     @BeforeEach
@@ -66,7 +50,6 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
         userRepository.deleteAll();
         client = userRepository.save(EntityCreationHelper.createClient());
 
-        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
         session = sessionCreationHelper.getSession("client@test.com", "Password123!");
     }
 

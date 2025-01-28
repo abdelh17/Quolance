@@ -1,21 +1,15 @@
-package com.quolance.quolance_api.integration;
+package com.quolance.quolance_api.integration.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
-import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.helpers.SessionCreationHelper;
+import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Map;
@@ -25,24 +19,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class AdminControllerIntegrationTest extends AbstractTestcontainers {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private ProjectRepository projectRepository;
 
     @Autowired
     private UserRepository userRepository;
-
-    private MockHttpSession session;
-    private SessionCreationHelper sessionCreationHelper;
 
     private User client;
 
@@ -54,7 +37,6 @@ class AdminControllerIntegrationTest extends AbstractTestcontainers {
         userRepository.save(EntityCreationHelper.createAdmin());
         client = userRepository.save(EntityCreationHelper.createClient());
 
-        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
         session = sessionCreationHelper.getSession("admin@test.com", "Password123!");
     }
 

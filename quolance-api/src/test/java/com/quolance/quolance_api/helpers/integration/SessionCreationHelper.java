@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.helpers;
+package com.quolance.quolance_api.helpers.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.users.LoginRequestDto;

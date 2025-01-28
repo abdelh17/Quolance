@@ -1,22 +1,17 @@
-package com.quolance.quolance_api.integration;
+package com.quolance.quolance_api.integration.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
-import com.quolance.quolance_api.helpers.EntityCreationHelper;
-import com.quolance.quolance_api.helpers.SessionCreationHelper;
+import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,24 +21,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class AuthControllerIntegrationTest extends AbstractTestcontainers {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class AuthControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
 
     private User client, freelancer, admin;
-
-    private MockHttpSession session;
-    private SessionCreationHelper sessionCreationHelper;
 
     @BeforeEach
     void setUp() {
@@ -52,8 +35,6 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
         client = userRepository.save(EntityCreationHelper.createClient());
         freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
         admin = userRepository.save(EntityCreationHelper.createAdmin());
-
-        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
     }
 
     @Test
