@@ -1,25 +1,26 @@
 # Quolance
 
 ## Release Demos
-[Release 1](https://drive.google.com/file/d/1nvuJNa7pkpi7503dfrbAA316UC9RhYdX/view?usp=sharing)
+[Release 1](https://drive.google.com/file/d/1nvuJNa7pkpi7503dfrbAA316UC9RhYdX/view?usp=sharing)  
+[Release 2](https://drive.google.com/file/d/1G78NhfGW8ulzw6STDvDtgC3hTTn-31cE/view?usp=sharing)
 
 ## Important files
 | File                                                                                                                                                                                                                              | Purpose                                                                                                                                |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| [quolance-ui/src/api/auth-api.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/api/auth-api.ts)                                                                                                                 | This code provides an authentication guard that manages user login status, redirects, and handles login/logout actions.                |
-| [quolance-ui/src/components/role-guard.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/components/role-guard.tsx)                                                                                              | This component provides a role-based access guard that renders child content only if the user's role matches one of the allowed roles. |
-| [quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java)                         | This file is used to recover the authenticated user, in the controllers.                                                               |
-| [quolance-api/src/main/java/com/quolance/quolance_api/services/auth/AuthServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/auth/AuthServiceImpl.java) | Provides session-based authentication.                                                                                                 |
-| [quolance-api/src/main/java/com/quolance/quolance_api/services/impl/UserServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/impl/UserServiceImpl.java)                                                                                                                                       | User creation as well as password reset and core email sending on registration.                                                        |
+| [quolance-ui/src/api/auth-api.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/api/auth-api.ts) | This code provides an authentication guard that manages user login status, redirects, and handles login/logout actions.|
+| [quolance-ui/src/components/role-guard.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/components/role-guard.tsx) | This component provides a role-based access guard that renders child content only if the user's role matches one of the allowed roles. |
+| [quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java) | This file is used to recover the authenticated user, in the controllers.|
+| [quolance-api/src/main/.../services/business_workflow/impl/FreelancerWorkflowServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/business_workflow/impl/FreelancerWorkflowServiceImpl.java) | Contains the core logic of the application from the freelancer POV|
+| [quolance-api/src/main/.../services/business_workflow/impl/ApplicationProcessWorkflowImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/business_workflow/impl/ApplicationProcessWorkflowImpl.java)| Core logic for application processing|
 
 ## Important tests
 |Test|Purpose|
 |----|-------|
-|[contextLoads](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/QuolanceApiApplicationTests.java)|Verifies that system correctly initializes|
-|[testCreateProject](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/ClientControllerIT.java)|Validates clients can create new projects|
-|[testSubmitApplication](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/FreelancerControllerIT.java)|Ensures freelancers can submit applications to projects|
-|[testClientLogin](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/ClientControllerIT.java)|Verifies client authentication and session works correctly|
-|[testFreelancerLogin](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/controllers/FreelancerControllerIT.java)|Verifies freelancer authentication and session works correctly|
+|[getAllProjectsReturnsVisibleProjects()](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/FreelancerControllerIntegrationTest.java)|Ensures only visible projects are returned, even closed ones.|
+|[updateNotPendingProjectDoesNotUpdateProject()](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/ClientControllerIntegrationTest.java)|Ensures a project can only be modified in pending state|
+|[create_Success()](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/unit/services/entity_services/UserServiceUnitTest.java)|Makes sure new users are able to create a new account, considering all requirements are met |
+|[Error Registration Flow](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/cypress/e2e/registration.cy.ts)|This test ensures users receive clear error messages for invalid inputs during registration.|
+|[Approve Pending Project Flow](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/cypress/e2e/admin.cy.ts)|This test ensures admins can successfully approve pending projects, enabling freelancers to access them.|
 
 
 ## Description
