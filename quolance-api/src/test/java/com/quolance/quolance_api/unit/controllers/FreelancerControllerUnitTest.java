@@ -221,7 +221,7 @@ class FreelancerControllerUnitTest {
     }
 
     @Test
-    void getAllAvailableProjects_ReturnsProjectPage() {
+    void getAllVisibleProjects_ReturnsProjectPage() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             PageableRequestDto pageableRequestDto = new PageableRequestDto();
@@ -229,20 +229,20 @@ class FreelancerControllerUnitTest {
             pageableRequestDto.setSize(10);
             Page<ProjectPublicDto> projectPage = new PageImpl<>(Arrays.asList(projectPublicDto));
             when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
-            when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class)))
+            when(freelancerWorkflowService.getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class)))
                     .thenReturn(projectPage);
 
-            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequestDto, new ProjectFilterDto());
+            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllVisibleProjects(pageableRequestDto, new ProjectFilterDto());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).hasSize(1);
             assertThat(response.getBody().getContent().get(0)).isEqualTo(projectPublicDto);
-            verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class));
+            verify(freelancerWorkflowService).getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class));
         }
     }
 
     @Test
-    void getAllAvailableProjects_ReturnsEmptyPage() {
+    void getAllVisibleProjects_ReturnsEmptyPage() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             PageableRequestDto pageableRequestDto = new PageableRequestDto();
@@ -250,19 +250,19 @@ class FreelancerControllerUnitTest {
             pageableRequestDto.setSize(10);
             Page<ProjectPublicDto> emptyPage = new PageImpl<>(Collections.emptyList());
             when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
-            when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class)))
+            when(freelancerWorkflowService.getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class)))
                     .thenReturn(emptyPage);
 
-            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequestDto, new ProjectFilterDto());
+            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllVisibleProjects(pageableRequestDto, new ProjectFilterDto());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).isEmpty();
-            verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class));
+            verify(freelancerWorkflowService).getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class));
         }
     }
 
     @Test
-    void getAllAvailableProjects_WithSpecificFilters_ReturnsFilteredProjectList() {
+    void getAllVisibleProjects_WithSpecificFilters_ReturnsFilteredProjectList() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
             PageableRequestDto pageableRequestDto = new PageableRequestDto();
@@ -272,19 +272,21 @@ class FreelancerControllerUnitTest {
             filters.setCategory(ProjectCategory.WEB_DEVELOPMENT);
             Page<ProjectPublicDto> projectPage = new PageImpl<>(List.of(projectPublicDto));
             when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
-            when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), eq(filters)))
+            when(freelancerWorkflowService.getAllVisibleProjects(any(Pageable.class), eq(filters)))
                     .thenReturn(projectPage);
 
-            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllAvailableProjects(pageableRequestDto, filters);
+            ResponseEntity<PageResponseDto<ProjectPublicDto>> response = freelancerController.getAllVisibleProjects(pageableRequestDto, filters);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).hasSize(1);
-            verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), eq(filters));
+            verify(freelancerWorkflowService).getAllVisibleProjects(any(Pageable.class), eq(filters));
         }
     }
 
     @Test
     void getProjectById_ReturnsProject() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
         when(freelancerWorkflowService.getProject(1L)).thenReturn(projectPublicDto);
 
         ResponseEntity<ProjectPublicDto> response = freelancerController.getProjectById(1L);
@@ -292,10 +294,13 @@ class FreelancerControllerUnitTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(projectPublicDto);
         verify(freelancerWorkflowService).getProject(1L);
+        }
     }
 
     @Test
     void getProjectById_WithInvalidId_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
         when(freelancerWorkflowService.getProject(-1L))
                 .thenThrow(new ApiException("Invalid project ID"));
 
@@ -303,6 +308,7 @@ class FreelancerControllerUnitTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Invalid project ID");
         verify(freelancerWorkflowService).getProject(-1L);
+        }
     }
 
     @Test

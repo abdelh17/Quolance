@@ -22,6 +22,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService {
@@ -47,6 +49,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
 
         if (applicationService.getApplicationByFreelancerIdAndProjectId(freelancer.getId(), applicationCreateDto.getProjectId()) != null) {
+            log.info("User with ID: {} has already applied to project with ID: {}", freelancer.getId(), applicationCreateDto.getProjectId());
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_CONFLICT)
                     .message("You have already applied to this project.")
@@ -105,7 +108,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable, ProjectFilterDto filters) {
+    public Page<ProjectPublicDto> getAllVisibleProjects(Pageable pageable, ProjectFilterDto filters) {
         LocalDate currentDate = LocalDate.now();
 
         Specification<Project> spec = (root, query, criteriaBuilder) -> {

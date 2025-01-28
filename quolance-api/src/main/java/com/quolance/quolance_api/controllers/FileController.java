@@ -6,6 +6,7 @@ import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/files")
+@Slf4j
 public class FileController {
 
     private final FileService fileService;
@@ -50,9 +52,11 @@ public class FileController {
             @RequestParam(defaultValue = "desc") String direction
     ) {
         User user = SecurityUtil.getAuthenticatedUser();
+        log.info("Attempting to get all files for user with ID {}", user.getId());
         Sort.Direction sortDirection = Sort.Direction.fromString(direction.toUpperCase());
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
         Page<FileDto> files = fileService.getAllFileUploadsByUser(user, pageRequest);
+        log.info("Successfully got all files for user with ID {}", user.getId());
         return ResponseEntity.ok(files);
     }
 }

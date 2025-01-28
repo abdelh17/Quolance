@@ -37,6 +37,8 @@ class UsersControllerUnitTest {
     private UsersController usersController;
 
     private User mockUser;
+    private User mockAdmin;
+
     private UserResponseDto mockUserResponse;
 
     @BeforeEach
@@ -45,6 +47,11 @@ class UsersControllerUnitTest {
         mockUser.setId(1L);
         mockUser.setEmail("test@example.com");
         mockUser.setRole(Role.CLIENT);
+
+        mockAdmin = new User();
+        mockAdmin.setId(1L);
+        mockAdmin.setEmail("admin@test.com");
+        mockAdmin.setRole(Role.ADMIN);
 
         mockUserResponse = new UserResponseDto(mockUser);
     }
@@ -165,6 +172,8 @@ class UsersControllerUnitTest {
 
     @Test
     void createAdmin_Success() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         CreateAdminRequestDto createRequest = CreateAdminRequestDto.builder()
                 .email("admin@example.com")
                 .temporaryPassword("Admin123!")
@@ -180,11 +189,14 @@ class UsersControllerUnitTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(mockUserResponse);
         verify(userService).createAdmin(createRequest);
-        verifyNoMoreInteractions(userService);
+            verifyNoMoreInteractions(userService);
+        }
     }
 
     @Test
     void createAdmin_WithInvalidEmail_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         CreateAdminRequestDto invalidRequest = CreateAdminRequestDto.builder()
                 .email("invalid-email")
                 .temporaryPassword("Admin123!")
@@ -204,10 +216,13 @@ class UsersControllerUnitTest {
                 .hasMessage("Invalid email format");
         verify(userService).createAdmin(invalidRequest);
         verifyNoMoreInteractions(userService);
+        }
     }
 
     @Test
     void createAdmin_WithWeakPassword_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         CreateAdminRequestDto invalidRequest = CreateAdminRequestDto.builder()
                 .email("admin@example.com")
                 .temporaryPassword("weak")
@@ -227,10 +242,13 @@ class UsersControllerUnitTest {
                 .hasMessage("Password does not meet security requirements");
         verify(userService).createAdmin(invalidRequest);
         verifyNoMoreInteractions(userService);
+        }
     }
 
     @Test
     void createAdmin_WithPasswordMismatch_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         CreateAdminRequestDto invalidRequest = CreateAdminRequestDto.builder()
                 .email("admin@example.com")
                 .temporaryPassword("Admin123!")
@@ -250,6 +268,7 @@ class UsersControllerUnitTest {
                 .hasMessage("Passwords do not match");
         verify(userService).createAdmin(invalidRequest);
         verifyNoMoreInteractions(userService);
+        }
     }
 
     @Test

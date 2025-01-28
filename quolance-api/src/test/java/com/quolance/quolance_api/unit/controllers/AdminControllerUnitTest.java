@@ -3,14 +3,18 @@ package com.quolance.quolance_api.unit.controllers;
 import com.quolance.quolance_api.controllers.AdminController;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
 import com.quolance.quolance_api.util.PaginationUtils;
+import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,7 +33,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AdminControllerUnitTest {
-
     @Mock
     private AdminWorkflowService adminWorkflowService;
 
@@ -39,11 +42,17 @@ class AdminControllerUnitTest {
     @InjectMocks
     private AdminController adminController;
 
+    private User mockAdmin;
     private ProjectDto projectDto1;
     private ProjectDto projectDto2;
 
     @BeforeEach
     void setUp() {
+        mockAdmin = new User();
+        mockAdmin.setId(1L);
+        mockAdmin.setEmail("admin@test.com");
+        mockAdmin.setRole(Role.ADMIN);
+
         projectDto1 = new ProjectDto();
         projectDto1.setId(1L);
         projectDto2 = new ProjectDto();
@@ -52,6 +61,8 @@ class AdminControllerUnitTest {
 
     @Test
     void getAllPendingProjects_ReturnsPageOfProjects() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         PageableRequestDto pageableRequest = new PageableRequestDto();
         pageableRequest.setPage(0);
         pageableRequest.setSize(10);
@@ -66,30 +77,36 @@ class AdminControllerUnitTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(expectedPage);
-        verify(adminWorkflowService, times(1)).getAllPendingProjects(pageable);
+            verify(adminWorkflowService, times(1)).getAllPendingProjects(pageable);
+        }
     }
 
     @Test
     void getAllPendingProjects_ReturnsEmptyPage_WhenNoProjects() {
-        PageableRequestDto pageableRequest = new PageableRequestDto();
-        pageableRequest.setPage(0);
-        pageableRequest.setSize(10);
-        Pageable pageable = PageRequest.of(0, 10);
-        when(paginationUtils.createPageable(pageableRequest)).thenReturn(pageable);
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setPage(0);
+            pageableRequest.setSize(10);
+            Pageable pageable = PageRequest.of(0, 10);
+            when(paginationUtils.createPageable(pageableRequest)).thenReturn(pageable);
 
-        Page<ProjectDto> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(adminWorkflowService.getAllPendingProjects(pageable)).thenReturn(emptyPage);
+            Page<ProjectDto> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+            when(adminWorkflowService.getAllPendingProjects(pageable)).thenReturn(emptyPage);
 
-        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(pageableRequest);
+            ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(pageableRequest);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(emptyPage);
-        assertThat(response.getBody().getContent()).isEmpty();
-        verify(adminWorkflowService, times(1)).getAllPendingProjects(pageable);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(emptyPage);
+            assertThat(response.getBody().getContent()).isEmpty();
+            verify(adminWorkflowService, times(1)).getAllPendingProjects(pageable);
+        }
     }
 
     @Test
     void getAllPendingProjects_WhenUnauthorized_ThrowsAccessDeniedException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         PageableRequestDto pageableRequest = new PageableRequestDto();
         pageableRequest.setPage(0);
         pageableRequest.setSize(10);
@@ -102,11 +119,14 @@ class AdminControllerUnitTest {
         assertThatThrownBy(() -> adminController.getAllPendingProjects(pageableRequest))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("User is not authorized to view pending projects");
-        verify(adminWorkflowService, times(1)).getAllPendingProjects(pageable);
+            verify(adminWorkflowService, times(1)).getAllPendingProjects(pageable);
+        }
     }
 
     @Test
     void getAllPendingProjects_WithCustomPageSize_ReturnCorrectPageSize() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         PageableRequestDto pageableRequest = new PageableRequestDto();
         pageableRequest.setPage(0);
         pageableRequest.setSize(5);
@@ -120,11 +140,14 @@ class AdminControllerUnitTest {
         ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(pageableRequest);
 
         assertThat(response.getBody().getSize()).isEqualTo(5);
-        verify(adminWorkflowService).getAllPendingProjects(customPageable);
+            verify(adminWorkflowService).getAllPendingProjects(customPageable);
+        }
     }
 
     @Test
     void getAllPendingProjects_WithCustomPageNumber_ReturnsCorrectPage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         PageableRequestDto pageableRequest = new PageableRequestDto();
         pageableRequest.setPage(2);
         pageableRequest.setSize(10);
@@ -139,29 +162,35 @@ class AdminControllerUnitTest {
 
         assertThat(response.getBody().getNumber()).isEqualTo(2);
         assertThat(response.getBody().getTotalPages()).isEqualTo(3);
-        verify(adminWorkflowService).getAllPendingProjects(customPageable);
+            verify(adminWorkflowService).getAllPendingProjects(customPageable);
+        }
     }
 
     @Test
     void getAllPendingProjects_WithInvalidPageSize_UsesDefaultPageSize() {
-        PageableRequestDto pageableRequest = new PageableRequestDto();
-        pageableRequest.setPage(0);
-        pageableRequest.setSize(-1);
-        Pageable pageable = PageRequest.of(0, 10);
-        when(paginationUtils.createPageable(pageableRequest)).thenReturn(pageable);
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
+            PageableRequestDto pageableRequest = new PageableRequestDto();
+            pageableRequest.setPage(0);
+            pageableRequest.setSize(-1);
+            Pageable pageable = PageRequest.of(0, 10);
+            when(paginationUtils.createPageable(pageableRequest)).thenReturn(pageable);
 
-        List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
-        Page<ProjectDto> expectedPage = new PageImpl<>(projectList, pageable, projectList.size());
-        when(adminWorkflowService.getAllPendingProjects(pageable)).thenReturn(expectedPage);
+            List<ProjectDto> projectList = Arrays.asList(projectDto1, projectDto2);
+            Page<ProjectDto> expectedPage = new PageImpl<>(projectList, pageable, projectList.size());
+            when(adminWorkflowService.getAllPendingProjects(pageable)).thenReturn(expectedPage);
 
-        ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(pageableRequest);
+            ResponseEntity<Page<ProjectDto>> response = adminController.getAllPendingProjects(pageableRequest);
 
-        assertThat(response.getBody().getSize()).isEqualTo(10);
-        verify(adminWorkflowService).getAllPendingProjects(pageable);
+            assertThat(response.getBody().getSize()).isEqualTo(10);
+            verify(adminWorkflowService).getAllPendingProjects(pageable);
+        }
     }
 
     @Test
     void getAllPendingProjects_WithLargePageSize_ReturnsLimitedResults() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         PageableRequestDto pageableRequest = new PageableRequestDto();
         pageableRequest.setPage(0);
         pageableRequest.setSize(1000);
@@ -180,11 +209,14 @@ class AdminControllerUnitTest {
 
 
         assertThat(response.getBody().getSize()).isEqualTo(50);
-        verify(adminWorkflowService).getAllPendingProjects(pageable);
+            verify(adminWorkflowService).getAllPendingProjects(pageable);
+        }
     }
 
     @Test
     void getAllPendingProjects_SingleProjectInResult() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         PageableRequestDto pageableRequest = new PageableRequestDto();
         pageableRequest.setPage(0);
         pageableRequest.setSize(10);
@@ -202,13 +234,16 @@ class AdminControllerUnitTest {
 
         assertThat(response.getBody().getTotalElements()).isEqualTo(1);
         assertThat(response.getBody().getContent().get(0).getId()).isEqualTo(1L);
-        verify(adminWorkflowService).getAllPendingProjects(pageable);
+            verify(adminWorkflowService).getAllPendingProjects(pageable);
+        }
     }
 
 
 
     @Test
     void approveProject_ReturnsSuccessMessage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         Long projectId = 1L;
         doNothing().when(adminWorkflowService).approveProject(projectId);
 
@@ -216,22 +251,28 @@ class AdminControllerUnitTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Project approved successfully");
-        verify(adminWorkflowService, times(1)).approveProject(projectId);
+            verify(adminWorkflowService, times(1)).approveProject(projectId);
+        }
     }
 
     @Test
     void approveProject_WhenProjectNotFound_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         Long projectId = 999L;
         doThrow(new ApiException("Project not found")).when(adminWorkflowService).approveProject(projectId);
 
         assertThatThrownBy(() -> adminController.approveProject(projectId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
-        verify(adminWorkflowService, times(1)).approveProject(projectId);
+            verify(adminWorkflowService, times(1)).approveProject(projectId);
+        }
     }
 
     @Test
     void approveProject_WhenUnauthorized_ThrowsAccessDeniedException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         Long projectId = 1L;
         doThrow(new AccessDeniedException("User is not authorized to approve projects"))
                 .when(adminWorkflowService).approveProject(projectId);
@@ -239,11 +280,14 @@ class AdminControllerUnitTest {
         assertThatThrownBy(() -> adminController.approveProject(projectId))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("User is not authorized to approve projects");
-        verify(adminWorkflowService, times(1)).approveProject(projectId);
+            verify(adminWorkflowService, times(1)).approveProject(projectId);
+        }
     }
 
     @Test
     void rejectProject_ReturnsSuccessMessage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         Long projectId = 1L;
         doNothing().when(adminWorkflowService).rejectProject(projectId);
 
@@ -251,22 +295,28 @@ class AdminControllerUnitTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Project rejected successfully");
-        verify(adminWorkflowService, times(1)).rejectProject(projectId);
+            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+        }
     }
 
     @Test
     void rejectProject_WhenProjectNotFound_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         Long projectId = 999L;
         doThrow(new ApiException("Project not found")).when(adminWorkflowService).rejectProject(projectId);
 
         assertThatThrownBy(() -> adminController.rejectProject(projectId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
-        verify(adminWorkflowService, times(1)).rejectProject(projectId);
+            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+        }
     }
 
     @Test
     void rejectProject_WhenUnauthorized_ThrowsAccessDeniedException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
         Long projectId = 1L;
         doThrow(new AccessDeniedException("User is not authorized to reject projects"))
                 .when(adminWorkflowService).rejectProject(projectId);
@@ -274,6 +324,7 @@ class AdminControllerUnitTest {
         assertThatThrownBy(() -> adminController.rejectProject(projectId))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("User is not authorized to reject projects");
-        verify(adminWorkflowService, times(1)).rejectProject(projectId);
+            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+        }
     }
 }

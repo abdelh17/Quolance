@@ -40,6 +40,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
+        userRepository.save(EntityCreationHelper.createAdmin());
     }
 
     @Test
@@ -69,7 +70,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .containsEntry("lastName", "Test")
                 .containsEntry("role", "CLIENT");
 
-        assertThat(userRepository.findAll()).hasSize(1);
+        assertThat(userRepository.findAll()).hasSize(2);
         User savedUser = userRepository.findByEmail("test@test.com").get();
         assertThat(savedUser.getFirstName()).isEqualTo("Test");
         assertThat(savedUser.getLastName()).isEqualTo("Test");
@@ -101,12 +102,11 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(userRepository.findAll()).hasSize(1);
+        assertThat(userRepository.findAll()).hasSize(2);
         assertThat(jsonResponse).containsEntry("message", "A user with this email already exists.");
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
     void testCreateAdminIsOk() throws Exception {
         CreateAdminRequestDto request = CreateAdminRequestDto.builder()
                 .email("test@test.com")
@@ -116,13 +116,14 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .temporaryPassword("Test1234")
                 .passwordConfirmation("Test1234")
                 .build();
+        MockHttpSession session = getSession("admin@test.com", "Password123!");
 
-        mockMvc.perform(post("/api/users/admin")
+        mockMvc.perform(post("/api/users/admin").session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
 
-        assertThat(userRepository.findAll()).hasSize(1);
+        assertThat(userRepository.findAll()).hasSize(2);
         User savedUser = userRepository.findByEmail("test@test.com").get();
         assertThat(savedUser.getRole()).isEqualTo(Role.ADMIN);
     }
@@ -146,7 +147,8 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .andExpect(status().isForbidden());
 
         // Assert
-        assertThat(userRepository.findAll()).isEmpty();
+        assertThat(userRepository.findAll()).hasSize(1);
+        assertThat(userRepository.findByEmail("test@test.com")).isEmpty();
     }
 
     @Test
@@ -157,7 +159,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .firstName("NEW")
                 .lastName("NEW")
                 .build();
-        MockHttpSession session = getSession();
+        MockHttpSession session = getSession("client@test.com", "Password123!");
 
         // Act
         String response = mockMvc.perform(put("/api/users").session(session)
@@ -189,7 +191,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .confirmPassword("NewPassword123!")
                 .build();
 
-        MockHttpSession session = getSession();
+        MockHttpSession session = getSession("client@test.com", "Password123!");
 
         // Act
         mockMvc.perform(patch("/api/users/password").session(session)
@@ -212,7 +214,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .confirmPassword("test!")
                 .build();
 
-        MockHttpSession session = getSession();
+        MockHttpSession session = getSession("client@test.com", "Password123!");
 
         // Act
         mockMvc.perform(patch("/api/users/password").session(session)
@@ -225,10 +227,10 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(updatedUser.getPassword()).isEqualTo(createdClient.getPassword());
     }
 
-    private MockHttpSession getSession() throws Exception {
+    private MockHttpSession getSession(String username, String password) throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("client@test.com");
-        loginRequest.setPassword("Password123!");
+        loginRequest.setUsername(username);
+        loginRequest.setPassword(password);
 
         MockHttpSession session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

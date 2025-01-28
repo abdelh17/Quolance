@@ -9,8 +9,7 @@ import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,16 +20,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProjectServiceImpl implements ProjectService {
-    private static final Logger log = LoggerFactory.getLogger(ProjectServiceImpl.class);
-
     private final ProjectRepository projectRepository;
 
     @Override
     public void saveProject(Project project) {
-        log.debug("Saving project: {}", project.getTitle());
+        log.debug("Saving project: {} for client {}", project.getTitle(), project.getClient().getId());
         projectRepository.save(project);
-        log.info("Successfully saved project with ID: {}", project.getId());
+        log.info("Successfully saved project with ID: {} for client {}", project.getId(), project.getClient().getId());
     }
 
     @Override
@@ -105,7 +103,6 @@ public class ProjectServiceImpl implements ProjectService {
                 if (project.getProjectStatus() == ProjectStatus.PENDING) {
                     project.setProjectStatus(ProjectStatus.OPEN);
                     projectRepository.save(project);
-                    log.info("Project {} status updated to OPEN", project.getId());
                 }
                 break;
 

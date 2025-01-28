@@ -6,6 +6,7 @@ import com.quolance.quolance_api.dtos.users.UserResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.auth.AuthService;
+import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,12 +68,15 @@ class AuthControllerUnitTest {
 
     @Test
     void login_ReturnsOkResponse() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
         doNothing().when(authService).login(request, response, loginRequest);
 
         ResponseEntity<?> responseEntity = authController.login(request, response, loginRequest);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(authService, times(1)).login(request, response, loginRequest);
+        }
     }
 
     @Test
@@ -147,16 +152,21 @@ class AuthControllerUnitTest {
 
     @Test
     void logout_ReturnsOkResponse() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
         doNothing().when(authService).logout(request, response);
 
         ResponseEntity<Void> responseEntity = authController.logout(request, response);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(authService, times(1)).logout(request, response);
+            verify(authService, times(1)).logout(request, response);
+        }
     }
 
     @Test
     void logout_WhenNoActiveSession_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
         doThrow(new ApiException("No active session to logout from"))
                 .when(authService).logout(request, response);
 
@@ -164,6 +174,7 @@ class AuthControllerUnitTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessage("No active session to logout from");
         verify(authService, times(1)).logout(request, response);
+        }
     }
 
     @Test

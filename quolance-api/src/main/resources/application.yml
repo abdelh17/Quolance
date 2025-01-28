@@ -68,7 +68,6 @@ logging:
     name: ${LOG_FILE}
   level:
     root: INFO
-    org.springframework.security: DEBUG
     org.springframework.web.socket: DEBUG
     org.springframework.messaging: DEBUG
     com.quolance: DEBUG

@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -32,7 +34,9 @@ public class UsersController {
             @ApiResponse(responseCode = "400", description = "Validation error")
     })
     public ResponseEntity<UserResponseDto> create(@Valid @RequestBody CreateUserRequestDto request) {
+        log.info("Creating a new user with email {}", request.getEmail());
         UserResponseDto user = userService.create(request);
+        log.info("User with email {} created successfully", request.getEmail());
         return ResponseEntity.ok(user);
     }
 
@@ -43,7 +47,10 @@ public class UsersController {
     )
     @ApiResponse(responseCode = "200", description = "Admin created successfully")
     public ResponseEntity<UserResponseDto> createAdmin(@Valid @RequestBody CreateAdminRequestDto request) {
+        User admin = SecurityUtil.getAuthenticatedUser();
+        log.info("Admin with ID {} attempting to create a new admin with email {}", admin.getId(), request.getEmail());
         UserResponseDto user = userService.createAdmin(request);
+        log.info("Admin with ID {} successfully created a new admin with email {}", admin.getId(), request.getEmail());
         return ResponseEntity.ok(user);
     }
 

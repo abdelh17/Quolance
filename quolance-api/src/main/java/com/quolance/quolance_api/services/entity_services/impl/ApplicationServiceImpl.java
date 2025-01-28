@@ -7,8 +7,7 @@ import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,15 +16,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
-    private static final Logger log = LoggerFactory.getLogger(ApplicationServiceImpl.class);
 
     @Override
     public void saveApplication(Application application) {
         applicationRepository.save(application);
-        log.info("Successfully saved application with ID: {}", application.getId());
-
+        log.info("Successfully saved application with ID: {} for user with ID {}", application.getId(), application.getFreelancer().getId());
     }
 
     @Override
