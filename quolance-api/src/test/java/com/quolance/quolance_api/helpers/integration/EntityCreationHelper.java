@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.helpers;
+package com.quolance.quolance_api.helpers.integration;
 
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;

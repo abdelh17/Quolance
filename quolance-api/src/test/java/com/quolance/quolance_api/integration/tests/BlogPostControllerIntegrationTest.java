@@ -1,40 +1,24 @@
-package com.quolance.quolance_api.integration;
+package com.quolance.quolance_api.integration.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
-import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogPost;
-import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private BlogPostRepository blogPostRepository;
@@ -42,11 +26,8 @@ class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
-    private MockHttpSession session;
-
     private User loggedInUser;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     @BeforeEach
     void setUp() throws Exception {
@@ -54,7 +35,8 @@ class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
         userRepository.deleteAll();
 
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
-        session = getSession(loggedInUser.getEmail(), "Password123!");
+
+        session = sessionCreationHelper.getSession(loggedInUser.getEmail(), "Password123!");
     }
 
     @Test
@@ -139,19 +121,5 @@ class BlogPostControllerIntegrationTest extends AbstractTestcontainers {
                 .andExpect(status().isOk());
 
         assertThat(blogPostRepository.findById(blogPost.getId())).isEmpty();
-    }
-
-    private MockHttpSession getSession(String email, String password) throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername(email);
-        loginRequest.setPassword(password);
-
-        return (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
     }
 }

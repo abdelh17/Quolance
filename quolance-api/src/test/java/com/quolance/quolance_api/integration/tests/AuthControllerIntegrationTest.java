@@ -1,21 +1,17 @@
-package com.quolance.quolance_api.integration;
+package com.quolance.quolance_api.integration.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
-import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,25 +21,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class AuthControllerIntegrationTest extends AbstractTestcontainers {
-    private MockHttpSession session;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
-    private User client, freelancer, admin;
+class AuthControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
 
+    private User client, freelancer, admin;
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
+
         client = userRepository.save(EntityCreationHelper.createClient());
         freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
         admin = userRepository.save(EntityCreationHelper.createAdmin());
@@ -80,19 +68,8 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testUsernameLoginClientIsOk() throws Exception {
-        // Arrange
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("MyClient123");
-        loginRequest.setPassword("Password123!");
-
         // Act
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
 
         SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
 
@@ -109,19 +86,8 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testEmailLoginFreelancerIsOk() throws Exception {
-        // Arrange
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("freelancer1@test.com");
-        loginRequest.setPassword("Password123!");
-
         // Act
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
+        session = sessionCreationHelper.getSession(freelancer.getEmail(), "Password123!");
 
         SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
 
@@ -138,19 +104,8 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testUsernameLoginFreelancerIsOk() throws Exception {
-        // Arrange
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("MyFreelancer1");
-        loginRequest.setPassword("Password123!");
-
         // Act
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
+        session = sessionCreationHelper.getSession(freelancer.getUsername(), "Password123!");
 
         SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
 
@@ -167,19 +122,8 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testLoginAdminIsOk() throws Exception {
-        // Arrange
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("admin@test.com");
-        loginRequest.setPassword("Password123!");
-
         // Act
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
+        session = sessionCreationHelper.getSession(admin.getEmail(), "Password123!");
 
         SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
 
@@ -259,18 +203,8 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
 
     @Test
     void testGetSessionIsOk() throws Exception {
-        // Arrange
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("client@test.com");
-        loginRequest.setPassword("Password123!");
-
         // Act
-        MockHttpSession session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andReturn()
-                .getRequest()
-                .getSession();
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
 
         // Act
         String response = mockMvc.perform(get("/api/auth/me")
@@ -288,6 +222,5 @@ class AuthControllerIntegrationTest extends AbstractTestcontainers {
                 .containsEntry("lastName", "Test");
 
     }
-
 
 }

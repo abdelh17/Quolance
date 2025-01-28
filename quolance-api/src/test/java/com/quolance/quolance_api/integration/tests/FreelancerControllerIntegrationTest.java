@@ -1,14 +1,13 @@
-package com.quolance.quolance_api.integration;
+package com.quolance.quolance_api.integration.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
-import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
-import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
@@ -17,12 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -34,19 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class FreelancerControllerIntegrationTest extends AbstractTestcontainers {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     private User freelancer, client;
-
-    private MockHttpSession session;
 
     @Autowired
     private ApplicationRepository applicationRepository;
@@ -57,27 +41,15 @@ class FreelancerControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         projectRepository.deleteAll();
         userRepository.deleteAll();
         freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
         client = userRepository.save(EntityCreationHelper.createClient());
-    }
 
-    @BeforeEach
-    void setUpSession() throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("freelancer1@test.com");
-        loginRequest.setPassword("Password123!");
-
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
+        session = sessionCreationHelper.getSession("freelancer1@test.com", "Password123!");
     }
 
     @Test
