@@ -124,7 +124,8 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
                 .expirationDate(LocalDate.now().plusDays(10))
                 .build();
         //Act
-        mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+        mockMvc.perform(post("/api/client/create-project").session(session)
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Project created successfully"));
         //Assert

@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.services.entity_services.impl.ApplicationServiceImpl;
@@ -43,6 +44,7 @@ class ApplicationServiceUnitTest {
     void setUp() {
         mockApplication = Application.builder()
                 .id(1L)
+                .freelancer(User.builder().id(1L).build())
                 .applicationStatus(ApplicationStatus.APPLIED)
                 .build();
     }

@@ -2,7 +2,9 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.dtos.users.UserResponseDto;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.auth.AuthService;
+import com.quolance.quolance_api.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,6 +25,8 @@ public class AuthController {
     public ResponseEntity<Void> login(
             HttpServletRequest request, HttpServletResponse response, @Valid @RequestBody LoginRequestDto body) {
         authService.login(request, response, body);
+        User user = SecurityUtil.getAuthenticatedUser();
+        log.info("User with ID {} logged in", user.getId());
         return ResponseEntity.ok().build();
     }
 
@@ -33,7 +37,9 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        User user = SecurityUtil.getAuthenticatedUser();
         authService.logout(request, response);
+        log.info("User with ID {} logged out", user.getId());
         return ResponseEntity.ok().build();
     }
 

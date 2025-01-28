@@ -105,7 +105,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public Page<ProjectPublicDto> getAllAvailableProjects(Pageable pageable, ProjectFilterDto filters) {
+    public Page<ProjectPublicDto> getAllVisibleProjects(Pageable pageable, ProjectFilterDto filters) {
         LocalDate currentDate = LocalDate.now();
 
         Specification<Project> spec = (root, query, criteriaBuilder) -> {

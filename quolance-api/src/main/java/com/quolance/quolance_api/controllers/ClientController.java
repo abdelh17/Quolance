@@ -16,6 +16,7 @@ import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/client")
 @RequiredArgsConstructor
+@Slf4j
 public class ClientController {
 
     private final ClientWorkflowService clientWorkflowService;
@@ -38,7 +40,9 @@ public class ClientController {
     )
     public ResponseEntity<String> createProject(@RequestBody ProjectCreateDto projectCreateDto) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to create a project", client.getId());
         clientWorkflowService.createProject(projectCreateDto, client);
+        log.info("Client with ID {} successfully created a project", client.getId());
         return ResponseEntity.ok("Project created successfully");
     }
 
@@ -49,7 +53,9 @@ public class ClientController {
     )
     public ResponseEntity<ProjectDto> getProject(@PathVariable(name = "projectId") Long projectId) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to get project with ID {}", client.getId(), projectId);
         ProjectDto project = clientWorkflowService.getProject(projectId, client);
+        log.info("Client with ID {} successfully got project with ID {}", client.getId(), projectId);
         return ResponseEntity.ok(project);
     }
 
@@ -60,7 +66,9 @@ public class ClientController {
     )
     public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") Long projectId) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to delete project with ID {}", client.getId(), projectId);
         clientWorkflowService.deleteProject(projectId, client);
+        log.info("Client with ID {} successfully deleted project with ID {}", client.getId(), projectId);
         return ResponseEntity.ok("Project deleted successfully");
     }
 
@@ -73,7 +81,9 @@ public class ClientController {
             @PathVariable(name = "projectId") Long projectId,
             @RequestBody ProjectUpdateDto projectUpdateDto) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to update project with ID {}", client.getId(), projectId);
         ProjectDto updatedProject = clientWorkflowService.updateProject(projectId, projectUpdateDto, client);
+        log.info("Client with ID {} successfully updated project with ID {}", client.getId(), projectId);
         return ResponseEntity.ok(updatedProject);
     }
 
@@ -85,10 +95,12 @@ public class ClientController {
     public ResponseEntity<PageResponseDto<ProjectDto>> getAllClientProjects(
             @Valid PageableRequestDto pageableRequest) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to get all his projects", client.getId());
         Page<ProjectDto> projects = clientWorkflowService.getAllClientProjects(
                 client,
                 paginationUtils.createPageable(pageableRequest)
         );
+        log.info("Client with ID {} successfully got all his projects. {} returned", client.getId(), projects.getTotalElements());
         return ResponseEntity.ok(new PageResponseDto<>(projects));
     }
 
@@ -99,7 +111,9 @@ public class ClientController {
     )
     public ResponseEntity<List<ApplicationDto>> getAllApplicationsToProject(@PathVariable(name = "projectId") Long projectId) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to get all applications to project with ID {}", client.getId(), projectId);
         List<ApplicationDto> applications = clientWorkflowService.getAllApplicationsToProject(projectId, client);
+        log.info("Client with ID {} successfully got all applications to project with ID {}.{} returned", client.getId(), projectId, applications.size());
         return ResponseEntity.ok(applications);
     }
 
@@ -110,7 +124,9 @@ public class ClientController {
     )
     public ResponseEntity<String> selectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to select a freelancer for application with ID {}", client.getId(), applicationId);
         applicationProcessWorkflow.selectFreelancer(applicationId, client);
+        log.info("Client with ID {} successfully selected a freelancer for application with ID {}", client.getId(), applicationId);
         return ResponseEntity.ok("Freelancer selected successfully");
     }
 
@@ -121,7 +137,9 @@ public class ClientController {
     )
     public ResponseEntity<String> rejectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to reject freelancer for application with ID {}", client.getId(), applicationId);
         applicationProcessWorkflow.rejectApplication(applicationId, client);
+        log.info("Client with ID {} successfully rejected freelancer for application with ID {}", client.getId(), applicationId);
         return ResponseEntity.ok("Freelancer rejected successfully");
     }
 
@@ -132,7 +150,9 @@ public class ClientController {
     )
     public ResponseEntity<String> rejectManyFreelancers(@RequestBody List<Long> applicationIds) {
         User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to reject many freelancers for applications with ids {}", client.getId(), applicationIds);
         applicationProcessWorkflow.rejectManyApplications(applicationIds, client);
+        log.info("Client with ID {} successfully rejected many freelancers for applications with ids {}", client.getId(), applicationIds);
         return ResponseEntity.ok("All selected freelancers rejected successfully");
     }
 
@@ -144,10 +164,13 @@ public class ClientController {
     public ResponseEntity<PageResponseDto<FreelancerProfileDto>> getAllAvailableFreelancers(
             @Valid PageableRequestDto pageableRequest,
             @Valid FreelancerProfileFilterDto filters) {
+        User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to get all available freelancers from repository", client.getId());
         Page<FreelancerProfileDto> freelancersPage = clientWorkflowService.getAllAvailableFreelancers(
                 pageableRequest.toPageRequest(),
                 filters
         );
+        log.info("Client with ID {} successfully got all available freelancers from repository", client.getId());
         return ResponseEntity.ok(new PageResponseDto<>(freelancersPage));
     }
 

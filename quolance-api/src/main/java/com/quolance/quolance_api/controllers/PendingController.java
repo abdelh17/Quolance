@@ -8,6 +8,7 @@ import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/pending")
 @RequiredArgsConstructor
+@Slf4j
 public class PendingController {
 
     private final PendingWorkflowService pendingWorkflowService;
@@ -36,7 +38,9 @@ public class PendingController {
     public ResponseEntity<UserResponseDto> updatePendingUser(
             @Valid @RequestBody UpdatePendingUserRequestDto updatePendingUserDto) {
         User user = SecurityUtil.getAuthenticatedUser();
+        log.info("Attempting to update password and/or role for user with ID {}", user.getId());
         UserResponseDto updatedUser = pendingWorkflowService.updatePendingUser(user, updatePendingUserDto);
+        log.info("Successfully updated password and/or role for user with ID {}", user.getId());
         return ResponseEntity.ok(updatedUser);
     }
 }

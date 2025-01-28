@@ -50,6 +50,7 @@ class ProjectServiceUnitTest {
         mockProject = Project.builder()
                 .id(1L)
                 .title("Test Project")
+                .client(User.builder().id(1L).build())
                 .description("Test Description")
                 .projectStatus(ProjectStatus.PENDING)
                 .category(ProjectCategory.WEB_DEVELOPMENT)

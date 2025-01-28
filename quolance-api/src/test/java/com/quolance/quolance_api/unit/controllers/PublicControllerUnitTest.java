@@ -63,59 +63,59 @@ class PublicControllerUnitTest {
     }
 
     @Test
-    void getAllAvailableProjects_ShouldReturnProjects_WhenProjectsExist() {
+    void getAllVisibleProjects_ShouldReturnProjects_WhenProjectsExist() {
         PageableRequestDto pageableRequestDto = new PageableRequestDto();
         pageableRequestDto.setPage(0);
         pageableRequestDto.setSize(10);
         Page<ProjectPublicDto> projectPage = new PageImpl<>(sampleProjects);
-        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class)))
+        when(freelancerWorkflowService.getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class)))
                 .thenReturn(projectPage);
 
-        ResponseEntity<PageResponseDto<ProjectPublicDto>> response = publicController.getAllAvailableProjects(pageableRequestDto, new ProjectFilterDto());
+        ResponseEntity<PageResponseDto<ProjectPublicDto>> response = publicController.getAllVisibleProjects(pageableRequestDto, new ProjectFilterDto());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getContent())
                 .isNotNull()
                 .hasSize(2)
                 .isEqualTo(sampleProjects);
-        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class));
+        verify(freelancerWorkflowService).getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class));
         verifyNoMoreInteractions(freelancerWorkflowService);
     }
 
     @Test
-    void getAllAvailableProjects_ShouldReturnEmptyList_WhenNoProjects() {
+    void getAllVisibleProjects_ShouldReturnEmptyList_WhenNoProjects() {
         PageableRequestDto pageableRequestDto = new PageableRequestDto();
         pageableRequestDto.setPage(0);
         pageableRequestDto.setSize(10);
         Page<ProjectPublicDto> emptyPage = new PageImpl<>(Collections.emptyList());
-        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class)))
+        when(freelancerWorkflowService.getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class)))
                 .thenReturn(emptyPage);
 
-        ResponseEntity<PageResponseDto<ProjectPublicDto>> response = publicController.getAllAvailableProjects(pageableRequestDto, new ProjectFilterDto());
+        ResponseEntity<PageResponseDto<ProjectPublicDto>> response = publicController.getAllVisibleProjects(pageableRequestDto, new ProjectFilterDto());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getContent())
                 .isNotNull()
                 .isEmpty();
-        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class));
+        verify(freelancerWorkflowService).getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class));
         verifyNoMoreInteractions(freelancerWorkflowService);
     }
 
     @Test
-    void getAllAvailableProjects_ShouldThrowApiException_WhenServiceFails() {
+    void getAllVisibleProjects_ShouldThrowApiException_WhenServiceFails() {
         PageableRequestDto pageableRequestDto = new PageableRequestDto();
         pageableRequestDto.setPage(0);
         pageableRequestDto.setSize(10);
-        when(freelancerWorkflowService.getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class)))
+        when(freelancerWorkflowService.getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class)))
                 .thenThrow(ApiException.builder()
                         .message("Failed to fetch projects")
                         .status(500)
                         .build());
 
-        assertThatThrownBy(() -> publicController.getAllAvailableProjects(pageableRequestDto, new ProjectFilterDto()))
+        assertThatThrownBy(() -> publicController.getAllVisibleProjects(pageableRequestDto, new ProjectFilterDto()))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Failed to fetch projects");
-        verify(freelancerWorkflowService).getAllAvailableProjects(any(Pageable.class), any(ProjectFilterDto.class));
+        verify(freelancerWorkflowService).getAllVisibleProjects(any(Pageable.class), any(ProjectFilterDto.class));
         verifyNoMoreInteractions(freelancerWorkflowService);
     }
 

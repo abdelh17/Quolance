@@ -184,7 +184,7 @@ class FreelancerWorkflowServiceUnitTest {
     }
 
     @Test
-    void getAllAvailableProjects_FiltersExpiredClosedProjects() {
+    void getAllVisibleProjects_FiltersExpiredClosedProjects() {
         Project expiredProject = Project.builder()
                 .id(2L)
                 .projectStatus(ProjectStatus.CLOSED)
@@ -209,7 +209,7 @@ class FreelancerWorkflowServiceUnitTest {
         ProjectFilterDto filters = new ProjectFilterDto();
 
         when(projectService.findAllWithFilters(any(Specification.class), eq(pageable))).thenReturn(mockPage);
-        Page<ProjectPublicDto> results = freelancerWorkflowService.getAllAvailableProjects(pageable, filters);
+        Page<ProjectPublicDto> results = freelancerWorkflowService.getAllVisibleProjects(pageable, filters);
 
         assertThat(results.getContent()).hasSize(2);
         assertThat(results.getContent().stream().map(ProjectPublicDto::getId))
