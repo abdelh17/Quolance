@@ -1,10 +1,14 @@
 package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quolance.quolance_api.dtos.users.*;
+import com.quolance.quolance_api.dtos.users.CreateAdminRequestDto;
+import com.quolance.quolance_api.dtos.users.CreateUserRequestDto;
+import com.quolance.quolance_api.dtos.users.UpdateUserPasswordRequestDto;
+import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.SessionCreationHelper;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,10 +41,13 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
+    private SessionCreationHelper sessionCreationHelper;
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
         userRepository.save(EntityCreationHelper.createAdmin());
+        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
     }
 
     @Test
@@ -116,7 +123,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .temporaryPassword("Test1234")
                 .passwordConfirmation("Test1234")
                 .build();
-        MockHttpSession session = getSession("admin@test.com", "Password123!");
+        MockHttpSession session = sessionCreationHelper.getSession("admin@test.com", "Password123!");
 
         mockMvc.perform(post("/api/users/admin").session(session)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -159,7 +166,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .firstName("NEW")
                 .lastName("NEW")
                 .build();
-        MockHttpSession session = getSession("client@test.com", "Password123!");
+        MockHttpSession session = sessionCreationHelper.getSession("client@test.com", "Password123!");
 
         // Act
         String response = mockMvc.perform(put("/api/users").session(session)
@@ -191,7 +198,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .confirmPassword("NewPassword123!")
                 .build();
 
-        MockHttpSession session = getSession("client@test.com", "Password123!");
+        MockHttpSession session = sessionCreationHelper.getSession("client@test.com", "Password123!");
 
         // Act
         mockMvc.perform(patch("/api/users/password").session(session)
@@ -214,7 +221,7 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
                 .confirmPassword("test!")
                 .build();
 
-        MockHttpSession session = getSession("client@test.com", "Password123!");
+        MockHttpSession session = sessionCreationHelper.getSession("client@test.com", "Password123!");
 
         // Act
         mockMvc.perform(patch("/api/users/password").session(session)
@@ -227,18 +234,18 @@ class UsersControllerIntegrationTest extends AbstractTestcontainers {
         assertThat(updatedUser.getPassword()).isEqualTo(createdClient.getPassword());
     }
 
-    private MockHttpSession getSession(String username, String password) throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername(username);
-        loginRequest.setPassword(password);
-
-        MockHttpSession session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
-        return session;
-    }
+//    private MockHttpSession getSession(String username, String password) throws Exception {
+//        LoginRequestDto loginRequest = new LoginRequestDto();
+//        loginRequest.setUsername(username);
+//        loginRequest.setPassword(password);
+//
+//        MockHttpSession session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(loginRequest)))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getRequest()
+//                .getSession();
+//        return session;
+//    }
 }

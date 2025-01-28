@@ -2,11 +2,11 @@ package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
-import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogComment;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.SessionCreationHelper;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
@@ -48,9 +48,11 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private ProjectRepository projectRepository;
 
-    private MockHttpSession session;
     private User loggedInUser;
     private BlogPost blogPost;
+
+    private MockHttpSession session;
+    private SessionCreationHelper sessionCreationHelper;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -61,7 +63,9 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
 
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
         blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
-        session = getSession(loggedInUser.getEmail(), "Password123!");
+
+        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
+        session = sessionCreationHelper.getSession("client@test.com", "Password123!");
     }
 
     @Test
@@ -133,19 +137,5 @@ class BlogCommentControllerIntegrationTest extends AbstractTestcontainers {
 
         BlogComment updatedComment = blogCommentRepository.findAll().getFirst();
         assertThat(updatedComment.getContent()).isEqualTo("Updated Comment Content");
-    }
-
-    private MockHttpSession getSession(String email, String password) throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername(email);
-        loginRequest.setPassword(password);
-
-        return (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
     }
 }

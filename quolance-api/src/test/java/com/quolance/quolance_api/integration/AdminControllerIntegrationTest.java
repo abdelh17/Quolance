@@ -1,11 +1,11 @@
 package com.quolance.quolance_api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.SessionCreationHelper;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -35,9 +34,6 @@ class AdminControllerIntegrationTest extends AbstractTestcontainers {
 
     @Autowired
     private ObjectMapper objectMapper;
-    private User client;
-
-    private MockHttpSession session;
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -45,28 +41,23 @@ class AdminControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
+    private MockHttpSession session;
+    private SessionCreationHelper sessionCreationHelper;
+
+    private User client;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         projectRepository.deleteAll();
         userRepository.deleteAll();
+
         userRepository.save(EntityCreationHelper.createAdmin());
         client = userRepository.save(EntityCreationHelper.createClient());
+
+        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
+        session = sessionCreationHelper.getSession("admin@test.com", "Password123!");
     }
 
-    @BeforeEach
-    void setUpSession() throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("admin@test.com");
-        loginRequest.setPassword("Password123!");
-
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
-    }
 
     @Test
     void getAllPendingProjectIsOk() throws Exception {

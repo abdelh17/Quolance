@@ -3,12 +3,12 @@ package com.quolance.quolance_api.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
-import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.SessionCreationHelper;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
@@ -57,27 +57,18 @@ class FreelancerControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
+    private SessionCreationHelper sessionCreationHelper;
+
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         projectRepository.deleteAll();
         userRepository.deleteAll();
         freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
         client = userRepository.save(EntityCreationHelper.createClient());
-    }
 
-    @BeforeEach
-    void setUpSession() throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("freelancer1@test.com");
-        loginRequest.setPassword("Password123!");
-
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
+        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
+        session = sessionCreationHelper.getSession("freelancer1@test.com", "Password123!");
     }
 
     @Test

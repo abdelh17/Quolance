@@ -5,12 +5,12 @@ import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
-import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
 import com.quolance.quolance_api.helpers.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.SessionCreationHelper;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
@@ -46,10 +46,6 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private User client;
-
-    private MockHttpSession session;
-
     @Autowired
     private ApplicationRepository applicationRepository;
 
@@ -59,27 +55,21 @@ class ClientControllerIntegrationTest extends AbstractTestcontainers {
     @Autowired
     private UserRepository userRepository;
 
+    private MockHttpSession session;
+    private SessionCreationHelper sessionCreationHelper;
+
+    private User client;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         projectRepository.deleteAll();
         userRepository.deleteAll();
         client = userRepository.save(EntityCreationHelper.createClient());
+
+        sessionCreationHelper = new SessionCreationHelper(mockMvc, objectMapper);
+        session = sessionCreationHelper.getSession("client@test.com", "Password123!");
     }
 
-    @BeforeEach
-    void setUpSession() throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto();
-        loginRequest.setUsername("client@test.com");
-        loginRequest.setPassword("Password123!");
-
-        session = (MockHttpSession) mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getRequest()
-                .getSession();
-    }
 
     @Test
     void createProjectValidIsOk() throws Exception {
