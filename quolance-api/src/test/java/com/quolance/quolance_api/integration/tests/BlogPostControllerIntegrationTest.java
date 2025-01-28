@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +76,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testGetBlogPostByIdNotFound() throws Exception {
-        mockMvc.perform(get("/api/blog-posts/999")
+        mockMvc.perform(get("/api/blog-posts/" + UUID.randomUUID())
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());

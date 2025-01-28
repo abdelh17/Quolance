@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.entities.blog;
 
+import com.quolance.quolance_api.entities.AbstractEntity;
 import com.quolance.quolance_api.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,11 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class BlogComment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class BlogComment extends AbstractEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 

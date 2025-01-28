@@ -9,9 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ReactionRepository extends JpaRepository<Reaction, Long> {
+public interface ReactionRepository extends JpaRepository<Reaction, UUID> {
     Optional<Reaction> findByUserAndBlogPost(User user, BlogPost blogPost);
 
     Optional<Reaction> findByUserAndBlogComment(User user, BlogComment blogComment);

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 public class NotificationResponseDto {
 
     @JsonProperty("id")
-    private Long id;
+    private UUID id;
 
     @JsonProperty("message")
     private String message;

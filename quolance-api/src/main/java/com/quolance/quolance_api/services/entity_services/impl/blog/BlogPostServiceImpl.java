@@ -15,10 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +43,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
 
     @Override
-    public List<BlogPostResponseDto> getBlogPostsByUserId(Long userId) {
+    public List<BlogPostResponseDto> getBlogPostsByUserId(UUID userId) {
         List<BlogPost> blogPosts = blogPostRepository.findByUserId(userId);
         return blogPosts.stream()
                 .map(BlogPostResponseDto::fromEntity)
@@ -65,7 +62,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public void deletePost(Long id, User author) {
+    public void deletePost(UUID id, User author) {
         BlogPost blogPost = getBlogPostEntity(id);
 
         if (!isAuthorOfPost(blogPost, author)) {
@@ -75,7 +72,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPostResponseDto getBlogPost(Long id) {
+    public BlogPostResponseDto getBlogPost(UUID id) {
         return BlogPostResponseDto.fromEntity(getBlogPostEntity(id));
     }
 
@@ -92,7 +89,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public Set<String> updateTagsForPost(Long postId, List<String> tagNames) {
+    public Set<String> updateTagsForPost(UUID postId, List<String> tagNames) {
         BlogPost blogPost;
         try {
              blogPost = getBlogPostEntity(postId);
@@ -131,7 +128,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPost getBlogPostEntity(Long postId) {
+    public BlogPost getBlogPostEntity(UUID postId) {
         return blogPostRepository.findById(postId).orElseThrow(() ->
                 ApiException.builder()
                         .status(HttpServletResponse.SC_NOT_FOUND)

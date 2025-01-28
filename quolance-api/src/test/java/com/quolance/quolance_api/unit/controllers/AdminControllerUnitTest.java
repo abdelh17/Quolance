@@ -26,6 +26,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -49,14 +50,14 @@ class AdminControllerUnitTest {
     @BeforeEach
     void setUp() {
         mockAdmin = new User();
-        mockAdmin.setId(1L);
+        mockAdmin.setId(UUID.randomUUID());
         mockAdmin.setEmail("admin@test.com");
         mockAdmin.setRole(Role.ADMIN);
 
         projectDto1 = new ProjectDto();
-        projectDto1.setId(1L);
+        projectDto1.setId(UUID.randomUUID());
         projectDto2 = new ProjectDto();
-        projectDto2.setId(2L);
+        projectDto2.setId(UUID.randomUUID());
     }
 
     @Test
@@ -233,7 +234,7 @@ class AdminControllerUnitTest {
 
 
         assertThat(response.getBody().getTotalElements()).isEqualTo(1);
-        assertThat(response.getBody().getContent().get(0).getId()).isEqualTo(1L);
+            assertThat(response.getBody().getContent().get(0).getId()).isEqualTo(projectDto1.getId());
             verify(adminWorkflowService).getAllPendingProjects(pageable);
         }
     }
@@ -244,7 +245,7 @@ class AdminControllerUnitTest {
     void approveProject_ReturnsSuccessMessage() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-        Long projectId = 1L;
+            UUID projectId = UUID.randomUUID();
         doNothing().when(adminWorkflowService).approveProject(projectId);
 
         ResponseEntity<String> response = adminController.approveProject(projectId);
@@ -259,12 +260,12 @@ class AdminControllerUnitTest {
     void approveProject_WhenProjectNotFound_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-        Long projectId = 999L;
-        doThrow(new ApiException("Project not found")).when(adminWorkflowService).approveProject(projectId);
+            UUID projectId = UUID.randomUUID();
+            doThrow(new ApiException("Project not found")).when(adminWorkflowService).approveProject(projectId);
 
-        assertThatThrownBy(() -> adminController.approveProject(projectId))
-                .isInstanceOf(ApiException.class)
-                .hasMessage("Project not found");
+            assertThatThrownBy(() -> adminController.approveProject(projectId))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Project not found");
             verify(adminWorkflowService, times(1)).approveProject(projectId);
         }
     }
@@ -273,7 +274,7 @@ class AdminControllerUnitTest {
     void approveProject_WhenUnauthorized_ThrowsAccessDeniedException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-        Long projectId = 1L;
+            UUID projectId = UUID.randomUUID();
         doThrow(new AccessDeniedException("User is not authorized to approve projects"))
                 .when(adminWorkflowService).approveProject(projectId);
 
@@ -288,7 +289,7 @@ class AdminControllerUnitTest {
     void rejectProject_ReturnsSuccessMessage() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-        Long projectId = 1L;
+            UUID projectId = UUID.randomUUID();
         doNothing().when(adminWorkflowService).rejectProject(projectId);
 
         ResponseEntity<String> response = adminController.rejectProject(projectId);
@@ -303,7 +304,7 @@ class AdminControllerUnitTest {
     void rejectProject_WhenProjectNotFound_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-        Long projectId = 999L;
+            UUID projectId = UUID.randomUUID();
         doThrow(new ApiException("Project not found")).when(adminWorkflowService).rejectProject(projectId);
 
         assertThatThrownBy(() -> adminController.rejectProject(projectId))
@@ -317,7 +318,7 @@ class AdminControllerUnitTest {
     void rejectProject_WhenUnauthorized_ThrowsAccessDeniedException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-        Long projectId = 1L;
+            UUID projectId = UUID.randomUUID();
         doThrow(new AccessDeniedException("User is not authorized to reject projects"))
                 .when(adminWorkflowService).rejectProject(projectId);
 

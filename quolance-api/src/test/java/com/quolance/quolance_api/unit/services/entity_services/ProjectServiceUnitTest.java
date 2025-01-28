@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,9 +49,9 @@ class ProjectServiceUnitTest {
     @BeforeEach
     void setUp() {
         mockProject = Project.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .title("Test Project")
-                .client(User.builder().id(1L).build())
+                .client(User.builder().id(UUID.randomUUID()).build())
                 .description("Test Description")
                 .projectStatus(ProjectStatus.PENDING)
                 .category(ProjectCategory.WEB_DEVELOPMENT)
@@ -60,7 +61,7 @@ class ProjectServiceUnitTest {
                 .build();
 
         mockFreelancer = User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .build();
 
         mockUpdateDto = new ProjectUpdateDto();
@@ -90,21 +91,21 @@ class ProjectServiceUnitTest {
 
     @Test
     void getProjectById_Success() {
-        when(projectRepository.findById(1L)).thenReturn(Optional.of(mockProject));
+        when(projectRepository.findById(mockProject.getId())).thenReturn(Optional.of(mockProject));
 
-        Project result = projectService.getProjectById(1L);
+        Project result = projectService.getProjectById(mockProject.getId());
 
         assertThat(result).isEqualTo(mockProject);
     }
-
     @Test
     void getProjectById_NotFound_ThrowsException() {
-        when(projectRepository.findById(1L)).thenReturn(Optional.empty());
+        UUID id = UUID.randomUUID();
+        when(projectRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> projectService.getProjectById(1L))
+        assertThatThrownBy(() -> projectService.getProjectById(id))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", 404)
-                .hasMessage("No Project found with ID: 1");
+                .hasMessage("No Project found with ID: " + id);
     }
 
 
@@ -145,28 +146,29 @@ class ProjectServiceUnitTest {
         List<Project> projects = List.of(mockProject);
         Page<Project> expectedPage = new PageImpl<>(projects);
 
-        when(projectRepository.findProjectsByClientId(eq(1L), any(Pageable.class)))
+        when(projectRepository.findProjectsByClientId(eq(mockProject.getClient().getId()), any(Pageable.class)))
                 .thenReturn(expectedPage);
 
-        Page<Project> result = projectService.getProjectsByClientId(1L, Pageable.unpaged());
+        Page<Project> result = projectService.getProjectsByClientId(mockProject.getClient().getId(), Pageable.unpaged());
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent()).containsExactly(mockProject);
         assertThat(result.getTotalElements()).isEqualTo(1);
-        verify(projectRepository).findProjectsByClientId(eq(1L), any(Pageable.class));
+        verify(projectRepository).findProjectsByClientId(eq(mockProject.getClient().getId()), any(Pageable.class));
     }
 
     @Test
     void getProjectsByClientId_NoProjectsFound_ReturnsEmptyPage() {
         Page<Project> emptyPage = Page.empty();
-        when(projectRepository.findProjectsByClientId(eq(1L), any(Pageable.class)))
+        UUID id = UUID.randomUUID();
+        when(projectRepository.findProjectsByClientId(eq(id), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
-        Page<Project> result = projectService.getProjectsByClientId(1L, Pageable.unpaged());
+        Page<Project> result = projectService.getProjectsByClientId(id, Pageable.unpaged());
 
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
-        verify(projectRepository).findProjectsByClientId(eq(1L), any(Pageable.class));
+        verify(projectRepository).findProjectsByClientId(eq(id), any(Pageable.class));
     }
 
     @Test

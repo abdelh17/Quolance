@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/blog-comments")
@@ -21,7 +22,7 @@ public class BlogCommentController {
 
     @PostMapping("/{postId}")
     @Operation(summary = "Create a new blog comment")
-    public ResponseEntity<BlogCommentDto> createBlogComment(@PathVariable Long postId, @Valid @RequestBody BlogCommentDto request) {
+    public ResponseEntity<BlogCommentDto> createBlogComment(@PathVariable UUID postId, @Valid @RequestBody BlogCommentDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         BlogCommentDto response = blogCommentService.createBlogComment(postId, author, request);
         return ResponseEntity.ok(response);
@@ -29,21 +30,21 @@ public class BlogCommentController {
 
     @GetMapping("/post/{blogPostId}")
     @Operation(summary = "Get all comments for a specific blog post")
-    public ResponseEntity<List<BlogCommentDto>> getCommentsByBlogPostId(@PathVariable Long blogPostId) {
+    public ResponseEntity<List<BlogCommentDto>> getCommentsByBlogPostId(@PathVariable UUID blogPostId) {
         List<BlogCommentDto> responses = blogCommentService.getCommentsByBlogPostId(blogPostId);
         return ResponseEntity.ok(responses);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a blog comment")
-    public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable Long id, @RequestBody BlogCommentDto request) {
+    public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable UUID id, @RequestBody BlogCommentDto request) {
         BlogCommentDto response = blogCommentService.updateBlogComment(id, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a blog comment")
-    public ResponseEntity<String> deleteBlogComment(@PathVariable Long id) {
+    public ResponseEntity<String> deleteBlogComment(@PathVariable UUID id) {
         blogCommentService.deleteBlogComment(id);
         return ResponseEntity.ok("The comment was successfully deleted");
     }

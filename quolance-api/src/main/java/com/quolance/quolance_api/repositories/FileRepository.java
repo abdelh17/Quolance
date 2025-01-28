@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FileRepository extends JpaRepository<FileEntity, Long> {
+import java.util.UUID;
+
+public interface FileRepository extends JpaRepository<FileEntity, UUID> {
     void save(FileDto fileDto);
 
     Page<FileEntity> findFileUploadsByUser(User user, Pageable pageable);

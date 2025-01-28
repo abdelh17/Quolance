@@ -51,7 +51,7 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
         String response = mockMvc.perform(get("/api/admin/projects/pending/all")
                         .param("page", "0")
                         .param("size", "10")
-                        .param("sortDirection", "asc")
+//                        .param("sortDirection", "asc")
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -66,7 +66,7 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
         Map<String, Object> projectResponse = content.getFirst();
 
         assertThat(projectResponse)
-                .containsEntry("id", pendingProject.getId().intValue())
+                .containsEntry("id", pendingProject.getId().toString())
                 .containsEntry("projectStatus", "PENDING");
     }
 

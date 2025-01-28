@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -39,7 +40,7 @@ public class BlogPostController {
 
     @GetMapping("/{postId}")
     @Operation(summary = "Get a blog post by ID")
-    public ResponseEntity<BlogPostResponseDto> getBlogPostById(@PathVariable Long postId) {
+    public ResponseEntity<BlogPostResponseDto> getBlogPostById(@PathVariable UUID postId) {
         return ResponseEntity.ok(blogPostService.getBlogPost(postId));
     }
 
@@ -54,14 +55,14 @@ public class BlogPostController {
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get blog posts by user ID",
             description = "Retrieve all blog posts created by a specific user.")
-    public ResponseEntity<List<BlogPostResponseDto>> getBlogPostsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<BlogPostResponseDto>> getBlogPostsByUserId(@PathVariable UUID userId) {
         List<BlogPostResponseDto> responses = blogPostService.getBlogPostsByUserId(userId);
         return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{postId}")
     @Operation(summary = "Delete a blog post")
-    public ResponseEntity<String> deleteBlogPost(@PathVariable Long postId) {
+    public ResponseEntity<String> deleteBlogPost(@PathVariable UUID postId) {
         User author = SecurityUtil.getAuthenticatedUser();
         blogPostService.deletePost(postId, author);
         return ResponseEntity.ok("The post was successfully deleted");
@@ -69,7 +70,7 @@ public class BlogPostController {
 
     @PutMapping("/tags/{postId}")
     public ResponseEntity<String> updateTagsForPost(
-            @PathVariable Long postId,
+            @PathVariable UUID postId,
             @RequestBody List<String> tagNames) {
         blogPostService.updateTagsForPost(postId, tagNames);
         return ResponseEntity.ok("Tags updated successfully");

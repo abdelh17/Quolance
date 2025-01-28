@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/client")
@@ -51,7 +52,7 @@ public class ClientController {
             summary = "Get a project",
             description = "Get a project by passing the project ID"
     )
-    public ResponseEntity<ProjectDto> getProject(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<ProjectDto> getProject(@PathVariable(name = "projectId") UUID projectId) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to get project with ID {}", client.getId(), projectId);
         ProjectDto project = clientWorkflowService.getProject(projectId, client);
@@ -64,7 +65,7 @@ public class ClientController {
             summary = "Delete a project",
             description = "Delete a project by passing the project ID"
     )
-    public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") UUID projectId) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to delete project with ID {}", client.getId(), projectId);
         clientWorkflowService.deleteProject(projectId, client);
@@ -78,7 +79,7 @@ public class ClientController {
             description = "Update an existing project by passing the project details"
     )
     public ResponseEntity<ProjectDto> updateProject(
-            @PathVariable(name = "projectId") Long projectId,
+            @PathVariable(name = "projectId") UUID projectId,
             @RequestBody ProjectUpdateDto projectUpdateDto) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to update project with ID {}", client.getId(), projectId);
@@ -109,7 +110,7 @@ public class ClientController {
             summary = "Get all applications on a project",
             description = "Get all applications on a project by passing the project ID"
     )
-    public ResponseEntity<List<ApplicationDto>> getAllApplicationsToProject(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<List<ApplicationDto>> getAllApplicationsToProject(@PathVariable(name = "projectId") UUID projectId) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to get all applications to project with ID {}", client.getId(), projectId);
         List<ApplicationDto> applications = clientWorkflowService.getAllApplicationsToProject(projectId, client);
@@ -122,7 +123,7 @@ public class ClientController {
             summary = "Select a freelancer for a project",
             description = "Select a freelancer for a project by passing the application ID"
     )
-    public ResponseEntity<String> selectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<String> selectFreelancer(@PathVariable(name = "applicationId") UUID applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to select a freelancer for application with ID {}", client.getId(), applicationId);
         applicationProcessWorkflow.selectFreelancer(applicationId, client);
@@ -135,7 +136,7 @@ public class ClientController {
             summary = "Reject a freelancer for a project",
             description = "Reject a freelancer for a project by passing the application ID"
     )
-    public ResponseEntity<String> rejectFreelancer(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<String> rejectFreelancer(@PathVariable(name = "applicationId") UUID applicationId) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to reject freelancer for application with ID {}", client.getId(), applicationId);
         applicationProcessWorkflow.rejectApplication(applicationId, client);
@@ -148,7 +149,7 @@ public class ClientController {
             summary = "Reject many freelancers for a project",
             description = "Reject many freelancers for a project by passing a list of ids"
     )
-    public ResponseEntity<String> rejectManyFreelancers(@RequestBody List<Long> applicationIds) {
+    public ResponseEntity<String> rejectManyFreelancers(@RequestBody List<UUID> applicationIds) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to reject many freelancers for applications with ids {}", client.getId(), applicationIds);
         applicationProcessWorkflow.rejectManyApplications(applicationIds, client);

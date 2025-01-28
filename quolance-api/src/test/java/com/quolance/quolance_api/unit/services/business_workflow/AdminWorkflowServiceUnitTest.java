@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,12 +44,12 @@ class AdminWorkflowServiceUnitTest {
     @BeforeEach
     void setUp() {
         mockClient = User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .email("client@test.com")
                 .build();
 
         mockProject1 = Project.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .title("Test Project 1")
                 .description("Test Description 1")
                 .projectStatus(ProjectStatus.PENDING)
@@ -58,7 +59,7 @@ class AdminWorkflowServiceUnitTest {
                 .build();
 
         mockProject2 = Project.builder()
-                .id(2L)
+                .id(UUID.randomUUID())
                 .title("Test Project 2")
                 .description("Test Description 2")
                 .projectStatus(ProjectStatus.PENDING)
@@ -101,47 +102,49 @@ class AdminWorkflowServiceUnitTest {
 
     @Test
     void approveProject_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject1);
+        when(projectService.getProjectById(mockProject1.getId())).thenReturn(mockProject1);
         doNothing().when(projectService).updateProjectStatus(any(Project.class), eq(ProjectStatus.OPEN));
 
-        adminWorkflowService.approveProject(1L);
+        adminWorkflowService.approveProject(mockProject1.getId());
 
-        verify(projectService).getProjectById(1L);
+        verify(projectService).getProjectById(mockProject1.getId());
         verify(projectService).updateProjectStatus(mockProject1, ProjectStatus.OPEN);
     }
 
     @Test
     void approveProject_WithInvalidId_ThrowsApiException() {
-        when(projectService.getProjectById(999L))
+        UUID invalidId = UUID.randomUUID();
+        when(projectService.getProjectById(invalidId))
                 .thenThrow(new ApiException("Project not found"));
 
-        assertThatThrownBy(() -> adminWorkflowService.approveProject(999L))
+        assertThatThrownBy(() -> adminWorkflowService.approveProject(invalidId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
-        verify(projectService).getProjectById(999L);
+        verify(projectService).getProjectById(invalidId);
         verify(projectService, never()).updateProjectStatus(any(), any());
     }
 
     @Test
     void rejectProject_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject1);
+        when(projectService.getProjectById(mockProject1.getId())).thenReturn(mockProject1);
         doNothing().when(projectService).updateProjectStatus(any(Project.class), eq(ProjectStatus.REJECTED));
 
-        adminWorkflowService.rejectProject(1L);
+        adminWorkflowService.rejectProject(mockProject1.getId());
 
-        verify(projectService).getProjectById(1L);
+        verify(projectService).getProjectById(mockProject1.getId());
         verify(projectService).updateProjectStatus(mockProject1, ProjectStatus.REJECTED);
     }
 
     @Test
     void rejectProject_WithInvalidId_ThrowsApiException() {
-        when(projectService.getProjectById(999L))
+        UUID invalidId = UUID.randomUUID();
+        when(projectService.getProjectById(invalidId))
                 .thenThrow(new ApiException("Project not found"));
 
-        assertThatThrownBy(() -> adminWorkflowService.rejectProject(999L))
+        assertThatThrownBy(() -> adminWorkflowService.rejectProject(invalidId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
-        verify(projectService).getProjectById(999L);
+        verify(projectService).getProjectById(invalidId);
         verify(projectService, never()).updateProjectStatus(any(), any());
     }
 }

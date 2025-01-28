@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -39,7 +41,7 @@ class PendingControllerUnitTest {
     @BeforeEach
     void setUp() {
         mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setRole(Role.PENDING);
 
@@ -48,7 +50,7 @@ class PendingControllerUnitTest {
         updateDto.setRole("CLIENT");
 
         responseDto = new UserResponseDto(mockUser);
-        responseDto.setId(1L);
+        responseDto.setId(UUID.randomUUID());
         responseDto.setEmail("test@example.com");
         responseDto.setRole(Role.CLIENT);
     }

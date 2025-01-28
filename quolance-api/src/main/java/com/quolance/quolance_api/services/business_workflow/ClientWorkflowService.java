@@ -11,20 +11,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ClientWorkflowService {
 
     void createProject(ProjectCreateDto projectCreateDto, User client);
 
-    ProjectDto getProject(Long projectId, User client);
+    ProjectDto getProject(UUID projectId, User client);
 
-    void deleteProject(Long projectId, User client);
+    void deleteProject(UUID projectId, User client);
 
     Page<ProjectDto> getAllClientProjects(User client, Pageable pageable);
 
-    List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client);
+    List<ApplicationDto> getAllApplicationsToProject(UUID projectId, User client);
 
-    ProjectDto updateProject(Long projectId, ProjectUpdateDto projectUpdateDto, User client);
+    ProjectDto updateProject(UUID projectId, ProjectUpdateDto projectUpdateDto, User client);
 
     Page<FreelancerProfileDto> getAllAvailableFreelancers(Pageable pageable, FreelancerProfileFilterDto filters);
 

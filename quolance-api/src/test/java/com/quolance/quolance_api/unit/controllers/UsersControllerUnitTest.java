@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -44,12 +46,12 @@ class UsersControllerUnitTest {
     @BeforeEach
     void setUp() {
         mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setRole(Role.CLIENT);
 
         mockAdmin = new User();
-        mockAdmin.setId(1L);
+        mockAdmin.setId(UUID.randomUUID());
         mockAdmin.setEmail("admin@test.com");
         mockAdmin.setRole(Role.ADMIN);
 

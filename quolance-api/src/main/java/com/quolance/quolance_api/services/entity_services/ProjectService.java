@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProjectService {
 
@@ -17,7 +18,7 @@ public interface ProjectService {
 
     void deleteProject(Project project);
 
-    Project getProjectById(Long projectId);
+    Project getProjectById(UUID projectId);
 
     void updateProject(Project existingProject, ProjectUpdateDto updatedProject);
 
@@ -25,7 +26,7 @@ public interface ProjectService {
 
     Page<Project> getProjectsByStatuses(List<ProjectStatus> projectStatuses, Pageable pageable);
 
-    Page<Project> getProjectsByClientId(Long clientId, Pageable pageable);
+    Page<Project> getProjectsByClientId(UUID clientId, Pageable pageable);
 
     void updateProjectStatus(Project project, ProjectStatus newStatus);
 

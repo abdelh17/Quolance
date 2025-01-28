@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/public")
@@ -52,7 +54,7 @@ public class PublicController {
             summary = "View a project.",
             description = "View a project (as a guest) by passing the project id."
     )
-    public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") UUID projectId) {
         log.info("Guest attempting to get project with id {}", projectId);
         ProjectPublicDto project = freelancerWorkflowService.getProject(projectId);
         log.info("Guest successfully got project with id {}", projectId);

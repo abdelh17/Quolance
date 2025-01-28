@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/freelancer")
@@ -47,7 +49,7 @@ public class FreelancerController {
             summary = "View an application.",
             description = "View an application by passing the application ID."
     )
-    public ResponseEntity<ApplicationDto> getApplication(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<ApplicationDto> getApplication(@PathVariable(name = "applicationId") UUID applicationId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         log.info("Freelancer with ID {} attempting to get application with ID {}", freelancer.getId(), applicationId);
         ApplicationDto application = freelancerWorkflowService.getApplication(applicationId, freelancer);
@@ -60,7 +62,7 @@ public class FreelancerController {
             summary = "Delete an application.",
             description = "Delete an application by passing the application ID."
     )
-    public ResponseEntity<String> deleteApplication(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<String> deleteApplication(@PathVariable(name = "applicationId") UUID applicationId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         log.info("Freelancer with ID {} attempting to delete application with ID {}", freelancer.getId(), applicationId);
         applicationProcessWorkflow.cancelApplication(applicationId, freelancer);
@@ -104,7 +106,7 @@ public class FreelancerController {
             summary = "View a project.",
             description = "View a project by passing the project ID."
     )
-    public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") UUID projectId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         log.info("Freelancer with ID {} attempting to get project with ID {}", freelancer.getId(), projectId);
         ProjectPublicDto project = freelancerWorkflowService.getProject(projectId);

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public interface BlogPostService {
 
@@ -16,15 +17,15 @@ public interface BlogPostService {
 
     List<BlogPostResponseDto> getAll();
 
-    BlogPost getBlogPostEntity(Long id);
+    BlogPost getBlogPostEntity(UUID id);
 
-    List<BlogPostResponseDto> getBlogPostsByUserId(Long userId);
+    List<BlogPostResponseDto> getBlogPostsByUserId(UUID userId);
 
     BlogPostResponseDto update(BlogPostUpdateDto request, User author);
 
-    void deletePost(Long id, User author);
+    void deletePost(UUID id, User author);
 
-    BlogPostResponseDto getBlogPost(Long id);
+    BlogPostResponseDto getBlogPost(UUID id);
 
-    Set<String> updateTagsForPost(Long postId, List<String> tagNames);
+    Set<String> updateTagsForPost(UUID postId, List<String> tagNames);
 }

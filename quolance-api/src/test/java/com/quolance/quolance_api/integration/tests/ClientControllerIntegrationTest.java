@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -134,7 +135,8 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     void getProjectByIdWhenNoneExistReturnsNotFound() throws Exception {
         //Act
-        String response = mockMvc.perform(get("/api/client/projects/1").session(session))
+        UUID randomUUID = UUID.randomUUID();
+        String response = mockMvc.perform(get("/api/client/projects/" + randomUUID).session(session))
                 .andExpect(status().isNotFound())
                 .andReturn()
                 .getResponse()
@@ -143,7 +145,7 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
 
         //Assert
-        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: 1");
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + randomUUID);
     }
 
     @Test
@@ -311,15 +313,17 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void deleteNonExistingProjectGivesError() throws Exception {
+        //Arrange
+        UUID randomUUID = UUID.randomUUID();
         //Act
-        String response = mockMvc.perform(delete("/api/client/projects/1").session(session))
+        String response = mockMvc.perform(delete("/api/client/projects/" + randomUUID).session(session))
                 .andExpect(status().isNotFound())
                 .andReturn()
                 .getResponse().getContentAsString();
 
         //Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: 1");
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + randomUUID);
     }
 
     @Test
@@ -342,9 +346,9 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
         //Assert
         assertThat(applicationReturned)
-                .containsEntry("projectId", project.getId().intValue())
+                .containsEntry("projectId", project.getId().toString())
                 .containsEntry("projectTitle", project.getTitle())
-                .containsEntry("freelancerId", freelancer.getId().intValue());
+                .containsEntry("freelancerId", freelancer.getId().toString());
 
     }
 
@@ -468,7 +472,7 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
         //Assert
         Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(profileResponse).containsEntry("userId", freelancer.getId().intValue());
+        assertThat(profileResponse).containsEntry("userId", freelancer.getId().toString());
     }
 
     @Test
@@ -517,14 +521,13 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
         assertThat(content).hasSize(2);
 
-        Map<String, Object> freelancerResponse1 = content.get(0);
-        Map<String, Object> freelancerResponse2 = content.get(1);
+        List<String> actualUserIds = content.stream()
+                .map(freelancer -> (String) freelancer.get("userId"))
+                .toList();
 
-        assertThat(freelancerResponse1).containsEntry("userId", freelancer1.getId().intValue());
+        List<String> expectedUserIds = List.of(freelancer1.getId().toString(), freelancer2.getId().toString());
 
-        assertThat(freelancerResponse2).containsEntry("userId", freelancer2.getId().intValue());
-
-
+        assertThat(actualUserIds).containsExactlyInAnyOrderElementsOf(expectedUserIds);
     }
 
     @Test

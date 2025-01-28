@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,21 +38,21 @@ class BlogPostServiceUnitTest {
 
         // Create a mock blog post
         blogPost = new BlogPost();
-        blogPost.setId(1L);
+        blogPost.setId(UUID.randomUUID());
         blogPost.setTags(Set.of(BlogTags.QUESTION));
     }
 
     @Test
     void testUpdateTagsForPost_ValidTags() {
         // Mock the repository call
-        when(blogPostRepository.findById(1L)).thenReturn(java.util.Optional.of(blogPost));
+        when(blogPostRepository.findById(blogPost.getId())).thenReturn(java.util.Optional.of(blogPost));
         when(blogPostRepository.save(any(BlogPost.class))).thenReturn(blogPost);
 
         // Call the method
-        Set<String> updatedTags = blogPostService.updateTagsForPost(1L, List.of("QUESTION", "SUPPORT"));
+        Set<String> updatedTags = blogPostService.updateTagsForPost(blogPost.getId(), List.of("QUESTION", "SUPPORT"));
 
         // Verify the repository calls
-        verify(blogPostRepository).findById(1L);
+        verify(blogPostRepository).findById(blogPost.getId());
         verify(blogPostRepository).save(any(BlogPost.class));
 
         // Capture the saved blog post
@@ -67,10 +68,10 @@ class BlogPostServiceUnitTest {
     @Test
     void testUpdateTagsForPost_InvalidTags() {
         // Mock the repository call
-        when(blogPostRepository.findById(1L)).thenReturn(java.util.Optional.of(blogPost));
+        when(blogPostRepository.findById(blogPost.getId())).thenReturn(java.util.Optional.of(blogPost));
 
         // Call the method with invalid tags
-        assertThatThrownBy(() -> blogPostService.updateTagsForPost(1L, List.of("INVALID_TAG")))
+        assertThatThrownBy(() -> blogPostService.updateTagsForPost(blogPost.getId(), List.of("INVALID_TAG")))
                 .isInstanceOf(InvalidBlogTagException.class)
                 .hasMessageContaining("Invalid tags provided: INVALID_TAG");
 
@@ -81,12 +82,13 @@ class BlogPostServiceUnitTest {
     @Test
     void testUpdateTagsForPost_PostNotFound() {
         // Mock the repository call to return empty
-        when(blogPostRepository.findById(999L)).thenReturn(java.util.Optional.empty());
+        UUID nonExistentId = UUID.randomUUID();
+        when(blogPostRepository.findById(nonExistentId)).thenReturn(java.util.Optional.empty());
 
         // Call the method with a non-existent post ID
-        assertThatThrownBy(() -> blogPostService.updateTagsForPost(999L, List.of("QUESTION")))
+        assertThatThrownBy(() -> blogPostService.updateTagsForPost(nonExistentId, List.of("QUESTION")))
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining("No blog post found with ID: 999");
+                .hasMessageContaining("No blog post found with ID: " + nonExistentId);
 
         // Verify the repository is not saved
         verify(blogPostRepository, never()).save(any());

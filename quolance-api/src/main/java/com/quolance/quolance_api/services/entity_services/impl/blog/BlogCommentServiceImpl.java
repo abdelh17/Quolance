@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     private final BlogPostService blogPostService;
 
     @Override
-    public BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto) {
+    public BlogCommentDto createBlogComment(UUID blogPostId, User author, BlogCommentDto blogCommentDto) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
         if (blogCommentDto.getContent() == null || blogCommentDto.getContent().isEmpty()) {
@@ -39,7 +40,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto) {
+    public BlogCommentDto updateBlogComment(UUID commentId, BlogCommentDto blogCommentDto) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
 
         blogComment.setContent(blogCommentDto.getContent());
@@ -49,14 +50,14 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public void deleteBlogComment(Long commentId) {
+    public void deleteBlogComment(UUID commentId) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
 
         blogCommentRepository.delete(blogComment);
     }
 
     @Override
-    public List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId) {
+    public List<BlogCommentDto> getCommentsByBlogPostId(UUID blogPostId) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
         List<BlogComment> comments = blogCommentRepository.findByBlogPost(blogPost);
@@ -66,7 +67,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
                 .toList();
     }
 
-    public BlogComment getBlogCommentEntity(Long commentId) {
+    public BlogComment getBlogCommentEntity(UUID commentId) {
         BlogComment blogComment = blogCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "BlogComment not found with ID: " + commentId));

@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Getter
 @Setter
 public class UserResponseDto {
 
-    private Long id;
+    private UUID id;
     private Role role;
     private String firstName;
     private String lastName;

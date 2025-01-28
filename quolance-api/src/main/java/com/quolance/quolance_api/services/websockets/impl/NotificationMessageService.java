@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -82,7 +83,7 @@ public class NotificationMessageService extends AbstractWebSocketService {
      *
      * @param notificationId The ID of the notification to mark as read.
      */
-    public void markNotificationAsRead(Long notificationId) {
+    public void markNotificationAsRead(UUID notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         notification.setRead(true);
@@ -95,7 +96,7 @@ public class NotificationMessageService extends AbstractWebSocketService {
      * @param userId The ID of the user.
      * @return List of notifications.
      */
-    public List<Notification> getNotificationsForUser(Long userId) {
+    public List<Notification> getNotificationsForUser(UUID userId) {
         return notificationRepository.findByRecipientId(userId);
     }
 

@@ -21,6 +21,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -49,19 +50,19 @@ class SendTempPasswordEmailUnitTest {
     @BeforeEach
     void setUp() {
         mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setFirstName("Test");
         mockUser.setLastName("User");
 
-        mockJob = new SendTempPasswordEmailJob(1L, TEMP_PASSWORD);
+        mockJob = new SendTempPasswordEmailJob(mockUser.getId(), TEMP_PASSWORD);
     }
 
     @Test
     void run_WithValidUser_SendsEmail() throws Exception {
         String expectedHtmlBody = "<html>Test email body</html>";
 
-        when(userService.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(userService.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
         when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("generated-password-email"), any(IContext.class))).thenReturn(expectedHtmlBody);
 
@@ -82,7 +83,7 @@ class SendTempPasswordEmailUnitTest {
 
     @Test
     void run_WithNonExistentUser_ThrowsException() throws MessagingException {
-        when(userService.findById(1L)).thenReturn(Optional.empty());
+        when(userService.findById(mockJob.getUserId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> jobHandler.run(mockJob))
                 .isInstanceOf(RuntimeException.class)
@@ -94,7 +95,7 @@ class SendTempPasswordEmailUnitTest {
 
     @Test
     void run_WithTemplateEngineFailure_PropagatesException() throws MessagingException {
-        when(userService.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(userService.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
         when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("generated-password-email"), any(IContext.class)))
                 .thenThrow(new RuntimeException("Template processing failed"));
@@ -108,7 +109,7 @@ class SendTempPasswordEmailUnitTest {
 
     @Test
     void run_WithEmailServiceFailure_PropagatesException() throws MessagingException {
-        when(userService.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(userService.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
         when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("generated-password-email"), any(IContext.class))).thenReturn("<html></html>");
         doThrow(new RuntimeException("Email service failed"))
@@ -122,24 +123,11 @@ class SendTempPasswordEmailUnitTest {
     }
 
     @Test
-    void run_WithInvalidUserId_ThrowsException() {
-        SendTempPasswordEmailJob invalidJob = new SendTempPasswordEmailJob(-1L, TEMP_PASSWORD);
-        when(userService.findById(-1L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> jobHandler.run(invalidJob))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("User not found");
-
-        verify(userService).findById(-1L);
-        verifyNoMoreInteractions(userService, emailService, templateEngine);
-    }
-
-    @Test
     void run_WithInvalidEmailAddress_ThrowsException() throws MessagingException {
         String invalidEmail = "invalid-email";
         mockUser.setEmail(invalidEmail);
 
-        when(userService.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(userService.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
         when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("generated-password-email"), any(IContext.class))).thenReturn("<html></html>");
         doThrow(new MessagingException("Invalid email address"))

@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,8 +45,9 @@ class ApplicationServiceUnitTest {
     @BeforeEach
     void setUp() {
         mockApplication = Application.builder()
-                .id(1L)
-                .freelancer(User.builder().id(1L).build())
+                .id(UUID.randomUUID())
+                .project(Project.builder().id(UUID.randomUUID()).build())
+                .freelancer(User.builder().id(UUID.randomUUID()).build())
                 .applicationStatus(ApplicationStatus.APPLIED)
                 .build();
     }
@@ -67,22 +70,23 @@ class ApplicationServiceUnitTest {
 
     @Test
     void getApplicationById_Success() {
-        when(applicationRepository.findById(1L)).thenReturn(Optional.of(mockApplication));
+        when(applicationRepository.findById(mockApplication.getId())).thenReturn(Optional.of(mockApplication));
 
-        Application result = applicationService.getApplicationById(1L);
+        Application result = applicationService.getApplicationById(mockApplication.getId());
 
         assertThat(result).isEqualTo(mockApplication);
-        verify(applicationRepository).findById(1L);
+        verify(applicationRepository).findById(mockApplication.getId());
     }
 
     @Test
     void getApplicationById_NotFound_ThrowsException() {
-        when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
+        UUID id = UUID.randomUUID();
+        when(applicationRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> applicationService.getApplicationById(1L))
+        assertThatThrownBy(() -> applicationService.getApplicationById(id))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", 404)
-                .hasMessage("No Application found with ID: 1");
+                .hasMessage("No Application found with ID: " + id);
     }
 
     @Test
@@ -99,10 +103,11 @@ class ApplicationServiceUnitTest {
 
     @Test
     void getApplicationByFreelancerIdAndProjectId_Success() {
-        when(applicationRepository.findApplicationByFreelancerIdAndProjectId(1L, 1L))
+
+        when(applicationRepository.findApplicationByFreelancerIdAndProjectId(mockApplication.getFreelancer().getId(), mockApplication.getProject().getId()))
                 .thenReturn(mockApplication);
 
-        Application result = applicationService.getApplicationByFreelancerIdAndProjectId(1L, 1L);
+        Application result = applicationService.getApplicationByFreelancerIdAndProjectId(mockApplication.getFreelancer().getId(), mockApplication.getProject().getId());
 
         assertThat(result).isEqualTo(mockApplication);
     }
@@ -112,37 +117,38 @@ class ApplicationServiceUnitTest {
         List<Application> applications = List.of(mockApplication);
         Page<Application> expectedPage = new PageImpl<>(applications);
 
-        when(applicationRepository.findApplicationsByFreelancerId(eq(1L), any(Pageable.class)))
+        when(applicationRepository.findApplicationsByFreelancerId(eq(mockApplication.getFreelancer().getId()), any(Pageable.class)))
                 .thenReturn(expectedPage);
 
-        Page<Application> result = applicationService.getAllApplicationsByFreelancerId(1L, Pageable.unpaged());
+        Page<Application> result = applicationService.getAllApplicationsByFreelancerId(mockApplication.getFreelancer().getId(), Pageable.unpaged());
 
         assertThat(result.getContent())
                 .hasSize(1)
                 .containsExactly(mockApplication);
         assertThat(result.getTotalElements()).isEqualTo(1);
-        verify(applicationRepository).findApplicationsByFreelancerId(eq(1L), any(Pageable.class));
+        verify(applicationRepository).findApplicationsByFreelancerId(eq(mockApplication.getFreelancer().getId()), any(Pageable.class));
     }
 
     @Test
     void getAllApplicationsByFreelancerId_NoApplicationsFound_ReturnsEmptyPage() {
         Page<Application> emptyPage = Page.empty();
-        when(applicationRepository.findApplicationsByFreelancerId(eq(1L), any(Pageable.class)))
+        UUID freelancerId = UUID.randomUUID();
+        when(applicationRepository.findApplicationsByFreelancerId(eq(freelancerId), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
-        Page<Application> result = applicationService.getAllApplicationsByFreelancerId(1L, Pageable.unpaged());
+        Page<Application> result = applicationService.getAllApplicationsByFreelancerId(freelancerId, Pageable.unpaged());
 
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
-        verify(applicationRepository).findApplicationsByFreelancerId(eq(1L), any(Pageable.class));
+        verify(applicationRepository).findApplicationsByFreelancerId(eq(freelancerId), any(Pageable.class));
     }
 
     @Test
     void getAllApplicationsByProjectId_Success() {
         List<Application> applications = Arrays.asList(mockApplication);
-        when(applicationRepository.findApplicationsByProjectId(1L)).thenReturn(applications);
+        when(applicationRepository.findApplicationsByProjectId(mockApplication.getProject().getId())).thenReturn(applications);
 
-        List<Application> result = applicationService.getAllApplicationsByProjectId(1L);
+        List<Application> result = applicationService.getAllApplicationsByProjectId(mockApplication.getProject().getId());
 
         assertThat(result)
                 .hasSize(1)
@@ -151,12 +157,13 @@ class ApplicationServiceUnitTest {
 
     @Test
     void getAllApplicationsByProjectId_NoApplicationsFound_ReturnsEmptyList() {
-        when(applicationRepository.findApplicationsByProjectId(1L)).thenReturn(List.of());
+        UUID projectId = UUID.randomUUID();
+        when(applicationRepository.findApplicationsByProjectId(projectId)).thenReturn(List.of());
 
-        List<Application> result = applicationService.getAllApplicationsByProjectId(1L);
+        List<Application> result = applicationService.getAllApplicationsByProjectId(projectId);
 
         assertThat(result).isEmpty();
-        verify(applicationRepository).findApplicationsByProjectId(1L);
+        verify(applicationRepository).findApplicationsByProjectId(projectId);
     }
 
     @Test
