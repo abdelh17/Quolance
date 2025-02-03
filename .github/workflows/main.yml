@@ -36,6 +36,18 @@ jobs:
           cd quolance-ui
           npm run coverage:report
 
+      # Step 3.5: Debug - Log the lcov.info File
+      - name: Debug Coverage Report
+        run: |
+          cd quolance-ui
+          if [ -f ./coverage/lcov.info ]; then
+            echo "lcov.info file found. Contents are:"
+            cat ./coverage/lcov.info
+          else
+            echo "Error: lcov.info file not found."
+            exit 1
+          fi
+
       # Step 4: Build Frontend
       - name: Build Frontend
         run: |
