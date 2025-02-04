@@ -46,7 +46,7 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.javascript.lcov.reportPaths=quolance-ui/coverage/lcov.info
             -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.tests=quolance-ui/cypress
+            -Dsonar.tests=quolance-ui/cypress/e2e
             -Dsonar.verbose=true
 
   backend-build-test:
