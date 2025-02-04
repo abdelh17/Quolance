@@ -25,14 +25,19 @@ jobs:
           cd quolance-ui
           npm install
 
-      # Step 3: Run Cypress Tests & Generate Coverage Report
-      - name: Run Cypress Tests with Coverage
+      # Step 3: Run Cypress Tests
+      - name: Run Cypress Tests
         run: |
           cd quolance-ui
           npm run e2e:headless
+
+      # Step 4: Generate Coverage Report
+      - name: Generate Coverage Report
+        run: |
+          cd quolance-ui
           npm run coverage:report  # Generates lcov.info
 
-      # Step 4: Run SonarCloud Scan
+      # Step 5: Run SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
