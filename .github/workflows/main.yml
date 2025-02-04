@@ -36,6 +36,19 @@ jobs:
           cd quolance-ui
           npm run coverage:report
 
+      # Step 3.5: Persist Coverage and Cypress Data
+      - name: Persist Coverage and Cypress Data
+        run: |
+          mkdir -p ~/artifacts
+          cp -r quolance-ui/cypress ~/artifacts/
+          cp -r quolance-ui/coverage ~/artifacts/
+
+      # Step 3.7: Restore Coverage and Cypress Data
+      - name: Restore Coverage and Cypress Data
+        run: |
+          cp -r ~/artifacts/cypress quolance-ui/
+          cp -r ~/artifacts/coverage quolance-ui/
+
       # Step 4: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarqube-scan-action@master
