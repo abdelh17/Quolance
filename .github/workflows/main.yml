@@ -36,10 +36,17 @@ jobs:
           cd quolance-ui
           npm run coverage:report
 
-      # Step 3.5: Debug - Log the lcov.info File
+      # Step 4: Build Frontend
+      - name: Build Frontend
+        run: |
+          cd quolance-ui
+          npm run build
+
+      # Step 5.1: Debug - Check lcov.info File
       - name: Debug Coverage Report
         run: |
           cd quolance-ui
+          echo "Checking lcov.info file before SonarCloud scan..."
           if [ -f ./coverage/lcov.info ]; then
             echo "lcov.info file found. Contents are:"
             cat ./coverage/lcov.info
@@ -48,13 +55,7 @@ jobs:
             exit 1
           fi
 
-      # Step 4: Build Frontend
-      - name: Build Frontend
-        run: |
-          cd quolance-ui
-          npm run build
-
-      # Step 5: SonarCloud Scan for Frontend
+      # Step 5.2: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarqube-scan-action@master
         env:
@@ -68,6 +69,7 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
             -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.verbose=true # Enable detailed debug logging
 
   backend-build-test:
     name: Build and Test Backend
