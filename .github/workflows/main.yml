@@ -36,13 +36,7 @@ jobs:
           cd quolance-ui
           npm run coverage:report
 
-      # Step 4: Build Frontend
-      - name: Build Frontend
-        run: |
-          cd quolance-ui
-          npm run build
-
-      # Step 5: SonarCloud Scan for Frontend
+      # Step 4: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarqube-scan-action@master
         env:
@@ -54,7 +48,7 @@ jobs:
             -Dsonar.organization=abdelh17
             -Dsonar.projectKey=abdelh17_Quolance_ui
             -Dsonar.sources=.
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=quolance-ui/coverage/lcov.info
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.verbose=true # Enable detailed debug logging
 
