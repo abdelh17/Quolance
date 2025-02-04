@@ -6,8 +6,7 @@
 .pnp.js
 
 # testing
-coverage/lcov-report/
-.nyc_output
+
 
 
 # next.js
