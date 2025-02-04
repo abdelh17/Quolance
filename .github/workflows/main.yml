@@ -10,48 +10,31 @@ on:
 
 jobs:
   frontend-build-test:
-    name: Build, Test, and Run E2E for Frontend
+    name: Build, Test, and Analyze Frontend
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout Repository
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      # Step 1: Install Dependencies
+      # Step 2: Install Dependencies
       - name: Install Dependencies
         run: |
           cd quolance-ui
           npm install
 
-      # Step 2: Run Cypress Tests and Generate Coverage
-      - name: Run Cypress Tests and Generate Coverage
+      # Step 3: Run Cypress Tests & Generate Coverage Report
+      - name: Run Cypress Tests with Coverage
         run: |
           cd quolance-ui
           npm run e2e:headless
+          npm run coverage:report  # Generates lcov.info
 
-      # Step 3: Generate Coverage Report
-      - name: Generate Coverage Report
-        run: |
-          cd quolance-ui
-          npm run coverage:report
-
-      # Step 3.5: Persist Coverage and Cypress Data
-      - name: Persist Coverage and Cypress Data
-        run: |
-          mkdir -p ~/artifacts
-          cp -r quolance-ui/cypress ~/artifacts/
-          cp -r quolance-ui/coverage ~/artifacts/
-
-      # Step 3.7: Restore Coverage and Cypress Data
-      - name: Restore Coverage and Cypress Data
-        run: |
-          cp -r ~/artifacts/cypress quolance-ui/
-          cp -r ~/artifacts/coverage quolance-ui/
-
-      # Step 4: SonarCloud Scan for Frontend
-      - name: SonarCloud Scan Frontend
-        uses: SonarSource/sonarqube-scan-action@master
+      # Step 4: Run SonarCloud Scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
