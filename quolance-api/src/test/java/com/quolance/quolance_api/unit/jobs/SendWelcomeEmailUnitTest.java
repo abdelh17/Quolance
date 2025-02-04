@@ -169,20 +169,6 @@ class SendWelcomeEmailUnitTest {
         assertThat(mockVerificationCode.isEmailSent()).isFalse();
     }
 
-//    @Test
-//    void run_WithInvalidUserId_ThrowsException() {
-//        UUID invalidUuid = UUID.fromString("invalid-uuid");
-//        SendWelcomeEmailJob invalidJob = new SendWelcomeEmailJob(invalidUuid);
-//        when(userService.findById(invalidUuid)).thenReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> jobHandler.run(invalidJob))
-//                .isInstanceOf(RuntimeException.class)
-//                .hasMessage("User not found");
-//
-//        verify(userService).findById(invalidUuid);
-//        verifyNoMoreInteractions(userService, emailService, templateEngine, verificationCodeService);
-//    }
-
     @Test
     void run_WithInvalidEmailAddress_ThrowsException() throws MessagingException {
         String invalidEmail = "invalid-email";

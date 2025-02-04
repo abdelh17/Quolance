@@ -143,20 +143,6 @@ class FreelancerControllerUnitTest {
         }
     }
 
-//    @Test
-//    void getApplication_WithInvalidId_ThrowsApiException() {
-//        UUID invalidFormatId = UUID.fromString("invalid-format-id");
-//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
-//            when(freelancerWorkflowService.getApplication(eq(invalidFormatId), any(User.class)))
-//                    .thenThrow(new ApiException("Invalid application ID"));
-//
-//            assertThatThrownBy(() -> freelancerController.getApplication(invalidFormatId))
-//                    .isInstanceOf(ApiException.class)
-//                    .hasMessage("Invalid application ID");
-//        }
-//    }
-
     @Test
     void deleteApplication_ReturnsSuccessMessage() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
@@ -302,22 +288,6 @@ class FreelancerControllerUnitTest {
             verify(freelancerWorkflowService).getProject(projectPublicDto.getId());
         }
     }
-
-//    @Test
-//    void getProjectById_WithInvalidId_ThrowsApiException() {
-//        UUID invalidFormatId = UUID.fromString("invalid-format-id");
-//
-//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
-//        when(freelancerWorkflowService.getProject(invalidFormatId))
-//                .thenThrow(new ApiException("Invalid project ID"));
-//
-//        assertThatThrownBy(() -> freelancerController.getProjectById(invalidFormatId))
-//                .isInstanceOf(ApiException.class)
-//                .hasMessage("Invalid project ID");
-//        verify(freelancerWorkflowService).getProject(invalidFormatId);
-//        }
-//    }
 
     @Test
     void updateFreelancerProfile_WithInvalidData_ReturnsBadRequest() {

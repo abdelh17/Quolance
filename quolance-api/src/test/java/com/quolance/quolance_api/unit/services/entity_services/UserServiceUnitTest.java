@@ -295,7 +295,7 @@ class UserServiceUnitTest {
         Optional<User> result = userService.findById(mockUser.getId());
 
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(mockUser);
+        assertThat(result).contains(mockUser);
         verify(userRepository).findById(mockUser.getId());
     }
 
@@ -317,7 +317,7 @@ class UserServiceUnitTest {
         Optional<User> result = userService.findByUsername("testuser");
 
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(mockUser);
+        assertThat(result).contains(mockUser);
         verify(userRepository).findByUsername("testuser");
     }
 

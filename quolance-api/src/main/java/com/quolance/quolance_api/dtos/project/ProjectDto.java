@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectDto {
-
 
     private UUID id;
 
@@ -47,6 +47,8 @@ public class ProjectDto {
 
     private List<ApplicationDto> applications;
 
+    private LocalDateTime creationDate;
+
     public static ProjectDto fromEntity(Project project) {
         return ProjectDto.builder()
                 .id(project.getId())
@@ -65,6 +67,7 @@ public class ProjectDto {
                 .applications(project.getApplications() != null ? project.getApplications().stream()
                         .map(ApplicationDto::fromEntity)
                         .toList() : null)
+                .creationDate(project.getCreationDate())
                 .build();
     }
 }

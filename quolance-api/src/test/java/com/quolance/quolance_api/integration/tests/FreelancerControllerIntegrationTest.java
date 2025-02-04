@@ -195,7 +195,7 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
         //Act
         String response = mockMvc.perform(get("/api/freelancer/applications/all")
-//                        .param("sortDirection", "asc")
+                        .param("sortDirection", "asc")
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()

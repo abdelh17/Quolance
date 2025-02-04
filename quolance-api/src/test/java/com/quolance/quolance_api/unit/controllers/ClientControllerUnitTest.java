@@ -153,21 +153,6 @@ class ClientControllerUnitTest {
         }
     }
 
-//    @Test
-//    void getProject_WithInvalidId_ThrowsApiException() {
-//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-//            UUID invalidUuid = UUID.fromString("invalid-uuid");
-//            when(clientWorkflowService.getProject(eq(invalidUuid), any(User.class)))
-//                    .thenThrow(new ApiException("Invalid project ID"));
-//
-//            assertThatThrownBy(() -> clientController.getProject(invalidUuid))
-//                    .isInstanceOf(ApiException.class)
-//                    .hasMessage("Invalid project ID");
-//            verify(clientWorkflowService).getProject(invalidUuid, mockClient);
-//        }
-//    }
-
     @Test
     void updateProject_ReturnsUpdatedProject() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
