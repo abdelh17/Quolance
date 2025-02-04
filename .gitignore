@@ -5,10 +5,6 @@
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-!/coverage/lcov.info
-/.nyc_output
 
 
 # next.js
