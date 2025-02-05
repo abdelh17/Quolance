@@ -31,7 +31,14 @@ jobs:
           cd quolance-ui
           npm run e2e:headless
 
-      # Step 4: Run SonarCloud Scan
+      # Step 4: Log lcov.info Before the scan
+      - name: Log lcov.info File
+        run: |
+          cd quolance-ui
+          echo "Logging lcov.info file for verification:"
+          cat coverage/lcov.info || echo "lcov.info file not found"
+
+      # Step 5: Run SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
@@ -44,6 +51,13 @@ jobs:
             -Dsonar.projectKey=abdelh17_Quolance_ui
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.verbose=true
+
+        # Step 6: Log lcov.info After the Scan
+      - name: Log lcov.info File (After)
+        run: |
+          cd quolance-ui
+          echo "Contents of lcov.info file after scan:"
+          cat coverage/lcov.info || echo "lcov.info file not found"
 
   backend-build-test:
     name: Build and Test Backend
