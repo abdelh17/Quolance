@@ -76,6 +76,19 @@ export const useReactToPost = (options?: {
   });
 };
 
+export const useRemoveReaction = (options?: {
+  onSuccess?: () => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<void, HttpErrorResponse, number>({
+    mutationFn: async (reactionId) => {
+      await httpClient.delete(`/api/blog-posts/reactions/${reactionId}`);
+    },
+    ...options,
+  });
+};
+
+
 export interface CommentResponseDto {
   commentId: number;
   blogPostId: number;
