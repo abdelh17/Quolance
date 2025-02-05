@@ -42,8 +42,6 @@ jobs:
           args: >
             -Dsonar.organization=abdelh17
             -Dsonar.projectKey=abdelh17_Quolance_ui
-            -Dsonar.sources=.
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.verbose=true
 
