@@ -4,10 +4,17 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 import PostReaction from "./PostReaction";
-import { useGetReactionsByPostId, useReactToPost, useGetCommentsByPostId, useAddComment } from "@/api/blog-api";
+
 import { useAuthGuard } from "@/api/auth-api";
 import CommentCard from "./CommentCard";
 import { CommentType } from "@/constants/types/blog-types";
+import { 
+    useGetReactionsByPostId, 
+    useReactToPost, 
+    useGetCommentsByPostId, 
+    useAddComment,
+    useRemoveReaction
+} from "@/api/blog-api";
 
 interface ReactionState {
     [key: string]: { count: number; userReacted: boolean };
@@ -31,11 +38,12 @@ interface PostCardProps {
     const { mutate: reactToPost } = useReactToPost();
     const { data: commentsData, refetch: refetchComments } = useGetCommentsByPostId(id);
     const { mutate: addComment } = useAddComment(id, {
-    onSuccess: () => {
-        setNewComment(""); // Clear input field
-        refetchComments(); // Refresh comments
-    },
+        onSuccess: () => {
+            setNewComment(""); // Clear input field
+            refetchComments(); // Refresh comments
+        },
     });
+    const { mutate: removeReaction } = useRemoveReaction();
     const { user } = useAuthGuard({ middleware: "auth" });
 
     useEffect(() => {
@@ -50,11 +58,11 @@ interface PostCardProps {
         };
 
         reactionData.forEach((reaction) => {
-        const { reactionType, userName } = reaction;
-        initialReactions[reactionType.toLowerCase()].count += 1;
-        if (userName === user?.username) {
-            initialReactions[reactionType.toLowerCase()].userReacted = true;
-        }
+            const { reactionType, userName } = reaction;
+            initialReactions[reactionType.toLowerCase()].count += 1;
+            if (userName === user?.username) {
+                initialReactions[reactionType.toLowerCase()].userReacted = true;
+            }
         });
 
         setReactions(initialReactions);
@@ -62,27 +70,39 @@ interface PostCardProps {
     }, [reactionData, user]);
 
     const handleReactionClick = (reactionType: string) => {
-        if (!reactions) return;
-
+        if (!reactions || !user) return;
+      
         const userReacted = reactions[reactionType].userReacted;
-
+      
+        if (userReacted) {
+            // Find the user's reaction and remove it
+            const userReaction = reactionData?.find(
+                (reaction) => reaction.reactionType.toLowerCase() === reactionType && reaction.userName === user.username
+            );
+        
+            if (userReaction) {
+                removeReaction(userReaction.id);
+            }
+        } else {
+          reactToPost({ reactionType: reactionType.toUpperCase(), blogPostId: id });
+        }
+      
         const updatedReactions = Object.keys(reactions).reduce((acc, key) => {
             acc[key] = { ...reactions[key] };
-
+        
             if (key === reactionType) {
-            acc[key].userReacted = !userReacted;
-            acc[key].count += userReacted ? -1 : 1;
+                acc[key].userReacted = !userReacted;
+                acc[key].count += userReacted ? -1 : 1;
             } else if (reactions[key].userReacted) {
-            acc[key].userReacted = false;
-            acc[key].count -= 1;
+                acc[key].userReacted = false;
+                acc[key].count -= 1;
             }
-
+        
             return acc;
         }, {} as ReactionState);
-
+      
         setReactions(updatedReactions);
-        reactToPost({ reactionType: reactionType.toUpperCase(), blogPostId: id });
-    };
+      };
 
     const handleAddComment = () => {
         if (!newComment.trim() || !user) return;
