@@ -48,7 +48,7 @@ jobs:
             -Dsonar.sources=. \
             -Dsonar.tests=cypress/e2e \
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-            -Dsonar.exclusions=cypress/e2e/**,**/node_modules/**
+            -Dsonar.exclusions=cypress/e2e/**,**/node_modules/** \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.verbose=true
         env:
