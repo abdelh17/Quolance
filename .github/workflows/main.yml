@@ -35,7 +35,7 @@ jobs:
       - name: Generate Test Coverage
         run: |
           cd quolance-ui
-          npm run test:coverage # Ensure this script generates ./coverage/lcov.info
+          npm run coverage:report # Ensure this script generates ./coverage/lcov.info
 
       # Step 5: Log lcov.info for Verification
       - name: Log lcov.info File
