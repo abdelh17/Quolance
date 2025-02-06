@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.dtos.blog;
 
+import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.BlogTags;
 import com.quolance.quolance_api.util.exceptions.InvalidBlogTagException;
@@ -25,6 +26,7 @@ public class BlogPostRequestDto {
     private String content;
     private List<BlogCommentDto> comments;
     private Set<BlogTags> tags;
+    private List<String> imageUrls;
 
     public static BlogPost toEntity(BlogPostRequestDto blogPostRequestDto) {
         BlogPost blogPost = BlogPost.builder()
@@ -32,21 +34,15 @@ public class BlogPostRequestDto {
                 .content(blogPostRequestDto.getContent())
                 .build();
 
-        // Map tag strings to BlogTags, validate them, and collect into a set
-        if (blogPostRequestDto.getTags() != null) {
-            Set<BlogTags> validTags = blogPostRequestDto.getTags().stream()
-                    .map(tag -> {
-                        try {
-                            return tag; // Convert string to BlogTags enum
-                        } catch (IllegalArgumentException e) {
-                            throw new InvalidBlogTagException("Invalid tag: " + tag); // Handle invalid tag
-                        }
-                    })
-                    .collect(Collectors.toSet());
-
-            blogPost.setTags(validTags); // Set valid tags
-        } else {
-            blogPost.setTags(new HashSet<>()); // Ensure it's initialized as empty
+        // Handle images while converting the DTO to an entity
+        if (blogPostRequestDto.getImageUrls() != null && !blogPostRequestDto.getImageUrls().isEmpty()) {
+            List<BlogImage> images = blogPostRequestDto.getImageUrls().stream()
+                    .map(url -> BlogImage.builder()
+                            .imageUrl(url)
+                            .blogPost(blogPost)
+                            .build())
+                    .collect(Collectors.toList());
+            blogPost.setImages(images);  // Associate images with the blog post
         }
 
         return blogPost;

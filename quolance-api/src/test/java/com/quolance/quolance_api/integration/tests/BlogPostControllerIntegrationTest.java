@@ -3,6 +3,7 @@ package com.quolance.quolance_api.integration.tests;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
@@ -13,8 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -64,13 +68,34 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testGetBlogPostByIdIsOk() throws Exception {
+        // Create a blog post and save it
         BlogPost blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
 
+        // Manually associate image URLs with the blog post (since we're not modifying EntityCreationHelper)
+        BlogPostRequestDto request = new BlogPostRequestDto();
+        request.setImageUrls(List.of(
+                "https://example.com/image1.jpg",
+                "https://example.com/image2.jpg"
+        ));
+        for (String imageUrl : request.getImageUrls()) {
+            blogPost.getImages().add(BlogImage.builder()
+                    .imageUrl(imageUrl)
+                    .blogPost(blogPost)
+                    .build());
+        }
+        blogPostRepository.save(blogPost);
+
+        // Perform GET request and validate image URLs
         mockMvc.perform(get("/api/blog-posts/" + blogPost.getId())
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(blogPost.getTitle()))
+                .andExpect(jsonPath("$.imageUrls").isArray())
+                .andExpect(jsonPath("$.imageUrls[0]").value("https://example.com/image1.jpg"))
+                .andExpect(jsonPath("$.imageUrls[1]").value("https://example.com/image2.jpg"));
     }
+
 
     @Test
     void testGetBlogPostByIdNotFound() throws Exception {
@@ -122,4 +147,31 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
         assertThat(blogPostRepository.findById(blogPost.getId())).isEmpty();
     }
+
+    @Test
+    void testCreateBlogPostWithImages() throws Exception {
+        BlogPostRequestDto request = new BlogPostRequestDto();
+        request.setTitle("Blog Post with Images");
+        request.setContent("This blog post has images.");
+        request.setImageUrls(List.of(
+                "https://example.com/image1.jpg",
+                "https://example.com/image2.jpg"
+        ));
+
+        // Send POST request to create the blog post
+        mockMvc.perform(post("/api/blog-posts")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        // Validate that the blog post and its images were saved
+        BlogPost savedPost = blogPostRepository.findAll().getFirst();
+        assertThat(savedPost.getTitle()).isEqualTo("Blog Post with Images");
+        assertThat(savedPost.getImages()).hasSize(2);
+        assertThat(savedPost.getImages().get(0).getImageUrl()).isEqualTo("https://example.com/image1.jpg");
+        assertThat(savedPost.getImages().get(1).getImageUrl()).isEqualTo("https://example.com/image2.jpg");
+    }
+
+
 }

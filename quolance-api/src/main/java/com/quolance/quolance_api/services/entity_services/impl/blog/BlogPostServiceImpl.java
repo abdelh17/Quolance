@@ -31,6 +31,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPostResponseDto create(@Valid BlogPostRequestDto request, User author) {
         BlogPost blogPost = BlogPostRequestDto.toEntity(request);
         blogPost.setUser(author);
+
         BlogPost savedBlogPost = blogPostRepository.save(blogPost);
 
         return BlogPostResponseDto.fromEntity(savedBlogPost);
