@@ -5,7 +5,6 @@ import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogPost;
-import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

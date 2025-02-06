@@ -1,7 +1,6 @@
 package com.quolance.quolance_api.controllers.blog;
 
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
-import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.entity_services.blog.BlogCommentService;
 import com.quolance.quolance_api.util.SecurityUtil;

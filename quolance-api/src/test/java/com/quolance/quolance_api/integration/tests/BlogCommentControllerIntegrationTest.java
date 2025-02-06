@@ -2,7 +2,6 @@ package com.quolance.quolance_api.integration.tests;
 
 import static org.assertj.core.api.Assertions.assertThatList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -189,7 +188,6 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
                 });
 
         long totalElements = jsonNode.get("totalElements").asLong();
-        int totalPages = jsonNode.get("totalPages").asInt();
         boolean isLastPage = jsonNode.get("last").asBoolean();
         Pageable pageable = PageRequest.of(0, 3);
 
