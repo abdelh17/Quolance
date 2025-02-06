@@ -6,6 +6,9 @@ import com.quolance.quolance_api.entities.blog.BlogComment;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface BlogCommentService {
 
     BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto);
@@ -17,4 +20,6 @@ public interface BlogCommentService {
     List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId);
 
     BlogComment getBlogCommentEntity(Long blogCommentId);
+
+    Page<BlogComment> getPaginatedComments(Long blogPostId, Pageable pageable);
 }
