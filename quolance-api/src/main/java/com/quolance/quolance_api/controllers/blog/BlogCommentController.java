@@ -1,12 +1,16 @@
 package com.quolance.quolance_api.controllers.blog;
 
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
+import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.entity_services.blog.BlogCommentService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +25,8 @@ public class BlogCommentController {
 
     @PostMapping("/{postId}")
     @Operation(summary = "Create a new blog comment")
-    public ResponseEntity<BlogCommentDto> createBlogComment(@PathVariable Long postId, @Valid @RequestBody BlogCommentDto request) {
+    public ResponseEntity<BlogCommentDto> createBlogComment(@PathVariable Long postId,
+            @Valid @RequestBody BlogCommentDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         BlogCommentDto response = blogCommentService.createBlogComment(postId, author, request);
         return ResponseEntity.ok(response);
@@ -34,9 +39,17 @@ public class BlogCommentController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/{blogPostId}")
+    @Operation(summary = "Get paginated comments for a specific blog post")
+    public ResponseEntity<Page<BlogCommentDto>> getCommentsByBlogPostId(
+            @PathVariable Long blogPostId, Pageable pageable) {
+        return ResponseEntity.ok(blogCommentService.getPaginatedComments(blogPostId, pageable));
+    }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update a blog comment")
-    public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable Long id, @RequestBody BlogCommentDto request) {
+    public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable Long id,
+            @RequestBody BlogCommentDto request) {
         BlogCommentDto response = blogCommentService.updateBlogComment(id, request);
         return ResponseEntity.ok(response);
     }

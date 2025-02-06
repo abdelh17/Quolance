@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.jobrunr.storage.navigation.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -61,8 +62,9 @@ public class BlogPostController {
     }
 
     @GetMapping
-    public Page<BlogPost> getBlogPosts(Pageable pageable) {
-        return blogPostService.getPaginatedBlogPosts(pageable);
+    @Operation(summary = "Get paginated blog posts")
+    public ResponseEntity<Page<BlogPostResponseDto>> getBlogPosts(Pageable pageable) {
+        return ResponseEntity.ok(blogPostService.getPaginatedBlogPosts(pageable));
     }
 
     @DeleteMapping("/{postId}")
