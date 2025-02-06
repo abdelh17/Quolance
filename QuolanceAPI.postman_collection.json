@@ -1,6 +1,5 @@
 {
 	"info": {
-
 		"_postman_id": "4a19faba-6178-4e26-b2ec-68964783e25c",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
@@ -365,51 +364,6 @@
 						"method": "GET",
 						"header": [],
 						"url": "http://localhost:8081/api/client/projects/1/applications/all"
-
-					},
-					"response": []
-				},
-				{
-					"name": "Get all available Freelancers",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/api/client/freelancers/all",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"client",
-								"freelancers",
-								"all"
-							],
-							"query": [
-								{
-									"key": "searchName",
-									"value": "John",
-									"disabled": true
-								},
-								{
-									"key": "experienceLevel",
-									"value": "EXPERT",
-									"disabled": true
-								},
-								{
-									"key": "availability",
-									"value": "FULL_TIME",
-									"disabled": true
-								},
-								{
-									"key": "skills",
-									"value": "HTML,JAVA",
-									"disabled": true
-								}
-							]
-						}
 					},
 					"response": []
 				}
@@ -703,6 +657,14 @@
 								"url": "http://localhost:8081/api/blog-posts/1"
 							},
 							"response": []
+						},
+						{
+							"name": "Get paginated blogposts",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					]
 				},
@@ -820,9 +782,7 @@
 							"name": "Get Comment By Post ID",
 							"request": {
 								"method": "GET",
-								"header": [],
-								"url": ""
-
+								"header": []
 							},
 							"response": []
 						},
@@ -841,6 +801,38 @@
 								"method": "PUT",
 								"header": [],
 								"url": "http://localhost:8081/api/blog-comments/3"
+							},
+							"response": []
+						},
+						{
+							"name": "Get paginated comments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/blog-comments/post/1?page=0&size=5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"blog-comments",
+										"post",
+										"1"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "5"
+										}
+									]
+								}
 							},
 							"response": []
 						}
@@ -925,12 +917,7 @@
 							"name": "Remove reaction",
 							"request": {
 								"method": "DELETE",
-
-								"header": [],
-								"url": ""
-
 								"header": []
-
 							},
 							"response": []
 						}
