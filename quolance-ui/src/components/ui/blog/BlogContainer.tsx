@@ -48,7 +48,7 @@ const BlogContainer: React.FC = () => {
     })
 
 
-    const handleFormSubmit = async (postData: { title: string; content: string; userId: number | undefined }) => {
+    const handleFormSubmit = async (postData: { title: string; content: string; userId: string | undefined }) => {
         if (!postData.userId) {
             console.error("User ID is undefined. User must be logged in.");
             showToast("Error: User not logged in.", "error");

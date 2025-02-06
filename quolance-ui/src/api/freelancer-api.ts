@@ -5,7 +5,7 @@ import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 
 /*--- Hooks ---*/
-export const useSubmitApplication = (projectId: number) => {
+export const useSubmitApplication = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () =>
@@ -24,10 +24,10 @@ export const useSubmitApplication = (projectId: number) => {
   });
 };
 
-export const useCancelApplication = (projectId: number) => {
+export const useCancelApplication = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (applicationId: number) =>
+    mutationFn: (applicationId: string) =>
       httpClient.delete(`api/freelancer/applications/${applicationId}`),
     onSuccess: () => {
       showToast('Application cancelled successfully', 'success');
@@ -66,14 +66,14 @@ export const useGetAllFreelancerApplications = (params: PaginationParams) => {
   });
 };
 
-export const useGetProjectApplication = (projectId: number) => {
+export const useGetProjectApplication = (projectId: string) => {
   return useQuery({
     queryKey: ['applications', projectId],
     queryFn: async () => {
       const { data } = await httpClient.get('api/freelancer/applications/all');
       return (
         data.content.find(
-          (application: { projectId: number }) =>
+          (application: { projectId: string }) =>
             application.projectId === projectId
         ) || null
       );

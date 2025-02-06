@@ -7,7 +7,7 @@ import Image from 'next/image';
 const topProjects = [
   {
     tags: ['Finance', 'Tech'],
-    projectId: 1,
+    projectId: "1",
     createdAt: '10/10/2024',
     projectCategory: 'Finance',
     projectTitle: 'Financial Dashboard Development',
@@ -19,11 +19,11 @@ const topProjects = [
     deliveryDate: '12/12/2024',
     location: 'New York, USA',
     projectStatus: 'APPROVED',
-    clientId: 101,
+    clientId: "101",
   },
   {
     tags: ['Healthcare', 'Data Science'],
-    projectId: 2,
+    projectId: "2",
     createdAt: '09/05/2024',
     projectCategory: 'Healthcare',
     projectTitle: 'Patient Data Analytics',
@@ -35,11 +35,11 @@ const topProjects = [
     deliveryDate: '11/15/2024',
     location: 'Toronto, Canada',
     projectStatus: 'APPROVED',
-    clientId: 102,
+    clientId: "102",
   },
   {
     tags: ['Marketing', 'Content'],
-    projectId: 3,
+    projectId: "3",
     createdAt: '07/25/2024',
     projectCategory: 'Marketing',
     projectTitle: 'Social Media Content Strategy',
@@ -51,7 +51,7 @@ const topProjects = [
     deliveryDate: '11/20/2024',
     location: 'London, UK',
     projectStatus: 'APPROVED',
-    clientId: 103,
+    clientId: "103",
   },
 ];
 

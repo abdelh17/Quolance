@@ -14,7 +14,7 @@ interface ReactionState {
 }
 
 interface PostCardProps {
-    id: number;
+    id: string;
     title: string;
     content: string;
     authorName: string;

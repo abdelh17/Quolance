@@ -23,7 +23,7 @@ export const useCreateBlogPost = (options?: {
     onError?: (error: unknown) => void;
 }) => {
     return useMutation({
-        mutationFn: (blogpost: { title: string; content: string; userId?: number }) => {
+        mutationFn: (blogpost: { title: string; content: string; userId?: string }) => {
             if (!blogpost.userId) {
                 throw new Error("User ID is undefined. User must be logged in.");
             }
@@ -35,15 +35,15 @@ export const useCreateBlogPost = (options?: {
 };
 
 export interface ReactionResponseDto {
-  id: number;
+  id: string;
   reactionType: string;
-  userId: number;
+  userId: string;
   userName: string;
-  blogPostId: number;
+  blogPostId: string;
 }
 
 
-export const useGetReactionsByPostId = (postId: number, options?: {
+export const useGetReactionsByPostId = (postId: string, options?: {
   onSuccess?: (data: ReactionResponseDto[]) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
@@ -60,7 +60,7 @@ export const useGetReactionsByPostId = (postId: number, options?: {
 
 export interface ReactionRequestDto {
   reactionType: string;
-  blogPostId: number;
+  blogPostId: string;
 }
 
 export const useReactToPost = (options?: {
@@ -77,13 +77,13 @@ export const useReactToPost = (options?: {
 };
 
 export interface CommentResponseDto {
-  commentId: number;
-  blogPostId: number;
-  userId: number;
+  commentId: string;
+  blogPostId: string;
+  userId: string;
   content: string;
 }
 
-export const useGetCommentsByPostId = (postId: number, options?: {
+export const useGetCommentsByPostId = (postId: string, options?: {
   onSuccess?: (data: CommentResponseDto[]) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
@@ -102,7 +102,7 @@ export interface CommentRequestDto {
   content: string;
 }
 
-export const useAddComment = (postId: number, options?: {
+export const useAddComment = (postId: string, options?: {
   onSuccess?: (data: CommentResponseDto) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {

@@ -1,10 +1,10 @@
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 
 export interface ApplicationResponse {
-  id: number;
+  id: string;
   status: ApplicationStatus;
-  projectId: number;
-  freelancerId: number;
+  projectId: string;
+  freelancerId: string;
   freelancerProfile: FreelancerProfileType; // Define FreelancerProfile type
 }
 

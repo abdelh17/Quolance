@@ -1,20 +1,18 @@
 "use client";
 
 
+import {useParams, useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 
+import {showToast} from '@/util/context/ToastProvider';
 
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useProjectContext } from '../../../AdminContext/ProjectContext';
-import { ConfirmationModal } from '../../../componentsAdmin/ConfirmationModal';
-import { ProjectDetails } from '../../../componentsAdmin/ProjectDetails';
-import { showToast } from '@/util/context/ToastProvider';
-
-
+import {useProjectContext} from '../../../AdminContext/ProjectContext';
+import {ConfirmationModal} from '../../../componentsAdmin/ConfirmationModal';
+import {ProjectDetails} from '../../../componentsAdmin/ProjectDetails';
 
 
 type Project = {
-id: number;
+  id: string;
 title: string;
 description: string;
 expirationDate: string; 
@@ -24,9 +22,9 @@ priceRange: string;
 experienceLevel: string;
 expectedDeliveryTime: string;
 projectStatus: string;
-tags?: string[]; 
-clientId: number;
-selectedFreelancerId: number | null; 
+tags?: string[];
+  clientId: string;
+  selectedFreelancerId: string | null;
 applications: any[]; 
 };
 
@@ -48,7 +46,7 @@ const pageSize = 5
 
 useEffect(() => {
   if (id) {
-    const projectId = Number(id);
+    const projectId = String(id);
     const fetchedProject = projects.find((p) => p.id === projectId);
     if (fetchedProject) {
       setProject(fetchedProject);

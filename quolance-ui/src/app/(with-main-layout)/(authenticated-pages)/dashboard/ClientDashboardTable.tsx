@@ -52,7 +52,7 @@ export default function ClientDashboardTable() {
             : <ArrowDown className="h-4 w-4 inline-block ml-1" />;
     };
 
-    const scrollToApplicants = (projectId: number) => {
+    const scrollToApplicants = (projectId: string) => {
         router.push(`/projects/${projectId}#applicants-section`);
         setTimeout(() => {
             document.getElementById('applicants-section')?.scrollIntoView({

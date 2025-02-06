@@ -10,10 +10,10 @@ import Modal from '@/components/ui/Modal';
 import { PiX } from 'react-icons/pi';
 
 interface Application {
-  id: number;
+  id: string;
   status: ApplicationStatus;
-  projectId: number;
-  freelancerId: number;
+  projectId: string;
+  freelancerId: string;
   projectTitle: string;
 }
 
@@ -65,7 +65,7 @@ export default function FreelancerDashboardTable() {
     setIsDeleteModalOpen(true);
   };
 
-  const { mutate: cancelApplication } = useCancelApplication(selectedApplication?.projectId || 0);
+  const { mutate: cancelApplication } = useCancelApplication(selectedApplication?.projectId || "");
 
   const handleConfirmWithdraw = () => {
     if (selectedApplication) {

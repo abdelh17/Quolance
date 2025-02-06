@@ -9,7 +9,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 
 interface Project {
- id: number;
+ id: string;
  title: string;
  description: string;
  expirationDate: string; 
@@ -20,8 +20,8 @@ interface Project {
  expectedDeliveryTime: string;
  projectStatus: string;
  tags?: string[]; 
- clientId: number;
- selectedFreelancerId: number | null;
+ clientId: string;
+ selectedFreelancerId: string | null;
  applications: any[]; 
 }
 
