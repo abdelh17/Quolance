@@ -4,36 +4,100 @@ import httpClient from '@/lib/httpClient';
 import { BlogPostType, BlogPostViewType } from '@/constants/types/blog-types';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
-export const useGetAllBlogPosts = (options?: {
-    onSuccess?: (data: BlogPostViewType[]) => void;
-    onError?: (error: HttpErrorResponse) => void;
-  }) => {
-    return useQuery<BlogPostViewType[], HttpErrorResponse>({
-      queryKey: ['all-blog-posts'],
-      queryFn: async () => {
-        const response = await httpClient.get('/api/blog-posts/all');
-        return response.data;
-      },
-      ...options,
-    });
-  };
 
-export const useCreateBlogPost = (options?: {
-    onSuccess?: () => void;
-    onError?: (error: unknown) => void;
+/* ---------- Blog Posts ---------- */
+export const useGetAllBlogPosts = (options?: {
+  onSuccess?: (data: BlogPostViewType[]) => void;
+  onError?: (error: HttpErrorResponse) => void;
 }) => {
-    return useMutation({
-        mutationFn: (blogpost: { title: string; content: string; userId?: number }) => {
-            if (!blogpost.userId) {
-                throw new Error("User ID is undefined. User must be logged in.");
-            }
-            return httpClient.post('/api/blog-posts', blogpost);
-        },
-        onSuccess: options?.onSuccess,
-        onError: options?.onError,
-    });
+  return useQuery<BlogPostViewType[], HttpErrorResponse>({
+    queryKey: ['all-blog-posts'],
+    queryFn: async () => {
+      const response = await httpClient.get('/api/blog-posts/all');
+      return response.data;
+    },
+    ...options,
+  });
 };
 
+export const useCreateBlogPost = (options?: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}) => {
+  return useMutation({
+      mutationFn: (blogpost: { title: string; content: string; userId?: number }) => {
+          if (!blogpost.userId) {
+              throw new Error("User ID is undefined. User must be logged in.");
+          }
+          return httpClient.post('/api/blog-posts', blogpost);
+      },
+      onSuccess: options?.onSuccess,
+      onError: options?.onError,
+  });
+};
+
+export interface BlogPostUpdateDto {
+  postId: number;
+  title: string;
+  content: string;
+}
+
+export const useUpdateBlogPost = (options?: {
+  onSuccess?: (data: BlogPostViewType) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<BlogPostViewType, HttpErrorResponse, BlogPostUpdateDto>({
+    mutationFn: async (postData) => {
+      const response = await httpClient.put('/api/blog-posts/update', postData);
+      return response.data;
+    },
+    ...options,
+  });
+};
+
+
+/* ---------- Blog Comments ---------- */
+export interface CommentResponseDto {
+  commentId: number;
+  blogPostId: number;
+  userId: number;
+  content: string;
+}
+
+export const useGetCommentsByPostId = (postId: number, options?: {
+  onSuccess?: (data: CommentResponseDto[]) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useQuery<CommentResponseDto[], HttpErrorResponse>({
+    queryKey: ['comments', postId],
+    queryFn: async () => {
+      const response = await httpClient.get(`/api/blog-comments/post/${postId}`);
+      return response.data;
+    },
+    enabled: !!postId, // Only fetch if postId is defined
+    ...options,
+  });
+};
+
+export interface CommentRequestDto {
+  content: string;
+}
+
+export const useAddComment = (postId: number, options?: {
+  onSuccess?: (data: CommentResponseDto) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<CommentResponseDto, HttpErrorResponse, CommentRequestDto>({
+    mutationFn: async (newComment) => {
+      const response = await httpClient.post(`/api/blog-comments/${postId}`, newComment);
+      return response.data;
+    },
+    ...options,
+  });
+};
+
+
+/* ---------- Blog Reactions ---------- */
 export interface ReactionResponseDto {
   id: number;
   reactionType: string;
@@ -41,7 +105,6 @@ export interface ReactionResponseDto {
   userName: string;
   blogPostId: number;
 }
-
 
 export const useGetReactionsByPostId = (postId: number, options?: {
   onSuccess?: (data: ReactionResponseDto[]) => void;
@@ -83,46 +146,6 @@ export const useRemoveReaction = (options?: {
   return useMutation<void, HttpErrorResponse, number>({
     mutationFn: async (reactionId) => {
       await httpClient.delete(`/api/blog-posts/reactions/${reactionId}`);
-    },
-    ...options,
-  });
-};
-
-
-export interface CommentResponseDto {
-  commentId: number;
-  blogPostId: number;
-  userId: number;
-  content: string;
-}
-
-export const useGetCommentsByPostId = (postId: number, options?: {
-  onSuccess?: (data: CommentResponseDto[]) => void;
-  onError?: (error: HttpErrorResponse) => void;
-}) => {
-  return useQuery<CommentResponseDto[], HttpErrorResponse>({
-    queryKey: ['comments', postId],
-    queryFn: async () => {
-      const response = await httpClient.get(`/api/blog-comments/post/${postId}`);
-      return response.data;
-    },
-    enabled: !!postId, // Only fetch if postId is defined
-    ...options,
-  });
-};
-
-export interface CommentRequestDto {
-  content: string;
-}
-
-export const useAddComment = (postId: number, options?: {
-  onSuccess?: (data: CommentResponseDto) => void;
-  onError?: (error: HttpErrorResponse) => void;
-}) => {
-  return useMutation<CommentResponseDto, HttpErrorResponse, CommentRequestDto>({
-    mutationFn: async (newComment) => {
-      const response = await httpClient.post(`/api/blog-comments/${postId}`, newComment);
-      return response.data;
     },
     ...options,
   });
