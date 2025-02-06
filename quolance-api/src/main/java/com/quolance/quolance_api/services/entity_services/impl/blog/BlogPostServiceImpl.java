@@ -140,7 +140,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public Page<BlogPost> getPaginatedBlogPosts(Pageable pageable) {
-        return blogPostRepository.findAll(pageable);
+    public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
+        return blogPostRepository.findAll(pageable).map(BlogPostResponseDto::fromEntity);
     }
 }

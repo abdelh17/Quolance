@@ -32,5 +32,5 @@ public interface BlogPostService {
 
     Set<String> updateTagsForPost(Long postId, List<String> tagNames);
 
-    Page<BlogPost> getPaginatedBlogPosts(Pageable pageable);
+    Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable);
 }

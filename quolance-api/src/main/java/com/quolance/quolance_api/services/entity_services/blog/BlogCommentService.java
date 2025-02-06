@@ -21,5 +21,5 @@ public interface BlogCommentService {
 
     BlogComment getBlogCommentEntity(Long blogCommentId);
 
-    Page<BlogComment> getPaginatedComments(Long blogPostId, Pageable pageable);
+    Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable);
 }

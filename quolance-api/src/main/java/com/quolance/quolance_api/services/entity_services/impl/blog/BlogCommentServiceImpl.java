@@ -76,7 +76,8 @@ public class BlogCommentServiceImpl implements BlogCommentService {
         return blogComment;
     }
 
-    public Page<BlogComment> getPaginatedComments(Long blogPostId, Pageable pageable) {
-        return blogCommentRepository.findByBlogPostId(blogPostId, pageable);
+    public Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable) {
+        return blogCommentRepository.findByBlogPostId(blogPostId, pageable)
+                .map(BlogCommentDto::fromEntity);
     }
 }
