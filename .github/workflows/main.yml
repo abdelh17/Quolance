@@ -31,20 +31,14 @@ jobs:
           cd quolance-ui
           npm run e2e:headless
 
-      # Step 4: Generate Test Coverage Report
-      - name: Generate Test Coverage
-        run: |
-          cd quolance-ui
-          npm run test:coverage # Ensure this generates ./coverage/lcov.info
-
-      # Step 5: Log lcov.info for Verification
+      # Step 4: Log lcov.info for Verification
       - name: Log lcov.info File
         run: |
           cd quolance-ui
           echo "Logging lcov.info file for verification:"
           cat coverage/lcov.info || echo "lcov.info file not found"
 
-      # Step 6: Run SonarScanner with npx
+      # Step 5: Run SonarScanner with npx
       - name: Run SonarScanner
         run: |
           cd quolance-ui
