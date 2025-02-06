@@ -4,6 +4,7 @@ import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.services.entity_services.blog.BlogPostService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,9 +12,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/blog-posts")
@@ -52,11 +54,15 @@ public class BlogPostController {
     }
 
     @GetMapping("/user/{userId}")
-    @Operation(summary = "Get blog posts by user ID",
-            description = "Retrieve all blog posts created by a specific user.")
+    @Operation(summary = "Get blog posts by user ID", description = "Retrieve all blog posts created by a specific user.")
     public ResponseEntity<List<BlogPostResponseDto>> getBlogPostsByUserId(@PathVariable Long userId) {
         List<BlogPostResponseDto> responses = blogPostService.getBlogPostsByUserId(userId);
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping
+    public Page<BlogPost> getBlogPosts(Pageable pageable) {
+        return blogPostService.getPaginatedBlogPosts(pageable);
     }
 
     @DeleteMapping("/{postId}")
