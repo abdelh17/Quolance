@@ -31,33 +31,36 @@ jobs:
           cd quolance-ui
           npm run e2e:headless
 
-      # Step 4: Log lcov.info Before the scan
+      # Step 4: Generate Test Coverage Report
+      - name: Generate Test Coverage
+        run: |
+          cd quolance-ui
+          npm run test:coverage # Ensure this script generates ./coverage/lcov.info
+
+      # Step 5: Log lcov.info for Verification
       - name: Log lcov.info File
         run: |
           cd quolance-ui
           echo "Logging lcov.info file for verification:"
           cat coverage/lcov.info || echo "lcov.info file not found"
 
-      # Step 5: Run SonarCloud Scan
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: quolance-ui
-          args: >
-            -Dsonar.organization=abdelh17
-            -Dsonar.projectKey=abdelh17_Quolance_ui
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.verbose=true
+      # Step 6: Install SonarScanner for NPM
+      - name: Install SonarScanner
+        run: |
+          npm install --save-dev sonarqube-scanner
 
-        # Step 6: Log lcov.info After the Scan
-      - name: Log lcov.info File (After)
+      # Step 7: Run SonarScanner for NPM
+      - name: Run SonarScanner
         run: |
           cd quolance-ui
-          echo "Contents of lcov.info file after scan:"
-          cat coverage/lcov.info || echo "lcov.info file not found"
+          node sonar-scanner.js
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Securely pass the token
+
+      # Step 8: Log SonarScanner Execution
+      - name: Log Scanner Output
+        run: |
+          echo "SonarScanner run completed. Verify the output in the SonarCloud dashboard."
 
   backend-build-test:
     name: Build and Test Backend
