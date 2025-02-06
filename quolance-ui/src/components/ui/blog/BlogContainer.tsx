@@ -48,7 +48,7 @@ const BlogContainer: React.FC = () => {
     })
 
 
-    const handleFormSubmit = async (postData: { title: string; content: string; userId: number | undefined }) => {
+    const handleFormSubmit = async (postData: { title: string; content: string; userId: number | undefined; imageUrls?: string[] }) => {
         if (!postData.userId) {
             console.error("User ID is undefined. User must be logged in.");
             showToast("Error: User not logged in.", "error");
@@ -59,6 +59,7 @@ const BlogContainer: React.FC = () => {
             console.log("Form submitted:", postData);
             await mutateBlogPosts(postData);
         } catch (err) {
+            console.log("FORM NOT SUBMITTED AT ALL", postData)
             console.error(err);
         }
     };

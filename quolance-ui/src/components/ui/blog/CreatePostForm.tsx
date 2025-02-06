@@ -5,7 +5,7 @@ import { useAuthGuard } from '@/api/auth-api';
 
 interface CreatePostFormProps {
   // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
-  onSubmit: (postData: { title: string; content: string; userId: number | undefined }) => void;
+  onSubmit: (postData: { title: string; content: string; userId: number | undefined; imageUrls? : string[] }) => void;
   onClose: () => void;
 }
 
@@ -15,9 +15,21 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
   const [content, setContent] = useState<string>('');
   //const [tags, setTags] = useState<string>('');
   const [error, setError] = useState('');
-  
+  const [imageUrls, setImageUrls] = useState<string[]>(['']);
 
   //console.log(user?.id);
+
+  const handleAddImageField = () => {
+    if (imageUrls.length < 8) {
+      setImageUrls([...imageUrls, '']);
+    }
+  };
+
+  const handleImageUrlChange = (index: number, value: string) => {
+    const updatedUrls = [...imageUrls];
+    updatedUrls[index] = value;
+    setImageUrls(updatedUrls);
+  };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,9 +48,10 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
     //const tagsArray = tags.split(',').map((tag) => tag.trim()).filter((tag) => tag);
 
     // onSubmit({ title, content, tags: tagsArray });
-    onSubmit({ title, content, userId: user?.id });
+    onSubmit({ title, content, userId: user?.id, imageUrls: imageUrls.filter((url) => url.trim() !== '') });
     setTitle('');
     setContent('');
+    setImageUrls(['']);
     //setTags('');
     setError('');
     onClose();
@@ -72,19 +85,30 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
         />
       </div>
 
-      {/* 
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Tags</label>
+      {/* Dynamic image URL input fields */}
+      <div>
+        <label className="block text-gray-700 font-medium mb-1">Image URLs</label>
+        {imageUrls.map((url, index) => (
           <input
+            key={index}
             type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="Enter tags (comma separated)"
-            className="w-full p-2 border rounded-md"
+            value={url}
+            onChange={(e) => handleImageUrlChange(index, e.target.value)}
+            placeholder={`Image URL ${index + 1}`}
+            className="w-full p-2 border rounded-md mb-2"
           />
-        </div>
-      */}
-      
+        ))}
+
+        {imageUrls.length < 8 && (
+          <button
+            type="button"
+            onClick={handleAddImageField}
+            className="px-3 py-1 bg-blue-500 text-white rounded-md"
+          >
+            Add Another Image
+          </button>
+        )}
+      </div>
 
       <div className="flex items-center justify-end space-x-4 mb-4">
         <button
@@ -101,5 +125,6 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
     </form>
   );
 };
+
 
 export default CreatePostForm;

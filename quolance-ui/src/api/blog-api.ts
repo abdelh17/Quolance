@@ -23,7 +23,7 @@ export const useCreateBlogPost = (options?: {
     onError?: (error: unknown) => void;
 }) => {
     return useMutation({
-        mutationFn: (blogpost: { title: string; content: string; userId?: number }) => {
+        mutationFn: (blogpost: { title: string; content: string; userId?: number; imageUrls?: string[] }) => {
             if (!blogpost.userId) {
                 throw new Error("User ID is undefined. User must be logged in.");
             }
