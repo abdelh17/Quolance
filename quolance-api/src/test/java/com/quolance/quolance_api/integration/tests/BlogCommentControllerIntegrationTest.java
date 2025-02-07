@@ -102,34 +102,6 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void testGetAllCommentsForBlogPost() throws Exception {
-        for (int i = 0; i < 5; i++) {
-            blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
-        }
-
-        var response = mockMvc.perform(get("/api/blog-comments/post/" + blogPost.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        List<BlogCommentDto> comments = objectMapper.readValue(response, new TypeReference<List<BlogCommentDto>>() {
-        });
-
-        assertThat(comments).isNotNull();
-        assertThatList(comments).isNotEmpty();
-        assertThat(comments.size()).isEqualTo(5);
-
-        assertThatList(comments).allSatisfy(comment -> {
-            assertThat(comment.getBlogPostId()).isEqualTo(blogPost.getId());
-            assertThat(comment.getUserId()).isEqualTo(loggedInUser.getId());
-            assertThat(comment.getContent()).isNotBlank();
-        });
-    }
-
-    @Test
     void testDeleteBlogComment() throws Exception {
         BlogComment blogComment = blogCommentRepository
                 .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));

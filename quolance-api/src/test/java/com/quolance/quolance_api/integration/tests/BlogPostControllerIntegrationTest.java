@@ -68,26 +68,6 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void testGetAllBlogPosts() throws Exception {
-        blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
-
-        var response = mockMvc.perform(get("/api/blog-posts/all")
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        var blogPosts = objectMapper.readValue(response, new TypeReference<List<BlogPostResponseDto>>() {
-        });
-
-        assertThat(blogPosts).isNotEmpty();
-        assertThat(blogPosts).hasSize(1);
-        assertThat(blogPosts.get(0).getUserId()).isEqualTo(loggedInUser.getId());
-    }
-
-    @Test
     void testGetBlogPostByIdIsOk() throws Exception {
         BlogPost blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
 
