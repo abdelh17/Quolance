@@ -24,11 +24,11 @@ public class BlogPostResponseDto {
     private LocalDateTime dateCreated;
     private List<BlogCommentDto> comments;
     private Set<String> tags;
-    private long user_id;
+    private long userId;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
         BlogPostResponseDto response = new BlogPostResponseDto();
-        response.setUser_id(blogPost.getUser().getId());
+        response.setUserId(blogPost.getUser().getId());
         response.setId(blogPost.getId());
         response.setTitle(blogPost.getTitle());
         response.setContent(blogPost.getContent());
