@@ -84,7 +84,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
         assertThat(blogPosts).isNotEmpty();
         assertThat(blogPosts).hasSize(1);
-        assertThat(blogPosts.get(0).getUser_id()).isEqualTo(loggedInUser.getId());
+        assertThat(blogPosts.get(0).getUserId()).isEqualTo(loggedInUser.getId());
     }
 
     @Test
@@ -159,7 +159,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         });
 
         assertThat(userPosts).isNotEmpty();
-        assertThat(userPosts.get(0).getUser_id()).isEqualTo(loggedInUser.getId());
+        assertThat(userPosts.get(0).getUserId()).isEqualTo(loggedInUser.getId());
     }
 
     @Test

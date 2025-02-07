@@ -63,7 +63,6 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testCreateBlogCommentIsOk() throws Exception {
-        long initialCount = blogCommentRepository.count();
 
         BlogCommentDto commentDto = new BlogCommentDto();
         commentDto.setContent("This is a valid comment");
@@ -80,7 +79,7 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
                 .getContentAsString();
 
         long updatedCount = blogCommentRepository.count();
-        assertThat(updatedCount).isEqualTo(initialCount + 1);
+        assertThat(updatedCount).isEqualTo(1);
 
         BlogComment savedComment = blogCommentRepository.findAll().getFirst();
         assertThat(savedComment.getContent()).isEqualTo("This is a valid comment");
