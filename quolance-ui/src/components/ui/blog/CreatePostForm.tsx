@@ -5,7 +5,7 @@ import { useAuthGuard } from '@/api/auth-api';
 
 interface CreatePostFormProps {
   // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
-  onSubmit: (postData: { title: string; content: string; userId: number | undefined; imageUrls? : string[] }) => void;
+  onSubmit: (postData: { title: string; content: string; userId: number | undefined; files?: File[]  }) => void;
   onClose: () => void;
 }
 
@@ -15,20 +15,27 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
   const [content, setContent] = useState<string>('');
   //const [tags, setTags] = useState<string>('');
   const [error, setError] = useState('');
-  const [imageUrls, setImageUrls] = useState<string[]>(['']);
+  const [files, setFiles] = useState<File[]>([]);
 
-  //console.log(user?.id);
-
-  const handleAddImageField = () => {
-    if (imageUrls.length < 8) {
-      setImageUrls([...imageUrls, '']);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files);
+      setFiles((prev) => [...prev, ...selectedFiles]);
     }
   };
 
-  const handleImageUrlChange = (index: number, value: string) => {
-    const updatedUrls = [...imageUrls];
-    updatedUrls[index] = value;
-    setImageUrls(updatedUrls);
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -44,15 +51,11 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
       return;
     }
 
-    // Convert comma-separated tags into an array
-    //const tagsArray = tags.split(',').map((tag) => tag.trim()).filter((tag) => tag);
 
-    // onSubmit({ title, content, tags: tagsArray });
-    onSubmit({ title, content, userId: user?.id, imageUrls: imageUrls.filter((url) => url.trim() !== '') });
+    onSubmit({ title, content, userId: user?.id, files });
     setTitle('');
     setContent('');
-    setImageUrls(['']);
-    //setTags('');
+    setFiles([]);
     setError('');
     onClose();
   };
@@ -85,30 +88,46 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
         />
       </div>
 
-      {/* Dynamic image URL input fields */}
-      <div>
-        <label className="block text-gray-700 font-medium mb-1">Image URLs</label>
-        {imageUrls.map((url, index) => (
-          <input
-            key={index}
-            type="text"
-            value={url}
-            onChange={(e) => handleImageUrlChange(index, e.target.value)}
-            placeholder={`Image URL ${index + 1}`}
-            className="w-full p-2 border rounded-md mb-2"
-          />
-        ))}
-
-        {imageUrls.length < 8 && (
-          <button
-            type="button"
-            onClick={handleAddImageField}
-            className="px-3 py-1 bg-blue-500 text-white rounded-md"
-          >
-            Add Another Image
-          </button>
-        )}
+      {/* File Drop Area */}
+      <div
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        className="w-full p-4 border-dashed border-2 border-gray-300 rounded-md text-center"
+      >
+        <p className="text-gray-500">Drag and drop images here or click to select files</p>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleFileChange}
+          className="hidden"
+          id="file-upload"
+        />
+        <label
+          htmlFor="file-upload"
+          className="cursor-pointer text-blue-500 underline"
+        >
+          Select Files
+        </label>
       </div>
+
+      {/* Display selected files */}
+      {files.length > 0 && (
+        <ul className="mt-3">
+          {files.map((file, index) => (
+            <li key={index} className="flex justify-between items-center p-2 border-b">
+              <span>{file.name}</span>
+              <button
+                type="button"
+                onClick={() => handleRemoveFile(index)}
+                className="text-red-500 text-sm"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="flex items-center justify-end space-x-4 mb-4">
         <button

@@ -18,21 +18,39 @@ export const useGetAllBlogPosts = (options?: {
     });
   };
 
-export const useCreateBlogPost = (options?: {
+  export const useCreateBlogPost = (options?: {
     onSuccess?: () => void;
     onError?: (error: unknown) => void;
-}) => {
+  }) => {
     return useMutation({
-        mutationFn: (blogpost: { title: string; content: string; userId?: number; imageUrls?: string[] }) => {
-            if (!blogpost.userId) {
-                throw new Error("User ID is undefined. User must be logged in.");
-            }
-            return httpClient.post('/api/blog-posts', blogpost);
-        },
-        onSuccess: options?.onSuccess,
-        onError: options?.onError,
+      mutationFn: (blogpost: { title: string; content: string; userId?: number; files?: File[] }) => {
+        if (!blogpost.userId) {
+          throw new Error("User ID is undefined. User must be logged in.");
+        }
+  
+        // Construct FormData
+        const formData = new FormData();
+        formData.append("title", blogpost.title);
+        formData.append("content", blogpost.content);
+        formData.append("userId", String(blogpost.userId));
+  
+        // Correctly append multiple files under the key "files"
+        if (blogpost.files && blogpost.files.length > 0) {
+          blogpost.files.forEach((file) => {
+            formData.append("images", file);
+          });
+        }
+  
+        return httpClient.post('/api/blog-posts', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      },
+      onSuccess: options?.onSuccess,
+      onError: options?.onError,
     });
-};
+  };
 
 export interface ReactionResponseDto {
   id: number;

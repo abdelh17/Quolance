@@ -28,10 +28,6 @@ public class BlogPostResponseDto {
     private List<String> imageUrls;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
-        List<String> imageUrls = blogPost.getImages().stream()
-                .map(BlogImage::getImageUrl)
-                .collect(Collectors.toList());
-
         BlogPostResponseDto response = new BlogPostResponseDto();
         response.setId(blogPost.getId());
         response.setTitle(blogPost.getTitle());
@@ -43,7 +39,7 @@ public class BlogPostResponseDto {
                 .map(Enum::name)
                 .collect(Collectors.toSet())
                 : Collections.emptySet());
-        response.setImageUrls(imageUrls);
+        response.setImageUrls(blogPost.getImagePaths());
         return response;
     }
 

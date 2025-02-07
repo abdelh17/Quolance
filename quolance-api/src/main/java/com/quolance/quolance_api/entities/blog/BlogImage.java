@@ -19,7 +19,7 @@ public class BlogImage extends AbstractEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String imageUrl;
+    private String fileName;
 
     @ManyToOne
     @JoinColumn(name = "blog_post_id", nullable = false)

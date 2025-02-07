@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,25 +27,12 @@ public class BlogPostRequestDto {
     private String content;
     private List<BlogCommentDto> comments;
     private Set<BlogTags> tags;
-    private List<String> imageUrls;
+    private MultipartFile[] images;
 
     public static BlogPost toEntity(BlogPostRequestDto blogPostRequestDto) {
-        BlogPost blogPost = BlogPost.builder()
+        return BlogPost.builder()
                 .title(blogPostRequestDto.getTitle())
                 .content(blogPostRequestDto.getContent())
                 .build();
-
-        // Handle images while converting the DTO to an entity
-        if (blogPostRequestDto.getImageUrls() != null && !blogPostRequestDto.getImageUrls().isEmpty()) {
-            List<BlogImage> images = blogPostRequestDto.getImageUrls().stream()
-                    .map(url -> BlogImage.builder()
-                            .imageUrl(url)
-                            .blogPost(blogPost)
-                            .build())
-                    .collect(Collectors.toList());
-            blogPost.setImages(images);  // Associate images with the blog post
-        }
-
-        return blogPost;
     }
 }

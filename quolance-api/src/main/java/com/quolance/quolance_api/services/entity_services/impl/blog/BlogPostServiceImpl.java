@@ -4,9 +4,11 @@ import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.BlogTags;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
+import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.blog.BlogPostService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.exceptions.InvalidBlogTagException;
@@ -14,11 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,12 +27,33 @@ import java.util.stream.Collectors;
 public class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostRepository blogPostRepository;
+    private final FileService fileService;
 
     @Override
     public BlogPostResponseDto create(@Valid BlogPostRequestDto request, User author) {
-        BlogPost blogPost = BlogPostRequestDto.toEntity(request);
-        blogPost.setUser(author);
+        List<String> imagePaths = new ArrayList<>();
 
+        // Step 1: Upload images and store paths
+        if (request.getImages() != null) {
+            for (MultipartFile image : request.getImages()) {
+                System.out.println("Received file: " + image.getOriginalFilename());
+                // Upload to Cloudinary or local storage and get the path/URL
+                Map<String, Object> uploadResult = fileService.uploadFile(image, author);
+                String imagePath = uploadResult.get("secure_url").toString();  // Store the Cloudinary URL
+                imagePaths.add(imagePath);
+            }
+        }
+
+        // Step 2: Convert DTO to BlogPost entity
+        BlogPost blogPost = BlogPost.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .user(author)
+                .tags(request.getTags() != null ? Set.copyOf(request.getTags()) : Set.of())
+                .imagePaths(imagePaths)  // Associate image paths directly
+                .build();
+
+        // Step 3: Save the blog post
         BlogPost savedBlogPost = blogPostRepository.save(blogPost);
 
         return BlogPostResponseDto.fromEntity(savedBlogPost);

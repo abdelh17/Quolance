@@ -4,6 +4,7 @@ import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.blog.BlogPostService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,10 +22,11 @@ import java.util.List;
 public class BlogPostController {
 
     private final BlogPostService blogPostService;
+    private final FileService fileService;
 
     @PostMapping
     @Operation(summary = "Create a blog post")
-    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @RequestBody BlogPostRequestDto request) {
+    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @ModelAttribute BlogPostRequestDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         BlogPostResponseDto response = blogPostService.create(request, author);
         return ResponseEntity.ok(response);
