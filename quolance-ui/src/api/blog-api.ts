@@ -109,6 +109,18 @@ export const useAddComment = (postId: number, options?: {
   });
 };
 
+export const useDeleteComment = (options?: {
+  onSuccess?: () => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<void, HttpErrorResponse, number>({
+    mutationFn: async (commentId) => {
+      await httpClient.delete(`/api/blog-comments/${commentId}`);
+    },
+    ...options,
+  });
+};
+
 
 /* ---------- Blog Reactions ---------- */
 export interface ReactionResponseDto {
