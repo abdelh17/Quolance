@@ -47,9 +47,8 @@ public class BlogPost extends AbstractEntity {
     private Set<BlogTags> tags;
 
     // New addition: Store image paths directly
-    @ElementCollection
+    @ElementCollection()
     @CollectionTable(name = "blog_post_images", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "image_path")
     private List<String> imagePaths = new ArrayList<>();
-
 }

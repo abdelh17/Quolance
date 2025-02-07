@@ -1,6 +1,5 @@
 package com.quolance.quolance_api.dtos.blog;
 
-import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

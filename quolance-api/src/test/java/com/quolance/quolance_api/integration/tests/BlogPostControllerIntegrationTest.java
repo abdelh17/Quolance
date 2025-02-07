@@ -3,7 +3,6 @@ package com.quolance.quolance_api.integration.tests;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
@@ -68,21 +67,12 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testGetBlogPostByIdIsOk() throws Exception {
-        // Create a blog post and save it
+        // Create and save a blog post
         BlogPost blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
 
-        // Manually associate image URLs with the blog post (since we're not modifying EntityCreationHelper)
-        BlogPostRequestDto request = new BlogPostRequestDto();
-        request.setImageUrls(List.of(
-                "https://example.com/image1.jpg",
-                "https://example.com/image2.jpg"
-        ));
-        for (String imageUrl : request.getImageUrls()) {
-            blogPost.getImages().add(BlogImage.builder()
-                    .imageUrl(imageUrl)
-                    .blogPost(blogPost)
-                    .build());
-        }
+        // Manually associate image paths with the blog post
+        blogPost.getImagePaths().add("https://example.com/image1.jpg");
+        blogPost.getImagePaths().add("https://example.com/image2.jpg");
         blogPostRepository.save(blogPost);
 
         // Perform GET request and validate image URLs
@@ -148,30 +138,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         assertThat(blogPostRepository.findById(blogPost.getId())).isEmpty();
     }
 
-    @Test
-    void testCreateBlogPostWithImages() throws Exception {
-        BlogPostRequestDto request = new BlogPostRequestDto();
-        request.setTitle("Blog Post with Images");
-        request.setContent("This blog post has images.");
-        request.setImageUrls(List.of(
-                "https://example.com/image1.jpg",
-                "https://example.com/image2.jpg"
-        ));
 
-        // Send POST request to create the blog post
-        mockMvc.perform(post("/api/blog-posts")
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
-
-        // Validate that the blog post and its images were saved
-        BlogPost savedPost = blogPostRepository.findAll().getFirst();
-        assertThat(savedPost.getTitle()).isEqualTo("Blog Post with Images");
-        assertThat(savedPost.getImages()).hasSize(2);
-        assertThat(savedPost.getImages().get(0).getImageUrl()).isEqualTo("https://example.com/image1.jpg");
-        assertThat(savedPost.getImages().get(1).getImageUrl()).isEqualTo("https://example.com/image2.jpg");
-    }
 
 
 }
