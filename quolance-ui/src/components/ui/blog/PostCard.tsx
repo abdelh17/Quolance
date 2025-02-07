@@ -211,6 +211,7 @@ interface PostCardProps {
                         {commentsData?.map((comment) => (
                             <CommentCard
                                 key={comment.commentId}
+                                commentId={comment.commentId}
                                 authorName={`User #${comment.userId}`}
                                 profilePicture=""
                                 content={comment.content}
