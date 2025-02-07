@@ -17,8 +17,6 @@ public interface BlogCommentService {
 
     void deleteBlogComment(Long commentId);
 
-    List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId);
-
     BlogComment getBlogCommentEntity(Long blogCommentId);
 
     Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable);
