@@ -8,6 +8,7 @@ import { useGetReactionsByPostId, useReactToPost, useGetCommentsByPostId, useAdd
 import { useAuthGuard } from "@/api/auth-api";
 import CommentCard from "./CommentCard";
 import { CommentType } from "@/constants/types/blog-types";
+import { useGetFreelancerProfile } from "@/api/freelancer-api";
 
 interface ReactionState {
     [key: string]: { count: number; userReacted: boolean };
@@ -21,7 +22,7 @@ interface PostCardProps {
     dateCreated: string;
     }
 
-    const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [newComment, setNewComment] = useState<string>("");
@@ -31,12 +32,14 @@ interface PostCardProps {
     const { mutate: reactToPost } = useReactToPost();
     const { data: commentsData, refetch: refetchComments } = useGetCommentsByPostId(id);
     const { mutate: addComment } = useAddComment(id, {
-    onSuccess: () => {
-        setNewComment(""); // Clear input field
-        refetchComments(); // Refresh comments
-    },
+        onSuccess: () => {
+            setNewComment(""); // Clear input field
+            refetchComments(); // Refresh comments
+        },
     });
     const { user } = useAuthGuard({ middleware: "auth" });
+
+    const { data: authorProfile } = useGetFreelancerProfile(authorName);
 
     useEffect(() => {
     if (reactionData) {
@@ -100,7 +103,7 @@ interface PostCardProps {
             <div className="flex items-center mb-4 ml-5 py-5">
                 <Image
                 alt={`${authorName}'s profile`}
-                src={icon}
+                src={authorProfile?.profileImageUrl || icon}
                 width={48}
                 height={48}
                 className="rounded-full object-cover"
@@ -165,7 +168,6 @@ interface PostCardProps {
                     <CommentCard
                         key={comment.commentId}
                         authorName={`User #${comment.userId}`}
-                        profilePicture=""
                         content={comment.content}
                         dateCreated={new Date().toISOString()}
                     />

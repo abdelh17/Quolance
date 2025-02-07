@@ -2,21 +2,22 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
+import { useGetFreelancerProfile } from "@/api/freelancer-api";
 
 interface CommentCardProps {
   authorName: string;
-  profilePicture: string;
   content: string;
   dateCreated: string;
 }
 
 const CommentCard: React.FC<CommentCardProps> = ({
   authorName,
-  profilePicture,
   content,
   dateCreated,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const { data: authorProfile } = useGetFreelancerProfile(authorName);
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
@@ -25,7 +26,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
       {/* User Profile Picture */}
       <Image
         alt={`${authorName}'s profile`}
-        src={profilePicture || icon}
+        src={authorProfile?.profileImageUrl || icon}
         width={32}
         height={32}
         className="rounded-full object-cover"
