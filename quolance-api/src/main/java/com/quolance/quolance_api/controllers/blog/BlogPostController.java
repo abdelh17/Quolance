@@ -31,12 +31,6 @@ public class BlogPostController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all")
-    @Operation(summary = "Get all blog posts")
-    public ResponseEntity<List<BlogPostResponseDto>> getAllBlogPosts() {
-        List<BlogPostResponseDto> responses = blogPostService.getAll();
-        return ResponseEntity.ok(responses);
-    }
 
     @GetMapping("/{postId}")
     @Operation(summary = "Get a blog post by ID")

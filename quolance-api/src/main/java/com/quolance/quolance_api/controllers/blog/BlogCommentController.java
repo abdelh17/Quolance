@@ -31,13 +31,6 @@ public class BlogCommentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/post/{blogPostId}")
-    @Operation(summary = "Get all comments for a specific blog post")
-    public ResponseEntity<List<BlogCommentDto>> getCommentsByBlogPostId(@PathVariable Long blogPostId) {
-        List<BlogCommentDto> responses = blogCommentService.getCommentsByBlogPostId(blogPostId);
-        return ResponseEntity.ok(responses);
-    }
-
     @GetMapping("/{blogPostId}")
     @Operation(summary = "Get paginated comments for a specific blog post")
     public ResponseEntity<Page<BlogCommentDto>> getCommentsByBlogPostId(
