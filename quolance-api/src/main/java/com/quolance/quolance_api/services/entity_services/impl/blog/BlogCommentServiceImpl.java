@@ -57,17 +57,6 @@ public class BlogCommentServiceImpl implements BlogCommentService {
         blogCommentRepository.delete(blogComment);
     }
 
-    @Override
-    public List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId) {
-        BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
-
-        List<BlogComment> comments = blogCommentRepository.findByBlogPost(blogPost);
-
-        return comments.stream()
-                .map(BlogCommentDto::fromEntity)
-                .toList();
-    }
-
     public BlogComment getBlogCommentEntity(Long commentId) {
         BlogComment blogComment = blogCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -76,6 +65,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
         return blogComment;
     }
 
+    @Override
     public Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable) {
         return blogCommentRepository.findByBlogPostId(blogPostId, pageable)
                 .map(BlogCommentDto::fromEntity);
