@@ -146,11 +146,6 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         return new PageImpl<>(freelancerDtos, pageable, userPage.getTotalElements());
     }
 
-    @Override
-    public void sendTestNotification(User user, String message) {
-        notificationMessageService.sendNotificationToUser(user, user, message);
-    }
-
 }
 
 

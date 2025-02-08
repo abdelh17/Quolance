@@ -28,6 +28,4 @@ public interface ClientWorkflowService {
 
     Page<FreelancerProfileDto> getAllAvailableFreelancers(Pageable pageable, FreelancerProfileFilterDto filters);
 
-    void sendTestNotification(User user, String message);
-
 }
