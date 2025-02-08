@@ -70,4 +70,15 @@ public class NotificationRestController {
                 .toList();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping
+    @Operation(summary = "Get all unread notifications for the authenticated user")
+    public ResponseEntity<List<NotificationResponseDto>> getUnreadNotifications() {
+        User recipient = SecurityUtil.getAuthenticatedUser();
+        List<Notification> notifications = notificationMessageService.getUnreadNotificationsForUser(recipient.getId());
+        List<NotificationResponseDto> response = notifications.stream()
+                .map(NotificationResponseDto::fromEntity)
+                .toList();
+        return ResponseEntity.ok(response);
+    }
 }
