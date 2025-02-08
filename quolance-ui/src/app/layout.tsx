@@ -1,21 +1,19 @@
 import type { Metadata } from 'next';
-// import { Montserrat } from 'next/font/google';
+import dynamic from 'next/dynamic';
 
 import './globals.css';
 
 import Footer from '@/components/global/Footer';
 
+import ReactQueryProvider from '@/util/context/ReactQueryProvider';
 import { StepsProvider } from '@/util/context/StepsContext';
 import ToastProvider from '@/util/context/ToastProvider';
-import ReactQueryProvider from '@/util/context/ReactQueryProvider';
 
-/*
-const monsterratFont = Montserrat({
-  subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
-  variable: '--main-font',
-});
-*/
+// Dynamically import the WebSocketProvider so that it loads only on the client
+const WebSocketProvider = dynamic(
+  () => import('@/util/context/webSocketContext').then((mod) => mod.WebSocketProvider),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: 'Quolance',
@@ -24,19 +22,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang='en' dir='ltr'>
-      <body
-        // className={`${monsterratFont.variable} ${monsterratFont.className} flex min-h-screen flex-col`}
-        className='flex min-h-screen flex-col'
-      >
+    <html lang="en" dir="ltr">
+      <body className="flex min-h-screen flex-col">
         <ToastProvider>
           <ReactQueryProvider>
             <StepsProvider>
-              <main className='flex-grow'>{children}</main>
+              <WebSocketProvider>
+                <main className="flex-grow">{children}</main>
+              </WebSocketProvider>
               <Footer />
             </StepsProvider>
           </ReactQueryProvider>
@@ -45,6 +42,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
-

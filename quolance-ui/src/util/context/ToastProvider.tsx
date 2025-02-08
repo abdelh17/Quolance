@@ -1,6 +1,6 @@
 // components/ToastProvider.tsx
 import React, { ReactNode } from 'react';
-import { ToastContainer, toast, ToastOptions, TypeOptions } from 'react-toastify';
+import { ToastContainer, toast, ToastOptions, TypeOptions, ToastPosition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ToastProviderProps {
@@ -26,8 +26,8 @@ const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   );
 };
 
-export const showToast = (message: string, type: TypeOptions = 'default', options?: ToastOptions) => {
-  toast(message, { type, ...options });
+export const showToast = (message: string, type: TypeOptions = 'default', options?: ToastOptions, position: ToastPosition = 'top-right') => {
+  toast(message, { type, ...options, position });
 };
 
 export default ToastProvider;
