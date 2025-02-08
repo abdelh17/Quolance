@@ -30,7 +30,7 @@ const WebSocketPage: React.FC = () => {
           setReceivedMessages((prev) => [...prev, `Greeting: ${message.body}`]);
         });
 
-        stompClient.subscribe('/topic/notifications', (message: IMessage) => {
+        stompClient.subscribe(`/user/topic/notifications`, (message: IMessage) => {
           console.log('Received notification:', message.body);
           setReceivedMessages((prev) => [...prev, `Notification: ${message.body}`]);
         });
