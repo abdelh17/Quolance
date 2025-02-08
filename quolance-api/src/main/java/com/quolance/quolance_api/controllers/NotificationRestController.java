@@ -60,7 +60,7 @@ public class NotificationRestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @Operation(summary = "Get all notifications for the authenticated user")
     public ResponseEntity<List<NotificationResponseDto>> getNotifications() {
         User recipient = SecurityUtil.getAuthenticatedUser();
@@ -71,7 +71,7 @@ public class NotificationRestController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/all-unread")
     @Operation(summary = "Get all unread notifications for the authenticated user")
     public ResponseEntity<List<NotificationResponseDto>> getUnreadNotifications() {
         User recipient = SecurityUtil.getAuthenticatedUser();
