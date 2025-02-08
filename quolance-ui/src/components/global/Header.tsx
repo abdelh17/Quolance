@@ -15,19 +15,16 @@ import { PiCaretDown, PiListBold, PiPlusBold } from 'react-icons/pi';
 
 import { useAuthGuard } from '@/api/auth-api';
 import { headerMenu } from '@/constants/data';
-import { useWebSocket } from '@/util/context/webSocketContext';
 import useScroll from '@/util/hooks/useScroll';
 
 import MobileMenu from './MobileMenu';
-import NotificationBadge from '../ui/NotificationBadge';
+import NotificationPanel from '../ui/notifications/NotificationPanel';
 
 function Header() {
   const { user, logout } = useAuthGuard({ middleware: 'auth' });
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const path = usePathname();
   const [isImageError, setIsImageError] = useState(false);
-
-  const { hasNewNotification, markNotificationsAsRead } = useWebSocket();
 
   const userNavigation = [
     { name: 'My Profile', href: '/profile' },
@@ -178,20 +175,7 @@ function Header() {
                     <div className="flex items-center">
                       {/* Bell icon with real notification badge */}
                       <div className="relative">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            // When the bell is clicked, mark notifications as read.
-                            markNotificationsAsRead();
-                            // You might also open a notifications dropdown here.
-                          }}
-                          className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                          <span className="absolute -inset-1.5" />
-                          <span className="sr-only">View notifications</span>
-                          <BellIcon aria-hidden="true" className="size-6" />
-                        </button>
-                        <NotificationBadge showBadge={hasNewNotification} />
+                          <NotificationPanel />
                       </div>
                       {user?.role === 'FREELANCER' && (
                         <Menu as="div" className="relative ml-3">

@@ -2,18 +2,25 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-empty-function */
 'use client';
+
 import { Client, IMessage } from '@stomp/stompjs';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
-
 import { useAuthGuard } from '@/api/auth-api';
+
+export interface Notification {
+  id: number;
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
 
 interface WebSocketContextProps {
   isConnected: boolean;
   client: Client | null;
-  sendMessage: (destination: string, payload: any) => void;
-  notifications: string[];
-  hasNewNotification: boolean;
+  sendMessage: (destination: string, payload: unknown) => void;
+  notifications: Notification[]; // notifications received via WebSocket
+  newNotificationCount: number;
   markNotificationsAsRead: () => void;
 }
 
@@ -22,42 +29,46 @@ const WebSocketContext = createContext<WebSocketContextProps>({
   client: null,
   sendMessage: () => {},
   notifications: [],
-  hasNewNotification: false,
+  newNotificationCount: 0,
   markNotificationsAsRead: () => {},
 });
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuthGuard({ middleware: 'auth' });
   const [isConnected, setIsConnected] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [newNotificationCount, setNewNotificationCount] = useState(0);
   const clientRef = useRef<Client | null>(null);
-  const [notifications, setNotifications] = useState<string[]>([]);
-  const [hasNewNotification, setHasNewNotification] = useState(false);
 
   useEffect(() => {
     if (!user) return;
 
-    const socketURL = 'http://localhost:8080/ws'; // update this URL as needed
+    const socketURL = 'http://localhost:8080/ws'; // update as needed
+    console.log('Initializing STOMP client at', socketURL);
+
     const stompClient = new Client({
       webSocketFactory: () => new SockJS(socketURL),
       reconnectDelay: 5000,
-      debug: (str) => console.log(str),
+      debug: (msg) => console.log('STOMP Debug:', msg),
       onConnect: () => {
         console.log('STOMP connection established');
         setIsConnected(true);
 
-        // Subscribe to notifications channel
+        // Subscribe to the notifications channel.
         stompClient.subscribe('/user/topic/notifications', (message: IMessage) => {
           console.log('Received notification:', message.body);
-          // Update your notifications state (parsing message.body if needed)
-          setNotifications((prev) => [...prev, message.body]);
-          setHasNewNotification(true);
+          try {
+            const notif: Notification = JSON.parse(message.body);
+            setNotifications((prev) => [...prev, notif]);
+            // Increment the counter so that every new notification triggers a refetch.
+            setNewNotificationCount((prev) => prev + 1);
+          } catch (error) {
+            console.error('Error parsing notification:', error);
+          }
         });
-
-        // (Optional) Add other subscriptions here as needed.
       },
       onStompError: (frame) => {
-        console.error('Broker error:', frame.headers['message']);
-        console.error('Details:', frame.body);
+        console.error('Broker error:', frame.headers['message'], frame.body);
       },
       onWebSocketError: (event) => {
         console.error('WebSocket error:', event);
@@ -73,21 +84,20 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, [user]);
 
-  const sendMessage = (destination: string, payload: any) => {
-    const client = clientRef.current;
-    if (!client || !client.connected) {
+  const sendMessage = (destination: string, payload: unknown) => {
+    if (!clientRef.current || !clientRef.current.connected) {
       console.error('STOMP client is not connected.');
       return;
     }
-    client.publish({
+    clientRef.current.publish({
       destination,
       body: JSON.stringify(payload),
     });
   };
 
+  // Reset the new notification counter (e.g., after the user views them).
   const markNotificationsAsRead = () => {
-    setHasNewNotification(false);
-    // Optionally, clear or archive notifications here.
+    setNewNotificationCount(0);
   };
 
   return (
@@ -97,7 +107,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         client: clientRef.current,
         sendMessage,
         notifications,
-        hasNewNotification,
+        newNotificationCount,
         markNotificationsAsRead,
       }}
     >
