@@ -5,12 +5,14 @@ import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogComment;
+import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.blog.Reaction;
 import com.quolance.quolance_api.entities.enums.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Helper class to create entities for testing purposes
@@ -104,6 +106,26 @@ public class EntityCreationHelper {
         BlogPost blogPost = new BlogPost();
         blogPost.setContent("This is a test blog post.");
         blogPost.setUser(user);
+        return blogPost;
+    }
+
+    public static BlogPost createBlogPostWithImages(User user) {
+        BlogPost blogPost = new BlogPost();
+        blogPost.setTitle("Blog Post with Images");
+        blogPost.setContent("This is a test blog post with images.");
+        blogPost.setUser(user);
+
+        // Create dummy BlogImage entities
+        BlogImage image1 = BlogImage.builder().imagePath("https://example.com/image1.jpg").build();
+        BlogImage image2 = BlogImage.builder().imagePath("https://example.com/image2.jpg").build();
+
+        // Associate images with the blog post
+        image1.setBlogPost(blogPost);
+        image2.setBlogPost(blogPost);
+
+        // Add the images to the blog post
+        blogPost.setImages(List.of(image1, image2));
+
         return blogPost;
     }
 

@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.dtos.blog;
 
+import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class BlogPostResponseDto {
     private LocalDateTime dateCreated;
     private List<BlogCommentDto> comments;
     private Set<String> tags;
+    private List<String> imageUrls;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
         BlogPostResponseDto response = new BlogPostResponseDto();
@@ -37,6 +39,11 @@ public class BlogPostResponseDto {
                 .map(Enum::name)
                 .collect(Collectors.toSet())
                 : Collections.emptySet());
+        // Map BlogImage entities to URLs
+        List<String> imageUrls = blogPost.getImages().stream()
+                .map(BlogImage::getImagePath)
+                .collect(Collectors.toList());
+        response.setImageUrls(imageUrls);
         return response;
     }
 
