@@ -174,4 +174,17 @@ public class ClientController {
         return ResponseEntity.ok(new PageResponseDto<>(freelancersPage));
     }
 
+    @PostMapping("/send-test-notification")
+    @Operation(
+            summary = "Send a test notification",
+            description = "Send a test notification to the authenticated user"
+    )
+    public ResponseEntity<String> sendTestNotification(@RequestBody String message) {
+        User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to send a test notification", client.getId());
+        clientWorkflowService.sendTestNotification(client, message);
+        log.info("Client with ID {} successfully sent a test notification", client.getId());
+        return ResponseEntity.ok("Test notification sent successfully");
+    }
+
 }
