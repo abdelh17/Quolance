@@ -3,7 +3,6 @@ package com.quolance.quolance_api.unit.controllers;
 import com.quolance.quolance_api.controllers.EnumController;
 import com.quolance.quolance_api.entities.enums.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +20,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("EnumController Unit Tests")
 class EnumControllerUnitTest {
 
     private static final String BASE_URL = "/api/enums";
@@ -84,7 +82,6 @@ class EnumControllerUnitTest {
     }
 
     @Nested
-    @DisplayName("Individual Endpoint Tests")
     class IndividualEndpointTests {
 
         @ParameterizedTest(name = "Endpoint {0} should return correct values")
@@ -100,56 +97,48 @@ class EnumControllerUnitTest {
         }
 
         @Test
-        @DisplayName("Project Categories endpoint should return all categories")
         void getProjectCategories_ShouldReturnAllCategories() {
             ResponseEntity<List<String>> response = enumController.getProjectCategories();
             assertEnumResponse(response, ProjectCategory.values());
         }
 
         @Test
-        @DisplayName("Application Statuses endpoint should return all statuses")
         void getApplicationStatuses_ShouldReturnAllStatuses() {
             ResponseEntity<List<String>> response = enumController.getApplicationStatuses();
             assertEnumResponse(response, ApplicationStatus.values());
         }
 
         @Test
-        @DisplayName("Delivery Times endpoint should return all delivery times")
         void getDeliveryTimes_ShouldReturnAllDeliveryTimes() {
             ResponseEntity<List<String>> response = enumController.getExpectedDeliveryTimes();
             assertEnumResponse(response, ExpectedDeliveryTime.values());
         }
 
         @Test
-        @DisplayName("Experience Levels endpoint should return all levels")
         void getExperienceLevels_ShouldReturnAllLevels() {
             ResponseEntity<List<String>> response = enumController.getFreelancerExperienceLevels();
             assertEnumResponse(response, FreelancerExperienceLevel.values());
         }
 
         @Test
-        @DisplayName("Price Ranges endpoint should return all ranges")
         void getPriceRanges_ShouldReturnAllRanges() {
             ResponseEntity<List<String>> response = enumController.getPriceRanges();
             assertEnumResponse(response, PriceRange.values());
         }
 
         @Test
-        @DisplayName("Project Statuses endpoint should return all statuses")
         void getProjectStatuses_ShouldReturnAllStatuses() {
             ResponseEntity<List<String>> response = enumController.getProjectStatuses();
             assertEnumResponse(response, ProjectStatus.values());
         }
 
         @Test
-        @DisplayName("Roles endpoint should return all roles")
         void getRoles_ShouldReturnAllRoles() {
             ResponseEntity<List<String>> response = enumController.getRoles();
             assertEnumResponse(response, Role.values());
         }
 
         @Test
-        @DisplayName("Tags endpoint should return all tags")
         void getTags_ShouldReturnAllTags() {
             ResponseEntity<List<String>> response = enumController.getTags();
             assertEnumResponse(response, Tag.values());
@@ -157,11 +146,9 @@ class EnumControllerUnitTest {
     }
 
     @Nested
-    @DisplayName("General Response Tests")
     class GeneralResponseTests {
 
         @Test
-        @DisplayName("All endpoints should return non-empty lists")
         void allEndpoints_ShouldReturnNonEmptyLists() {
             provideEndpointTestData().forEach(args -> {
                 EndpointData testData = (EndpointData) args.get()[0];
@@ -175,7 +162,6 @@ class EnumControllerUnitTest {
         }
 
         @Test
-        @DisplayName("All endpoints should have consistent response format")
         void allEndpoints_ShouldHaveConsistentResponseFormat() {
             provideEndpointTestData().forEach(args -> {
                 EndpointData testData = (EndpointData) args.get()[0];
@@ -185,7 +171,6 @@ class EnumControllerUnitTest {
         }
 
         @Test
-        @DisplayName("All endpoints should return uppercase enum values")
         void allEndpoints_ShouldReturnUppercaseValues() {
             provideEndpointTestData().forEach(args -> {
                 EndpointData testData = (EndpointData) args.get()[0];
