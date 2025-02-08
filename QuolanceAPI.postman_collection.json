@@ -1016,6 +1016,59 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get all unread notifs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/notifications/all-unread"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all notifs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "tester1235",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/notifications/all"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Notification Test",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/notifications/send-test-notification"
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
