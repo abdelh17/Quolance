@@ -37,14 +37,16 @@ public class BlogCommentController {
     @PutMapping("/{id}")
     @Operation(summary = "Update a blog comment")
     public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable Long id, @RequestBody BlogCommentDto request) {
-        BlogCommentDto response = blogCommentService.updateBlogComment(id, request);
+        User author = SecurityUtil.getAuthenticatedUser();
+        BlogCommentDto response = blogCommentService.updateBlogComment(id, request, author);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a blog comment")
     public ResponseEntity<String> deleteBlogComment(@PathVariable Long id) {
-        blogCommentService.deleteBlogComment(id);
+        User author = SecurityUtil.getAuthenticatedUser();
+        blogCommentService.deleteBlogComment(id, author);
         return ResponseEntity.ok("The comment was successfully deleted");
     }
 
