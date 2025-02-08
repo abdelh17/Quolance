@@ -10,9 +10,9 @@ public interface BlogCommentService {
 
     BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto);
 
-    BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto);
+    BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto, User author);
 
-    void deleteBlogComment(Long commentId);
+    void deleteBlogComment(Long commentId, User author);
 
     List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId);
 
