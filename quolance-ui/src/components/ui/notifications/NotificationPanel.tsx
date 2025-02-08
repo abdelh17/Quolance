@@ -2,11 +2,13 @@
 
 import { BellIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useState } from 'react';
+
 import {
   Notification,
   useGetUnreadNotifications,
   useMarkNotificationAsRead,
 } from '@/api/notifications-api';
+import { showToast } from '@/util/context/ToastProvider';
 import { useWebSocket } from '@/util/context/webSocketContext';
 
 const NotificationPanel: React.FC = () => {
@@ -27,11 +29,14 @@ const NotificationPanel: React.FC = () => {
   // Get new notification count from the WebSocket context.
   const { newNotificationCount } = useWebSocket();
 
-  // Refetch unread notifications whenever a new notification arrives,
-  // and reset the local read counter.
+  // Whenever new notifications arrive, refetch the data, reset the local read counter,
+  // and show a toast.
   useEffect(() => {
-    refetch();
-    setReadCount(0);
+    if (newNotificationCount > 0) {
+      refetch();
+      setReadCount(0);
+      showToast('You have a new notification!', 'info', { autoClose: 3000 }, 'bottom-right');
+    }
   }, [newNotificationCount, refetch]);
 
   // Toggle the dropdown open/closed.
@@ -39,7 +44,7 @@ const NotificationPanel: React.FC = () => {
     setIsOpen((prev) => !prev);
   };
 
-  // When a notification is clicked, mark it as read and update local count.
+  // When a notification is clicked, mark it as read and increment the local counter.
   const handleMarkAsRead = (id: number) => {
     markNotificationAsRead(id);
     setReadCount((prev) => prev + 1);
@@ -72,9 +77,9 @@ const NotificationPanel: React.FC = () => {
       {/* Dropdown panel with smooth fade/scale transition */}
       {isOpen && (
         <div
-          className="absolute right-0 mt-2 w-80 origin-top-right rounded-md bg-white 
-                     shadow-lg ring-1 ring-black/5 p-4 z-50 transition-all duration-300 ease-out 
-                     transform opacity-100 scale-100"
+        className="absolute right-0 mt-2 w-80 origin-top-right rounded-md bg-white 
+        shadow-lg ring-1 ring-black/5 p-4 z-50 transition-all duration-300 ease-out 
+        transform opacity-100 scale-100"
         >
           <h3 className="mb-2 border-b pb-1 text-lg font-semibold">Notifications</h3>
           {isLoading ? (
@@ -83,8 +88,8 @@ const NotificationPanel: React.FC = () => {
             <p className="text-sm text-gray-500">Error loading notifications.</p>
           ) : notifications.length === 0 ? (
             <p className="text-sm text-gray-500">
-              No unread notifications available.
-            </p>
+            No unread notifications available.
+          </p>
           ) : (
             <ul className="max-h-64 overflow-y-auto space-y-1">
               {notifications.map((notif: Notification) => (
