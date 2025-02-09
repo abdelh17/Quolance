@@ -92,7 +92,10 @@ export const PageInfoResults = ({ metadata }: { metadata: PageMetaData }) => {
 
   return (
     <p className='text-sm text-gray-700'>
-      Showing <span className='font-medium'>{pageNumber * pageSize + 1}</span>{' '}
+      Showing{' '}
+      <span className='font-medium'>
+        {totalElements > 0 ? pageNumber * pageSize + 1 : 0}
+      </span>{' '}
       to{' '}
       <span className='font-medium'>
         {Math.min((pageNumber + 1) * pageSize, totalElements)}
