@@ -87,41 +87,46 @@ class NotificationRestControllerUnitTest {
     }
 
     @Test
-    void sendNotification_Success() {
+    void sendTestNotification_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockSender);
-            when(userService.findById(2L)).thenReturn(Optional.of(mockRecipient));
+            String testMessage = "Test notification";
+            doNothing().when(notificationMessageService).sendNotificationToUser(mockSender, mockSender, testMessage);
 
-            ResponseEntity<Void> response = notificationRestController.sendNotification(sendNotificationRequest);
+            ResponseEntity<String> response = notificationRestController.sendTestNotification(testMessage);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            verify(userService).findById(2L);
+            assertThat(response.getBody()).isEqualTo("Test notification sent successfully");
+            verify(notificationMessageService).sendNotificationToUser(mockSender, mockSender, testMessage);
         }
     }
 
     @Test
-    void sendNotification_RecipientNotFound_ThrowsException() {
+    void sendTestNotification_EmptyMessage_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockSender);
-            when(userService.findById(999L)).thenReturn(Optional.empty());
-            sendNotificationRequest.setRecipientIds(List.of(999L));
+            String emptyMessage = "";
+            doNothing().when(notificationMessageService).sendNotificationToUser(mockSender, mockSender, emptyMessage);
 
-            assertThatThrownBy(() -> notificationRestController.sendNotification(sendNotificationRequest))
-                    .isInstanceOf(RuntimeException.class)
-                    .hasMessage("Recipient not found with ID: 999");
+            ResponseEntity<String> response = notificationRestController.sendTestNotification(emptyMessage);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo("Test notification sent successfully");
+            verify(notificationMessageService).sendNotificationToUser(mockSender, mockSender, emptyMessage);
         }
     }
 
     @Test
-    void sendNotification_WithEmptyRecipientList_Success() {
+    void sendTestNotification_NullMessage_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockSender);
-            sendNotificationRequest.setRecipientIds(List.of());
+            doNothing().when(notificationMessageService).sendNotificationToUser(mockSender, mockSender, null);
 
-            ResponseEntity<Void> response = notificationRestController.sendNotification(sendNotificationRequest);
+            ResponseEntity<String> response = notificationRestController.sendTestNotification(null);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            verify(userService, never()).findById(any());
+            assertThat(response.getBody()).isEqualTo("Test notification sent successfully");
+            verify(notificationMessageService).sendNotificationToUser(mockSender, mockSender, null);
         }
     }
 
