@@ -28,7 +28,7 @@ public class BlogPostController {
 
     @PostMapping
     @Operation(summary = "Create a blog post")
-    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @RequestBody BlogPostRequestDto request) {
+    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @ModelAttribute  @RequestBody BlogPostRequestDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         BlogPostResponseDto response = blogPostService.create(request, author);
         return ResponseEntity.ok(response);
