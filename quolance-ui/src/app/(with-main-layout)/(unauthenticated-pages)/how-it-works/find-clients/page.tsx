@@ -58,7 +58,7 @@ function FindClientsPage() {
         <div className='relative h-80 overflow-hidden bg-b300 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2'>
           <img
             alt='Freelancer working on a project'
-            src='https://images.unsplash.com/photo-1525130413817-d45c1d127c42?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1920&q=60&blend=6366F1&sat=-100&blend-mode=multiply'
+            src='https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
             className='size-full object-cover'
           />
           <svg
@@ -82,12 +82,12 @@ function FindClientsPage() {
               Access a world of opportunities and work with clients who value your expertise.
             </p>
             <div className='mt-8'>
-              <a
-                href='#'
-                className='inline-flex rounded-md bg-b300 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-b300/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-b300'
-              >
-                Browse Projects
-              </a>
+            <Link
+              href='/projects'
+              className='bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
+            >
+              <span className='relative z-10'>Browse Projects</span>
+            </Link>
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ function FindClientsPage() {
               <div className="relative aspect-[2/1] h-full md:-mx-8 xl:mx-0 xl:aspect-auto">
                 <img
                   alt="Successful freelancer"
-                  src="https://images.pexels.com/photos/1181293/pexels-photo-1181293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                  src="https://images.pexels.com/photos/6779308/pexels-photo-6779308.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                   className="absolute inset-0 size-full rounded-2xl bg-gray-800 object-cover shadow-2xl"
                 />
               </div>
@@ -147,6 +147,7 @@ function FindClientsPage() {
                   aria-hidden="true"
                   className="absolute left-0 top-0 -z-10 h-32 stroke-white/20"
                 >
+
                 </svg>
                 <blockquote className="text-xl/8 font-semibold text-white sm:text-2xl/9">
                   <p>
@@ -155,7 +156,7 @@ function FindClientsPage() {
                   </p>
                 </blockquote>
                 <figcaption className="mt-8 text-base">
-                  <div className="font-semibold text-white">Sarah Chen</div>
+                  <div className="font-semibold text-white">Sarah Fitzgerald</div>
                   <div className="mt-1 text-gray-400">UX Designer & Developer</div>
                 </figcaption>
               </figure>
