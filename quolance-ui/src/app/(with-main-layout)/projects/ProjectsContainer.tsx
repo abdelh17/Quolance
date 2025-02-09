@@ -11,9 +11,11 @@ import Image from 'next/image';
 import heroImage2 from '@/public/images/freelancer-hero-img-2.jpg';
 import { useState } from 'react';
 import ProjectListLayout from '@/components/ui/projects/ProjectListLayout';
+import { useAuthGuard } from '@/api/auth-api';
 
 function ProjectsContainer() {
   const [currentListType, setCurrentListType] = useState('All Projects');
+  const { user } = useAuthGuard({ middleware: 'auth' });
   const [projectQuery, setProjectQuery] = useState<ProjectFilterQuery>(
     ProjectFilterQueryDefault
   );
@@ -47,7 +49,8 @@ function ProjectsContainer() {
             </p>
             <Link
               href='/auth/register'
-              className='bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
+              className={`bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]
+                          ${user ? 'hidden' : ''}`}
             >
               <span className='relative z-10'>Sign Up For Free</span>
             </Link>
