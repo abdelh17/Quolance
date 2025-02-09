@@ -63,18 +63,6 @@ export const headerMenu = [
   },
   {
     id: uuidv4(),
-    name: "What's New?",
-    isSubmenu: true,
-    submenu: [
-      {
-        id: uuidv4(),
-        name: 'Blog',
-        link: '/whats-new/blog',
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
     name: 'Support',
     isSubmenu: true,
     submenu: [
