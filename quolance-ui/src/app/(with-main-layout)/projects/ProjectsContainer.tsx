@@ -12,6 +12,9 @@ import heroImage2 from '@/public/images/freelancer-hero-img-2.jpg';
 import { useState } from 'react';
 import ProjectListLayout from '@/components/ui/projects/ProjectListLayout';
 import { useAuthGuard } from '@/api/auth-api';
+import { Role } from '@/constants/models/user/UserResponse';
+import { useGetFreelancerProjects } from '@/api/freelancer-api';
+import { useGetAllClientProjects } from '@/api/client-api';
 
 function ProjectsContainer() {
   const [currentListType, setCurrentListType] = useState('All Projects');
@@ -20,7 +23,41 @@ function ProjectsContainer() {
     ProjectFilterQueryDefault
   );
 
+  // Filter projects based on user role and current list type
+  // There is a small bug here, which will be fixed in the next iteration
+  const useGetFilteredProjects = (
+    query: ProjectFilterQuery,
+    currentListType: string,
+    role: Role
+  ) => {
+    const isPublicEnabled =
+      currentListType === 'All Projects' && role !== Role.FREELANCER;
+    const isFreelancerEnabled = role === Role.FREELANCER;
+    const isClientEnabled =
+      (currentListType === 'Posted' || currentListType === 'Completed') &&
+      role === Role.CLIENT;
+
+    const publicProjects = useGetAllPublicProjects(query, isPublicEnabled);
+    const freelancerProjects = useGetFreelancerProjects(
+      query,
+      isFreelancerEnabled,
+      currentListType === 'Applied'
+    );
+    const clientProjects = useGetAllClientProjects(
+      query,
+      isClientEnabled,
+      currentListType === 'Completed'
+    );
+
+    if (isPublicEnabled) return publicProjects;
+    if (isFreelancerEnabled) return freelancerProjects;
+    if (isClientEnabled) return clientProjects;
+
+    return { data: null, isLoading: true, isSuccess: false };
+  };
+
   const { data, isLoading, isSuccess } = useGetAllPublicProjects(projectQuery);
+
   const pageMetaData = data?.data.metadata;
   const projectsData = data?.data.content;
 
