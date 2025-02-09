@@ -5,14 +5,15 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Link, Github, Linkedin} from 'lucide-react';
 import { useAuthGuard } from '@/api/auth-api';
-import { useGetFreelancerProfile,useEditProfile,useUploadProfileImage} from '@/api/freelancer-api';
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { useGetFreelancerProfile,useEditProfile,useUploadProfileImage,useGetProfileCompletion} from '@/api/freelancer-api';
+import { FreelancerProfileType,EditModesType} from '@/constants/models/user/UserResponse';
 import ProfileHeader from './components/ProfileHeader';
 import AboutSection from './components/AboutSection';
 import ExperienceSection from "./components/ExperienceSection";
 import AvailabilitySection from './components/AvailabilitySection';
 import SkillsSection from './components/SkillsSection';
 import ContactSection from './components/ContactSection';
+import ProfileStatus from './components/ProfileStatus';
 
 const AVAILABLE_SKILLS = [
     "JAVA", "PYTHON", "HTML", "CSS", "JAVASCRIPT", "TYPESCRIPT", "C", "CPLUSPLUS",
@@ -30,8 +31,20 @@ const FreelancerProfile: React.FC = () => {
  const { user,mutate} = useAuthGuard({ middleware: 'auth' });
  const [isImageError, setIsImageError] = useState(false);
  const [isModalOpen, setIsModalOpen] = useState(false);
- 
  const {data} = useGetFreelancerProfile(user?.username)
+ const [profilePercentage, setProfilePercentage] = useState<number>(0);
+ const { data: fetchedPercentage, refetch } = useGetProfileCompletion();
+ const [editModes, setEditModes] = useState<EditModesType>({
+  editProfileImage: false,
+  editHeader: false,
+  editAbout: false,
+  editExperience: false,
+  editAvailability: false,
+  editSkills: false,
+  editContactInformation: false,
+  editProfile: false,
+ });
+ const [showStatus,setShowStatus] = useState(true);
 
 
   const [profile, setProfile] = useState<FreelancerProfileType>({
@@ -58,6 +71,10 @@ const FreelancerProfile: React.FC = () => {
 }, [data]);
 
 
+const dontShowStatus = () => {
+  setShowStatus(false);
+ };
+ 
 
 
  const handleImageClick = () => {
@@ -67,6 +84,37 @@ const FreelancerProfile: React.FC = () => {
 
  const uploadProfileImage = useUploadProfileImage();
 
+
+
+ const checkEditModes = (editMode: string): boolean => {
+  return Object.entries(editModes).some(
+    ([key, value]) => key !== editMode && value === true
+  );
+ };
+
+ const updateEditModes = (editMode: string) => {
+  setEditModes((prevEditModes) => {
+    // Check if any other edit modes are active
+    const otherModesActive = checkEditModes(editMode)
+ 
+ 
+    // If other modes are active, set the current editMode to false
+    if (otherModesActive) {
+      return {
+        ...prevEditModes,
+        [editMode]: false,
+      };
+    }
+ 
+ 
+    // If no other modes are active, set the current editMode to true
+    return {
+      ...prevEditModes,
+      [editMode]: true,
+    };
+  });
+ };
+ 
 
  const handleSelect = (file: File) => {
    uploadProfileImage.mutate(file, {
@@ -104,6 +152,17 @@ const FreelancerProfile: React.FC = () => {
      setShowBanner(false);
    }
  }, [editMode]);
+
+ useEffect(() => {
+  if (fetchedPercentage !== undefined) {
+    setProfilePercentage(fetchedPercentage);
+  }
+}, [fetchedPercentage]);
+
+// Refetch profile completion whenever profile changes
+useEffect(() => {
+  refetch();
+}, [profile]);
 
 
  const editProfileMutation = useEditProfile();
@@ -186,6 +245,19 @@ const FreelancerProfile: React.FC = () => {
 
      {/* Main Content */}
      <main className="container mx-auto px-4 py-8">
+
+
+     {showStatus && (
+       <ProfileStatus
+         profile={profile}
+         profilePercentage = {profilePercentage}
+         isHidden={profilePercentage === 100}
+         updateEditModes={updateEditModes}
+         checkEditModes = {checkEditModes}
+         dontShowStatus = {dontShowStatus}
+       />
+     )}
+  
        {/* About Section */}
        <AboutSection
         profile={profile}
