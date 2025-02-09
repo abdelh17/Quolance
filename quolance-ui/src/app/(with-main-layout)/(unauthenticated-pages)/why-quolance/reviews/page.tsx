@@ -64,8 +64,8 @@ const ReviewsPage = () => {
   return (
     <div className="bg-white">
       {/* Hero Section */}
-      <div className="relative isolate px-6 pt-10 lg:px-8">
-        <div className="mx-auto max-w-2xl py-16 sm:py-20">
+      <div className="relative isolate px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl py-12 sm:py-16">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Client Success Stories
