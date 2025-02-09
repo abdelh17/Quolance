@@ -83,12 +83,12 @@ function FindAFreelancerPage() {
               connects you with the right talent to get the job done.
             </p>
             <div className='mt-8'>
-              <a
-                href='#'
-                className='inline-flex rounded-md bg-b300 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-b300/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-b300'
-              >
-                Browse Freelancers
-              </a>
+            <Link
+              href='/projects'
+              className='bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
+            >
+              <span className='relative z-10'>Browse Freelancers</span>
+            </Link>
             </div>
           </div>
         </div>
