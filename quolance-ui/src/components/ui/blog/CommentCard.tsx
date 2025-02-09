@@ -2,14 +2,15 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
+import { useGetFreelancerProfile } from "@/api/freelancer-api";
 import { showToast } from "@/util/context/ToastProvider";
 import { useDeleteComment } from "@/api/blog-api";
 import { useAuthGuard } from "@/api/auth-api";
 
+
 interface CommentCardProps {
   commentId: number;
   authorName: string;
-  profilePicture: string;
   content: string;
   dateCreated: string;
 }
@@ -17,12 +18,12 @@ interface CommentCardProps {
 const CommentCard: React.FC<CommentCardProps> = ({
   commentId,
   authorName,
-  profilePicture,
   content,
   dateCreated,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const { data: authorProfile } = useGetFreelancerProfile(authorName);
   const { user } = useAuthGuard({ middleware: "auth" });
   
   const { mutate: deleteComment } = useDeleteComment({
@@ -51,7 +52,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
       {/* User Profile Picture */}
       <Image
         alt={`${authorName}'s profile`}
-        src={profilePicture || icon}
+        src={authorProfile?.profileImageUrl || icon}
         width={32}
         height={32}
         className="rounded-full object-cover"

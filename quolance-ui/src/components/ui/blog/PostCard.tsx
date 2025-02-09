@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 import PostReaction from "./PostReaction";
@@ -8,6 +8,8 @@ import PostReaction from "./PostReaction";
 import { useAuthGuard } from "@/api/auth-api";
 import CommentCard from "./CommentCard";
 import { CommentType } from "@/constants/types/blog-types";
+import { useGetFreelancerProfile } from "@/api/freelancer-api";
+import UserSummary from "@/components/ui/blog/UserSummary";
 import { 
     useGetReactionsByPostId, 
     useReactToPost, 
@@ -29,58 +31,97 @@ interface PostCardProps {
   authorName: string;
   dateCreated: string;
   imageUrls?: string[];
+   openUserSummaryPostId: number | null;
+  setOpenUserSummaryPostId: (open: number | null) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, imageUrls = [] }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, imageUrls = [], openUserSummaryPostId, setOpenUserSummaryPostId }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
   const [reactions, setReactions] = useState<ReactionState | null>(null);
   const [showFullScreen, setShowFullScreen] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  
+  const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
+
+  const { user } = useAuthGuard({ middleware: "auth" });
+  const { data: authorProfile } = useGetFreelancerProfile(authorName);
 
   const { data: reactionData } = useGetReactionsByPostId(id);
   const { mutate: reactToPost } = useReactToPost();
+  
   const { data: commentsData, refetch: refetchComments } = useGetCommentsByPostId(id);
   const { mutate: addComment } = useAddComment(id, {
     onSuccess: () => {
-      setNewComment(""); // Clear input field
-      refetchComments(); // Refresh comments
+      setNewComment("");
+      refetchComments();
     },
   });
+  
   const { mutate: removeReaction } = useRemoveReaction();
-  const { user } = useAuthGuard({ middleware: "auth" });
   const { mutate: deletePost } = useDeleteBlogPost({
     onSuccess: () => {
       showToast("Post deleted successfully!", "success");
-      window.location.reload(); // Refresh page to reflect deletion
+      window.location.reload();
     },
     onError: () => {
       showToast("Error deleting post.", "error");
     },
   });
 
+  const userSummaryRef = useRef<HTMLDivElement | null>(null);
+  const profileImageRef = useRef<HTMLImageElement | null>(null);
+  const authorNameRef = useRef<HTMLButtonElement | null>(null);
+
+  const isUserSummaryOpen = openUserSummaryPostId === id;
+
   useEffect(() => {
-  if (reactionData) {
-    const initialReactions: ReactionState = {
-      like: { count: 0, userReacted: false },
-      love: { count: 0, userReacted: false },
-      haha: { count: 0, userReacted: false },
-      wow: { count: 0, userReacted: false },
-      sad: { count: 0, userReacted: false },
-      angry: { count: 0, userReacted: false },
-    };
+    if (reactionData) {
+      const initialReactions: ReactionState = {
+        like: { count: 0, userReacted: false },
+        love: { count: 0, userReacted: false },
+        haha: { count: 0, userReacted: false },
+        wow: { count: 0, userReacted: false },
+        sad: { count: 0, userReacted: false },
+        angry: { count: 0, userReacted: false },
+      };
 
-    reactionData.forEach((reaction) => {
-      const { reactionType, userName } = reaction;
-      initialReactions[reactionType.toLowerCase()].count += 1;
-      if (userName === user?.username) {
-        initialReactions[reactionType.toLowerCase()].userReacted = true;
+      reactionData.forEach((reaction) => {
+        const { reactionType, userName } = reaction;
+        initialReactions[reactionType.toLowerCase()].count += 1;
+        if (userName === user?.username) {
+          initialReactions[reactionType.toLowerCase()].userReacted = true;
+        }
+      });
+
+      setReactions(initialReactions);
+    }
+  }, [reactionData, user]);
+
+  useEffect(() => {
+    function handleCloseUserSummary(event: MouseEvent) {
+      if (
+        userSummaryRef.current &&
+        !userSummaryRef.current.contains(event.target as Node) &&
+        profileImageRef.current &&
+        !profileImageRef.current.contains(event.target as Node) &&
+        authorNameRef.current &&
+        !authorNameRef.current.contains(event.target as Node)
+      ) {
+        setOpenUserSummaryPostId(null);
+        setUserSummaryPosition(null);
       }
-    });
+    }
 
-    setReactions(initialReactions);
-  }}, [reactionData, user]);
+    if (isUserSummaryOpen) {
+      document.addEventListener("mousedown", handleCloseUserSummary);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleCloseUserSummary);
+    };
+  }, [isUserSummaryOpen, setOpenUserSummaryPostId]);
 
   const handleReactionClick = (reactionType: string) => {
     if (!reactions || !user) return;
@@ -88,7 +129,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     const userReacted = reactions[reactionType].userReacted;
   
     if (userReacted) {
-      // Find the user's reaction and remove it
       const userReaction = reactionData?.find(
         (reaction) => reaction.reactionType.toLowerCase() === reactionType && reaction.userName === user.username
       );
@@ -102,7 +142,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   
     const updatedReactions = Object.keys(reactions).reduce((acc, key) => {
       acc[key] = { ...reactions[key] };
-
       if (key === reactionType) {
         acc[key].userReacted = !userReacted;
         acc[key].count += userReacted ? -1 : 1;
@@ -110,7 +149,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
         acc[key].userReacted = false;
         acc[key].count -= 1;
       }
-
       return acc;
     }, {} as ReactionState);
   
@@ -119,10 +157,24 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   const handleAddComment = () => {
     if (!newComment.trim() || !user) return;
-
     addComment({ content: newComment });
   };
 
+  const handleShowUserSummary = (event: React.MouseEvent<HTMLElement>) => {
+    if (isUserSummaryOpen) {
+      setOpenUserSummaryPostId(null);
+      setUserSummaryPosition(null);
+    } else {
+      const rect = event.currentTarget.getBoundingClientRect();
+
+      setUserSummaryPosition({ 
+        x: rect.left - 25 + window.scrollX, 
+        y: rect.top - 50 + window.scrollY
+      });
+      setOpenUserSummaryPostId(id);
+    }
+  };
+  
   const handleDeletePost = (postId: number) => {
     if (confirm("Are you sure you want to delete this post?")) {
       deletePost(postId);
@@ -154,45 +206,49 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     <div className="bg-white shadow-md rounded-md">
       {/* User Info */}
       <div className="flex justify-between bg-slate-300 w-full rounded-t-md">
-        <div className="flex items-center ml-5 py-5">
+        <div className="flex items-center mb-2 mt-2 ml-5 py-3">
           <Image
+            ref={profileImageRef}
             alt={`${authorName}'s profile`}
-            src={icon}
-            width={48}
-            height={48}
-            className="rounded-full object-cover"
+            src={authorProfile?.profileImageUrl || icon}
+            width={56}
+            height={56}
+            className="rounded-full object-cover cursor-pointer"
+            onClick={handleShowUserSummary}
           />
-          <div className="ml-4">
-            <p className="font-semibold text-gray-800">{authorName}</p>
-          </div>
+          <button 
+            ref={authorNameRef}
+            className="ml-4 text-gray-800 font-semibold cursor-pointer focus:outline-none" 
+            onClick={handleShowUserSummary}
+          >
+            {authorName}
+          </button>
+          {isUserSummaryOpen && userSummaryPosition && (
+            <div 
+              ref={userSummaryRef}
+              className="absolute z-50"
+              style={{ 
+                top: userSummaryPosition.y, 
+                left: userSummaryPosition.x
+              }}
+            >
+              <UserSummary user={authorProfile} />
+            </div>
+          )}
         </div>
-        <span className="text-sm text-gray-500 mr-5 mt-5">
+        <span className="text-sm text-gray-500 mr-5 mt-2">
           {user?.username === authorName && (
             <button
                 onClick={() => handleDeletePost(id)}
-                className="bg-red-500 text-white text-sm mt-2 px-4 py-2 focus:outline-none rounded-md"
+                className="bg-red-500 text-white text-sm mt-3 px-4 py-2 focus:outline-none rounded-md"
             >   
                 Delete
             </button>
           )}
         </span>
       </div>
-
-      {/* Post Content */}
-      <div className="m-5">
-        <div className="flex justify-between">
-          <h3 className="text-md font-semibold text-gray-800">{title}</h3>
-          <span className="text-sm text-gray-500">
-            {new Intl.DateTimeFormat("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            }).format(new Date(dateCreated))}
-          </span>
-        </div>
-        <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
-          <p className="text-gray-700">{content}</p>
-        </div>
+      <div className="m-7">
+        {/* Post Images */}
         {imageUrls.length > 0 && (
           <div className={`mt-4 ${imageUrls.length === 3 ? 'grid grid-rows-2 gap-2' : imageUrls.length > 1 ? 'grid grid-cols-2 gap-2' : ''}`}>
             {/* Full-width layout for 1 image */}
@@ -229,6 +285,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                   style={{ height: '16rem' }} // dynamically forcing h-128 height
                 >
                   <img src={imageUrls[0]} alt="Full-width image" className="object-cover w-full h-full" />
+
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {imageUrls.slice(1, 3).map((url, index) => (
@@ -244,7 +301,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                 </div>
               </>
             )}
-
             {/* 4 images and more*/}
             {imageUrls.length > 3 && (
               imageUrls.slice(0, 4).map((url, index) => (
@@ -255,6 +311,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                   style={{ height: '16rem' }} // dynamically forcing h-128 height
                 >
                   <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full" />
+
 
                   {index === 3 && imageUrls.length > 3 && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -302,29 +359,47 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             </div>
           </div>
         )}
+      </div>
+      
+      {/* Post Content */}
+      <div className="ml-5 mr-5 mb-5">
+        <div className="flex justify-between">
+          <h3 className="text-md font-semibold text-gray-800">{title}</h3>
+          <span className="text-sm text-gray-500">
+            {new Intl.DateTimeFormat("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(new Date(dateCreated))}
+          </span>
+        </div>
+        <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
+          <p className="text-gray-700">{content}</p>
+        </div>
 
         {content.length > 300 && (
-            <button
+          <button
             onClick={toggleExpand}
             className="text-blue-500 text-sm mt-2 focus:outline-none"
-            >
+          >
             {isExpanded ? "Read less" : "Read more"}
-            </button>
+          </button>
         )}
 
         {/* Reaction Buttons */}
         <div className="mt-4 flex items-center gap-1">
-            {reactions &&
+          {reactions &&
             Object.keys(reactions).map((reaction) => (
-                <PostReaction
+              <PostReaction
                 key={reaction}
                 reaction={reaction}
                 reactionCount={reactions[reaction].count}
                 userReaction={reactions[reaction].userReacted}
                 onReactionClick={() => handleReactionClick(reaction)}
-                />
-            ))}
+              />
+          ))}
         </div>
+
 
         {/* Comments Section */}
         <div className="mt-4">
@@ -342,29 +417,28 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                   key={comment.commentId}
                   commentId={comment.commentId}
                   authorName={`User #${comment.userId}`}
-                  profilePicture=""
                   content={comment.content}
                   dateCreated={new Date().toISOString()}
                 />
               ))}
-
-              {/* Add Comment Input */}
-              <div className="mt-4">
-                <textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Add a comment..."
-                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                  rows={3}
-                />
-                <button
-                  onClick={handleAddComment}
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
-                >
-                  Post Comment
-                </button>
-              </div>
+            {/* Add Comment Input */}
+            <div className="mt-4">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                rows={3}
+              />
+              <button
+                onClick={handleAddComment}
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
+              >
+                Post Comment
+              </button>
             </div>
+          </div>
+    
           )}
         </div>
       </div>
