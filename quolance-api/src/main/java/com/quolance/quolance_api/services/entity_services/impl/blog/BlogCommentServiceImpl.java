@@ -41,8 +41,12 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto) {
+    public BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
+
+        if (!isAuthorOfPost(blogComment, author)) {
+            throw new ApiException("You cannot update a comment that does not belong to you.");
+        }
 
         blogComment.setContent(blogCommentDto.getContent());
         BlogComment updatedComment = blogCommentRepository.save(blogComment);
@@ -51,10 +55,29 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public void deleteBlogComment(Long commentId) {
+    public void deleteBlogComment(Long commentId, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
 
+        if (!isAuthorOfPost(blogComment, author)) {
+            throw new ApiException("You cannot delete a comment that does not belong to you.");
+        }
+
         blogCommentRepository.delete(blogComment);
+    }
+
+    @Override
+    public List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId) {
+        BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
+
+        List<BlogComment> comments = blogCommentRepository.findByBlogPost(blogPost);
+
+        return comments.stream()
+                .map(BlogCommentDto::fromEntity)
+                .toList();
+    }
+
+    private boolean isAuthorOfPost(BlogComment blogComment, User author) {
+        return blogComment.getUser().getId().equals(author.getId());
     }
 
     public BlogComment getBlogCommentEntity(Long commentId) {

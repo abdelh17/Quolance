@@ -13,11 +13,13 @@ public interface BlogCommentService {
 
     BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto);
 
-    BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto);
+    BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto, User author);
 
-    void deleteBlogComment(Long commentId);
+    void deleteBlogComment(Long commentId, User author);
 
     BlogComment getBlogCommentEntity(Long blogCommentId);
 
     Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable);
+
+    List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId);
 }

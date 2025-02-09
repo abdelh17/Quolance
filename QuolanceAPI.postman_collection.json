@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "4a19faba-6178-4e26-b2ec-68964783e25c",
+		"_postman_id": "3ff7c61a-aaf9-45fb-8a03-6c40f65e7f86",
 		"name": "QuolanceAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "32756588"
+		"_exporter_id": "26432903"
 	},
 	"item": [
 		{
@@ -366,6 +366,50 @@
 						"url": "http://localhost:8081/api/client/projects/1/applications/all"
 					},
 					"response": []
+				},
+				{
+					"name": "Get all available Freelancers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/client/freelancers/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"client",
+								"freelancers",
+								"all"
+							],
+							"query": [
+								{
+									"key": "searchName",
+									"value": "John",
+									"disabled": true
+								},
+								{
+									"key": "experienceLevel",
+									"value": "EXPERT",
+									"disabled": true
+								},
+								{
+									"key": "availability",
+									"value": "FULL_TIME",
+									"disabled": true
+								},
+								{
+									"key": "skills",
+									"value": "HTML,JAVA",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -414,6 +458,15 @@
 						"method": "GET",
 						"header": [],
 						"url": "http://localhost:8081/api/freelancer/projects/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Completion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8081/api/freelancer/profile/completion"
 					},
 					"response": []
 				},
@@ -782,7 +835,8 @@
 							"name": "Get Comment By Post ID",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": ""
 							},
 							"response": []
 						},
@@ -917,7 +971,8 @@
 							"name": "Remove reaction",
 							"request": {
 								"method": "DELETE",
-								"header": []
+								"header": [],
+								"url": ""
 							},
 							"response": []
 						}
@@ -999,6 +1054,59 @@
 						"method": "GET",
 						"header": [],
 						"url": "localhost:8081/api/files/all"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get all unread notifs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/notifications/all-unread"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all notifs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "tester1235",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/notifications/all"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Notification Test",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/notifications/send-test-notification"
 					},
 					"response": []
 				}

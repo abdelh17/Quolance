@@ -11,9 +11,11 @@ import SearchBar from "./SearchBar";
 import { useAuthGuard } from "@/api/auth-api";
 import { showToast } from "@/util/context/ToastProvider";
 import { useCreateBlogPost } from "@/api/blog-api";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const BlogContainer: React.FC = () => {
+    const queryClient = useQueryClient();
     const { user, isLoading: userIsLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
 
     //const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -40,6 +42,10 @@ const BlogContainer: React.FC = () => {
         onSuccess: () => {
             console.log("Post created successfully!");
             showToast("Post created successfully!", "success");
+
+            // Force a refetch of the blog posts
+            queryClient.invalidateQueries({queryKey: ["all-blog-posts"]});
+            setIsModalOpen(false);
         },
         onError: (error) => {
             console.error("Error creating post:", error);
@@ -48,7 +54,7 @@ const BlogContainer: React.FC = () => {
     })
 
 
-    const handleFormSubmit = async (postData: { title: string; content: string; userId: number | undefined }) => {
+    const handleFormSubmit = async (postData: { title: string; content: string; userId: number | undefined; files?: File[] }) => {
         if (!postData.userId) {
             console.error("User ID is undefined. User must be logged in.");
             showToast("Error: User not logged in.", "error");
@@ -59,6 +65,7 @@ const BlogContainer: React.FC = () => {
             console.log("Form submitted:", postData);
             await mutateBlogPosts(postData);
         } catch (err) {
+            console.log("FORM NOT SUBMITTED AT ALL", postData)
             console.error(err);
         }
     };

@@ -15,6 +15,7 @@ public class BlogCommentDto {
     private Long commentId;
     private Long blogPostId;
     private Long userId;
+    private String username;
     private String content;
 
 
@@ -23,6 +24,7 @@ public class BlogCommentDto {
                 .commentId(blogComment.getId())
                 .blogPostId(blogComment.getBlogPost().getId())
                 .userId(blogComment.getUser().getId())
+                .username(blogComment.getUser().getUsername())
                 .content(blogComment.getContent())
                 .build();
     }
