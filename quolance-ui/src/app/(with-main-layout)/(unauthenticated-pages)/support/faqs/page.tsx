@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 const faqs = [
@@ -64,9 +65,9 @@ const FAQPage: React.FC = () => {
       <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Frequently asked questions</h2>
       <p className="mt-6 max-w-2xl text-base/7 text-gray-600">
         Have a different question and can’t find the answer you’re looking for? Reach out to our support team by{' '}
-        <a href="#" className="font-semibold text-b300 hover:text-b400">
-          sending us an email
-        </a>{' '}
+        <Link href="/support/contact-us" className="font-semibold text-b300 hover:text-b400">
+          contacting us
+        </Link>{' '}
         and we’ll get back to you as soon as we can.
       </p>
       <div className="mt-20">
