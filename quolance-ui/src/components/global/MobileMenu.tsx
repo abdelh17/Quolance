@@ -19,6 +19,18 @@ function MobileMenu({
   logout: () => void;
 }) {
   const { menuToggle, handleToggle } = useToggle();
+
+  // Handler to close menu when a link is clicked
+  const handleLinkClick = () => {
+    setShowMobileMenu(false);
+  };
+
+  // Handler for logout that closes menu and calls logout function
+  const handleLogout = () => {
+    setShowMobileMenu(false);
+    logout();
+  };
+
   return (
     <nav className=''>
       <div
@@ -39,11 +51,11 @@ function MobileMenu({
       >
         <div className=' top-0 mt-2 flex w-full items-center justify-between p-4 sm:p-8'>
           {user ? (
-            <Link href='/dashboard' className='text-2xl font-bold text-white'>
+            <Link href='/dashboard' className='text-2xl font-bold text-white' onClick={handleLinkClick}>
               Quolance
             </Link>
           ) : (
-            <Link href='/' className='text-2xl font-bold text-white'>
+            <Link href='/' className='text-2xl font-bold text-white' onClick={handleLinkClick}>
               Quolance
             </Link>
           )}
@@ -81,7 +93,7 @@ function MobileMenu({
                     <ul className=' flex flex-col items-start justify-start gap-2 overflow-hidden pl-4 duration-700'>
                       {menu.submenu?.map(({ id, name, link }) => (
                         <li key={id}>
-                          <Link href={link} className='text-base'>
+                          <Link href={link} className='text-base' onClick={handleLinkClick}>
                             <span>-</span> {name}
                           </Link>
                         </li>
@@ -90,7 +102,7 @@ function MobileMenu({
                   </AnimateHeight>
                 </div>
               ) : (
-                <Link href='#' className=' hover:text-b500 duration-300'>
+                <Link href='#' className=' hover:text-b500 duration-300' onClick={handleLinkClick}>
                   {menu.name}
                 </Link>
               )}
@@ -100,19 +112,19 @@ function MobileMenu({
           {user ? (
             <>
               <li className='hover:text-b500 duration-500'>
-                <Link href='/dashboard'>Dashboard</Link>
+                <Link href='/dashboard' onClick={handleLinkClick}>Dashboard</Link>
               </li>
               {user.role === 'FREELANCER' && (
                 <li className='hover:text-b500 duration-500'>
-                  <Link href='/profile'>My Profile</Link>
+                  <Link href='/profile' onClick={handleLinkClick}>My Profile</Link>
                 </li>
               )}
               <li className='hover:text-b500 duration-500'>
-                <Link href='/setting'>Settings</Link>
+                <Link href='/setting' onClick={handleLinkClick}>Settings</Link>
               </li>
               <li
                 className='hover:text-b500 cursor-pointer duration-500'
-                onClick={() => logout()}
+                onClick={handleLogout}
               >
                 Logout
               </li>
@@ -120,12 +132,12 @@ function MobileMenu({
           ) : (
             <>
               <li className='hover:text-b500 duration-500'>
-                <Link href='/auth/register' className='rounded-lg px-2 py-3 '>
+                <Link href='/auth/register' className='rounded-lg px-2 py-3' onClick={handleLinkClick}>
                   Sign up
                 </Link>
               </li>
               <li className='hover:text-b500 duration-500'>
-                <Link href='/auth/login' className='rounded-lg px-2 py-3'>
+                <Link href='/auth/login' className='rounded-lg px-2 py-3' onClick={handleLinkClick}>
                   Sign in
                 </Link>
               </li>
@@ -137,6 +149,7 @@ function MobileMenu({
           <Link
             href='/post-project'
             className='bg-y300 text-n900 rounded-full px-4 py-2 text-base font-medium ltr:ml-4 rtl:mr-4'
+            onClick={handleLinkClick}
           >
             Post A Project
           </Link>
@@ -146,6 +159,7 @@ function MobileMenu({
           <Link
             href=''
             className='bg-y300 text-n900 mb-6 rounded-full px-4 py-2 text-base font-medium ltr:ml-4 rtl:mr-4'
+            onClick={handleLinkClick}
           >
             Browse All Projects
           </Link>
