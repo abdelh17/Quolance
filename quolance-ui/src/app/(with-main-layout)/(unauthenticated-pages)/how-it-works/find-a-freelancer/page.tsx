@@ -55,10 +55,10 @@ function FindAFreelancerPage() {
   return (
     <div>
       <div className='relative bg-gray-900'>
-        <div className='relative h-80 overflow-hidden bg-indigo-600 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2'>
+        <div className='relative h-80 overflow-hidden bg-b300 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2'>
           <img
             alt='Freelancer working on a project'
-            src='https://images.unsplash.com/photo-1525130413817-d45c1d127c42?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1920&q=60&blend=6366F1&sat=-100&blend-mode=multiply'
+            src='https://images.pexels.com/photos/1438081/pexels-photo-1438081.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
             className='size-full object-cover'
           />
           <svg
@@ -71,7 +71,7 @@ function FindAFreelancerPage() {
         </div>
         <div className='relative mx-auto max-w-7xl py-24 sm:py-32 lg:px-8 lg:py-20'>
           <div className='pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32'>
-            <h2 className='text-base/7 font-semibold text-indigo-400'>
+            <h2 className='text-base/7 font-semibold text-b300'>
               Find Your Freelancer
             </h2>
             <p className='mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl'>
@@ -85,7 +85,7 @@ function FindAFreelancerPage() {
             <div className='mt-8'>
               <a
                 href='#'
-                className='inline-flex rounded-md bg-white/10 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white'
+                className='inline-flex rounded-md bg-b300 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-b300/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-b300'
               >
                 Browse Freelancers
               </a>
@@ -109,7 +109,7 @@ function FindAFreelancerPage() {
               {features.map((feature) => (
                 <div key={feature.name} className='flex flex-col'>
                   <dt className='text-base/7 font-semibold text-gray-900'>
-                    <div className='mb-6 flex size-10 items-center justify-center rounded-lg bg-indigo-600'>
+                    <div className='mb-6 flex size-10 items-center justify-center rounded-lg bg-b300'>
                       <feature.icon
                         aria-hidden='true'
                         className='size-6 text-white'
@@ -170,7 +170,7 @@ function FindAFreelancerPage() {
         <div className='mx-auto max-w-7xl px-6 lg:px-8'>
           <div className='mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-5'>
             <div className='col-span-2'>
-              <h2 className='text-base/7 font-semibold text-indigo-600'>
+              <h2 className='text-base/7 font-semibold text-b300'>
                 Why Choose Us?
               </h2>
               <p className='mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
@@ -187,7 +187,7 @@ function FindAFreelancerPage() {
                   <dt className='font-semibold text-gray-900'>
                     <CheckIcon
                       aria-hidden='true'
-                      className='absolute left-0 top-1 size-5 text-indigo-500'
+                      className='absolute left-0 top-1 size-5 text-b300'
                     />
                     {feature.name}
                   </dt>
@@ -207,10 +207,10 @@ function FindAFreelancerPage() {
           </h2>
           <div className='mt-10 flex items-center gap-x-6 lg:mt-0 lg:shrink-0'>
             <Link
-              href='/signup'
-              className='rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+              href='/auth/register'
+              className='bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
             >
-              Get started
+              <span className='relative z-10'>Sign Up For Free</span>
             </Link>
           </div>
         </div>
