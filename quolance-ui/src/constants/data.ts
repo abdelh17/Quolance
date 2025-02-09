@@ -51,25 +51,8 @@ export const headerMenu = [
       },
       {
         id: uuidv4(),
-        name: 'Sucess Stories',
-        link: '/why-quolance/success-stories',
-      },
-      {
-        id: uuidv4(),
         name: 'Reviews',
         link: '/why-quolance/reviews',
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "What's New?",
-    isSubmenu: true,
-    submenu: [
-      {
-        id: uuidv4(),
-        name: 'Blog',
-        link: '/whats-new/blog',
       },
     ],
   },

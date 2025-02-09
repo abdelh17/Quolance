@@ -464,4 +464,104 @@ class ClientControllerUnitTest {
         }
     }
 
+    @Test
+    void rejectManyFreelancers_WithNullList_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            doThrow(new ApiException("Application IDs list cannot be null"))
+                    .when(applicationProcessWorkflow).rejectManyApplications(eq(null), any(User.class));
+
+            assertThatThrownBy(() -> clientController.rejectManyFreelancers(null))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Application IDs list cannot be null");
+            verify(applicationProcessWorkflow).rejectManyApplications(null, mockClient);
+        }
+    }
+
+    @Test
+    void updateProject_WithMissingRequiredFields_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            ProjectUpdateDto invalidUpdateDto = new ProjectUpdateDto();
+            when(clientWorkflowService.updateProject(eq(1L), eq(invalidUpdateDto), any(User.class)))
+                    .thenThrow(new ApiException("Required fields missing in project update"));
+
+            assertThatThrownBy(() -> clientController.updateProject(1L, invalidUpdateDto))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Required fields missing in project update");
+            verify(clientWorkflowService).updateProject(1L, invalidUpdateDto, mockClient);
+        }
+    }
+
+    @Test
+    void createProject_WithPastExpirationDate_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            ProjectCreateDto invalidProject = projectCreateDto;
+            invalidProject.setExpirationDate(LocalDate.now().minusDays(1));
+            doThrow(new ApiException("Expiration date must be in the future"))
+                    .when(clientWorkflowService).createProject(eq(invalidProject), any(User.class));
+
+            assertThatThrownBy(() -> clientController.createProject(invalidProject))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Expiration date must be in the future");
+        }
+    }
+
+    @Test
+    void getAllApplicationsToProject_WithNoApplications_ReturnsEmptyList() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            when(clientWorkflowService.getAllApplicationsToProject(eq(1L), any(User.class)))
+                    .thenReturn(List.of());
+
+            ResponseEntity<List<ApplicationDto>> response = clientController.getAllApplicationsToProject(1L);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEmpty();
+            verify(clientWorkflowService).getAllApplicationsToProject(1L, mockClient);
+        }
+    }
+
+    @Test
+    void rejectFreelancer_WhenAlreadyProcessed_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            doThrow(new ApiException("Application already processed"))
+                    .when(applicationProcessWorkflow).rejectApplication(eq(1L), any(User.class));
+
+            assertThatThrownBy(() -> clientController.rejectFreelancer(1L))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Application already processed");
+            verify(applicationProcessWorkflow).rejectApplication(1L, mockClient);
+        }
+    }
+
+    @Test
+    void selectFreelancer_WhenAlreadySelected_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            doThrow(new ApiException("Freelancer already selected for this project"))
+                    .when(applicationProcessWorkflow).selectFreelancer(eq(1L), any(User.class));
+
+            assertThatThrownBy(() -> clientController.selectFreelancer(1L))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Freelancer already selected for this project");
+            verify(applicationProcessWorkflow).selectFreelancer(1L, mockClient);
+        }
+    }
+
+    @Test
+    void updateProject_WhenProjectInProgress_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+            when(clientWorkflowService.updateProject(eq(1L), eq(projectUpdateDto), any(User.class)))
+                    .thenThrow(new ApiException("Cannot update project that is already in progress"));
+
+            assertThatThrownBy(() -> clientController.updateProject(1L, projectUpdateDto))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Cannot update project that is already in progress");
+            verify(clientWorkflowService).updateProject(1L, projectUpdateDto, mockClient);
+        }
+    }
 }
