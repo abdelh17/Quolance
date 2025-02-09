@@ -41,3 +41,14 @@ export enum Role {
   ADMIN = 'ADMIN',
   PENDING = 'PENDING',
 }
+
+export type EditModesType = {
+  editProfileImage: boolean;
+  editHeader: boolean;
+  editAbout: boolean;
+  editExperience: boolean;
+  editAvailability: boolean;
+  editSkills: boolean;
+  editContactInformation: boolean;
+  editProfile: boolean;
+ };
