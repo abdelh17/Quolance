@@ -96,7 +96,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
  {/* Modal for Image Upload */}
  {isModalOpen && (
-   <ProfileImageModal userProfileImage={user?.profileImageUrl} onSelect={handleSelect} onCancel={handleCancel} />
+   <ProfileImageModal userProfileImage={user?.profileImageUrl} handleSave = {handleSave}onSelect={handleSelect} onCancel={handleCancel} />
  )}
 
 

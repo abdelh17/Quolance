@@ -130,10 +130,8 @@ const dontShowStatus = () => {
    uploadProfileImage.mutate(file, {
      onSuccess: () => {
        console.log("File uploaded successfully");
-
-
        mutate();
-      
+       refetch()
        setIsModalOpen(false);
       
      },
@@ -169,10 +167,6 @@ const dontShowStatus = () => {
   }
 }, [fetchedPercentage]);
 
-// Refetch profile completion whenever profile changes
-useEffect(() => {
-  refetch();
-}, [profile]);
 
 
  const editProfileMutation = useEditProfile();
@@ -184,6 +178,7 @@ useEffect(() => {
     onSuccess: () => {
       console.log("Profile updated successfully");
       saveEditModes(editMode);
+      refetch();
     },
     onError: (error) => {
       console.error("Failed to update profile:", error);
@@ -192,9 +187,6 @@ useEffect(() => {
  };
 
 
- const handleEnableEdit = () => {
-   setEditMode(true);
- };
 
 
  const handleInputChange = (field: keyof FreelancerProfileType, value: any) => {

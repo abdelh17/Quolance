@@ -4,12 +4,14 @@ import { User, Camera ,Save, X } from "lucide-react";
 
 interface ConfirmationModalProps {
 userProfileImage: string | undefined;
+handleSave: (editMode: string) => void;
 onSelect: (file: File) => void;
 onCancel: () => void;
 }
 
 export const ProfileImageModal: React.FC<ConfirmationModalProps> = ({
 userProfileImage,
+handleSave,
 onSelect,
 onCancel,
 }) => {
@@ -48,6 +50,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 const handleConfirm = () => {
  if (file) {
    onSelect(file);
+   handleSave("editProfileImage");
  }
 };
 
