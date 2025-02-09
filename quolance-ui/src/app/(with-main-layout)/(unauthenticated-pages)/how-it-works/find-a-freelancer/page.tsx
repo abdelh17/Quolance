@@ -1,100 +1,227 @@
-"use client";
-import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
+'use client';
+import { StarIcon, CheckIcon } from '@heroicons/react/20/solid';
+import { InboxIcon, TrashIcon, UsersIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { ApplicationResponse, ApplicationStatus } from '@/constants/models/applications/ApplicationResponse';
-import { useQueryClient } from '@tanstack/react-query';
-import image1 from '@/public/images/freelancer-hero-img-1.jpg';
-import image2 from '@/public/images/freelancer-hero-img-2.jpg';
-import Image from 'next/image';
-import BasicFreelancerCard from '@/components/ui/freelancers/BasicFreelancerCard';
 
+const features = [
+  {
+    name: 'Post Your Project',
+    description:
+      'Clearly outline your project requirements, including the skills and expertise needed. The more details you provide, the better matches youll receive.',
+    href: '#',
+    icon: InboxIcon,
+  },
+  {
+    name: 'Get Matched with Top Freelancers',
+    description:
+      'Our intelligent matching system suggests the best freelancers for your project. You can review profiles, portfolios, and ratings before making a decision.',
+    href: '#',
+    icon: UsersIcon,
+  },
+  {
+    name: 'Collaborate & Achieve Your Goals',
+    description:
+      'Once youve found the right freelancer, communicate directly, set milestones, and work together to complete your project on time and within budget.',
+    href: '#',
+    icon: CheckIcon,
+  },
+];
 
-// Mock data for top freelancers
-const topFreelancers = [
-    {
-      img: image1,
-      freelancerName: 'Jane Doe',
-      location: 'New York, USA',
-    },
-    {
-      img: image1,
-      freelancerName: 'John Smith',
-      location: 'London, UK',
-    },
-    {
-      img: image1,
-      freelancerName: 'Sara Khan',
-      location: 'Toronto, Canada',
-    },
-    {
-        img: image1,
-        freelancerName: 'Jane Doe',
-        location: 'New York, USA',
-      },
-      {
-        img: '/images/freelancer2.jpg',
-        freelancerName: 'John Smith',
-        location: 'London, UK',
-      },
-      {
-        img: '/images/freelancer3.jpg',
-        freelancerName: 'Sara Khan',
-        location: 'Toronto, Canada',
-      },
-    // Add more freelancers as needed
-  ];
-  
-  function FindAFreelancerPage() {
-    return (
-      <div className="bg-gray-800 dark:bg-gray-950 py-10">
-      <div className="max-w-[1400px] mx-auto relative p-10 lg:p-16">
-        {/* Layout Container */}
-        <div className="relative z-10 flex flex-col lg:flex-row items-start gap-8">
-            {/* Image Column */}
-            <div className="relative w-[1200px] lg:w-[500px] xl:w-[600px] -mb-10 lg:mb-0 lg:-ml-16">
-              <Image
-                className="shadow-xl shadow-gray-600 rounded-xl dark:shadow-gray-900/20 object-cover h-[1000px] -mt-100"
-                src={image2}
-                alt="Features Image"
-                width={1000}
-                height={1200}
-                priority
-              />
-            </div>
-  
-            {/* Freelancers Column */}
-            <div className="flex-grow bg-gray-100 dark:bg-neutral-800 p-8 rounded-xl shadow-lg">
-            <h2 className="text-2xl font-bold sm:text-3xl text-gray-800 dark:text-neutral-200">
-              Top Freelancers for You
+const features2 = [
+  {
+    name: 'Curated Talent',
+    description:
+      'We ensure that only experienced and verified professionals are on our platform.',
+  },
+  {
+    name: 'Diverse Skill Sets',
+    description:
+      'Find experts across technology, design, marketing, writing, and more.',
+  },
+  {
+    name: 'Secure & Transparent',
+    description:
+      'Our process ensures smooth collaboration and trusted transactions.',
+  },
+  {
+    name: 'Flexible & Scalable',
+    description:
+      'Hire for short-term tasks or long-term projects, based on your needs.',
+  }
+];
+
+function FindAFreelancerPage() {
+  return (
+    <div>
+      <div className='relative bg-gray-900'>
+        <div className='relative h-80 overflow-hidden bg-indigo-600 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2'>
+          <img
+            alt='Freelancer working on a project'
+            src='https://images.unsplash.com/photo-1525130413817-d45c1d127c42?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1920&q=60&blend=6366F1&sat=-100&blend-mode=multiply'
+            className='size-full object-cover'
+          />
+          <svg
+            viewBox='0 0 926 676'
+            aria-hidden='true'
+            className='absolute -bottom-24 left-24 w-[57.875rem] transform-gpu blur-[118px]'
+          >
+            {/* SVG path details omitted for brevity */}
+          </svg>
+        </div>
+        <div className='relative mx-auto max-w-7xl py-24 sm:py-32 lg:px-8 lg:py-40'>
+          <div className='pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32'>
+            <h2 className='text-base/7 font-semibold text-indigo-400'>
+              Find Your Freelancer
             </h2>
-            <p className="mt-4 text-gray-600 dark:text-neutral-400">
-              Here are some top-rated freelancers ready to work with you.
+            <p className='mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl'>
+              Discover Top Talent for Your Projects
             </p>
-
-            <div className="grid mt-6 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-              {topFreelancers.slice(0, 4).map((freelancer, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 p-6 rounded-lg shadow-lg dark:bg-neutral-800"
-                >
-                  <BasicFreelancerCard
-                    img={image1.src}
-                    freelancerName={freelancer.freelancerName}
-                    location={freelancer.location}
-                  />
-                </div>
-              ))}
+            <p className='mt-6 text-base/7 text-gray-300'>
+              Unlock a world of skilled professionals ready to bring your ideas to life. 
+              Whether you need a developer, designer, marketer, or writer, our platform 
+              connects you with the right talent to get the job done.
+            </p>
+            <div className='mt-8'>
+              <a
+                href='#'
+                className='inline-flex rounded-md bg-white/10 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white'
+              >
+                Browse Freelancers
+              </a>
             </div>
           </div>
         </div>
+      </div>
+      
+      <div className='bg-white py-24 sm:py-32'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-8'>
+          <div className='mx-auto max-w-2xl lg:mx-0'>
+            <h2 className='text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
+              How It Works
+            </h2>
+            <p className='mt-6 text-lg/8 text-gray-600'>
+              Follow these simple steps to find the perfect freelancer for your project.
+            </p>
+          </div>
+          <div className='mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none'>
+            <dl className='grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3'>
+              {features.map((feature) => (
+                <div key={feature.name} className='flex flex-col'>
+                  <dt className='text-base/7 font-semibold text-gray-900'>
+                    <div className='mb-6 flex size-10 items-center justify-center rounded-lg bg-indigo-600'>
+                      <feature.icon
+                        aria-hidden='true'
+                        className='size-6 text-white'
+                      />
+                    </div>
+                    {feature.name}
+                  </dt>
+                  <dd className='mt-1 flex flex-auto flex-col text-base/7 text-gray-600'>
+                    <p className='flex-auto'>{feature.description}</p>
+                    <p className='mt-6'>
+                      <a
+                        href={feature.href}
+                        className='text-sm/6 font-semibold text-indigo-600'
+                      >
+                        Learn more <span aria-hidden='true'>→</span>
+                      </a>
+                    </p>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-white pb-16 pt-24 sm:pb-24 sm:pt-32 xl:pb-32">
+        <div className="bg-gray-900 pb-20 sm:pb-24 xl:pb-0">
+          <div className="mx-auto flex max-w-7xl flex-col items-center gap-x-8 gap-y-10 px-6 sm:gap-y-8 lg:px-8 xl:flex-row xl:items-stretch">
+            <div className="-mt-8 w-full max-w-2xl xl:-mb-8 xl:w-96 xl:flex-none">
+              <div className="relative aspect-[2/1] h-full md:-mx-8 xl:mx-0 xl:aspect-auto">
+                <img
+                  alt="Successful freelancer"
+                  src="https://images.pexels.com/photos/1181293/pexels-photo-1181293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                  className="absolute inset-0 size-full rounded-2xl bg-gray-800 object-cover shadow-2xl"
+                />
+              </div>
+            </div>
+            <div className="w-full max-w-2xl xl:max-w-none xl:flex-auto xl:px-16 xl:py-24">
+              <figure className="relative isolate pt-6 sm:pt-12">
+                <svg
+                  viewBox="0 0 162 128"
+                  aria-hidden="true"
+                  className="absolute left-0 top-0 -z-10 h-32 stroke-white/20"
+                >
+                  {/* SVG path details omitted for brevity */}
+                </svg>
+                <blockquote className="text-xl/8 font-semibold text-white sm:text-2xl/9">
+                  <p>
+                    "This platform helped me connect with an incredible graphic designer who transformed my brand's identity. 
+                    The process was smooth, and the results were amazing!"
+                  </p>
+                </blockquote>
+                <figcaption className="mt-8 text-base">
+                  <div className="font-semibold text-white">Alex Johnson</div>
+                  <div className="mt-1 text-gray-400">Business Owner</div>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {/* Background Layer */}
-        <div className="absolute inset-0 grid grid-cols-12 pointer-events-none">
-          <div className="col-span-full lg:col-span-8 lg:col-start-5 bg-gray-100 w-full h-full rounded-xl dark:bg-neutral-800"></div>
+      <div className='bg-white py-24 sm:py-32'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-8'>
+          <div className='mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-5'>
+            <div className='col-span-2'>
+              <h2 className='text-base/7 font-semibold text-indigo-600'>
+                Why Choose Us?
+              </h2>
+              <p className='mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
+                Your Success, Our Priority
+              </p>
+              <p className='mt-6 text-base/7 text-gray-600'>
+                We're committed to connecting you with the best freelance talent 
+                to help you achieve your project goals efficiently and effectively.
+              </p>
+            </div>
+            <dl className='col-span-3 grid grid-cols-1 gap-x-8 gap-y-10 text-base/7 text-gray-600 sm:grid-cols-2 lg:gap-y-16'>
+              {features2.map((feature) => (
+                <div key={feature.name} className='relative pl-9'>
+                  <dt className='font-semibold text-gray-900'>
+                    <CheckIcon
+                      aria-hidden='true'
+                      className='absolute left-0 top-1 size-5 text-indigo-500'
+                    />
+                    {feature.name}
+                  </dt>
+                  <dd className='mt-2'>{feature.description}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div className='bg-white'>
+        <div className='mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8'>
+          <h2 className='max-w-2xl text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
+            Ready to dive in? <br />
+            Start your project today.
+          </h2>
+          <div className='mt-10 flex items-center gap-x-6 lg:mt-0 lg:shrink-0'>
+            <a
+              href='#'
+              className='rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+            >
+              Get started
+            </a>
+          </div>
         </div>
       </div>
     </div>
-    );
-  }
-  
-  export default FindAFreelancerPage;
+  );
+}
+
+export default FindAFreelancerPage;
