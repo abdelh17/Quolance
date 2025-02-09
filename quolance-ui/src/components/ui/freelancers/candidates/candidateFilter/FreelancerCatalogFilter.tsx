@@ -31,10 +31,10 @@ function FreelancerCatalogFilter({
     setLocalQuery((prev) => ({ ...prev, searchName: e.target.value }));
   };
 
-  const handleSkillsChange = (value: string) => {
+  const handleSkillsChange = (values: string[]) => {
     setLocalQuery((prev) => ({
       ...prev,
-      skills: value ? [...(prev.skills || []), value] : prev.skills,
+      skills: values,
     }));
   };
 
@@ -129,9 +129,9 @@ function FreelancerCatalogFilter({
           <CustomListbox
             items={SKILLS_OPTIONS}
             name='skills'
-            value={''}
+            value={localQuery.skills || []}
             multiple={true}
-            onChange={(value) => handleSkillsChange(value as string)}
+            onChange={(values) => handleSkillsChange(values as string[])}
             placeholder='Select skills'
           />
         </div>
