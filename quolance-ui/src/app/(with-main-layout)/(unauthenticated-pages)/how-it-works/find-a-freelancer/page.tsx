@@ -55,7 +55,7 @@ function FindAFreelancerPage() {
   return (
     <div>
       <div className='relative bg-gray-900'>
-        <div className='relative h-80 overflow-hidden bg-b300 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2'>
+      <div className='relative h-80 overflow-hidden bg-b300 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2'>
           <img
             alt='Freelancer working on a project'
             src='https://images.pexels.com/photos/1438081/pexels-photo-1438081.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
@@ -92,6 +92,8 @@ function FindAFreelancerPage() {
             </div>
           </div>
         </div>
+
+        
       </div>
       
       <div className='bg-white py-18 sm:py-20'>
