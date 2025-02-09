@@ -24,18 +24,17 @@ jobs:
           cd quolance-ui
           npm install
 
-    # Step 2: Run Cypress Tests
-    #  - name: Run Cypress Tests
-    #   run: |
-    #    cd quolance-ui
-    #     npm run e2e:headless
-
+      # Step 2: Run Cypress Tests
+      #  - name: Run Cypress Tests
+      #   run: |
+      #    cd quolance-ui
+      #     npm run e2e:headless
 
       # Step 3: Build Frontend
-      - name: Build Frontend
-        run: |
-          cd quolance-ui
-          npm run build
+      #- name: Build Frontend
+      #  run: |
+      #  cd quolance-ui
+      #   npm run build
 
       # Step 4: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
@@ -73,8 +72,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: "temurin"
+          java-version: "21"
 
       - name: Build, Test, and Analyze
         env:
@@ -87,4 +86,3 @@ jobs:
             -Dsonar.organization=abdelh17 \
             -Dsonar.projectKey=abdelh17_Quolance_api \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-
