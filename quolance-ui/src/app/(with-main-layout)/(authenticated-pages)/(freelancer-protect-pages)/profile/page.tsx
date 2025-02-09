@@ -5,14 +5,16 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Link, Github, Linkedin} from 'lucide-react';
 import { useAuthGuard } from '@/api/auth-api';
-import { useGetFreelancerProfile,useEditProfile,useUploadProfileImage} from '@/api/freelancer-api';
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { useGetFreelancerProfile,useEditProfile,useUploadProfileImage,useGetProfileCompletion} from '@/api/freelancer-api';
+import { FreelancerProfileType,EditModesType} from '@/constants/models/user/UserResponse';
 import ProfileHeader from './components/ProfileHeader';
 import AboutSection from './components/AboutSection';
 import ExperienceSection from "./components/ExperienceSection";
 import AvailabilitySection from './components/AvailabilitySection';
 import SkillsSection from './components/SkillsSection';
 import ContactSection from './components/ContactSection';
+import ProfileStatus from './components/ProfileStatus';
+import { UpdateProfileModal } from './components/UpdateProfileModal';
 
 const AVAILABLE_SKILLS = [
     "JAVA", "PYTHON", "HTML", "CSS", "JAVASCRIPT", "TYPESCRIPT", "C", "CPLUSPLUS",
@@ -30,8 +32,22 @@ const FreelancerProfile: React.FC = () => {
  const { user,mutate} = useAuthGuard({ middleware: 'auth' });
  const [isImageError, setIsImageError] = useState(false);
  const [isModalOpen, setIsModalOpen] = useState(false);
- 
  const {data} = useGetFreelancerProfile(user?.username)
+ const [profilePercentage, setProfilePercentage] = useState<number>(0);
+ const { data: fetchedPercentage, refetch } = useGetProfileCompletion();
+ const [editModes, setEditModes] = useState<EditModesType>({
+  editProfileImage: false,
+  editHeader: false,
+  editAbout: false,
+  editExperience: false,
+  editAvailability: false,
+  editSkills: false,
+  editContactInformation: false,
+  editProfile: false,
+ });
+ const [showStatus,setShowStatus] = useState(true);
+
+ console.log(data)
 
 
   const [profile, setProfile] = useState<FreelancerProfileType>({
@@ -58,6 +74,10 @@ const FreelancerProfile: React.FC = () => {
 }, [data]);
 
 
+const dontShowStatus = () => {
+  setShowStatus(false);
+ };
+ 
 
 
  const handleImageClick = () => {
@@ -68,14 +88,50 @@ const FreelancerProfile: React.FC = () => {
  const uploadProfileImage = useUploadProfileImage();
 
 
+
+ const checkEditModes = (editMode: string): boolean => {
+  return Object.entries(editModes).some(
+    ([key, value]) => key !== editMode && value === true
+  );
+ };
+
+ const updateEditModes = (editMode: string) => {
+  setEditModes((prevEditModes) => {
+    // Check if any other edit modes are active
+    const otherModesActive = checkEditModes(editMode)
+ 
+ 
+    // If other modes are active, set the current editMode to false
+    if (otherModesActive) {
+      return {
+        ...prevEditModes,
+        [editMode]: false,
+      };
+    }
+ 
+ 
+    // If no other modes are active, set the current editMode to true
+    return {
+      ...prevEditModes,
+      [editMode]: true,
+    };
+  });
+ };
+
+ const saveEditModes = (editModeKey: string) => {
+  setEditModes((prev) => ({
+    ...prev,
+    [editModeKey]: false, 
+  }));
+ };
+ 
+
  const handleSelect = (file: File) => {
    uploadProfileImage.mutate(file, {
      onSuccess: () => {
        console.log("File uploaded successfully");
-
-
        mutate();
-      
+       refetch()
        setIsModalOpen(false);
       
      },
@@ -105,27 +161,32 @@ const FreelancerProfile: React.FC = () => {
    }
  }, [editMode]);
 
+ useEffect(() => {
+  if (fetchedPercentage !== undefined) {
+    setProfilePercentage(fetchedPercentage);
+  }
+}, [fetchedPercentage]);
+
+
 
  const editProfileMutation = useEditProfile();
 
 
- const handleSave = () => {
-   console.log('Saving profile data:', profile);
-   editProfileMutation.mutate(profile, {
-     onSuccess: () => {
-       console.log("Profile updated successfully");
-       setEditMode(false);
-     },
-     onError: (error) => {
-       console.error("Failed to update profile:", error);
-     },
-   });
+ const handleSave = (editMode:string) => {
+  console.log('Saving profile data:', profile);
+  editProfileMutation.mutate(profile, {
+    onSuccess: () => {
+      console.log("Profile updated successfully");
+      saveEditModes(editMode);
+      refetch();
+    },
+    onError: (error) => {
+      console.error("Failed to update profile:", error);
+    },
+  });
  };
 
 
- const handleEnableEdit = () => {
-   setEditMode(true);
- };
 
 
  const handleInputChange = (field: keyof FreelancerProfileType, value: any) => {
@@ -169,86 +230,149 @@ const FreelancerProfile: React.FC = () => {
        </div>
      </div>
 
+    
 
-     {/* Header */}
-     <ProfileHeader
-        user={user}
-        profile={profile}
-        editMode={editMode}
-        isImageError={isImageError}
-        isModalOpen={isModalOpen}
-        setIsImageError={setIsImageError}
-        handleImageClick={handleImageClick}
-        handleSelect={handleSelect}
-        handleCancel={handleCancel}
-        handleInputChange={handleInputChange}
-      />
+
+
 
      {/* Main Content */}
      <main className="container mx-auto px-4 py-8">
-       {/* About Section */}
-       <AboutSection
-        profile={profile}
-        editMode={editMode}
-        handleInputChange={handleInputChange}
-        inputClassName={inputClassName}
-      />
+
+     {editModes.editProfile && (
+       <UpdateProfileModal 
+       profile={profile}
+       inputClassName={inputClassName}
+       availableSkills={AVAILABLE_SKILLS}
+       saveEditModes={saveEditModes}
+       handleInputChange={handleInputChange}
+       handleSkillsChange={handleSkillsChange}
+       handleSocialLinksChange={handleSocialLinksChange}
+       handleSave={handleSave}
+       />
+     )}
 
 
-       {/* Experience Section */}
-            <ExperienceSection
-          profile={profile}
-          editMode={editMode}
-          handleInputChange={handleInputChange}
+
+     {/* Header */}
+     <ProfileHeader
+       user={user}
+       profile={profile}
+       isImageError={isImageError}
+       isModalOpen={isModalOpen}
+       setIsImageError={setIsImageError}
+       handleImageClick={handleImageClick}
+       handleSelect={handleSelect}
+       handleCancel={handleCancel}
+       handleInputChange={handleInputChange}
+       inputClassName={inputClassName}
+       updateEditModes={updateEditModes}
+       editModes={editModes}
+       handleSave={handleSave}
+       checkEditModes = {checkEditModes}
+     />
+
+
+     {showStatus && (
+       <ProfileStatus
+         profile={profile}
+         profilePercentage = {profilePercentage}
+         isHidden={profilePercentage === 100}
+         updateEditModes={updateEditModes}
+         checkEditModes = {checkEditModes}
+         dontShowStatus = {dontShowStatus}
+       />
+     )}
+  
+      {/* About Section */}
+      <AboutSection
+       profile={profile}
+       handleInputChange={handleInputChange}
+       inputClassName={inputClassName}
+       updateEditModes={updateEditModes}
+       editModes={editModes}
+       handleSave={handleSave}
+       checkEditModes = {checkEditModes}
+     />
+
+
+
+
+      {/* Experience Section */}
+           <ExperienceSection
+         profile={profile}
+         handleInputChange={handleInputChange}
+         updateEditModes={updateEditModes}
+         editModes={editModes}
+         handleSave={handleSave}
+         checkEditModes = {checkEditModes}
+       />
+
+
+
+
+      {/* Availability Section */}
+           <AvailabilitySection
+         profile={profile}
+         handleInputChange={handleInputChange}
+         updateEditModes={updateEditModes}
+         editModes={editModes}
+         handleSave={handleSave}
+         checkEditModes = {checkEditModes}
         />
 
 
-       {/* Availability Section */}
-            <AvailabilitySection
-        profile={profile}
-        editMode={editMode}
-        handleInputChange={handleInputChange}
-         />
 
 
-       {/* Skills Section */}
-              <SkillsSection
-              profile={profile}
-              editMode={editMode}
-              handleSkillsChange={handleSkillsChange}
-              inputClassName={inputClassName}
-                availableSkills={AVAILABLE_SKILLS}
-            />
+      {/* Skills Section */}
+             <SkillsSection
+             profile={profile}
+             handleSkillsChange={handleSkillsChange}
+             inputClassName={inputClassName}
+             availableSkills={AVAILABLE_SKILLS}
+             updateEditModes={updateEditModes}
+             editModes={editModes}
+             handleSave={handleSave}
+             checkEditModes = {checkEditModes}
+           />
 
-       {/* Contact Section */}
-       <ContactSection
-  profile={profile}
-  editMode={editMode}
-  handleInputChange={handleInputChange}
-  handleSocialLinksChange={handleSocialLinksChange}
-  getSocialIcon={getSocialIcon}
-  inputClassName={inputClassName}
-/>
+
+      {/* Contact Section */}
+      <ContactSection
+       profile={profile}
+       handleInputChange={handleInputChange}
+       handleSocialLinksChange={handleSocialLinksChange}
+       getSocialIcon={getSocialIcon}
+       inputClassName={inputClassName}
+       updateEditModes={updateEditModes}
+       editModes={editModes}
+       handleSave={handleSave}
+       checkEditModes = {checkEditModes}
+     />
+
      </main>
     
      {/* Floating Action Buttons */}
-     <div className="fixed bottom-8 right-8">
-       {editMode ? (
-         <button
-           onClick={handleSave}
-           className="bg-b300 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-b500 transition-all duration-200 flex items-center space-x-2 hover:scale-105"
-         >
-           <span>Save Changes</span>
-         </button>
-       ) : (
-         <button
-           onClick={handleEnableEdit}
-           className="bg-amber-400 text-b500 px-6 py-3 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200 flex items-center space-x-2 hover:scale-105"
-         >
-           <span>Enable Edit</span>
-         </button>
-       )}
-     </div>
+     
+
+    {/*
+    <div className="fixed bottom-8 right-8">
+      {editMode ? (
+        <button
+          onClick={handleSave}
+          className="bg-b300 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-b500 transition-all duration-200 flex items-center space-x-2 hover:scale-105"
+        >
+          <span>Save Changes</span>
+        </button>
+      ) : (
+        <button
+          onClick={handleEnableEdit}
+          className="bg-amber-400 text-b500 px-6 py-3 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200 flex items-center space-x-2 hover:scale-105"
+        >
+          <span>Enable Edit</span>
+        </button>
+      )}
+    </div>
+*/}
    </div>
  );
 };
