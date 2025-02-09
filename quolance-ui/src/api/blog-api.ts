@@ -46,7 +46,7 @@ export const useCreateBlogPost = (options?: {
   });
 };
 
-export const useGetAllBlogPosts = (postId: number, options?: {
+export const useGetAllBlogPosts = (options?: {
   onSuccess?: (data: ReactionResponseDto[]) => void;
 
   onError?: (error: HttpErrorResponse) => void;
