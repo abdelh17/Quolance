@@ -15,12 +15,12 @@ import { useQueryClient } from "@tanstack/react-query";
 
 
 const BlogContainer: React.FC = () => {
-    const queryClient = useQueryClient();
-    const { user, isLoading: userIsLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
-
     //const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+    const [openUserSummaryPostId, setOpenUserSummaryPostId] = useState<number | null>(null);
+    
+    const { user, isLoading: userIsLoading } = useAuthGuard({ middleware: 'auth' });
+    const queryClient = useQueryClient();
     const { data: blogPosts, isLoading: postIsLoading, error } = useGetAllBlogPosts(
         {
             onSuccess: (data) => {
@@ -144,7 +144,12 @@ const BlogContainer: React.FC = () => {
                     {/* Posts Grid */}
                     <div className="grid sm:grid-cols-1 lg:grid-cols-1 gap-6">
                         {filteredPosts?.slice().reverse().map((post, index) => (
-                            <PostCard key={index} {...post} />
+                            <PostCard 
+                                key={index} 
+                                {...post} 
+                                openUserSummaryPostId={openUserSummaryPostId}
+                                setOpenUserSummaryPostId={setOpenUserSummaryPostId}
+                            />
                         ))}
                     </div>
 

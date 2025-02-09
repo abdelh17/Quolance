@@ -1,6 +1,7 @@
 'use-client'
 
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 interface UserProfile {
     username: string;
@@ -19,7 +20,13 @@ interface UserProfile {
 
 const UserSummary: React.FC<{user: UserProfile}> = ({ user }) => {
     return (
-        <div className="bg-blue-50 shadow-md rounded-lg p-4 w-96 relative">
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="bg-blue-50 shadow-md rounded-lg p-4 w-96 relative"
+        >
             <div className="flex items-center justify-between">
                 <div>
                     <p className="font-bold text-gray-900">{user.firstName} {user.lastName}</p>
@@ -46,7 +53,7 @@ const UserSummary: React.FC<{user: UserProfile}> = ({ user }) => {
                     </span>
                 ))}
             </div>
-        </div>
+        </motion.div>
     );
 };
 
