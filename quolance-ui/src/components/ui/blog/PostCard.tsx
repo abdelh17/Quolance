@@ -49,6 +49,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   const userSummaryRef = useRef<HTMLDivElement | null>(null);
   const profileImageRef = useRef<HTMLImageElement | null>(null);
+  const authorNameRef = useRef<HTMLButtonElement | null>(null);
   
   const isUserSummaryOpen = openUserSummaryPostId === id;
 
@@ -81,7 +82,9 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
         userSummaryRef.current &&
         !userSummaryRef.current.contains(event.target as Node) &&
         profileImageRef.current &&
-        !profileImageRef.current.contains(event.target as Node)
+        !profileImageRef.current.contains(event.target as Node) &&
+        authorNameRef.current &&
+        !authorNameRef.current.contains(event.target as Node)
       ) {
         setOpenUserSummaryPostId(null);
         setUserSummaryPosition(null);
@@ -126,7 +129,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     addComment({ content: newComment });
   };
 
-  const handleShowUserSummary = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleShowUserSummary = (event: React.MouseEvent<HTMLElement>) => {
     if (isUserSummaryOpen) {
       setOpenUserSummaryPostId(null);
       setUserSummaryPosition(null);
@@ -155,12 +158,16 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             src={authorProfile?.profileImageUrl || icon}
             width={48}
             height={48}
-            className="rounded-full object-cover"
+            className="rounded-full object-cover cursor-pointer"
             onClick={handleShowUserSummary}
           />
-          <div className="ml-4">
-            <p className="font-semibold text-gray-800">{authorName}</p>
-          </div>
+          <button 
+            ref={authorNameRef}
+            className="ml-4 text-gray-800 font-semibold cursor-pointer focus:outline-none" 
+            onClick={handleShowUserSummary}
+          >
+            {authorName}
+          </button>
           {isUserSummaryOpen && userSummaryPosition && (
             <div 
               ref={userSummaryRef}
