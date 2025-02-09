@@ -227,14 +227,15 @@ class BlogControllersUnitTest {
     void updateBlogComment_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(blogCommentService.updateBlogComment(eq(1L), any(BlogCommentDto.class)))
+            when(blogCommentService
+                    .updateBlogComment(eq(1L), any(BlogCommentDto.class), eq(mockUser)))
                     .thenReturn(blogCommentDto);
 
             ResponseEntity<BlogCommentDto> response = blogCommentController.updateBlogComment(1L, blogCommentDto);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
-            verify(blogCommentService).updateBlogComment(1L, blogCommentDto);
+            verify(blogCommentService).updateBlogComment(1L, blogCommentDto, mockUser);
         }
     }
 
@@ -242,13 +243,13 @@ class BlogControllersUnitTest {
     void deleteBlogComment_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            doNothing().when(blogCommentService).deleteBlogComment(1L);
+            doNothing().when(blogCommentService).deleteBlogComment(1L, mockUser);
 
             ResponseEntity<String> response = blogCommentController.deleteBlogComment(1L);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("The comment was successfully deleted");
-            verify(blogCommentService).deleteBlogComment(1L);
+            verify(blogCommentService).deleteBlogComment(1L, mockUser);
         }
     }
 
