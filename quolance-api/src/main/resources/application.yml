@@ -8,16 +8,22 @@ app:
 spring:
   profiles:
     default: default
+
+  application:
+    name: quolance-api
+
+  # File upload configuration
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
-      max-request-size: 10MB
+      max-request-size: 20MB
 
-
+  # Import ENV variables
   config:
     import: "optional:file:../.env[.properties]"
 
+  # Security and OAuth2 configuration
   security:
     oauth2:
       client:
@@ -29,33 +35,36 @@ spring:
             client-id: "${GOOGLE_CLIENT_ID}"
             client-secret: "${GOOGLE_CLIENT_SECRET}"
 
-  application:
-    name: quolance-api
-
+  # Database configuration
   datasource:
-    url: ${DATASOURCE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    url: ${PROD_DATASOURCE_URL}
 
+  # JPA and Hibernate configuration
   jpa:
     hibernate:
       ddl-auto: ${DB_DDL_AUTO}
     show-sql: false
     properties:
-      hibernate.format_sql: true
+      hibernate:
+        format_sql: true
     database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  # Mail configuration
   mail:
-    host: localhost
-    port: ${MAILPIT_SMTP_PORT}
-    username: ${MAILPIT_USER}
-    password: ${MAILPIT_PASSWORD}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE}
+        transport:
+          protocol: ${MAIL_TRANSPORT_PROTOCOL}
 
+# JobRunr configuration
 org:
   jobrunr:
     background-job-server:
@@ -63,6 +72,7 @@ org:
     dashboard:
       enabled: true
 
+# Logging configuration
 logging:
   file:
     name: ${LOG_FILE}
@@ -73,13 +83,14 @@ logging:
     com.quolance: DEBUG
     org.springframework.web: ERROR
 
+# Server configuration
 server:
   port: 8081
   error:
     include-message: always
 
+# Cloudinary configuration
 cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}
   api_key: ${CLOUDINARY_API_KEY}
   api_secret: ${CLOUDINARY_API_SECRET}
-

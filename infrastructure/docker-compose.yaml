@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:15
     container_name: quolance-postgres-db-container
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -24,16 +24,6 @@ services:
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
       MP_UI_AUTH_USER: "${MAILPIT_USER}"
       MP_UI_AUTH_PASS: "${MAILPIT_PASSWORD}"
-    networks:
-      - springboot-network
-
-  caddy:
-    image: caddy:latest
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
     networks:
       - springboot-network
 
