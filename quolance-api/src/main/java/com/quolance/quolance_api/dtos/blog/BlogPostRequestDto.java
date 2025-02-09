@@ -17,9 +17,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogPostRequestDto {
-    // @NotBlank(message = "Title is required")
+    @NotBlank(message = "Title is required")
     private String title;
-    // @NotBlank(message = "Title is required")
+    @NotBlank(message = "Title is required")
     private String content;
     private List<BlogCommentDto> comments;
     private Set<BlogTags> tags;
