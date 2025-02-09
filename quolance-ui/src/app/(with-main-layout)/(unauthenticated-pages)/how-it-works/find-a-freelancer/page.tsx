@@ -1,6 +1,7 @@
 'use client';
 import { StarIcon, CheckIcon } from '@heroicons/react/20/solid';
 import { InboxIcon, TrashIcon, UsersIcon } from '@heroicons/react/24/outline';
+import Link from "next/link";
 import React from 'react';
 
 const features = [
@@ -68,7 +69,7 @@ function FindAFreelancerPage() {
             {/* SVG path details omitted for brevity */}
           </svg>
         </div>
-        <div className='relative mx-auto max-w-7xl py-24 sm:py-32 lg:px-8 lg:py-40'>
+        <div className='relative mx-auto max-w-7xl py-24 sm:py-32 lg:px-8 lg:py-20'>
           <div className='pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32'>
             <h2 className='text-base/7 font-semibold text-indigo-400'>
               Find Your Freelancer
@@ -93,7 +94,7 @@ function FindAFreelancerPage() {
         </div>
       </div>
       
-      <div className='bg-white py-24 sm:py-32'>
+      <div className='bg-white py-18 sm:py-20'>
         <div className='mx-auto max-w-7xl px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl lg:mx-0'>
             <h2 className='text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
@@ -128,7 +129,7 @@ function FindAFreelancerPage() {
         </div>
       </div>
       
-      <div className="bg-white pb-16 pt-24 sm:pb-24 sm:pt-32 xl:pb-32">
+      <div className="bg-white pb-12 pt-18 sm:pb-16 sm:pt-24 xl:pb-32">
         <div className="bg-gray-900 pb-20 sm:pb-24 xl:pb-0">
           <div className="mx-auto flex max-w-7xl flex-col items-center gap-x-8 gap-y-10 px-6 sm:gap-y-8 lg:px-8 xl:flex-row xl:items-stretch">
             <div className="-mt-8 w-full max-w-2xl xl:-mb-8 xl:w-96 xl:flex-none">
@@ -165,7 +166,7 @@ function FindAFreelancerPage() {
         </div>
       </div>
 
-      <div className='bg-white py-24 sm:py-32'>
+      <div className='bg-white py-16 sm:py-20'>
         <div className='mx-auto max-w-7xl px-6 lg:px-8'>
           <div className='mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-5'>
             <div className='col-span-2'>
@@ -199,18 +200,18 @@ function FindAFreelancerPage() {
       </div>
 
       <div className='bg-white'>
-        <div className='mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8'>
+        <div className='mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:flex lg:items-center lg:justify-between lg:px-8'>
           <h2 className='max-w-2xl text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
             Ready to dive in? <br />
             Start your project today.
           </h2>
           <div className='mt-10 flex items-center gap-x-6 lg:mt-0 lg:shrink-0'>
-            <a
-              href='#'
+            <Link
+              href='/signup'
               className='rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
             >
               Get started
-            </a>
+            </Link>
           </div>
         </div>
       </div>
