@@ -14,6 +14,7 @@ import AvailabilitySection from './components/AvailabilitySection';
 import SkillsSection from './components/SkillsSection';
 import ContactSection from './components/ContactSection';
 import ProfileStatus from './components/ProfileStatus';
+import { UpdateProfileModal } from './components/UpdateProfileModal';
 
 const AVAILABLE_SKILLS = [
     "JAVA", "PYTHON", "HTML", "CSS", "JAVASCRIPT", "TYPESCRIPT", "C", "CPLUSPLUS",
@@ -114,6 +115,13 @@ const dontShowStatus = () => {
     };
   });
  };
+
+ const saveEditModes = (editModeKey: string) => {
+  setEditModes((prev) => ({
+    ...prev,
+    [editModeKey]: false, 
+  }));
+ };
  
 
  const handleSelect = (file: File) => {
@@ -181,6 +189,19 @@ useEffect(() => {
    });
  };
 
+ const handleSave2 = (editMode:string) => {
+  console.log('Saving profile data:', profile);
+  editProfileMutation.mutate(profile, {
+    onSuccess: () => {
+      console.log("Profile updated successfully");
+      saveEditModes(editMode);
+    },
+    onError: (error) => {
+      console.error("Failed to update profile:", error);
+    },
+  });
+ };
+
 
  const handleEnableEdit = () => {
    setEditMode(true);
@@ -227,6 +248,20 @@ useEffect(() => {
          ✏️ Edit mode enabled
        </div>
      </div>
+
+     {editModes.editProfile && (
+       <UpdateProfileModal 
+       profile={profile}
+       inputClassName={inputClassName}
+       availableSkills={AVAILABLE_SKILLS}
+       saveEditModes={saveEditModes}
+       handleInputChange={handleInputChange}
+       handleSkillsChange={handleSkillsChange}
+       handleSocialLinksChange={handleSocialLinksChange}
+       handleSave={handleSave2}
+       />
+     )}
+
 
 
      {/* Header */}
