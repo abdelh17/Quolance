@@ -28,13 +28,16 @@ interface PostCardProps {
     content: string;
     authorName: string;
     dateCreated: string;
+    imageUrls?: string[];
     }
 
-    const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated }) => {
+    const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, imageUrls = [] }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [newComment, setNewComment] = useState<string>("");
     const [reactions, setReactions] = useState<ReactionState | null>(null);
+    const [showFullScreen, setShowFullScreen] = useState<boolean>(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
     const { data: reactionData } = useGetReactionsByPostId(id);
     const { mutate: reactToPost } = useReactToPost();
@@ -130,6 +133,24 @@ interface PostCardProps {
     const toggleExpand = () => setIsExpanded(!isExpanded);
     const toggleComments = () => setShowComments(!showComments);
 
+    const handleImageClick = (index: number) => {
+        setCurrentImageIndex(index);
+        setShowFullScreen(true);
+      };
+    
+      const closeFullScreen = () => {
+        setShowFullScreen(false);
+      };
+    
+      const nextImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
+      };
+    
+      const prevImage = () => {
+        setCurrentImageIndex((prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length);
+      };
+    
+
     return (
         <div className="bg-white shadow-md rounded-md">
             {/* User Info */}
@@ -173,15 +194,140 @@ interface PostCardProps {
                 <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
                     <p className="text-gray-700">{content}</p>
                 </div>
+            {imageUrls.length > 0 && (
+        <div className={`mt-4 ${imageUrls.length === 3 ? 'grid grid-rows-2 gap-2' : imageUrls.length > 1 ? 'grid grid-cols-2 gap-2' : ''}`}>
+          {/* Full-width layout for 1 image */}
+          {imageUrls.length === 1 && (
+            <div
+                onClick={() => handleImageClick(0)}
+                className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
+                style={{ height: '32rem' }} // dynamically forcing h-128 height
+            >
+              <img src={imageUrls[0]} alt="Single image" className="object-cover w-full h-full" />
+            </div>
+          )}
 
-                {content.length > 300 && (
-                    <button
-                        onClick={toggleExpand}
-                        className="text-blue-500 text-sm mt-2 focus:outline-none"
-                    >
-                        {isExpanded ? "Read less" : "Read more"}
-                    </button>
+          {/* 2 images */}
+          {imageUrls.length === 2 && (
+            imageUrls.map((url, index) => (
+              <div
+                key={index}
+                onClick={() => handleImageClick(index)}
+                className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
+                style={{ height: '32rem' }} // dynamically forcing h-128 height
+              >
+                <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full" />
+              </div>
+            ))
+          )}
+
+          {/* 3 images: First image full width, next two side by side */}
+          {imageUrls.length === 3 && (
+            <>
+              <div
+                onClick={() => handleImageClick(0)}
+                className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
+                style={{ height: '16rem' }} // dynamically forcing h-128 height
+              >
+                <img src={imageUrls[0]} alt="Full-width image" className="object-cover w-full h-full" 
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {imageUrls.slice(1, 3).map((url, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleImageClick(index + 1)}
+                    className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
+                    style={{ height: '16rem' }} // dynamically forcing h-128 height
+                  >
+                    <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full" />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* 4 images and more*/}
+          {imageUrls.length > 3 && (
+            imageUrls.slice(0, 4).map((url, index) => (
+              <div
+                key={index}
+                onClick={() => handleImageClick(index)}
+                className="relative w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
+                style={{ height: '16rem' }} // dynamically forcing h-128 height
+              >
+                <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full" />
+
+                {index === 3 && imageUrls.length > 3 && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <p className="text-white text-sm font-bold">VIEW MORE</p>
+                  </div>
                 )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Full-screen image viewer */}
+      {showFullScreen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="relative w-3/4 h-3/4 bg-zinc-800 rounded-md overflow-hidden bg-opacity-50">
+            {/* Image Index Indicator */}
+            <div className="absolute top-2 left-2 text-white bg-black bg-opacity-50 px-2 py-1 rounded-md text-sm font-semibold">
+              {currentImageIndex + 1} / {imageUrls.length}
+            </div>
+
+            {/* Close button */}
+            <button
+              onClick={closeFullScreen}
+              className="absolute top-2 right-2 text-white bg-red-500 p-2 rounded-full"
+            >
+              X
+            </button>
+
+            <img src={imageUrls[currentImageIndex]} alt="Full view" className="w-full h-full object-contain" />
+
+            {/* Navigation buttons */}
+            <button
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-md"
+            >
+              &lt;
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-md"
+            >
+              &gt;
+            </button>
+          </div>
+        </div>
+      )}
+
+            {content.length > 300 && (
+                <button
+                onClick={toggleExpand}
+                className="text-blue-500 text-sm mt-2 focus:outline-none"
+                >
+                {isExpanded ? "Read less" : "Read more"}
+                </button>
+            )}
+
+            {/* Reaction Buttons */}
+            <div className="mt-4 flex items-center gap-1">
+                {reactions &&
+                Object.keys(reactions).map((reaction) => (
+                    <PostReaction
+                    key={reaction}
+                    reaction={reaction}
+                    reactionCount={reactions[reaction].count}
+                    userReaction={reactions[reaction].userReacted}
+                    onReactionClick={() => handleReactionClick(reaction)}
+                    />
+                ))}
+            </div>
+
 
                 {/* Reaction Buttons */}
                 <div className="mt-4 flex items-center gap-1">

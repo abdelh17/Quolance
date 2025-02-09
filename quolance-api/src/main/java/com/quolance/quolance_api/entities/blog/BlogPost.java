@@ -45,4 +45,8 @@ public class BlogPost extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "tag")
     private Set<BlogTags> tags;
+
+    // Updated to use BlogImage
+    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<BlogImage> images = new ArrayList<>();
 }
