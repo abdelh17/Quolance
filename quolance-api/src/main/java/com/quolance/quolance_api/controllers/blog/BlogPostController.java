@@ -10,11 +10,13 @@ import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/blog-posts")
@@ -26,18 +28,12 @@ public class BlogPostController {
 
     @PostMapping
     @Operation(summary = "Create a blog post")
-    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @ModelAttribute BlogPostRequestDto request) {
+    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @ModelAttribute  @RequestBody BlogPostRequestDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         BlogPostResponseDto response = blogPostService.create(request, author);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all")
-    @Operation(summary = "Get all blog posts")
-    public ResponseEntity<List<BlogPostResponseDto>> getAllBlogPosts() {
-        List<BlogPostResponseDto> responses = blogPostService.getAll();
-        return ResponseEntity.ok(responses);
-    }
 
     @GetMapping("/{postId}")
     @Operation(summary = "Get a blog post by ID")
@@ -54,11 +50,16 @@ public class BlogPostController {
     }
 
     @GetMapping("/user/{userId}")
-    @Operation(summary = "Get blog posts by user ID",
-            description = "Retrieve all blog posts created by a specific user.")
+    @Operation(summary = "Get blog posts by user ID", description = "Retrieve all blog posts created by a specific user.")
     public ResponseEntity<List<BlogPostResponseDto>> getBlogPostsByUserId(@PathVariable Long userId) {
         List<BlogPostResponseDto> responses = blogPostService.getBlogPostsByUserId(userId);
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get paginated blog posts")
+    public ResponseEntity<Page<BlogPostResponseDto>> getBlogPosts(Pageable pageable) {
+        return ResponseEntity.ok(blogPostService.getPaginatedBlogPosts(pageable));
     }
 
     @DeleteMapping("/{postId}")

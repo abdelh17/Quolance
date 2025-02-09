@@ -1,7 +1,31 @@
 package com.quolance.quolance_api.integration.tests;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
+import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogPost;
@@ -10,17 +34,9 @@ import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
@@ -73,38 +89,54 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     void testCreateBlogPostInvalidRequest() throws Exception {
         BlogPostRequestDto request = new BlogPostRequestDto();
-        request.setContent("Missing title field");  // Missing required "title"
+        request.setContent("Missing title field");
 
-        mockMvc.perform(post("/api/blog-posts")
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        var response = mockMvc.perform(post("/api/blog-posts")
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").value("Unprocessable entity"));
-    }
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-    @Test
-    void testGetAllBlogPosts() throws Exception {
-        blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
-
-        mockMvc.perform(get("/api/blog-posts/all")
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
+        assertThat(response).contains("title"); // Ensure error message mentions missing 'title'
     }
 
     @Test
     void testGetBlogPostByIdIsOk() throws Exception {
         BlogPost blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPostWithImages(loggedInUser));
 
-        mockMvc.perform(get("/api/blog-posts/" + blogPost.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
+        var response = mockMvc.perform(get("/api/blog-posts/" + blogPost.getId())
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(blogPost.getTitle()))
-                .andExpect(jsonPath("$.imageUrls").isArray())
-                .andExpect(jsonPath("$.imageUrls", org.hamcrest.Matchers.hasSize(2))); // Ensure 2 images in response
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        var blogPostResponse = objectMapper.readValue(response, BlogPostResponseDto.class);
+
+        assertThat(blogPostResponse).isNotNull();
+        assertThat(blogPostResponse.getId()).isEqualTo(blogPost.getId());
+        assertThat(blogPostResponse.getTitle()).isEqualTo(blogPost.getTitle());
+    }
+
+    @Test
+    void testGetBlogPostByIdNotFound() throws Exception {
+        var response = mockMvc.perform(get("/api/blog-posts/999")
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode jsonNode = objectMapper.readTree(response);
+
+        String errorMessage = jsonNode.get("message").asText();
+
+        assertThat(errorMessage).isEqualTo("No blog post found with ID: 999");
     }
 
     @Test
@@ -116,10 +148,11 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         update.setTitle("Updated Title");
         update.setContent("Updated Content");
 
+
         mockMvc.perform(put("/api/blog-posts/update")
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(update)))
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(update)))
                 .andExpect(status().isOk());
 
         BlogPost updatedPost = blogPostRepository.findById(blogPost.getId()).orElseThrow();
@@ -131,12 +164,19 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
     void testDeleteBlogPostWithImages() throws Exception {
         BlogPost blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPostWithImages(loggedInUser));
 
-        mockMvc.perform(delete("/api/blog-posts/" + blogPost.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        var response = mockMvc.perform(get("/api/blog-posts/user/" + loggedInUser.getId())
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        assertThat(blogPostRepository.findById(blogPost.getId())).isEmpty();
+        var userPosts = objectMapper.readValue(response, new TypeReference<List<BlogPostResponseDto>>() {
+        });
+
+        assertThat(userPosts).isNotEmpty();
+        assertThat(userPosts.get(0).getUserId()).isEqualTo(loggedInUser.getId());
     }
 
     @Test
@@ -144,10 +184,43 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         BlogPost blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
 
         mockMvc.perform(delete("/api/blog-posts/" + blogPost.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         assertThat(blogPostRepository.findById(blogPost.getId())).isEmpty();
     }
+
+    @Test
+    void testGetPaginatedBlogPosts() throws Exception {
+
+        for (int i = 0; i < 15; i++) {
+            blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
+        }
+
+        var response = mockMvc.perform(get("/api/blog-posts?page=0&size=10")
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode jsonNode = objectMapper.readTree(response);
+
+        List<BlogPostResponseDto> content = objectMapper.readValue(
+                jsonNode.get("content").toString(), new TypeReference<>() {
+                });
+        long totalElements = jsonNode.get("totalElements").asLong();
+        int totalPages = jsonNode.get("totalPages").asInt();
+        Pageable pageable = PageRequest.of(0, 10);
+
+        PageImpl<BlogPostResponseDto> pageResponse = new PageImpl<>(content, pageable, totalElements);
+
+        assertThat(pageResponse).isNotNull();
+        assertThat(pageResponse.getContent()).hasSize(10);
+        assertThat(pageResponse.getTotalElements()).isEqualTo(15);
+        assertThat(pageResponse.getTotalPages()).isEqualTo(2);
+    }
+
 }

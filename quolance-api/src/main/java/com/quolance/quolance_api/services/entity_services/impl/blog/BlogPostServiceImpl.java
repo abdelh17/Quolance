@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -75,7 +77,6 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .toList();
     }
 
-
     @Override
     public List<BlogPostResponseDto> getBlogPostsByUserId(Long userId) {
         List<BlogPost> blogPosts = blogPostRepository.findByUserId(userId);
@@ -126,7 +127,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     public Set<String> updateTagsForPost(Long postId, List<String> tagNames) {
         BlogPost blogPost;
         try {
-             blogPost = getBlogPostEntity(postId);
+            blogPost = getBlogPostEntity(postId);
         } catch (ApiException e) {
             throw new ApiException(e.getMessage());
         }
@@ -139,7 +140,7 @@ public class BlogPostServiceImpl implements BlogPostService {
                     try {
                         return BlogTags.valueOf(tagName.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        invalidTags .add(tagName); // Collect invalid tags
+                        invalidTags.add(tagName); // Collect invalid tags
                         return null;
                     }
                 })
@@ -163,10 +164,14 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPost getBlogPostEntity(Long postId) {
-        return blogPostRepository.findById(postId).orElseThrow(() ->
-                ApiException.builder()
-                        .status(HttpServletResponse.SC_NOT_FOUND)
-                        .message("No blog post found with ID: " + postId)
-                        .build());
+        return blogPostRepository.findById(postId).orElseThrow(() -> ApiException.builder()
+                .status(HttpServletResponse.SC_NOT_FOUND)
+                .message("No blog post found with ID: " + postId)
+                .build());
+    }
+
+    @Override
+    public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
+        return blogPostRepository.findAll(pageable).map(BlogPostResponseDto::fromEntity);
     }
 }
