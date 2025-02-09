@@ -25,10 +25,12 @@ public class BlogPostResponseDto {
     private LocalDateTime dateCreated;
     private List<BlogCommentDto> comments;
     private Set<String> tags;
+    private long userId;
     private List<String> imageUrls;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
         BlogPostResponseDto response = new BlogPostResponseDto();
+        response.setUserId(blogPost.getUser().getId());
         response.setId(blogPost.getId());
         response.setTitle(blogPost.getTitle());
         response.setContent(blogPost.getContent());

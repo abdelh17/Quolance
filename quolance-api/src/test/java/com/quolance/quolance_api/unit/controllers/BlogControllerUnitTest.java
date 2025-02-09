@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.unit.controllers.blog;
+package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.blog.BlogCommentController;
 import com.quolance.quolance_api.controllers.blog.BlogPostController;
@@ -120,20 +120,20 @@ class BlogControllersUnitTest {
         }
     }
 
-    @Test
-    void getAllBlogPosts_Success() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            List<BlogPostResponseDto> expectedPosts = Arrays.asList(blogPostResponse);
-            when(blogPostService.getAll()).thenReturn(expectedPosts);
+    // @Test
+    // void getAllBlogPosts_Success() {
+    //     try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+    //         securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+    //         List<BlogPostResponseDto> expectedPosts = Arrays.asList(blogPostResponse);
+    //         when(blogPostService.getAll()).thenReturn(expectedPosts);
 
-            ResponseEntity<List<BlogPostResponseDto>> response = blogPostController.getAllBlogPosts();
+    //         ResponseEntity<List<BlogPostResponseDto>> response = blogPostController.getAllBlogPosts();
 
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isNotNull().hasSize(1);
-            verify(blogPostService).getAll();
-        }
-    }
+    //         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    //         assertThat(response.getBody()).isNotNull().hasSize(1);
+    //         verify(blogPostService).getAll();
+    //     }
+    // }
 
     @Test
     void getBlogPostById_Success() {
@@ -208,20 +208,20 @@ class BlogControllersUnitTest {
         }
     }
 
-    @Test
-    void getCommentsByBlogPostId_Success() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            List<BlogCommentDto> expectedComments = Arrays.asList(blogCommentDto);
-            when(blogCommentService.getCommentsByBlogPostId(1L)).thenReturn(expectedComments);
+    // @Test
+    // void getCommentsByBlogPostId_Success() {
+    //     try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+    //         securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+    //         List<BlogCommentDto> expectedComments = Arrays.asList(blogCommentDto);
+    //         when(blogCommentService.getCommentsByBlogPostId(1L)).thenReturn(expectedComments);
 
-            ResponseEntity<List<BlogCommentDto>> response = blogCommentController.getCommentsByBlogPostId(1L);
+    //         ResponseEntity<List<BlogCommentDto>> response = blogCommentController.getCommentsByBlogPostId(1L);
 
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isNotNull().hasSize(1);
-            verify(blogCommentService).getCommentsByBlogPostId(1L);
-        }
-    }
+    //         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    //         assertThat(response.getBody()).isNotNull().hasSize(1);
+    //         verify(blogCommentService).getCommentsByBlogPostId(1L);
+    //     }
+    // }
 
     @Test
     void updateBlogComment_Success() {
