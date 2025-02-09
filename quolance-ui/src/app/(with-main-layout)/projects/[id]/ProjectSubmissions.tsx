@@ -18,7 +18,6 @@ import {
 } from '@/util/CandidateSelectionUtils';
 import RefuseSubmissionsModal from '@/components/ui/freelancers/RefuseSubmissionsModal';
 import { useQueryClient } from '@tanstack/react-query';
-import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 
 type ProjectSubmissionsProps = {
   projectId: number;
@@ -201,14 +200,12 @@ export default function ProjectSubmissions({
                           setSelectedSubmissions
                         )
                       }
-                      freelancerName={`${submission.freelancerProfile.firstName} ${submission.freelancerProfile.lastName}`}
+                      freelancerProfile={submission.freelancerProfile}
                       canSelect={
                         !filteredSubmissions.some(
                           (submission) => submission.status === 'ACCEPTED'
                         ) && submission.status === 'APPLIED'
                       }
-                      img={FreelancerDefaultProfilePic}
-                      location={submission.freelancerProfile.state || ''}
                     />
                   </div>
                 )
