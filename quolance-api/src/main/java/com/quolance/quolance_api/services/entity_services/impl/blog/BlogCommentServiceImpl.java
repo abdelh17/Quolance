@@ -12,6 +12,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -84,5 +86,11 @@ public class BlogCommentServiceImpl implements BlogCommentService {
                         "BlogComment not found with ID: " + commentId));
 
         return blogComment;
+    }
+
+    @Override
+    public Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable) {
+        return blogCommentRepository.findByBlogPostId(blogPostId, pageable)
+                .map(BlogCommentDto::fromEntity);
     }
 }

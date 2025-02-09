@@ -5,7 +5,10 @@ import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogPost;
+
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -27,4 +30,6 @@ public interface BlogPostService {
     BlogPostResponseDto getBlogPost(Long id);
 
     Set<String> updateTagsForPost(Long postId, List<String> tagNames);
+
+    Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable);
 }

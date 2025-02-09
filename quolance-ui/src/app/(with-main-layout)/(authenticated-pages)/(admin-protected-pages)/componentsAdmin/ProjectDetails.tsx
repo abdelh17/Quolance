@@ -81,6 +81,10 @@ export const ProjectDetails: React.FC<ProjectDetailsProps> = ({
    }
  };
 
+ const stripPTags = (html: string) => {
+  return html.replace(/<\/?p>/g, '').trim();
+ };
+
 
  return (
    <>
@@ -91,8 +95,8 @@ export const ProjectDetails: React.FC<ProjectDetailsProps> = ({
              {project?.title || "Project Title"}
            </h2>
            <p className="mt-4 text-gray-500">
-             {project?.description || "No description provided"}
-           </p>
+           {project?.description ? stripPTags(project.description) : "No description provided"}
+         </p>
 
 
            <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
