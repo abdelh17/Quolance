@@ -96,15 +96,14 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Decrypt .env file
-        run: ./decrypt_secret.sh
+        run: ./quolance-scripts/decrypt_secret.sh
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
 
       - name: Setup SSH key
         run: |
           echo "${{ secrets.OCI_PRIVATE_KEY }}" > ssh-key-2025-01-28.key
-          chmod 600 ssh-key-2025-01-28.key
-      
+          chmod 600 ssh-key-2025-01-28.key      
 
       - name: SSH to Oracle Instance and Update Project
         run: |
