@@ -5,7 +5,7 @@ export interface ApplicationResponse {
   status: ApplicationStatus;
   projectId: number;
   freelancerId: number;
-  freelancerProfile: FreelancerProfileType; // Define FreelancerProfile type
+  freelancerProfile: FreelancerProfileType;
 }
 
 export enum ApplicationStatus {

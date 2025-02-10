@@ -3,6 +3,8 @@ import httpClient from '@/lib/httpClient';
 import { showToast } from '@/util/context/ToastProvider';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { ProjectFilterQuery } from '@/api/projects-api';
+import { queryToString } from '@/util/stringUtils';
 
 /*--- Hooks ---*/
 export const useSubmitApplication = (projectId: number) => {
@@ -78,6 +80,24 @@ export const useGetProjectApplication = (projectId: number) => {
         ) || null
       );
     },
+  });
+};
+
+export const useGetFreelancerProjects = (
+  query: ProjectFilterQuery,
+  enabled = true,
+  showOnlyApplied = false
+) => {
+  return useQuery({
+    queryKey: ['freelancerAppliedProjects', query, showOnlyApplied],
+    enabled,
+    queryFn: () =>
+      httpClient.get(
+        `/api/freelancer/projects/applied?${queryToString({
+          ...query,
+          applied: showOnlyApplied,
+        })}`
+      ),
   });
 };
 
