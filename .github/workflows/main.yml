@@ -74,7 +74,7 @@ jobs:
         run: |
           gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
           cd quolance-api
-          ./mvnw clean test sonar:sonar \
+          ./mvnw clean verify sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=abdelh17 \
             -Dsonar.projectKey=abdelh17_Quolance_api \
