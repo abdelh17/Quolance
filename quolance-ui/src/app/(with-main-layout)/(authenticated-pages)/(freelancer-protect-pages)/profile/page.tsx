@@ -47,8 +47,8 @@ const FreelancerProfile: React.FC = () => {
   const [showStatus, setShowStatus] = useState(true);
 
   const [profile, setProfile] = useState<FreelancerProfileType>({
-    id: 0,
-    userId: 0,
+    id: "0",
+    userId: "0",
     username: '',
     firstName: '',
     lastName: '',

@@ -37,6 +37,12 @@ import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
@@ -124,7 +130,8 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testGetBlogPostByIdNotFound() throws Exception {
-        var response = mockMvc.perform(get("/api/blog-posts/999")
+        UUID notFound = UUID.randomUUID();
+        var response = mockMvc.perform(get("/api/blog-posts/"+notFound)
                 .session(session)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -136,7 +143,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
         String errorMessage = jsonNode.get("message").asText();
 
-        assertThat(errorMessage).isEqualTo("No blog post found with ID: 999");
+        assertThat(errorMessage).isEqualTo("No blog post found with ID: "+ notFound);
     }
 
     @Test

@@ -78,7 +78,7 @@ function FindClientsPage() {
               Connect with Quality Clients & Projects
             </p>
             <p className='mt-6 text-base/7 text-gray-300'>
-              Join thousands of successful freelancers who are building their careers on our platform. 
+              Join thousands of successful freelancers who are building their careers on our platform.
               Access a world of opportunities and work with clients who value your expertise.
             </p>
             <div className='mt-8'>
@@ -92,7 +92,7 @@ function FindClientsPage() {
           </div>
         </div>
       </div>
-      
+
       <div className='bg-white py-18 sm:py-20'>
         <div className='mx-auto max-w-7xl px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl lg:mx-0'>
@@ -127,7 +127,7 @@ function FindClientsPage() {
           </div>
         </div>
       </div>
-      
+
       <div className="bg-white pb-12 pt-18 sm:pb-16 sm:pt-24 xl:pb-32">
         <div className="bg-gray-900 pb-20 sm:pb-24 xl:pb-0">
           <div className="mx-auto flex max-w-7xl flex-col items-center gap-x-8 gap-y-10 px-6 sm:gap-y-8 lg:px-8 xl:flex-row xl:items-stretch">
@@ -151,7 +151,7 @@ function FindClientsPage() {
                 </svg>
                 <blockquote className="text-xl/8 font-semibold text-white sm:text-2xl/9">
                   <p>
-                    "Since joining this platform, I've been able to work with amazing clients from around the world. 
+                    "Since joining this platform, I've been able to work with amazing clients from around the world.
                     The quality of projects and the support system have helped me grow my freelance business beyond my expectations!"
                   </p>
                 </blockquote>
@@ -176,7 +176,7 @@ function FindClientsPage() {
                 Elevate Your Freelance Career
               </p>
               <p className='mt-6 text-base/7 text-gray-600'>
-                Take control of your professional journey with tools and opportunities 
+                Take control of your professional journey with tools and opportunities
                 designed to help you succeed as a freelancer.
               </p>
             </div>

@@ -59,7 +59,7 @@ export default function ClientDashboardTable() {
     );
   };
 
-  const scrollToApplicants = (projectId: number) => {
+  const scrollToApplicants = (projectId: string) => {
     router.push(`/projects/${projectId}#applicants-section`);
     setTimeout(() => {
       document.getElementById('applicants-section')?.scrollIntoView({

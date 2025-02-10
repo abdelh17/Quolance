@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -70,7 +71,7 @@ public class Project extends AbstractEntity {
      * @param clientId the ID of the client to check ownership for
      * @return true if the project is owned by the client, false otherwise
      */
-    public boolean isOwnedBy(Long clientId) {
+    public boolean isOwnedBy(UUID clientId) {
         return client != null && client.getId().equals(clientId);
     }
 

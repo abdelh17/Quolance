@@ -20,6 +20,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,15 +54,15 @@ class SendResetPasswordEmailUnitTest {
     @BeforeEach
     void setUp() {
         mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setFirstName("Test");
         mockUser.setLastName("User");
 
         mockToken = new PasswordResetToken(mockUser);
-        mockToken.setId(1L);
+        mockToken.setId(UUID.randomUUID());
 
-        mockJob = new SendResetPasswordEmailJob(1L);
+        mockJob = new SendResetPasswordEmailJob(mockToken.getId());
     }
 
     @Test
@@ -70,7 +71,7 @@ class SendResetPasswordEmailUnitTest {
         String expectedLink = baseUrl + "/auth/reset-password?token=" + mockToken.getToken();
         String expectedHtmlBody = "<html>Test email body</html>";
 
-        when(passwordResetTokenRepository.findById(1L)).thenReturn(Optional.of(mockToken));
+        when(passwordResetTokenRepository.findById(mockJob.getTokenId())).thenReturn(Optional.of(mockToken));
         when(applicationProperties.getBaseUrl()).thenReturn(baseUrl);
         when(templateEngine.process(eq("password-reset"), any(Context.class))).thenReturn(expectedHtmlBody);
 
@@ -93,7 +94,7 @@ class SendResetPasswordEmailUnitTest {
 
     @Test
     void run_WithNonExistentToken_ThrowsException() {
-        when(passwordResetTokenRepository.findById(1L)).thenReturn(Optional.empty());
+        when(passwordResetTokenRepository.findById(mockJob.getTokenId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> jobHandler.run(mockJob))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -106,7 +107,7 @@ class SendResetPasswordEmailUnitTest {
     @Test
     void run_WithAlreadySentEmail_DoesNothing() throws Exception {
         mockToken.onEmailSent();
-        when(passwordResetTokenRepository.findById(1L)).thenReturn(Optional.of(mockToken));
+        when(passwordResetTokenRepository.findById(mockToken.getId())).thenReturn(Optional.of(mockToken));
 
         jobHandler.run(mockJob);
 
@@ -116,7 +117,7 @@ class SendResetPasswordEmailUnitTest {
 
     @Test
     void run_WithEmailServiceFailure_PropagatesException() {
-        when(passwordResetTokenRepository.findById(1L)).thenReturn(Optional.of(mockToken));
+        when(passwordResetTokenRepository.findById(mockToken.getId())).thenReturn(Optional.of(mockToken));
         when(applicationProperties.getBaseUrl()).thenReturn("http://localhost:8080");
         when(templateEngine.process(eq("password-reset"), any(Context.class))).thenReturn("<html></html>");
         doThrow(new RuntimeException("Email service failed"))
@@ -131,24 +132,11 @@ class SendResetPasswordEmailUnitTest {
     }
 
     @Test
-    void run_WithInvalidUserId_ThrowsException() {
-        SendResetPasswordEmailJob invalidJob = new SendResetPasswordEmailJob(-1L);
-        when(passwordResetTokenRepository.findById(-1L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> jobHandler.run(invalidJob))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Token not found");
-
-        verify(passwordResetTokenRepository).findById(-1L);
-        verifyNoMoreInteractions(passwordResetTokenRepository, emailService, templateEngine);
-    }
-
-    @Test
     void run_WithValidTokenButEmailSendingFails_ThrowsException() {
         String baseUrl = "http://localhost:8080";
         String expectedHtmlBody = "<html>Test email body</html>";
 
-        when(passwordResetTokenRepository.findById(1L)).thenReturn(Optional.of(mockToken));
+        when(passwordResetTokenRepository.findById(mockToken.getId())).thenReturn(Optional.of(mockToken));
         when(applicationProperties.getBaseUrl()).thenReturn(baseUrl);
         when(templateEngine.process(eq("password-reset"), any(Context.class))).thenReturn(expectedHtmlBody);
         doThrow(new RuntimeException("Email service failed"))

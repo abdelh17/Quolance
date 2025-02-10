@@ -6,15 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogCommentDto {
 
-    private Long commentId;
-    private Long blogPostId;
-    private Long userId;
+    private UUID commentId;
+    private UUID blogPostId;
+    private UUID userId;
     private String username;
     private String content;
 

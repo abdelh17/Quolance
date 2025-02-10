@@ -2,7 +2,9 @@ package com.quolance.quolance_api.services.websockets;
 
 import com.quolance.quolance_api.entities.Notification;
 import com.quolance.quolance_api.entities.User;
+
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Interface defining the contract for notification operations via WebSockets.
@@ -15,7 +17,7 @@ public interface NotificationService {
      *
      * @param notificationId the unique identifier of the notification.
      */
-    void markNotificationAsRead(Long notificationId);
+    void markNotificationAsRead(UUID notificationId);
 
     /**
      * Retrieves all notifications for a given user.
@@ -23,7 +25,7 @@ public interface NotificationService {
      * @param userId the identifier of the user.
      * @return a list of notifications for the user.
      */
-    List<Notification> getNotificationsForUser(Long userId);
+    List<Notification> getNotificationsForUser(UUID userId);
 
     /**
      * Retrieves all unread notifications for a given user.
@@ -31,7 +33,7 @@ public interface NotificationService {
      * @param userId the identifier of the user.
      * @return a list of unread notifications for the user.
      */
-    List<Notification> getUnreadNotificationsForUser(Long userId);
+    List<Notification> getUnreadNotificationsForUser(UUID userId);
 
     /**
      * Sends a notification to multiple users.

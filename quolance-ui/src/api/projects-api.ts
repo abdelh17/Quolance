@@ -28,7 +28,7 @@ export const ProjectFilterQueryDefault = {
 
 /*--- Hooks ---*/
 export const useGetProjectInfo = (
-  projectId: number,
+  projectId: string,
   role: 'client' | 'freelancer' | 'public',
   isUserLoading: boolean
 ) => {
@@ -64,7 +64,7 @@ export const usePostProject = (options?: {
 };
 
 export const useUpdateProject = (
-  projectId: number,
+  projectId: string,
   options?: {
     onSuccess?: () => void;
     onError?: (error: AxiosError) => void;

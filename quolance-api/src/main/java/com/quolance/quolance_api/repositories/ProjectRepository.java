@@ -9,10 +9,11 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpecificationExecutor<Project> {
-    Page<Project> findProjectsByClientId(Long clientId, Pageable pageable);
+public interface ProjectRepository extends JpaRepository<Project, UUID>, JpaSpecificationExecutor<Project> {
+    Page<Project> findProjectsByClientId(UUID clientId, Pageable pageable);
 
     Page<Project> findProjectsByProjectStatusIn(List<ProjectStatus> projectStatuses, Pageable pageable);
 }

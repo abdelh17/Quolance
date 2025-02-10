@@ -54,9 +54,9 @@ export const handleResetFilters = (
 };
 
 export const handleSelectSubmission = (
-  submissionId: number,
+  submissionId: string,
   selected: boolean,
-  setSelectedSubmissions: Dispatch<SetStateAction<number[]>>
+  setSelectedSubmissions: Dispatch<SetStateAction<string[]>>
 ) => {
   setSelectedSubmissions((prev) =>
     selected

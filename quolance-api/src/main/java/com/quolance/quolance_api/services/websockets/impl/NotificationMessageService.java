@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +56,7 @@ public class NotificationMessageService implements NotificationService {
      *
      * @param notificationId The ID of the notification.
      */
-    public void markNotificationAsRead(Long notificationId) {
+    public void markNotificationAsRead(UUID notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         notification.setRead(true);
@@ -68,7 +69,7 @@ public class NotificationMessageService implements NotificationService {
      * @param userId The user's ID.
      * @return List of notifications.
      */
-    public List<Notification> getNotificationsForUser(Long userId) {
+    public List<Notification> getNotificationsForUser(UUID userId) {
         return notificationRepository.findByRecipientId(userId);
     }
 
@@ -78,7 +79,7 @@ public class NotificationMessageService implements NotificationService {
      * @param userId The user's ID.
      * @return List of unread notifications.
      */
-    public List<Notification> getUnreadNotificationsForUser(Long userId) {
+    public List<Notification> getUnreadNotificationsForUser(UUID userId) {
         return notificationRepository.findByRecipientIdAndRead(userId, false);
     }
 

@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -47,7 +48,7 @@ class PublicControllerUnitTest {
     @BeforeEach
     void setUp() {
         sampleProject = ProjectPublicDto.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .title("Sample Project")
                 .description("Sample Description")
                 .build();
@@ -55,7 +56,7 @@ class PublicControllerUnitTest {
         sampleProjects = Arrays.asList(
                 sampleProject,
                 ProjectPublicDto.builder()
-                        .id(2L)
+                        .id(UUID.randomUUID())
                         .title("Another Project")
                         .description("Another Description")
                         .build()
@@ -121,45 +122,47 @@ class PublicControllerUnitTest {
 
     @Test
     void getProjectById_ShouldReturnProject_WhenProjectExists() {
-        when(freelancerWorkflowService.getProject(1L)).thenReturn(sampleProject);
+        when(freelancerWorkflowService.getProject(sampleProject.getId())).thenReturn(sampleProject);
 
-        ResponseEntity<ProjectPublicDto> response = publicController.getProjectById(1L);
+        ResponseEntity<ProjectPublicDto> response = publicController.getProjectById(sampleProject.getId());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody())
                 .isNotNull()
                 .isEqualTo(sampleProject);
-        verify(freelancerWorkflowService).getProject(1L);
+        verify(freelancerWorkflowService).getProject(sampleProject.getId());
         verifyNoMoreInteractions(freelancerWorkflowService);
     }
 
     @Test
     void getProjectById_ShouldThrowApiException_WhenProjectNotFound() {
-        when(freelancerWorkflowService.getProject(anyLong()))
+        UUID invalidProjectId = UUID.randomUUID();
+        when(freelancerWorkflowService.getProject(invalidProjectId))
                 .thenThrow(ApiException.builder()
                         .message("Project not found")
                         .status(404)
                         .build());
 
-        assertThatThrownBy(() -> publicController.getProjectById(999L))
+        assertThatThrownBy(() -> publicController.getProjectById(invalidProjectId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
-        verify(freelancerWorkflowService).getProject(999L);
+        verify(freelancerWorkflowService).getProject(invalidProjectId);
         verifyNoMoreInteractions(freelancerWorkflowService);
     }
 
     @Test
     void getProjectById_ShouldThrowApiException_WhenServiceFails() {
-        when(freelancerWorkflowService.getProject(anyLong()))
+        UUID projectId = UUID.randomUUID();
+        when(freelancerWorkflowService.getProject(projectId))
                 .thenThrow(ApiException.builder()
                         .message("Service unavailable")
                         .status(500)
                         .build());
 
-        assertThatThrownBy(() -> publicController.getProjectById(1L))
+        assertThatThrownBy(() -> publicController.getProjectById(projectId))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Service unavailable");
-        verify(freelancerWorkflowService).getProject(1L);
+        verify(freelancerWorkflowService).getProject(projectId);
         verifyNoMoreInteractions(freelancerWorkflowService);
     }
 

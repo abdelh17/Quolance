@@ -135,12 +135,12 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
 
-        assertThat(projectResponse).containsEntry("id", application.getId().intValue())
+        assertThat(projectResponse).containsEntry("id", application.getId().toString())
                 .containsEntry("status", "APPLIED")
                 .containsEntry("status", application.getApplicationStatus().name())
-                .containsEntry("projectId", project.getId().intValue())
+                .containsEntry("projectId", project.getId().toString())
                 .containsEntry("projectTitle", project.getTitle())
-                .containsEntry("freelancerId", freelancer.getId().intValue());
+                .containsEntry("freelancerId", freelancer.getId().toString());
     }
 
     @Test
@@ -213,20 +213,20 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
         Map<String, Object> applicationResponse2 = content.get(1);
 
         assertThat(applicationResponse1)
-                .containsEntry("id", application1.getId().intValue())
+                .containsEntry("id", application1.getId().toString())
                 .containsEntry("status", "APPLIED")
                 .containsEntry("status", application1.getApplicationStatus().name())
-                .containsEntry("projectId", project1.getId().intValue())
+                .containsEntry("projectId", project1.getId().toString())
                 .containsEntry("projectTitle", project1.getTitle())
-                .containsEntry("freelancerId", freelancer.getId().intValue());
+                .containsEntry("freelancerId", freelancer.getId().toString());
 
         assertThat(applicationResponse2)
-                .containsEntry("id", application2.getId().intValue())
+                .containsEntry("id", application2.getId().toString())
                 .containsEntry("status", "APPLIED")
                 .containsEntry("status", application2.getApplicationStatus().name())
-                .containsEntry("projectId", project2.getId().intValue())
+                .containsEntry("projectId", project2.getId().toString())
                 .containsEntry("projectTitle", project2.getTitle())
-                .containsEntry("freelancerId", freelancer.getId().intValue());
+                .containsEntry("freelancerId", freelancer.getId().toString());
     }
 
     @Test
@@ -264,15 +264,15 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
         Map<String, Object> projectResponse2 = content.get(1);
         Map<String, Object> projectResponse3 = content.get(2);
 
-        assertThat(projectResponse1).containsEntry("id", project1.getId().intValue())
+        assertThat(projectResponse1).containsEntry("id", project1.getId().toString())
                 .containsEntry("projectStatus", "OPEN")
                 .containsEntry("projectStatus", project1.getProjectStatus().name());
 
-        assertThat(projectResponse2).containsEntry("id", project2.getId().intValue())
+        assertThat(projectResponse2).containsEntry("id", project2.getId().toString())
                 .containsEntry("projectStatus", "CLOSED")
                 .containsEntry("projectStatus", project2.getProjectStatus().name());
 
-        assertThat(projectResponse3).containsEntry("id", project4.getId().intValue())
+        assertThat(projectResponse3).containsEntry("id", project4.getId().toString())
                 .containsEntry("projectStatus", "OPEN")
                 .containsEntry("projectStatus", project4.getProjectStatus().name());
 
@@ -293,7 +293,7 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(projectResponse).containsEntry("id", project.getId().intValue())
+        assertThat(projectResponse).containsEntry("id", project.getId().toString())
                 .containsEntry("projectStatus", "OPEN")
                 .containsEntry("projectStatus", project.getProjectStatus().name());
     }
@@ -314,7 +314,7 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
         //Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
         assertThat(projectResponse)
-                .containsEntry("id", project.getId().intValue())
+                .containsEntry("id", project.getId().toString())
                 .containsEntry("projectStatus", "CLOSED")
                 .containsEntry("projectStatus", project.getProjectStatus().name());
     }

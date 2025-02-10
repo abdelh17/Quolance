@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     private final BlogPostService blogPostService;
 
     @Override
-    public BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto) {
+    public BlogCommentDto createBlogComment(UUID blogPostId, User author, BlogCommentDto blogCommentDto) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
         if (blogCommentDto.getContent() == null || blogCommentDto.getContent().isEmpty()) {
@@ -41,7 +42,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto, User author) {
+    public BlogCommentDto updateBlogComment(UUID commentId, BlogCommentDto blogCommentDto, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
 
         if (!isAuthorOfPost(blogComment, author)) {
@@ -55,7 +56,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public void deleteBlogComment(Long commentId, User author) {
+    public void deleteBlogComment(UUID commentId, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
 
         if (!isAuthorOfPost(blogComment, author)) {
@@ -66,7 +67,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId) {
+    public List<BlogCommentDto> getCommentsByBlogPostId(UUID blogPostId) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
         List<BlogComment> comments = blogCommentRepository.findByBlogPost(blogPost);
@@ -80,7 +81,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
         return blogComment.getUser().getId().equals(author.getId());
     }
 
-    public BlogComment getBlogCommentEntity(Long commentId) {
+    public BlogComment getBlogCommentEntity(UUID commentId) {
         BlogComment blogComment = blogCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "BlogComment not found with ID: " + commentId));
@@ -89,7 +90,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable) {
+    public Page<BlogCommentDto> getPaginatedComments(UUID blogPostId, Pageable pageable) {
         return blogCommentRepository.findByBlogPostId(blogPostId, pageable)
                 .map(BlogCommentDto::fromEntity);
     }

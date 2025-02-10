@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -85,7 +86,7 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public List<ReactionResponseDto> getReactionsByBlogPostId(Long blogPostId) {
+    public List<ReactionResponseDto> getReactionsByBlogPostId(UUID blogPostId) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
         return reactionRepository.findByBlogPost(blogPost).stream()
@@ -94,7 +95,7 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public List<ReactionResponseDto> getReactionsByBlogCommentId(Long blogCommentId) {
+    public List<ReactionResponseDto> getReactionsByBlogCommentId(UUID blogCommentId) {
         BlogComment blogComment = blogCommentService.getBlogCommentEntity(blogCommentId);
 
         return reactionRepository.findByBlogComment(blogComment).stream()
@@ -103,7 +104,7 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public void deleteReaction(Long reactionId, User user) {
+    public void deleteReaction(UUID reactionId, User user) {
         Reaction reaction = reactionRepository.findById(reactionId)
                 .orElseThrow(() -> new EntityNotFoundException("Reaction not found with ID: " + reactionId));
 

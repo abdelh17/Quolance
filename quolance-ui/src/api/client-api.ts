@@ -26,7 +26,7 @@ export const CandidateFilterQueryDefault = {
 };
 
 /*--- Hooks ---*/
-export const useGetProjectSubmissions = (projectId: number) => {
+export const useGetProjectSubmissions = (projectId: string) => {
   return useQuery({
     queryKey: ['project-submissions', projectId], // Add projectId to queryKey, important for caching
     queryFn: () =>
@@ -34,10 +34,10 @@ export const useGetProjectSubmissions = (projectId: number) => {
   });
 };
 
-export const useApproveSubmission = (projectId: number) => {
+export const useApproveSubmission = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (applicationId: number) =>
+    mutationFn: (applicationId: string) =>
       httpClient.post(
         `api/client/applications/${applicationId}/select-freelancer`
       ),
@@ -55,10 +55,10 @@ export const useApproveSubmission = (projectId: number) => {
   });
 };
 
-export const useRejectSubmissions = (projectId: number) => {
+export const useRejectSubmissions = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (applicationIds: number[]) =>
+    mutationFn: (applicationIds: string[]) =>
       httpClient.post(
         `api/client/applications/bulk/reject-freelancer`,
         applicationIds

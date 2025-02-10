@@ -5,21 +5,22 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogComment;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BlogCommentService {
 
-    BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto);
+    BlogCommentDto createBlogComment(UUID blogPostId, User author, BlogCommentDto blogCommentDto);
 
-    BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto, User author);
+    BlogCommentDto updateBlogComment(UUID commentId, BlogCommentDto blogCommentDto, User author);
 
-    void deleteBlogComment(Long commentId, User author);
+    void deleteBlogComment(UUID commentId, User author);
 
-    BlogComment getBlogCommentEntity(Long blogCommentId);
+    BlogComment getBlogCommentEntity(UUID blogCommentId);
 
-    Page<BlogCommentDto> getPaginatedComments(Long blogPostId, Pageable pageable);
+    Page<BlogCommentDto> getPaginatedComments(UUID blogPostId, Pageable pageable);
 
-    List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId);
+    List<BlogCommentDto> getCommentsByBlogPostId(UUID blogPostId);
 }

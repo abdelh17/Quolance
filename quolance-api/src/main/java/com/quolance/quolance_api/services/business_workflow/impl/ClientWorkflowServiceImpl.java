@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -48,13 +49,13 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
 
     @Override
-    public ProjectDto getProject(Long projectId, User client) {
+    public ProjectDto getProject(UUID projectId, User client) {
         Project project = projectService.getProjectById(projectId);
         return ProjectDto.fromEntity(project);
     }
 
     @Override
-    public void deleteProject(Long projectId, User client) {
+    public void deleteProject(UUID projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
         if (!project.isOwnedBy(client.getId())) {
@@ -75,7 +76,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
 
     @Override
-    public List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client) {
+    public List<ApplicationDto> getAllApplicationsToProject(UUID projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
         if (!project.isOwnedBy(client.getId())) {
@@ -89,7 +90,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     }
 
     @Override
-    public ProjectDto updateProject(Long projectId, ProjectUpdateDto projectUpdateDto, User client) {
+    public ProjectDto updateProject(UUID projectId, ProjectUpdateDto projectUpdateDto, User client) {
         Project existingProject = projectService.getProjectById(projectId);
 
         if (!existingProject.isOwnedBy(client.getId())) {

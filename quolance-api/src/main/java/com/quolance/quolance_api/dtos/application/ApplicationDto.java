@@ -8,23 +8,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplicationDto {
 
-    private Long id;
+    private UUID id;
 
     private ApplicationStatus status;
 
-    private Long projectId;
+    private UUID projectId;
 
     private String projectTitle;
 
-    private Long freelancerId;
+    private UUID freelancerId;
 
     private FreelancerProfileDto freelancerProfile;
+
+    private LocalDateTime creationDate;
 
     public static ApplicationDto fromEntity(Application application) {
         return ApplicationDto.builder()
@@ -34,6 +39,7 @@ public class ApplicationDto {
                 .projectTitle(application.getProject() != null ? application.getProject().getTitle() : null)
                 .freelancerId(application.getFreelancer() != null ? application.getFreelancer().getId() : null)
                 .freelancerProfile(FreelancerProfileDto.fromEntity(application.getFreelancer()))
+                .creationDate(application.getCreationDate())
                 .build();
     }
 }

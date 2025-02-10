@@ -215,7 +215,7 @@ class AuthControllerIntegrationTest extends BaseIntegrationTest {
                 .getContentAsString();
 
         Map<String, Object> sessionResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(sessionResponse).containsEntry("id", client.getId().intValue())
+        assertThat(sessionResponse).containsEntry("id", client.getId().toString())
                 .containsEntry("email", "client@test.com")
                 .containsEntry("role", "CLIENT")
                 .containsEntry("firstName", "Client")

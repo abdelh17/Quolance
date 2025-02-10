@@ -1,38 +1,37 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 import PostReaction from "./PostReaction";
 
-import { useAuthGuard } from "@/api/auth-api";
+import {useAuthGuard} from "@/api/auth-api";
 import CommentCard from "./CommentCard";
-import { CommentType } from "@/constants/types/blog-types";
-import { useGetFreelancerProfile } from "@/api/freelancer-api";
+import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import UserSummary from "@/components/ui/blog/UserSummary";
-import { 
-    useGetReactionsByPostId, 
-    useReactToPost, 
-    useGetCommentsByPostId, 
-    useAddComment,
-    useRemoveReaction,
-    useDeleteBlogPost
+import {
+  useAddComment,
+  useDeleteBlogPost,
+  useGetCommentsByPostId,
+  useGetReactionsByPostId,
+  useReactToPost,
+  useRemoveReaction
 } from "@/api/blog-api";
-import { showToast } from "@/util/context/ToastProvider";
+import {showToast} from "@/util/context/ToastProvider";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
 }
 
 interface PostCardProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   authorName: string;
   dateCreated: string;
   imageUrls?: string[];
-   openUserSummaryPostId: number | null;
-  setOpenUserSummaryPostId: (open: number | null) => void;
+  openUserSummaryPostId: string | null;
+  setOpenUserSummaryPostId: (open: string | null) => void;
 }
 
 const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, imageUrls = [], openUserSummaryPostId, setOpenUserSummaryPostId }) => {
@@ -42,7 +41,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const [reactions, setReactions] = useState<ReactionState | null>(null);
   const [showFullScreen, setShowFullScreen] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-  
+
   const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
 
   const { user } = useAuthGuard({ middleware: "auth" });
@@ -50,7 +49,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   const { data: reactionData } = useGetReactionsByPostId(id);
   const { mutate: reactToPost } = useReactToPost();
-  
+
   const { data: commentsData, refetch: refetchComments } = useGetCommentsByPostId(id);
   const { mutate: addComment } = useAddComment(id, {
     onSuccess: () => {
@@ -58,7 +57,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       refetchComments();
     },
   });
-  
+
   const { mutate: removeReaction } = useRemoveReaction();
   const { mutate: deletePost } = useDeleteBlogPost({
     onSuccess: () => {
@@ -125,21 +124,21 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   const handleReactionClick = (reactionType: string) => {
     if (!reactions || !user) return;
-  
+
     const userReacted = reactions[reactionType].userReacted;
-  
+
     if (userReacted) {
       const userReaction = reactionData?.find(
         (reaction) => reaction.reactionType.toLowerCase() === reactionType && reaction.userName === user.username
       );
-  
+      ``
       if (userReaction) {
         removeReaction(userReaction.id);
       }
     } else {
       reactToPost({ reactionType: reactionType.toUpperCase(), blogPostId: id });
     }
-  
+
     const updatedReactions = Object.keys(reactions).reduce((acc, key) => {
       acc[key] = { ...reactions[key] };
       if (key === reactionType) {
@@ -151,7 +150,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       }
       return acc;
     }, {} as ReactionState);
-  
+
     setReactions(updatedReactions);
   };
 
@@ -167,15 +166,15 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     } else {
       const rect = event.currentTarget.getBoundingClientRect();
 
-      setUserSummaryPosition({ 
-        x: rect.left - 25 + window.scrollX, 
+      setUserSummaryPosition({
+        x: rect.left - 25 + window.scrollX,
         y: rect.top - 50 + window.scrollY
       });
       setOpenUserSummaryPostId(id);
     }
   };
-  
-  const handleDeletePost = (postId: number) => {
+
+  const handleDeletePost = (postId: string) => {
     if (confirm("Are you sure you want to delete this post?")) {
       deletePost(postId);
     }
@@ -188,7 +187,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     setCurrentImageIndex(index);
     setShowFullScreen(true);
   };
-    
+
   const closeFullScreen = () => {
     setShowFullScreen(false);
   };
@@ -200,7 +199,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length);
   };
-    
+
 
   return (
     <div className="bg-white shadow-md rounded-md">
@@ -216,19 +215,19 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             className="rounded-full object-cover cursor-pointer"
             onClick={handleShowUserSummary}
           />
-          <button 
+          <button
             ref={authorNameRef}
-            className="ml-4 text-gray-800 font-semibold cursor-pointer focus:outline-none" 
+            className="ml-4 text-gray-800 font-semibold cursor-pointer focus:outline-none"
             onClick={handleShowUserSummary}
           >
             {authorName}
           </button>
           {isUserSummaryOpen && userSummaryPosition && (
-            <div 
+            <div
               ref={userSummaryRef}
               className="absolute z-50"
-              style={{ 
-                top: userSummaryPosition.y, 
+              style={{
+                top: userSummaryPosition.y,
                 left: userSummaryPosition.x
               }}
             >
@@ -241,7 +240,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             <button
                 onClick={() => handleDeletePost(id)}
                 className="bg-red-500 text-white text-sm mt-3 px-4 py-2 focus:outline-none rounded-md"
-            >   
+            >
                 Delete
             </button>
           )}
@@ -360,7 +359,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           </div>
         )}
       </div>
-      
+
       {/* Post Content */}
       <div className="ml-5 mr-5 mb-5">
         <div className="flex justify-between">
@@ -438,7 +437,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               </button>
             </div>
           </div>
-    
+
           )}
         </div>
       </div>

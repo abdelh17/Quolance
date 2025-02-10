@@ -17,6 +17,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -32,7 +33,7 @@ public class SendWelcomeEmailJobHandler implements JobRequestHandler<SendWelcome
     @Override
     @Transactional
     public void run(SendWelcomeEmailJob sendWelcomEmailJob) throws Exception {
-        Long userId = sendWelcomEmailJob.getUserId();
+        UUID userId = sendWelcomEmailJob.getUserId();
 
         Thread.sleep(5000);
 

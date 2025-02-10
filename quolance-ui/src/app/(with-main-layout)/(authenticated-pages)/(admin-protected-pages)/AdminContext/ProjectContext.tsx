@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 import httpClient from "@/lib/httpClient";
 
 type Project = {
-  id: number;
+  id: string;
   title: string;
   description: string;
   expirationDate: string;
@@ -15,8 +15,8 @@ type Project = {
   expectedDeliveryTime: string;
   projectStatus: string;
   tags: string[];
-  clientId: number;
-  selectedFreelancerId: number | null;
+  clientId: string;
+  selectedFreelancerId: string | null;
   applications: any[];
 };
 
@@ -28,7 +28,7 @@ interface ProjectContextType {
   isFirstPage: boolean;
   isLastPage: boolean;
   fetchProjects: (page: number, size: number) => Promise<void>;
-  updateProjectStatus: (id: number, status: string) => Promise<void>;
+  updateProjectStatus: (id: string, status: string) => Promise<void>;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -66,7 +66,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     fetchProjects(initialPage, pageSize);
   }, []);
 
-  const updateProjectStatus = async (id: number, newStatus: string) => {
+  const updateProjectStatus = async (id: string, newStatus: string) => {
     try {
       if (newStatus === "approved") {
         await httpClient.post(`/api/admin/projects/pending/${id}/approve`);

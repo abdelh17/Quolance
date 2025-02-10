@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 
 interface FreelancerCatalogCardProps {
   freelancer: FreelancerProfileType;
-  onMessageClick: (freelancerId: number) => void;
+  onMessageClick: (freelancerId: string) => void;
 }
 
 const FreelancerCatalogCard = ({

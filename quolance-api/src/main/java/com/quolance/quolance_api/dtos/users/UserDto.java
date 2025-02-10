@@ -8,12 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
 public class UserDto {
     @JsonProperty("id")
-    private Long id;
+    private UUID id;
 
     @JsonProperty("email")
     @NotBlank(message = "The email is required")
