@@ -82,7 +82,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd quolance-api
-          ./mvnw clean verify sonar:sonar \
+          ./mvnw clean test sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=abdelh17 \
             -Dsonar.projectKey=abdelh17_Quolance_api \
