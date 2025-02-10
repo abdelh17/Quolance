@@ -91,6 +91,7 @@ jobs:
   deploy:
     name: Deploy to Oracle Instance
     runs-on: ubuntu-latest
+    needs: backend-build-test
     steps:
       - uses: actions/checkout@v3
 

@@ -1,11 +1,13 @@
 spring:
   application:
     name: quolance-api
+
   datasource:
     url: jdbc:tc:postgresql:latest:///testdb
     username: test
     password: test
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
   mail:
     host: localhost
     port: 1025
@@ -14,6 +16,7 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+
   jpa:
     hibernate:
       ddl-auto: create
