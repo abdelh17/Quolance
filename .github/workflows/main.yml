@@ -95,6 +95,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set executable permissions for decrypt_secret.sh
+        run: chmod +x quolance-scripts/decrypt_secret.sh
+
       - name: Decrypt .env file
         run: ./quolance-scripts/decrypt_secret.sh
         env:
