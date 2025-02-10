@@ -101,7 +101,7 @@ jobs:
       - name: Decrypt .env file
         run: ./quolance-scripts/decrypt_secret.sh
         env:
-          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.env_passphrase }}
 
       - name: Setup SSH key
         run: |
