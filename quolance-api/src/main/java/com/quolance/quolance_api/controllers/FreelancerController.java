@@ -4,9 +4,12 @@ import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.paging.PageResponseDto;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.profile.ProfileCompletionCalculator;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
@@ -138,6 +141,18 @@ public class FreelancerController {
         freelancerWorkflowService.uploadProfilePicture(photo, freelancer);
         log.info("Freelancer with ID {} successfully uploaded profile picture", freelancer.getId());
         return ResponseEntity.ok("Profile picture uploaded successfully");
+    }
+
+    @GetMapping("/profile/completion")
+    @Operation(
+            summary = "Get freelancer profile completion",
+            description = "Get the completion percentage of the authenticated freelancer's profile"
+    )
+    public ResponseEntity<Integer> getProfileCompletion() {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        ProfileCompletionCalculator profileCompletionCalculator = new ProfileCompletionCalculator();
+        int completionPercentage = profileCompletionCalculator.calculateCompletion(freelancerWorkflowService.getFreelancerProfile(freelancer.getUsername()));
+        return ResponseEntity.ok(completionPercentage);
     }
 
 }

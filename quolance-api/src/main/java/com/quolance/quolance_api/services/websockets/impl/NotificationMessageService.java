@@ -1,87 +1,60 @@
 package com.quolance.quolance_api.services.websockets.impl;
 
 import com.quolance.quolance_api.dtos.websocket.NotificationResponseDto;
-import com.quolance.quolance_api.entities.MessageEntity;
 import com.quolance.quolance_api.entities.Notification;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.NotificationRepository;
-import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.websockets.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationMessageService extends AbstractWebSocketService {
+public class NotificationMessageService implements NotificationService {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
-    private final UserService userService;
 
-    @Override
-    public boolean supports(String messageType) {
-        return "NOTIFICATION".equalsIgnoreCase(messageType);
-    }
 
     /**
-     * Overloaded processNotification to handle Notification directly.
+     * Processes the given Notification by saving it to the database and sending it via WebSocket.
+     * Ensures that both sender and recipient are present.
      *
-     * @param notification The Notification object.
+     * @param notification The notification to process.
      */
     private void processNotification(Notification notification) {
-        log.debug("Processing notification for user: {}", notification.getRecipient().getUsername());
+        // Validate that the recipient is not null.
+        if (notification.getRecipient() == null) {
+            throw new IllegalArgumentException("Notification recipient cannot be null");
+        }
+        if (notification.getSender() == null) {
+            throw new IllegalArgumentException("Notification sender cannot be null");
+        }
 
-        // Save the notification to the database
+        log.debug("Processing notification from {} to user: {}",
+                notification.getSender().getUsername(),
+                notification.getRecipient().getUsername());
+
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
         notificationRepository.save(notification);
 
-        // Convert the Notification entity to a NotificationResponseDto
         NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
-
-        // Send the NotificationResponseDto via WebSocket to the specific user
         messagingTemplate.convertAndSendToUser(notification.getRecipient().getUsername(), "/topic/notifications", responseDto);
     }
 
     /**
-     * Process a generic `MessageEntity` and adapt it to a `Notification`.
+     * Marks a notification as read by its ID.
      *
-     * @param message   The incoming message entity.
-     * @param userName The recipient's userName.
-     */
-    @Override
-    public void processMessage(MessageEntity message, String userName) {
-        log.debug("Adapting MessageEntity to Notification for user: {}", userName);
-
-        Optional<User> senderOpt = userService.findByUsername(message.getSender());
-        Optional<User> recipientOpt = userService.findByUsername(userName);
-
-        if (!senderOpt.isPresent() || !recipientOpt.isPresent()) {
-            throw new IllegalArgumentException("Sender or recipient not found");
-        }
-
-        User sender = senderOpt.get();
-        User recipient = recipientOpt.get();
-
-        // Adapt MessageEntity to Notification
-        Notification notification = new Notification();
-        notification.setSender(sender);
-        notification.setRecipient(recipient);
-        notification.setMessage(message.getMessage());
-
-        // Process the adapted Notification
-        processNotification(notification);
-    }
-
-    /**
-     * Mark a notification as read by its ID.
-     *
-     * @param notificationId The ID of the notification to mark as read.
+     * @param notificationId The ID of the notification.
      */
     public void markNotificationAsRead(UUID notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
@@ -91,63 +64,70 @@ public class NotificationMessageService extends AbstractWebSocketService {
     }
 
     /**
-     * Retrieve all notifications for a specific user.
+     * Retrieves all notifications for a specific user.
      *
-     * @param userId The ID of the user.
+     * @param userId The user's ID.
      * @return List of notifications.
      */
     public List<Notification> getNotificationsForUser(UUID userId) {
         return notificationRepository.findByRecipientId(userId);
     }
 
+    /**
+     * Retrieves all unread notifications for a specific user.
+     *
+     * @param userId The user's ID.
+     * @return List of unread notifications.
+     */
+    public List<Notification> getUnreadNotificationsForUser(Long userId) {
+        return notificationRepository.findByRecipientIdAndRead(userId, false);
+    }
 
     /**
-     * Send notifications to multiple users.
+     * Sends a notification to multiple users.
      *
-     * @param recipients List of recipient users to send the notification to.
+     * @param sender     The sender of the notification.
+     * @param recipients List of recipient users.
      * @param message    The notification message.
      */
-    public void sendNotificationToUsers(List<User> recipients, String message) {
-        log.debug("Sending notification to multiple users.");
+    public void sendNotificationToUsers(User sender, List<User> recipients, String message) {
+        log.debug("Sending notification from {} to multiple users",
+                sender != null ? sender.getUsername() : "System");
 
         for (User recipient : recipients) {
-            Notification notification = new Notification();
-            notification.setRecipient(recipient);
-            notification.setMessage(message);
-            processNotification(notification);
+            sendNotification(sender, recipient, message);
         }
     }
 
     /**
-     * Send a notification to a single user.
+     * Sends a notification to a single user.
      *
+     * @param sender    The sender of the notification.
      * @param recipient The recipient user.
      * @param message   The notification message.
      */
-    public void sendNotificationToUser(User recipient, String message) {
-        log.debug("Sending notification to user: {}", recipient.getUsername());
-
-        Notification notification = new Notification();
-        notification.setRecipient(recipient);
-        notification.setMessage(message);
-        processNotification(notification);
+    public void sendNotificationToUser(User sender, User recipient, String message) {
+        log.debug("Sending notification from {} to user: {}",
+                sender != null ? sender.getUsername() : "System", recipient.getUsername());
+        sendNotification(sender, recipient, message);
     }
 
     /**
-     * Send notifications with an optional sender.
+     * Creates and processes a notification with both a sender and a recipient.
      *
-     * @param sender    The sender of the notification (optional).
+     * @param sender    The sender of the notification.
      * @param recipient The recipient user.
      * @param message   The notification message.
      */
     public void sendNotification(User sender, User recipient, String message) {
-        log.debug("Sending notification from {} to {}",
+        log.debug("Sending notification from {} to {} in sendNotification",
                 sender != null ? sender.getUsername() : "System", recipient.getUsername());
 
         Notification notification = new Notification();
         notification.setSender(sender);
         notification.setRecipient(recipient);
         notification.setMessage(message);
+
         processNotification(notification);
     }
 }

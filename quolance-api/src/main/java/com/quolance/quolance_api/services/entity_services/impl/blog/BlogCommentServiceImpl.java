@@ -12,6 +12,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,8 +42,12 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public BlogCommentDto updateBlogComment(UUID commentId, BlogCommentDto blogCommentDto) {
+    public BlogCommentDto updateBlogComment(UUID commentId, BlogCommentDto blogCommentDto, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
+
+        if (!isAuthorOfPost(blogComment, author)) {
+            throw new ApiException("You cannot update a comment that does not belong to you.");
+        }
 
         blogComment.setContent(blogCommentDto.getContent());
         BlogComment updatedComment = blogCommentRepository.save(blogComment);
@@ -50,8 +56,12 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public void deleteBlogComment(UUID commentId) {
+    public void deleteBlogComment(UUID commentId, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
+
+        if (!isAuthorOfPost(blogComment, author)) {
+            throw new ApiException("You cannot delete a comment that does not belong to you.");
+        }
 
         blogCommentRepository.delete(blogComment);
     }
@@ -67,11 +77,21 @@ public class BlogCommentServiceImpl implements BlogCommentService {
                 .toList();
     }
 
+    private boolean isAuthorOfPost(BlogComment blogComment, User author) {
+        return blogComment.getUser().getId().equals(author.getId());
+    }
+
     public BlogComment getBlogCommentEntity(UUID commentId) {
         BlogComment blogComment = blogCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "BlogComment not found with ID: " + commentId));
 
         return blogComment;
+    }
+
+    @Override
+    public Page<BlogCommentDto> getPaginatedComments(UUID blogPostId, Pageable pageable) {
+        return blogCommentRepository.findByBlogPostId(blogPostId, pageable)
+                .map(BlogCommentDto::fromEntity);
     }
 }

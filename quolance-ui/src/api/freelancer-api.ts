@@ -146,4 +146,14 @@ export const useUploadProfileImage = () => {
   });
 };
 
+export const useGetProfileCompletion = () => {
+  return useQuery<number>({
+    queryKey: ['profileCompletion'],
+    queryFn: async () => {
+      const response = await httpClient.get('/api/freelancer/profile/completion');
+      return response.data; 
+    },
+  });
+};
+
 /*--- Query functions ---*/

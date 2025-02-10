@@ -304,4 +304,108 @@ class FreelancerControllerUnitTest {
                     .hasMessage("Invalid profile data");
         }
     }
+
+    @Test
+    void applyToProject_WhenAlreadyApplied_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            doThrow(new ApiException("Already applied to this project"))
+                    .when(freelancerWorkflowService).submitApplication(eq(applicationCreateDto), any(User.class));
+
+            assertThatThrownBy(() -> freelancerController.applyToProject(applicationCreateDto))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Already applied to this project");
+        }
+    }
+
+    @Test
+    void updateFreelancerProfile_ReturnsSuccessMessage() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            UpdateFreelancerProfileDto profileDto = new UpdateFreelancerProfileDto();
+            doNothing().when(freelancerWorkflowService).updateFreelancerProfile(eq(profileDto), any(User.class));
+
+            ResponseEntity<String> response = freelancerController.updateFreelancerProfile(profileDto);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo("Profile updated successfully");
+            verify(freelancerWorkflowService).updateFreelancerProfile(profileDto, mockFreelancer);
+        }
+    }
+
+    @Test
+    void deleteApplication_WhenAlreadyProcessed_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID applicationId = UUID.randomUUID();
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            doThrow(new ApiException("Cannot delete processed application"))
+                    .when(applicationProcessWorkflow).cancelApplication(eq(applicationId), any(User.class));
+
+            assertThatThrownBy(() -> freelancerController.deleteApplication(applicationId))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Cannot delete processed application");
+        }
+    }
+
+    @Test
+    void getAllVisibleProjects_WithInvalidPageSize_UsesDefaultSize() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            PageableRequestDto pageableRequestDto = new PageableRequestDto();
+            pageableRequestDto.setPage(0);
+            pageableRequestDto.setSize(-1);
+            ProjectFilterDto filters = new ProjectFilterDto();
+
+            when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
+            when(freelancerWorkflowService.getAllVisibleProjects(any(Pageable.class), eq(filters)))
+                    .thenReturn(new PageImpl<>(List.of(projectPublicDto)));
+
+            ResponseEntity<PageResponseDto<ProjectPublicDto>> response =
+                    freelancerController.getAllVisibleProjects(pageableRequestDto, filters);
+
+            assertThat(response.getBody().getContent()).hasSize(1);
+            verify(paginationUtils).createPageable(pageableRequestDto);
+        }
+    }
+
+    @Test
+    void getApplication_WhenNotOwnApplication_ThrowsAccessDeniedException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID applicationId = UUID.randomUUID();
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            when(freelancerWorkflowService.getApplication(eq(applicationId), any(User.class)))
+                    .thenThrow(new AccessDeniedException("Cannot view other freelancer's application"));
+
+            assertThatThrownBy(() -> freelancerController.getApplication(applicationId))
+                    .isInstanceOf(AccessDeniedException.class)
+                    .hasMessage("Cannot view other freelancer's application");
+        }
+    }
+
+    @Test
+    void getProjectById_WhenProjectClosed_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID projectId = UUID.randomUUID();
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            when(freelancerWorkflowService.getProject(projectId))
+                    .thenThrow(new ApiException("Project is no longer available"));
+
+            assertThatThrownBy(() -> freelancerController.getProjectById(projectId))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Project is no longer available");
+        }
+    }
+
+    @Test
+    void updateFreelancerProfile_WithNullProfile_ThrowsApiException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockFreelancer);
+            doThrow(new ApiException("Profile update data cannot be null"))
+                    .when(freelancerWorkflowService).updateFreelancerProfile(null, mockFreelancer);
+
+            assertThatThrownBy(() -> freelancerController.updateFreelancerProfile(null))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Profile update data cannot be null");
+        }
+    }
 }

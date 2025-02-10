@@ -18,8 +18,7 @@ public class FileEntity extends AbstractEntity {
     private String fileType;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
-
 
 }

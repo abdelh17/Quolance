@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -71,12 +72,54 @@ class AuthControllerUnitTest {
     void login_ReturnsOkResponse() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-        doNothing().when(authService).login(request, response, loginRequest);
+            doNothing().when(authService).login(request, response, loginRequest);
 
-        ResponseEntity<?> responseEntity = authController.login(request, response, loginRequest);
+            ResponseEntity<?> responseEntity = authController.login(request, response, loginRequest);
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(authService, times(1)).login(request, response, loginRequest);
+            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+            verify(authService, times(1)).login(request, response, loginRequest);
+        }
+    }
+
+    @Test
+    void login_WithEmptyUsername_ThrowsValidationException() {
+        loginRequest.setUsername("");
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+            doThrow(new ValidationException("Username cannot be empty"))
+                    .when(authService).login(request, response, loginRequest);
+
+            assertThatThrownBy(() -> authController.login(request, response, loginRequest))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessage("Username cannot be empty");
+        }
+    }
+
+    @Test
+    void login_WithEmptyPassword_ThrowsValidationException() {
+        loginRequest.setPassword("");
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+            doThrow(new ValidationException("Password cannot be empty"))
+                    .when(authService).login(request, response, loginRequest);
+
+            assertThatThrownBy(() -> authController.login(request, response, loginRequest))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessage("Password cannot be empty");
+        }
+    }
+
+    @Test
+    void login_WithInvalidEmail_ThrowsValidationException() {
+        loginRequest.setUsername("invalid-email");
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+            doThrow(new ValidationException("Invalid email format"))
+                    .when(authService).login(request, response, loginRequest);
+
+            assertThatThrownBy(() -> authController.login(request, response, loginRequest))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessage("Invalid email format");
         }
     }
 
@@ -103,17 +146,6 @@ class AuthControllerUnitTest {
     }
 
     @Test
-    void login_WhenValidationException_ThrowsValidationException() {
-        doThrow(new ValidationException("Validation failed"))
-                .when(authService).login(request, response, loginRequest);
-
-        assertThatThrownBy(() -> authController.login(request, response, loginRequest))
-                .isInstanceOf(ValidationException.class)
-                .hasMessage("Validation failed");
-        verify(authService, times(1)).login(request, response, loginRequest);
-    }
-
-    @Test
     void getSession_ReturnsUserResponse() {
         when(authService.getSession(request)).thenReturn(userResponse);
 
@@ -129,6 +161,18 @@ class AuthControllerUnitTest {
     }
 
     @Test
+    void getSession_VerifiesUserResponseFields() {
+        when(authService.getSession(request)).thenReturn(userResponse);
+        ResponseEntity<UserResponseDto> responseEntity = authController.getSession(request);
+
+        UserResponseDto body = responseEntity.getBody();
+        assertThat(body).isNotNull();
+        assertThat(body.getVerified()).isTrue();
+        assertThat(body.getProfileImageUrl()).isNull();
+        assertThat(body.getConnectedAccounts()).isEmpty();
+    }
+
+    @Test
     void getSession_WhenNoActiveSession_ThrowsApiException() {
         when(authService.getSession(request))
                 .thenThrow(new ApiException("No active session found"));
@@ -140,25 +184,14 @@ class AuthControllerUnitTest {
     }
 
     @Test
-    void getSession_WhenValidationException_ThrowsValidationException() {
-        when(authService.getSession(request))
-                .thenThrow(new ValidationException("Validation failed"));
-
-        assertThatThrownBy(() -> authController.getSession(request))
-                .isInstanceOf(ValidationException.class)
-                .hasMessage("Validation failed");
-        verify(authService, times(1)).getSession(request);
-    }
-
-    @Test
     void logout_ReturnsOkResponse() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-        doNothing().when(authService).logout(request, response);
+            doNothing().when(authService).logout(request, response);
 
-        ResponseEntity<Void> responseEntity = authController.logout(request, response);
+            ResponseEntity<Void> responseEntity = authController.logout(request, response);
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             verify(authService, times(1)).logout(request, response);
         }
     }
@@ -167,21 +200,33 @@ class AuthControllerUnitTest {
     void logout_WhenNoActiveSession_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-        doThrow(new ApiException("No active session to logout from"))
-                .when(authService).logout(request, response);
+            doThrow(new ApiException("No active session to logout from"))
+                    .when(authService).logout(request, response);
 
-        assertThatThrownBy(() -> authController.logout(request, response))
-                .isInstanceOf(ApiException.class)
-                .hasMessage("No active session to logout from");
-        verify(authService, times(1)).logout(request, response);
+            assertThatThrownBy(() -> authController.logout(request, response))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("No active session to logout from");
+            verify(authService, times(1)).logout(request, response);
         }
     }
 
     @Test
     void csrf_ReturnsOkResponse() {
         ResponseEntity<?> responseEntity = authController.csrf();
-
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    void login_WithNullRequest_ThrowsValidationException() {
+        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+            loginRequest = null;
+            doThrow(new ValidationException("Login request cannot be null"))
+                    .when(authService).login(request, response, null);
+
+            assertThatThrownBy(() -> authController.login(request, response, null))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessage("Login request cannot be null");
+        }
+    }
 }

@@ -468,3 +468,24 @@ input[type='number'] {
   background-image: linear-gradient(90deg, transparent 50%, #b4baff 0);
   background-size: 10px 100%;
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* Internet Explorer and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari and Opera */
+}
+
+.swiper {
+  overflow: visible !important;
+}
+
+.swiper-slide {
+  transition: all 300ms ease;
+}
+
+.swiper-slide:hover {
+  transform: translateY(-10px);
+}

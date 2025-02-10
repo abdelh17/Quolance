@@ -14,4 +14,6 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     List<Notification> findByRecipient(User recipient);
 
     List<Notification> findByRecipientId(UUID userId);
+
+    List<Notification> findByRecipientIdAndRead(UUID userId, boolean read);
 }
