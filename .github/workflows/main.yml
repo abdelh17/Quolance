@@ -97,7 +97,7 @@ jobs:
 
       - name: Decrypt env file
         run: |
-          gpg --batch --yes --passphrase 4@LPU@Qu%3ph --decrypt --output .env .env.gpg
+          gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
 
       - name: Setup SSH key
         run: |
