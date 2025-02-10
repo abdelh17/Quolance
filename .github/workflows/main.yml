@@ -57,7 +57,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SPRING_PROFILES_ACTIVE: test
-      LOG_FILE: ./logs/test.log
 
     steps:
       - uses: actions/checkout@v3
@@ -73,6 +72,7 @@ jobs:
 
       - name: Build, Test, and Analyze
         run: |
+          gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
           cd quolance-api
           ./mvnw clean test sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
