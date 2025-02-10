@@ -120,6 +120,7 @@ jobs:
             git pull origin BE-61-deployment || { echo "Failed to pull latest changes"; exit 1; }
             
             # Decrypt the .env file
+            pwd
             gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
             
             # Package the application
