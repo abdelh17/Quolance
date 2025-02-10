@@ -10,8 +10,6 @@ app:
     password: ${ADMIN_PASSWORD}
 
 spring:
-  profiles:
-    default: default
   servlet:
     multipart:
       enabled: true

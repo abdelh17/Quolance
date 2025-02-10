@@ -189,7 +189,8 @@ You can add a profile at your springboot configuration to create an admin user w
       ADMIN_PASSWORD=admin
    ```
 #### Running with the Profile
-- Option 1: Running the backend with this command ```mvn spring-boot:run -Dspring-boot.run.profiles=local```
+
+- Option 1: Running the backend with this command ```./mvnw spring-boot:run -Dspring-boot.run.profiles=local```
 - Option 2: Add the **local** profile to your intellij config ![image](https://github.com/user-attachments/assets/415e6a76-6381-4e36-b70b-a70bda18eb8d)
 
 ---
