@@ -7,6 +7,7 @@ import {
   PaginationQueryDefault,
 } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
+import { ProjectType } from '@/constants/types/project-types';
 
 /*--- Filters ---*/
 export interface CandidateFilterQuery extends PaginationParams {
@@ -71,7 +72,11 @@ export const useRejectSubmissions = (projectId: string) => {
   });
 };
 
-export const useGetAllClientProjects = (params: PaginationParams) => {
+export const useGetAllClientProjects = (
+  params: PaginationParams,
+  enabled = true,
+  completed = false
+) => {
   const queryString = new URLSearchParams({
     page: params.page?.toString() || '0',
     size: params.size?.toString() || '10',
@@ -80,12 +85,20 @@ export const useGetAllClientProjects = (params: PaginationParams) => {
   }).toString();
 
   return useQuery({
-    queryKey: ['clientProjects', params],
+    queryKey: ['clientProjects', params, completed],
+    enabled,
     queryFn: async () => {
       const response = await httpClient.get(
         `/api/client/projects/all?${queryString}`
       );
-      return response.data; // Return the data from the Axios response
+      // Check if filter is completed
+      if (completed) {
+        return response.data.filter(
+          (project: ProjectType) => project.projectStatus === 'CLOSED'
+        );
+      }
+
+      return response.data;
     },
   });
 };
