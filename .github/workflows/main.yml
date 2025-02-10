@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   pull_request:
     branches:
-      - main
+      - BE-61-deployment
   push:
     branches:
-      - main
+      - BE-61-deployment
 
 jobs:
   frontend-build-test:
@@ -88,3 +88,38 @@ jobs:
             -Dsonar.projectKey=abdelh17_Quolance_api \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
+
+  deploy:
+    name: Deploy to Oracle Instance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Decrypt .env file
+        run: ./decrypt_secret.sh
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+
+      - name: Setup SSH key
+        run: |
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ssh-key-2025-01-28.key
+          chmod 600 ssh-key-2025-01-28.key
+      
+
+      - name: SSH to Oracle Instance and Update Project
+        run: |
+          ssh -i ssh-key-2025-01-28.key opc@155.248.225.24 << 'EOF'
+
+            # Update latest changes and package application
+            cd /home/opc/Quolance/quolance-api || { echo "Failed to change directory"; exit 1; }
+            git pull origin BE-61-deployment || { echo "Failed to pull latest changes"; exit 1; }
+            ./mvnw clean package -DskipTests || { echo "Maven package failed"; exit 1; }
+            sleep 10
+
+            # Restart the application in tmux
+            tmux send-keys -t quolance-api C-c
+            sleep 5
+            tmux send-keys -t quolance-api 'java -jar target/quolance-api-0.0.1-SNAPSHOT.jar' Enter
+            sleep 20
+            exit
+          EOF
