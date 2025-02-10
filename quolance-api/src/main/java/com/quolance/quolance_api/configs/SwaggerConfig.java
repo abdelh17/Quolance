@@ -14,7 +14,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Quolance API")
-                        .version("1.0")
+                        .version("1.3")
                         .description("API for Quolance"));
     }
 }
