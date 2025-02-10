@@ -109,26 +109,28 @@ class BlogPostServiceUnitTest {
 
     @Test
     void testGetBlogPostsByUserId() {
+        UUID id = UUID.randomUUID();
         // Mock repository behavior
-        when(blogPostRepository.findByUserId(1L)).thenReturn(List.of(blogPost));
+        when(blogPostRepository.findByUserId(id)).thenReturn(List.of(blogPost));
 
         // Call the service method
-        List<BlogPostResponseDto> result = blogPostService.getBlogPostsByUserId(1L);
+        List<BlogPostResponseDto> result = blogPostService.getBlogPostsByUserId(id);
 
         // Verify interaction and result
-        verify(blogPostRepository, times(1)).findByUserId(1L);
+        verify(blogPostRepository, times(1)).findByUserId(id);
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getId()).isEqualTo(blogPost.getId());
     }
 
     @Test
     void testUpdateBlogPost() {
+        UUID id = UUID.randomUUID();
         // Mock repository to return an existing post
-        when(blogPostRepository.findById(1L)).thenReturn(Optional.of(blogPost));
+        when(blogPostRepository.findById(id)).thenReturn(Optional.of(blogPost));
 
         // Prepare the update request
         BlogPostUpdateDto updateDto = new BlogPostUpdateDto();
-        updateDto.setPostId(1L);
+        updateDto.setPostId(id);
         updateDto.setTitle("Updated Title");
         updateDto.setContent("Updated Content");
 

@@ -79,7 +79,7 @@ public class NotificationMessageService implements NotificationService {
      * @param userId The user's ID.
      * @return List of unread notifications.
      */
-    public List<Notification> getUnreadNotificationsForUser(Long userId) {
+    public List<Notification> getUnreadNotificationsForUser(UUID userId) {
         return notificationRepository.findByRecipientIdAndRead(userId, false);
     }
 

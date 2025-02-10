@@ -227,7 +227,7 @@ class ClientControllerUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).hasSize(1);
-            assertThat(response.getBody().getContent().get(0)).isEqualTo(projectDto);
+            assertThat(response.getBody().getContent().getFirst()).isEqualTo(projectDto);
             verify(clientWorkflowService).getAllClientProjects(eq(mockClient), any(Pageable.class));
         }
     }
@@ -473,15 +473,16 @@ class ClientControllerUnitTest {
     @Test
     void updateProject_WithMissingRequiredFields_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             ProjectUpdateDto invalidUpdateDto = new ProjectUpdateDto();
-            when(clientWorkflowService.updateProject(eq(1L), eq(invalidUpdateDto), any(User.class)))
+            when(clientWorkflowService.updateProject(eq(id), eq(invalidUpdateDto), any(User.class)))
                     .thenThrow(new ApiException("Required fields missing in project update"));
 
-            assertThatThrownBy(() -> clientController.updateProject(1L, invalidUpdateDto))
+            assertThatThrownBy(() -> clientController.updateProject(id, invalidUpdateDto))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Required fields missing in project update");
-            verify(clientWorkflowService).updateProject(1L, invalidUpdateDto, mockClient);
+            verify(clientWorkflowService).updateProject(id, invalidUpdateDto, mockClient);
         }
     }
 
@@ -503,57 +504,61 @@ class ClientControllerUnitTest {
     @Test
     void getAllApplicationsToProject_WithNoApplications_ReturnsEmptyList() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            when(clientWorkflowService.getAllApplicationsToProject(eq(1L), any(User.class)))
+            when(clientWorkflowService.getAllApplicationsToProject(eq(id), any(User.class)))
                     .thenReturn(List.of());
 
-            ResponseEntity<List<ApplicationDto>> response = clientController.getAllApplicationsToProject(1L);
+            ResponseEntity<List<ApplicationDto>> response = clientController.getAllApplicationsToProject(id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEmpty();
-            verify(clientWorkflowService).getAllApplicationsToProject(1L, mockClient);
+            verify(clientWorkflowService).getAllApplicationsToProject(id, mockClient);
         }
     }
 
     @Test
     void rejectFreelancer_WhenAlreadyProcessed_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doThrow(new ApiException("Application already processed"))
-                    .when(applicationProcessWorkflow).rejectApplication(eq(1L), any(User.class));
+                    .when(applicationProcessWorkflow).rejectApplication(eq(id), any(User.class));
 
-            assertThatThrownBy(() -> clientController.rejectFreelancer(1L))
+            assertThatThrownBy(() -> clientController.rejectFreelancer(id))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Application already processed");
-            verify(applicationProcessWorkflow).rejectApplication(1L, mockClient);
+            verify(applicationProcessWorkflow).rejectApplication(id, mockClient);
         }
     }
 
     @Test
     void selectFreelancer_WhenAlreadySelected_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
             doThrow(new ApiException("Freelancer already selected for this project"))
-                    .when(applicationProcessWorkflow).selectFreelancer(eq(1L), any(User.class));
+                    .when(applicationProcessWorkflow).selectFreelancer(eq(id), any(User.class));
 
-            assertThatThrownBy(() -> clientController.selectFreelancer(1L))
+            assertThatThrownBy(() -> clientController.selectFreelancer(id))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Freelancer already selected for this project");
-            verify(applicationProcessWorkflow).selectFreelancer(1L, mockClient);
+            verify(applicationProcessWorkflow).selectFreelancer(id, mockClient);
         }
     }
 
     @Test
     void updateProject_WhenProjectInProgress_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            when(clientWorkflowService.updateProject(eq(1L), eq(projectUpdateDto), any(User.class)))
+            when(clientWorkflowService.updateProject(eq(id), eq(projectUpdateDto), any(User.class)))
                     .thenThrow(new ApiException("Cannot update project that is already in progress"));
 
-            assertThatThrownBy(() -> clientController.updateProject(1L, projectUpdateDto))
+            assertThatThrownBy(() -> clientController.updateProject(id, projectUpdateDto))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Cannot update project that is already in progress");
-            verify(clientWorkflowService).updateProject(1L, projectUpdateDto, mockClient);
+            verify(clientWorkflowService).updateProject(id, projectUpdateDto, mockClient);
         }
     }
 }
