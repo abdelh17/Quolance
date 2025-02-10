@@ -95,13 +95,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set executable permissions for decrypt_secret.sh
-        run: chmod +x quolance-scripts/decrypt_secret.sh
-
-      - name: Decrypt .env file
-        run: ./quolance-scripts/decrypt_secret.sh
-        env:
-          LARGE_SECRET_PASSPHRASE: ${{ secrets.ENV_PASSPHRASE }}
+      - name: Decrypt env file
+        run: |
+          gpg --batch --yes --passphrase 4@LPU@Qu%3ph --decrypt --output .env .env.gpg
 
       - name: Setup SSH key
         run: |
