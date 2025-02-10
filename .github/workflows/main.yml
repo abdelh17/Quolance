@@ -63,7 +63,7 @@ jobs:
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       CLOUDINARY_API_ENV_VAR: ${{ secrets.CLOUDINARY_API_ENV_VAR }}
       LOG_FILE: "./logs/quolance.log"
-      SPRING_PROFILES_ACTIVE: test
+      SPRING_PROFILES_ACTIVE: local
 
     steps:
       - uses: actions/checkout@v3
