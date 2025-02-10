@@ -1,24 +1,23 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 import PostReaction from "./PostReaction";
 
-import { useAuthGuard } from "@/api/auth-api";
+import {useAuthGuard} from "@/api/auth-api";
 import CommentCard from "./CommentCard";
-import { CommentType } from "@/constants/types/blog-types";
-import { useGetFreelancerProfile } from "@/api/freelancer-api";
+import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import UserSummary from "@/components/ui/blog/UserSummary";
 import {
-    useGetReactionsByPostId,
-    useReactToPost,
-    useGetCommentsByPostId,
-    useAddComment,
-    useRemoveReaction,
-    useDeleteBlogPost
+  useAddComment,
+  useDeleteBlogPost,
+  useGetCommentsByPostId,
+  useGetReactionsByPostId,
+  useReactToPost,
+  useRemoveReaction
 } from "@/api/blog-api";
-import { showToast } from "@/util/context/ToastProvider";
+import {showToast} from "@/util/context/ToastProvider";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -31,8 +30,8 @@ interface PostCardProps {
   authorName: string;
   dateCreated: string;
   imageUrls?: string[];
-   openUserSummaryPostId: number | null;
-  setOpenUserSummaryPostId: (open: number | null) => void;
+  openUserSummaryPostId: string | null;
+  setOpenUserSummaryPostId: (open: string | null) => void;
 }
 
 const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, imageUrls = [], openUserSummaryPostId, setOpenUserSummaryPostId }) => {
@@ -132,7 +131,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       const userReaction = reactionData?.find(
         (reaction) => reaction.reactionType.toLowerCase() === reactionType && reaction.userName === user.username
       );
-
+      ``
       if (userReaction) {
         removeReaction(userReaction.id);
       }
@@ -175,7 +174,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     }
   };
 
-  const handleDeletePost = (postId: number) => {
+  const handleDeletePost = (postId: string) => {
     if (confirm("Are you sure you want to delete this post?")) {
       deletePost(postId);
     }

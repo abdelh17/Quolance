@@ -1,13 +1,12 @@
-
-import { useQuery, useMutation } from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import { BlogPostType, BlogPostViewType } from '@/constants/types/blog-types';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import {BlogPostViewType} from '@/constants/types/blog-types';
+import {HttpErrorResponse} from '@/constants/models/http/HttpErrorResponse';
 
 
 /* ---------- Blog Posts ---------- */
 export interface BlogPostUpdateDto {
-  postId: number;
+  postId: string;
   title: string;
   content: string;
 }
@@ -17,7 +16,7 @@ export const useCreateBlogPost = (options?: {
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: (blogpost: { title: string; content: string; userId?: number; files?: File[] }) => {
+    mutationFn: (blogpost: { title: string; content: string; userId?: string; files?: File[] }) => {
       if (!blogpost.userId) {
         throw new Error("User ID is undefined. User must be logged in.");
       }
@@ -78,7 +77,7 @@ export const useDeleteBlogPost = (options?: {
   onSuccess?: () => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useMutation<void, HttpErrorResponse, number>({
+  return useMutation<void, HttpErrorResponse, string>({
     mutationFn: async (postId) => {
       await httpClient.delete(`/api/blog-posts/${postId}`);
     },
@@ -88,9 +87,9 @@ export const useDeleteBlogPost = (options?: {
 
 /* ---------- Blog Comments ---------- */
 export interface CommentResponseDto {
-  commentId: number;
-  blogPostId: number;
-  userId: number;
+  commentId: string;
+  blogPostId: string;
+  userId: string;
   content: string;
 }
 
@@ -98,7 +97,7 @@ export interface CommentRequestDto {
   content: string;
 }
 
-export const useGetCommentsByPostId = (postId: number, options?: {
+export const useGetCommentsByPostId = (postId: string, options?: {
   onSuccess?: (data: CommentResponseDto[]) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
@@ -113,7 +112,7 @@ export const useGetCommentsByPostId = (postId: number, options?: {
   });
 };
 
-export const useAddComment = (postId: number, options?: {
+export const useAddComment = (postId: string, options?: {
   onSuccess?: (data: CommentResponseDto) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
@@ -130,7 +129,7 @@ export const useDeleteComment = (options?: {
   onSuccess?: () => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useMutation<void, HttpErrorResponse, number>({
+  return useMutation<void, HttpErrorResponse, string>({
     mutationFn: async (commentId) => {
       await httpClient.delete(`/api/blog-comments/${commentId}`);
     },
@@ -141,19 +140,19 @@ export const useDeleteComment = (options?: {
 
 /* ---------- Blog Reactions ---------- */
 export interface ReactionResponseDto {
-  id: number;
+  id: string;
   reactionType: string;
-  userId: number;
+  userId: string;
   userName: string;
-  blogPostId: number;
+  blogPostId: string;
 }
 
 export interface ReactionRequestDto {
   reactionType: string;
-  blogPostId: number;
+  blogPostId: string;
 }
 
-export const useGetReactionsByPostId = (postId: number, options?: {
+export const useGetReactionsByPostId = (postId: string, options?: {
   onSuccess?: (data: ReactionResponseDto[]) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
@@ -185,7 +184,7 @@ export const useRemoveReaction = (options?: {
   onSuccess?: () => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useMutation<void, HttpErrorResponse, number>({
+  return useMutation<void, HttpErrorResponse, string>({
     mutationFn: async (reactionId) => {
       await httpClient.delete(`/api/blog-posts/reactions/${reactionId}`);
     },

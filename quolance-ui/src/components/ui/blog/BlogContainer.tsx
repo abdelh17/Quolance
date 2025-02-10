@@ -14,7 +14,7 @@ import {useQueryClient} from "@tanstack/react-query";
 const BlogContainer: React.FC = () => {
     //const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [openUserSummaryPostId, setOpenUserSummaryPostId] = useState<number | null>(null);
+    const [openUserSummaryPostId, setOpenUserSummaryPostId] = useState<string | null>(null);
 
     const {user, isLoading: userIsLoading} = useAuthGuard({middleware: 'auth'});
     const queryClient = useQueryClient();

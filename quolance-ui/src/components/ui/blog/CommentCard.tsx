@@ -1,15 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
-import { useGetFreelancerProfile } from "@/api/freelancer-api";
-import { showToast } from "@/util/context/ToastProvider";
-import { useDeleteComment } from "@/api/blog-api";
-import { useAuthGuard } from "@/api/auth-api";
+import {useGetFreelancerProfile} from "@/api/freelancer-api";
+import {showToast} from "@/util/context/ToastProvider";
+import {useDeleteComment} from "@/api/blog-api";
+import {useAuthGuard} from "@/api/auth-api";
 
 
 interface CommentCardProps {
-  commentId: number;
+  commentId: string;
   authorName: string;
   content: string;
   dateCreated: string;
@@ -38,7 +38,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
-  const handleDeleteComment = (commentId : number) => {
+  const handleDeleteComment = (commentId: string) => {
     if(confirm("Are you sure you want to delete this comment?")) {
       deleteComment(commentId);
     }
