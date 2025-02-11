@@ -1,23 +1,5 @@
 package com.quolance.quolance_api.integration.tests;
 
-import static org.assertj.core.api.Assertions.assertThatList;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
@@ -30,7 +12,23 @@ import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogCommentRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatList;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ActiveProfiles("test")
 class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
@@ -70,9 +68,9 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         commentDto.setUserId(loggedInUser.getId());
 
         mockMvc.perform(post("/api/blog-comments/" + blogPost.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(commentDto))
-                .session(session))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentDto))
+                        .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -95,9 +93,9 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         blogCommentDto.setUserId(loggedInUser.getId());
 
         mockMvc.perform(post("/api/blog-comments/" + blogPost.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(blogCommentDto)))
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(blogCommentDto)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -107,8 +105,8 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
                 .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
         mockMvc.perform(delete("/api/blog-comments/" + blogComment.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         assertThat(blogCommentRepository.findById(blogComment.getId())).isEmpty();
@@ -125,9 +123,9 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         blogCommentDto.setUserId(loggedInUser.getId());
 
         mockMvc.perform(put("/api/blog-comments/" + blogComment.getId())
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(blogCommentDto)))
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(blogCommentDto)))
                 .andExpect(status().isOk());
 
         BlogComment updatedComment = blogCommentRepository.findAll().getFirst();
@@ -142,8 +140,8 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         }
 
         var response = mockMvc.perform(get("/api/blog-comments/" + blogPost.getId() + "?page=0&size=3")
-                .session(session)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

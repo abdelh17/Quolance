@@ -24,17 +24,18 @@ jobs:
           cd quolance-ui
           npm install
 
-      # Step 2: Run Cypress Tests
-      #  - name: Run Cypress Tests
-      #   run: |
-      #    cd quolance-ui
-      #     npm run e2e:headless
+    # Step 2: Run Cypress Tests
+    #  - name: Run Cypress Tests
+    #   run: |
+    #    cd quolance-ui
+    #     npm run e2e:headless
+
 
       # Step 3: Build Frontend
-      #- name: Build Frontend
-      #  run: |
-      #  cd quolance-ui
-      #   npm run build
+      #      - name: Build Frontend
+      #        run: |
+      #          cd quolance-ui
+      #          npm run build
 
       # Step 4: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
@@ -55,13 +56,7 @@ jobs:
     name: Build and Test Backend
     runs-on: ubuntu-latest
     env:
-      MAILPIT_SMTP_PORT: "1025"
-      DB_DDL_AUTO: "create"
-      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-      CLOUDINARY_API_ENV_VAR: ${{ secrets.CLOUDINARY_API_ENV_VAR }}
-      LOG_FILE: "./logs/quolance.log"
+      SPRING_PROFILES_ACTIVE: test
 
     steps:
       - uses: actions/checkout@v3
@@ -80,6 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
           cd quolance-api
           ./mvnw clean verify sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \

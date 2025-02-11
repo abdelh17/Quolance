@@ -35,6 +35,7 @@ import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +45,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+@ActiveProfiles("test")
 class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
