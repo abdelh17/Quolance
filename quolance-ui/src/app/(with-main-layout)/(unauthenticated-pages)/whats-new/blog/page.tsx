@@ -1,7 +1,5 @@
 import React from 'react';
 import BlogContainer from '@/components/ui/blog/BlogContainer';
-
-
 function BlogPage() {
   return (
     <>
@@ -13,13 +11,10 @@ function BlogPage() {
                 Stay up to date with the latest news. Here you can find articles, events, news.
               </p>
           </div>
-
           <BlogContainer/>
-
         </div>
       </div>
     </>
   );
 }
-
 export default BlogPage;

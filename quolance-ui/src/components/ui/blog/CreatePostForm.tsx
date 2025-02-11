@@ -5,7 +5,7 @@ import { useAuthGuard } from '@/api/auth-api';
 
 interface CreatePostFormProps {
   // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
-  onSubmit: (postData: { title: string; content: string; userId: number | undefined; files?: File[]  }) => void;
+  onSubmit: (postData: { title: string; content: string; userId: string | undefined; files?: File[]  }) => void;
   onClose: () => void;
 }
 

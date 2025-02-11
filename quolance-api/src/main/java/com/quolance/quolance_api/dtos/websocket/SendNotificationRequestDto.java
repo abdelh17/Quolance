@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -20,5 +21,5 @@ public class SendNotificationRequestDto {
 
     @JsonProperty("recipient_ids")
     @NotEmpty(message = "At least one recipient ID is required")
-    private List<Long> recipientIds;
+    private List<UUID> recipientIds;
 }

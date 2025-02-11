@@ -24,6 +24,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -55,7 +56,7 @@ class AuthControllerUnitTest {
         loginRequest.setPassword("password123");
 
         mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setFirstName("Test");
         mockUser.setLastName("User");
@@ -152,7 +153,6 @@ class AuthControllerUnitTest {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isEqualTo(userResponse);
-        assertThat(responseEntity.getBody().getId()).isEqualTo(1L);
         assertThat(responseEntity.getBody().getEmail()).isEqualTo("test@example.com");
         assertThat(responseEntity.getBody().getFirstName()).isEqualTo("Test");
         assertThat(responseEntity.getBody().getLastName()).isEqualTo("User");

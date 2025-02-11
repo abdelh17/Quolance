@@ -10,11 +10,11 @@ function ProjectAdminCard({
  clientId,
  ...rest
 }: {
- id: number;
+ id: string;
  title: string;
  projectStatus: string;
  expirationDate: string;
- clientId: number;
+ clientId: string;
 }) {
  return (
    <div className=" flex flex-col sm:flex-row w-full items-start sm:items-center justify-between gap-y-4 sm:gap-x-6 py-5 border-b border-gray-300">

@@ -1,7 +1,7 @@
 //This is the raw object that will be returned from the API (used for GET)
 export type ProjectType = {
   tags: string[]; // List of tag names as strings
-  id: number; // Unique identifier for the project
+  id: string; // Unique identifier for the project
   createdAt: string; // ISO date format (e.g., "2024-11-09")
   category:
     | 'WEB_DEVELOPMENT'
@@ -38,7 +38,7 @@ export type ProjectType = {
   expirationDate: string; // ISO date format (e.g., "2024-11-09")
   location: string;
   projectStatus: ProjectStatus | string;
-  clientId: number; // Unique identifier for the client
+  clientId: string; // Unique identifier for the client
 };
 
 //This is the type that is sent to the API (used for POST)

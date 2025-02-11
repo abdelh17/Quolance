@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Getter
@@ -18,17 +19,19 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogPostResponseDto {
-    private Long id;
+    private UUID id;
     private String title;
     private String content;
     private String authorName;
     private LocalDateTime dateCreated;
     private List<BlogCommentDto> comments;
     private Set<String> tags;
+    private UUID userId;
     private List<String> imageUrls;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
         BlogPostResponseDto response = new BlogPostResponseDto();
+        response.setUserId(blogPost.getUser().getId());
         response.setId(blogPost.getId());
         response.setTitle(blogPost.getTitle());
         response.setContent(blogPost.getContent());
@@ -42,7 +45,7 @@ public class BlogPostResponseDto {
         // Map BlogImage entities to URLs
         List<String> imageUrls = blogPost.getImages().stream()
                 .map(BlogImage::getImagePath)
-                .collect(Collectors.toList());
+                .toList();
         response.setImageUrls(imageUrls);
         return response;
     }

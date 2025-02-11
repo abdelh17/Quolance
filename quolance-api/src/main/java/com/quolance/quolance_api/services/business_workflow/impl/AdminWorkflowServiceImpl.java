@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +24,12 @@ public class AdminWorkflowServiceImpl implements AdminWorkflowService {
     }
 
     @Override
-    public void approveProject(Long projectId) {
+    public void approveProject(UUID projectId) {
         projectService.updateProjectStatus(projectService.getProjectById(projectId), ProjectStatus.OPEN);
     }
 
     @Override
-    public void rejectProject(Long projectId) {
+    public void rejectProject(UUID projectId) {
         projectService.updateProjectStatus(projectService.getProjectById(projectId), ProjectStatus.REJECTED);
     }
 }

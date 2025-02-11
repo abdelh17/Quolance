@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 
 @Entity
 @AllArgsConstructor
@@ -37,7 +39,7 @@ public class Application extends AbstractEntity {
      * @param freelancerId the ID of the client to check ownership for
      * @return true if the application is owned by the freelancer, false otherwise
      */
-    public boolean isOwnedBy(Long freelancerId) {
+    public boolean isOwnedBy(UUID freelancerId) {
         return freelancer != null && freelancer.getId().equals(freelancerId);
     }
 }

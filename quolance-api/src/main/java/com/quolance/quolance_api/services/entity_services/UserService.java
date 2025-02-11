@@ -8,12 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserService {
 
     UserResponseDto create(@Valid CreateUserRequestDto request);
 
-    Optional<User> findById(Long id);
+    Optional<User> findById(UUID id);
 
     Optional<User> findByUsername(String username);
 

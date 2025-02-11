@@ -1,6 +1,6 @@
 export interface CandidateResponse {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   firstName: string;
   lastName: string;
   username: string;

@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
@@ -40,7 +42,7 @@ public class AdminController {
             summary = "Approve a pending project"
     )
     @PostMapping("projects/pending/{projectId}/approve")
-    public ResponseEntity<String> approveProject(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<String> approveProject(@PathVariable(name = "projectId") UUID projectId) {
         User admin = SecurityUtil.getAuthenticatedUser();
         log.info("Admin with ID {} attempting to approve pending project {}", admin.getId(), projectId);
         adminWorkflowService.approveProject(projectId);
@@ -52,7 +54,7 @@ public class AdminController {
             summary = "Reject a pending project"
     )
     @PostMapping("projects/pending/{projectId}/reject")
-    public ResponseEntity<String> rejectProject(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<String> rejectProject(@PathVariable(name = "projectId") UUID projectId) {
         User admin = SecurityUtil.getAuthenticatedUser();
         log.info("Admin with ID {} attempting to reject pending project {}", admin.getId(), projectId);
         adminWorkflowService.rejectProject(projectId);

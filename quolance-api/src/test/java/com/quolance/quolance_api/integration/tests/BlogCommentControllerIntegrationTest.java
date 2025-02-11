@@ -1,5 +1,7 @@
 package com.quolance.quolance_api.integration.tests;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.quolance.quolance_api.dtos.blog.BlogCommentDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogComment;
@@ -13,9 +15,15 @@ import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,6 +61,7 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testCreateBlogCommentIsOk() throws Exception {
+
         BlogCommentDto commentDto = new BlogCommentDto();
         commentDto.setContent("This is a valid comment");
         commentDto.setBlogPostId(blogPost.getId());
@@ -62,7 +71,18 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(commentDto))
                         .session(session))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        long updatedCount = blogCommentRepository.count();
+        assertThat(updatedCount).isEqualTo(1);
+
+        BlogComment savedComment = blogCommentRepository.findAll().getFirst();
+        assertThat(savedComment.getContent()).isEqualTo("This is a valid comment");
+        assertThat(savedComment.getBlogPost().getId()).isEqualTo(blogPost.getId());
+        assertThat(savedComment.getUser().getId()).isEqualTo(loggedInUser.getId());
     }
 
     @Test
@@ -77,16 +97,6 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(blogCommentDto)))
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testGetAllCommentsForBlogPost() throws Exception {
-        blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
-
-        mockMvc.perform(get("/api/blog-comments/post/" + blogPost.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
     }
 
     @Test
@@ -121,4 +131,42 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         BlogComment updatedComment = blogCommentRepository.findAll().getFirst();
         assertThat(updatedComment.getContent()).isEqualTo("Updated Comment Content");
     }
+
+    @Test
+    void testGetPaginatedBlogComments() throws Exception {
+
+        for (int i = 0; i < 6; i++) {
+            blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+        }
+
+        var response = mockMvc.perform(get("/api/blog-comments/" + blogPost.getId() + "?page=0&size=3")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode jsonNode = objectMapper.readTree(response);
+
+        JsonNode contentNode = jsonNode.get("content");
+        assertThat(contentNode).isNotNull();
+
+        List<BlogCommentDto> content = objectMapper.readValue(
+                contentNode.toString(), new TypeReference<List<BlogCommentDto>>() {
+                });
+
+        long totalElements = jsonNode.get("totalElements").asLong();
+        boolean isLastPage = jsonNode.get("last").asBoolean();
+        Pageable pageable = PageRequest.of(0, 3);
+
+        PageImpl<BlogCommentDto> pageResponse = new PageImpl<>(content, pageable, totalElements);
+
+        assertThat(pageResponse).isNotNull();
+        assertThatList(pageResponse.getContent()).isNotNull().hasSize(3);
+        assertThat(pageResponse.getTotalElements()).isEqualTo(6);
+        assertThat(pageResponse.getTotalPages()).isEqualTo(2);
+        assertThat(isLastPage).isFalse();
+    }
+
 }

@@ -18,10 +18,9 @@ import {
 } from '@/util/CandidateSelectionUtils';
 import RefuseSubmissionsModal from '@/components/ui/freelancers/RefuseSubmissionsModal';
 import { useQueryClient } from '@tanstack/react-query';
-import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 
 type ProjectSubmissionsProps = {
-  projectId: number;
+  projectId: string;
 };
 
 export interface ApplicationFilters {
@@ -70,15 +69,15 @@ export default function ProjectSubmissions({
   const { mutateAsync: approveSubmission } = useApproveSubmission(projectId);
   const { mutateAsync: rejectSubmissions } = useRejectSubmissions(projectId);
 
-  const [selectedSubmissions, setSelectedSubmissions] = useState<number[]>([]);
+  const [selectedSubmissions, setSelectedSubmissions] = useState<string[]>([]);
   // Filtered submissions that will be displayed
   const filteredSubmissions = useMemo(() => {
     if (!submissions) return [];
     // Sort submissions by status in the following order: ACCEPTED, APPLIED, PENDING_CONFIRMATION, REJECTED, CANCELLED
     submissions.sort(
       (
-        a: { status: string; id: number },
-        b: { status: string; id: number }
+        a: { status: string; id: string },
+        b: { status: string; id: string }
       ) => {
         const statusOrder = [
           'ACCEPTED',
@@ -88,8 +87,8 @@ export default function ProjectSubmissions({
           'CANCELLED',
         ];
         return (
-          statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status) ||
-          a.id - b.id
+          statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)// ||
+          // a.id - b.id
         );
       }
     );
@@ -102,7 +101,7 @@ export default function ProjectSubmissions({
     return applySubmissionFilters(submissions, tempFilters).length;
   }, [submissions, tempFilters]);
 
-  const handleApproveSubmission = (applicationId: number) => {
+  const handleApproveSubmission = (applicationId: string) => {
     approveSubmission(applicationId).then(() => {
       // Ensure that the project submissions are refetched after approving a submission
       queryClient.invalidateQueries({
@@ -201,14 +200,12 @@ export default function ProjectSubmissions({
                           setSelectedSubmissions
                         )
                       }
-                      freelancerName={`${submission.freelancerProfile.firstName} ${submission.freelancerProfile.lastName}`}
+                      freelancerProfile={submission.freelancerProfile}
                       canSelect={
                         !filteredSubmissions.some(
                           (submission) => submission.status === 'ACCEPTED'
                         ) && submission.status === 'APPLIED'
                       }
-                      img={FreelancerDefaultProfilePic}
-                      location={submission.freelancerProfile.state || ''}
                     />
                   </div>
                 )

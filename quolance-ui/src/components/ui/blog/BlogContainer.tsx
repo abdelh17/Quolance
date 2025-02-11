@@ -1,26 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import PostCard from "./PostCard";
-import Tabs from "./Tabs";
-import { useGetAllBlogPosts } from "@/api/blog-api";
-import { BlogPostViewType } from "@/constants/types/blog-types";
+import {useCreateBlogPost, useGetAllBlogPosts} from "@/api/blog-api";
 import CreatePostModal from "./CreatePostModal";
 import CreatePostForm from "./CreatePostForm";
 import SearchBar from "./SearchBar";
-import { useAuthGuard } from "@/api/auth-api";
-import { showToast } from "@/util/context/ToastProvider";
-import { useCreateBlogPost } from "@/api/blog-api";
-import { useQueryClient } from "@tanstack/react-query";
+import {useAuthGuard} from "@/api/auth-api";
+import {showToast} from "@/util/context/ToastProvider";
+import {useQueryClient} from "@tanstack/react-query";
 
 
 const BlogContainer: React.FC = () => {
-    const queryClient = useQueryClient();
-    const { user, isLoading: userIsLoading } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
-
     //const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [openUserSummaryPostId, setOpenUserSummaryPostId] = useState<string | null>(null);
 
+    const {user, isLoading: userIsLoading} = useAuthGuard({middleware: 'auth'});
+    const queryClient = useQueryClient();
     const { data: blogPosts, isLoading: postIsLoading, error } = useGetAllBlogPosts(
         {
             onSuccess: (data) => {
@@ -54,7 +51,12 @@ const BlogContainer: React.FC = () => {
     })
 
 
-    const handleFormSubmit = async (postData: { title: string; content: string; userId: number | undefined; files?: File[] }) => {
+    const handleFormSubmit = async (postData: {
+        title: string;
+        content: string;
+        userId: string | undefined;
+        files?: File[]
+    }) => {
         if (!postData.userId) {
             console.error("User ID is undefined. User must be logged in.");
             showToast("Error: User not logged in.", "error");
@@ -145,7 +147,12 @@ const BlogContainer: React.FC = () => {
                     {/* Posts Grid */}
                     <div className="grid sm:grid-cols-1 lg:grid-cols-1 gap-6">
                         {filteredPosts?.slice().reverse().map((post, index) => (
-                            <PostCard key={index} {...post} />
+                            <PostCard
+                                key={index}
+                                {...post}
+                                openUserSummaryPostId={openUserSummaryPostId}
+                                setOpenUserSummaryPostId={setOpenUserSummaryPostId}
+                            />
                         ))}
                     </div>
 

@@ -1,13 +1,10 @@
 package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.NotificationRestController;
-import com.quolance.quolance_api.dtos.users.UserDto;
 import com.quolance.quolance_api.dtos.websocket.NotificationResponseDto;
-import com.quolance.quolance_api.dtos.websocket.SendNotificationRequestDto;
 import com.quolance.quolance_api.entities.Notification;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
-import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,11 +20,10 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,17 +32,12 @@ class NotificationRestControllerUnitTest {
     @Mock
     private NotificationMessageService notificationMessageService;
 
-    @Mock
-    private UserService userService;
-
     @InjectMocks
     private NotificationRestController notificationRestController;
 
     private User mockSender;
     private User mockRecipient;
     private Notification mockNotification;
-    private SendNotificationRequestDto sendNotificationRequest;
-    private NotificationResponseDto mockNotificationResponse;
     private LocalDateTime now;
 
     @BeforeEach
@@ -54,36 +45,22 @@ class NotificationRestControllerUnitTest {
         now = LocalDateTime.now();
 
         mockSender = new User();
-        mockSender.setId(1L);
+        mockSender.setId(UUID.randomUUID());
         mockSender.setEmail("sender@test.com");
         mockSender.setRole(Role.CLIENT);
 
         mockRecipient = new User();
-        mockRecipient.setId(2L);
+        mockRecipient.setId(UUID.randomUUID());
         mockRecipient.setEmail("recipient@test.com");
         mockRecipient.setRole(Role.FREELANCER);
 
         mockNotification = new Notification();
-        mockNotification.setId(1L);
+        mockNotification.setId(UUID.randomUUID());
         mockNotification.setSender(mockSender);
         mockNotification.setRecipient(mockRecipient);
         mockNotification.setMessage("Test notification");
         mockNotification.setTimestamp(now);
         mockNotification.setRead(false);
-
-        mockNotificationResponse = NotificationResponseDto.builder()
-                .id(1L)
-                .message("Test notification")
-                .read(false)
-                .timestamp(now)
-                .sender(UserDto.fromEntity(mockSender))
-                .recipient(UserDto.fromEntity(mockRecipient))
-                .build();
-
-        sendNotificationRequest = SendNotificationRequestDto.builder()
-                .message("Test notification")
-                .recipientIds(List.of(2L))
-                .build();
     }
 
     @Test
@@ -132,20 +109,22 @@ class NotificationRestControllerUnitTest {
 
     @Test
     void markNotificationAsRead_Success() {
-        doNothing().when(notificationMessageService).markNotificationAsRead(1L);
+        UUID id = UUID.randomUUID();
+        doNothing().when(notificationMessageService).markNotificationAsRead(id);
 
-        ResponseEntity<Void> response = notificationRestController.markNotificationAsRead(1L);
+        ResponseEntity<Void> response = notificationRestController.markNotificationAsRead(id);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(notificationMessageService).markNotificationAsRead(1L);
+        verify(notificationMessageService).markNotificationAsRead(id);
     }
 
     @Test
     void markNotificationAsRead_NotificationNotFound_ThrowsException() {
+        UUID id = UUID.randomUUID();
         doThrow(new RuntimeException("Notification not found"))
-                .when(notificationMessageService).markNotificationAsRead(999L);
+                .when(notificationMessageService).markNotificationAsRead(id);
 
-        assertThatThrownBy(() -> notificationRestController.markNotificationAsRead(999L))
+        assertThatThrownBy(() -> notificationRestController.markNotificationAsRead(id))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Notification not found");
     }

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -31,7 +32,7 @@ public class NotificationRestController {
             @ApiResponse(responseCode = "200", description = "Notification marked as read"),
             @ApiResponse(responseCode = "404", description = "Notification not found")
     })
-    public ResponseEntity<Void> markNotificationAsRead(@PathVariable Long id) {
+    public ResponseEntity<Void> markNotificationAsRead(@PathVariable UUID id) {
         notificationMessageService.markNotificationAsRead(id);
         return ResponseEntity.ok().build();
     }

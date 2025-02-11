@@ -15,7 +15,7 @@ import { ProjectStatus } from '@/constants/types/project-types';
 import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStatusBadge';
 
 type ApplicationFormProps = {
-  projectId: number;
+  projectId: string;
   projectStatus: string;
 };
 

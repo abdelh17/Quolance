@@ -10,7 +10,13 @@ public class ProfileCompletionCalculator {
         int totalWeight = 0;
         int completedWeight = 0;
 
+
         for (ProfileField field : ProfileField.values()) {
+
+            if (field == ProfileField.USERNAME) {
+                continue;
+            }
+
             totalWeight += field.getWeight();
             if (isFieldCompleted(profile, field)) {
                 completedWeight += field.getWeight();

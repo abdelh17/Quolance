@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.unit.controllers.blog;
+package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.blog.BlogCommentController;
 import com.quolance.quolance_api.controllers.blog.BlogPostController;
@@ -22,7 +22,6 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -64,7 +63,7 @@ class BlogControllersUnitTest {
     @BeforeEach
     void setUp() {
         mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("user@test.com");
         mockUser.setUsername("testUser");
         mockUser.setRole(Role.FREELANCER);
@@ -77,7 +76,7 @@ class BlogControllersUnitTest {
         blogPostRequest.setTags(tags);
 
         blogPostResponse = new BlogPostResponseDto();
-        blogPostResponse.setId(1L);
+        blogPostResponse.setId(UUID.randomUUID());
         blogPostResponse.setTitle("Test Post");
         blogPostResponse.setContent("Test Content");
         blogPostResponse.setAuthorName("testUser");
@@ -85,21 +84,21 @@ class BlogControllersUnitTest {
         blogPostResponse.setTags(Set.of("FREELANCING", "REMOTE_WORK"));
 
         blogCommentDto = BlogCommentDto.builder()
-                .commentId(1L)
-                .blogPostId(1L)
+                .commentId(UUID.randomUUID())
+                .blogPostId(UUID.randomUUID())
                 .userId(mockUser.getId())
                 .content("Test Comment")
                 .build();
 
         reactionRequest = new ReactionRequestDto();
-        reactionRequest.setBlogPostId(1L);
+        reactionRequest.setBlogPostId(UUID.randomUUID());
         reactionRequest.setReactionType(ReactionType.LIKE);
 
         reactionResponse = ReactionResponseDto.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .userName(mockUser.getUsername())
                 .reactionType(ReactionType.LIKE)
-                .blogPostId(1L)
+                .blogPostId(UUID.randomUUID())
                 .build();
     }
 
@@ -114,24 +113,9 @@ class BlogControllersUnitTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
-            assertThat(response.getBody().getId()).isEqualTo(1L);
+            assertThat(response.getBody().getId()).isEqualTo(blogPostResponse.getId());
             assertThat(response.getBody().getTitle()).isEqualTo("Test Post");
             verify(blogPostService).create(blogPostRequest, mockUser);
-        }
-    }
-
-    @Test
-    void getAllBlogPosts_Success() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            List<BlogPostResponseDto> expectedPosts = Arrays.asList(blogPostResponse);
-            when(blogPostService.getAll()).thenReturn(expectedPosts);
-
-            ResponseEntity<List<BlogPostResponseDto>> response = blogPostController.getAllBlogPosts();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isNotNull().hasSize(1);
-            verify(blogPostService).getAll();
         }
     }
 
@@ -139,36 +123,38 @@ class BlogControllersUnitTest {
     void getBlogPostById_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(blogPostService.getBlogPost(1L)).thenReturn(blogPostResponse);
+            when(blogPostService.getBlogPost(blogPostResponse.getId())).thenReturn(blogPostResponse);
 
-            ResponseEntity<BlogPostResponseDto> response = blogPostController.getBlogPostById(1L);
+            ResponseEntity<BlogPostResponseDto> response = blogPostController.getBlogPostById(blogPostResponse.getId());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
-            assertThat(response.getBody().getId()).isEqualTo(1L);
-            verify(blogPostService).getBlogPost(1L);
+            assertThat(response.getBody().getId()).isEqualTo(blogPostResponse.getId());
+            verify(blogPostService).getBlogPost(blogPostResponse.getId());
         }
     }
 
     @Test
     void getBlogPostById_WhenNotFound_ThrowsApiException() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(blogPostService.getBlogPost(999L))
+            when(blogPostService.getBlogPost(id))
                     .thenThrow(new ApiException("Blog post not found"));
 
-            assertThatThrownBy(() -> blogPostController.getBlogPostById(999L))
+            assertThatThrownBy(() -> blogPostController.getBlogPostById(id))
                     .isInstanceOf(ApiException.class)
                     .hasMessage("Blog post not found");
-            verify(blogPostService).getBlogPost(999L);
+            verify(blogPostService).getBlogPost(id);
         }
     }
 
     @Test
     void updateBlogPost_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            BlogPostUpdateDto updateDto = new BlogPostUpdateDto(1L, "Updated Title", "Updated Content");
+            BlogPostUpdateDto updateDto = new BlogPostUpdateDto(id, "Updated Title", "Updated Content");
             when(blogPostService.update(eq(updateDto), any(User.class))).thenReturn(blogPostResponse);
 
             ResponseEntity<BlogPostResponseDto> response = blogPostController.updateBlogPost(updateDto);
@@ -182,74 +168,63 @@ class BlogControllersUnitTest {
     @Test
     void deleteBlogPost_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            doNothing().when(blogPostService).deletePost(1L, mockUser);
+            doNothing().when(blogPostService).deletePost(id, mockUser);
 
-            ResponseEntity<String> response = blogPostController.deleteBlogPost(1L);
+            ResponseEntity<String> response = blogPostController.deleteBlogPost(id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("The post was successfully deleted");
-            verify(blogPostService).deletePost(1L, mockUser);
+            verify(blogPostService).deletePost(id, mockUser);
         }
     }
 
     @Test
     void createBlogComment_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            when(blogCommentService.createBlogComment(eq(1L), any(User.class), any(BlogCommentDto.class)))
+            when(blogCommentService.createBlogComment(eq(id), any(User.class), any(BlogCommentDto.class)))
                     .thenReturn(blogCommentDto);
 
-            ResponseEntity<BlogCommentDto> response = blogCommentController.createBlogComment(1L, blogCommentDto);
+            ResponseEntity<BlogCommentDto> response = blogCommentController.createBlogComment(id, blogCommentDto);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
-            verify(blogCommentService).createBlogComment(1L, mockUser, blogCommentDto);
-        }
-    }
-
-    @Test
-    void getCommentsByBlogPostId_Success() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            List<BlogCommentDto> expectedComments = Arrays.asList(blogCommentDto);
-            when(blogCommentService.getCommentsByBlogPostId(1L)).thenReturn(expectedComments);
-
-            ResponseEntity<List<BlogCommentDto>> response = blogCommentController.getCommentsByBlogPostId(1L);
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isNotNull().hasSize(1);
-            verify(blogCommentService).getCommentsByBlogPostId(1L);
+            verify(blogCommentService).createBlogComment(id, mockUser, blogCommentDto);
         }
     }
 
     @Test
     void updateBlogComment_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
             when(blogCommentService
-                    .updateBlogComment(eq(1L), any(BlogCommentDto.class), eq(mockUser)))
+                    .updateBlogComment(eq(id), any(BlogCommentDto.class), eq(mockUser)))
                     .thenReturn(blogCommentDto);
 
-            ResponseEntity<BlogCommentDto> response = blogCommentController.updateBlogComment(1L, blogCommentDto);
+            ResponseEntity<BlogCommentDto> response = blogCommentController.updateBlogComment(id, blogCommentDto);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
-            verify(blogCommentService).updateBlogComment(1L, blogCommentDto, mockUser);
+            verify(blogCommentService).updateBlogComment(id, blogCommentDto, mockUser);
         }
     }
 
     @Test
     void deleteBlogComment_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            doNothing().when(blogCommentService).deleteBlogComment(1L, mockUser);
+            doNothing().when(blogCommentService).deleteBlogComment(id, mockUser);
 
-            ResponseEntity<String> response = blogCommentController.deleteBlogComment(1L);
+            ResponseEntity<String> response = blogCommentController.deleteBlogComment(id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("The comment was successfully deleted");
-            verify(blogCommentService).deleteBlogComment(1L, mockUser);
+            verify(blogCommentService).deleteBlogComment(id, mockUser);
         }
     }
 
@@ -286,15 +261,16 @@ class BlogControllersUnitTest {
     @Test
     void getReactionsByPost_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
             List<ReactionResponseDto> expectedReactions = Arrays.asList(reactionResponse);
-            when(reactionService.getReactionsByBlogPostId(1L)).thenReturn(expectedReactions);
+            when(reactionService.getReactionsByBlogPostId(id)).thenReturn(expectedReactions);
 
-            ResponseEntity<List<ReactionResponseDto>> response = reactionController.getReactionsByPost(1L);
+            ResponseEntity<List<ReactionResponseDto>> response = reactionController.getReactionsByPost(id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull().hasSize(1);
-            verify(reactionService).getReactionsByBlogPostId(1L);
+            verify(reactionService).getReactionsByBlogPostId(id);
         }
     }
 
@@ -303,27 +279,28 @@ class BlogControllersUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
             List<ReactionResponseDto> expectedReactions = Arrays.asList(reactionResponse);
-            when(reactionService.getReactionsByBlogCommentId(1L)).thenReturn(expectedReactions);
+            when(reactionService.getReactionsByBlogCommentId(blogCommentDto.getCommentId())).thenReturn(expectedReactions);
 
-            ResponseEntity<List<ReactionResponseDto>> response = reactionController.getReactionsByComment(1L);
+            ResponseEntity<List<ReactionResponseDto>> response = reactionController.getReactionsByComment(blogCommentDto.getCommentId());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull().hasSize(1);
-            verify(reactionService).getReactionsByBlogCommentId(1L);
+            verify(reactionService).getReactionsByBlogCommentId(blogCommentDto.getCommentId());
         }
     }
 
     @Test
     void deleteReaction_Success() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+            UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            doNothing().when(reactionService).deleteReaction(1L, mockUser);
+            doNothing().when(reactionService).deleteReaction(id, mockUser);
 
-            ResponseEntity<String> response = reactionController.deleteReaction(1L);
+            ResponseEntity<String> response = reactionController.deleteReaction(id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo("Reaction deleted successfully.");
-            verify(reactionService).deleteReaction(1L, mockUser);
+            verify(reactionService).deleteReaction(id, mockUser);
         }
     }
 }

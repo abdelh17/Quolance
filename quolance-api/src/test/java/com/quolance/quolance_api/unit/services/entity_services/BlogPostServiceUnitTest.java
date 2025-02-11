@@ -1,8 +1,8 @@
 package com.quolance.quolance_api.unit.services.entity_services;
 
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
-import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
+import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogImage;
 import com.quolance.quolance_api.entities.blog.BlogPost;
@@ -10,7 +10,6 @@ import com.quolance.quolance_api.entities.enums.BlogTags;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.impl.blog.BlogPostServiceImpl;
-import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.exceptions.InvalidBlogTagException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,11 +46,11 @@ class BlogPostServiceUnitTest {
 
         // Create a mock user and blog post
         author = new User();
-        author.setId(1L);
+        author.setId(UUID.randomUUID());
         author.setUsername("testuser");
 
         blogPost = new BlogPost();
-        blogPost.setId(1L);
+        blogPost.setId(UUID.randomUUID());
         blogPost.setUser(author);
         blogPost.setTags(Set.of(BlogTags.QUESTION));
     }
@@ -77,7 +76,7 @@ class BlogPostServiceUnitTest {
 
         // Mock the blog post save
         BlogPost mockSavedBlogPost = new BlogPost();
-        mockSavedBlogPost.setId(1L);
+        mockSavedBlogPost.setId(UUID.randomUUID());
         mockSavedBlogPost.setTitle("Test Blog Post");
         mockSavedBlogPost.setContent("This is a test blog post.");
         mockSavedBlogPost.setUser(author);
@@ -110,26 +109,28 @@ class BlogPostServiceUnitTest {
 
     @Test
     void testGetBlogPostsByUserId() {
+        UUID id = UUID.randomUUID();
         // Mock repository behavior
-        when(blogPostRepository.findByUserId(1L)).thenReturn(List.of(blogPost));
+        when(blogPostRepository.findByUserId(id)).thenReturn(List.of(blogPost));
 
         // Call the service method
-        List<BlogPostResponseDto> result = blogPostService.getBlogPostsByUserId(1L);
+        List<BlogPostResponseDto> result = blogPostService.getBlogPostsByUserId(id);
 
         // Verify interaction and result
-        verify(blogPostRepository, times(1)).findByUserId(1L);
+        verify(blogPostRepository, times(1)).findByUserId(id);
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getId()).isEqualTo(blogPost.getId());
     }
 
     @Test
     void testUpdateBlogPost() {
+        UUID id = UUID.randomUUID();
         // Mock repository to return an existing post
-        when(blogPostRepository.findById(1L)).thenReturn(Optional.of(blogPost));
+        when(blogPostRepository.findById(id)).thenReturn(Optional.of(blogPost));
 
         // Prepare the update request
         BlogPostUpdateDto updateDto = new BlogPostUpdateDto();
-        updateDto.setPostId(1L);
+        updateDto.setPostId(id);
         updateDto.setTitle("Updated Title");
         updateDto.setContent("Updated Content");
 
@@ -148,14 +149,14 @@ class BlogPostServiceUnitTest {
     @Test
     void testUpdateTagsForPost_ValidTags() {
         // Mock the repository call
-        when(blogPostRepository.findById(1L)).thenReturn(Optional.of(blogPost));
+        when(blogPostRepository.findById(blogPost.getId())).thenReturn(Optional.of(blogPost));
         when(blogPostRepository.save(any(BlogPost.class))).thenReturn(blogPost);
 
         // Call the method
-        Set<String> updatedTags = blogPostService.updateTagsForPost(1L, List.of("QUESTION", "SUPPORT"));
+        Set<String> updatedTags = blogPostService.updateTagsForPost(blogPost.getId(), List.of("QUESTION", "SUPPORT"));
 
         // Verify the repository calls
-        verify(blogPostRepository).findById(1L);
+        verify(blogPostRepository).findById(blogPost.getId());
         verify(blogPostRepository).save(any(BlogPost.class));
 
         // Capture the saved blog post
@@ -171,10 +172,10 @@ class BlogPostServiceUnitTest {
     @Test
     void testUpdateTagsForPost_InvalidTags() {
         // Mock the repository call
-        when(blogPostRepository.findById(1L)).thenReturn(java.util.Optional.of(blogPost));
+        when(blogPostRepository.findById(blogPost.getId())).thenReturn(java.util.Optional.of(blogPost));
 
-        // Expect an InvalidBlogTagException instead of looking for IllegalArgumentException or "No enum constant"
-        assertThatThrownBy(() -> blogPostService.updateTagsForPost(1L, List.of("INVALID_TAG")))
+        // Call the method with invalid tags
+        assertThatThrownBy(() -> blogPostService.updateTagsForPost(blogPost.getId(), List.of("INVALID_TAG")))
                 .isInstanceOf(InvalidBlogTagException.class)
                 .hasMessageContaining("Invalid tags provided: INVALID_TAG");
 
@@ -185,12 +186,12 @@ class BlogPostServiceUnitTest {
     @Test
     void testDeleteBlogPost() {
         // Mock repository behavior
-        when(blogPostRepository.findById(1L)).thenReturn(Optional.of(blogPost));
+        when(blogPostRepository.findById(blogPost.getId())).thenReturn(Optional.of(blogPost));
 
         // Call the delete method
-        blogPostService.deletePost(1L, author);
+        blogPostService.deletePost(blogPost.getId(), author);
 
         // Verify the interaction
-        verify(blogPostRepository).deleteById(1L);
+        verify(blogPostRepository).deleteById(blogPost.getId());
     }
 }

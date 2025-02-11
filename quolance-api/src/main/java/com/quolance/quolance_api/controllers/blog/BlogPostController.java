@@ -10,11 +10,13 @@ import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/blog-posts")
@@ -26,22 +28,16 @@ public class BlogPostController {
 
     @PostMapping
     @Operation(summary = "Create a blog post")
-    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @ModelAttribute BlogPostRequestDto request) {
+    public ResponseEntity<BlogPostResponseDto> createBlogPost(@Valid @ModelAttribute @RequestBody BlogPostRequestDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         BlogPostResponseDto response = blogPostService.create(request, author);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all")
-    @Operation(summary = "Get all blog posts")
-    public ResponseEntity<List<BlogPostResponseDto>> getAllBlogPosts() {
-        List<BlogPostResponseDto> responses = blogPostService.getAll();
-        return ResponseEntity.ok(responses);
-    }
 
     @GetMapping("/{postId}")
     @Operation(summary = "Get a blog post by ID")
-    public ResponseEntity<BlogPostResponseDto> getBlogPostById(@PathVariable Long postId) {
+    public ResponseEntity<BlogPostResponseDto> getBlogPostById(@PathVariable UUID postId) {
         return ResponseEntity.ok(blogPostService.getBlogPost(postId));
     }
 
@@ -56,14 +52,20 @@ public class BlogPostController {
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get blog posts by user ID",
             description = "Retrieve all blog posts created by a specific user.")
-    public ResponseEntity<List<BlogPostResponseDto>> getBlogPostsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<BlogPostResponseDto>> getBlogPostsByUserId(@PathVariable UUID userId) {
         List<BlogPostResponseDto> responses = blogPostService.getBlogPostsByUserId(userId);
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping
+    @Operation(summary = "Get paginated blog posts")
+    public ResponseEntity<Page<BlogPostResponseDto>> getBlogPosts(Pageable pageable) {
+        return ResponseEntity.ok(blogPostService.getPaginatedBlogPosts(pageable));
+    }
+
     @DeleteMapping("/{postId}")
     @Operation(summary = "Delete a blog post")
-    public ResponseEntity<String> deleteBlogPost(@PathVariable Long postId) {
+    public ResponseEntity<String> deleteBlogPost(@PathVariable UUID postId) {
         User author = SecurityUtil.getAuthenticatedUser();
         blogPostService.deletePost(postId, author);
         return ResponseEntity.ok("The post was successfully deleted");
@@ -71,7 +73,7 @@ public class BlogPostController {
 
     @PutMapping("/tags/{postId}")
     public ResponseEntity<String> updateTagsForPost(
-            @PathVariable Long postId,
+            @PathVariable UUID postId,
             @RequestBody List<String> tagNames) {
         blogPostService.updateTagsForPost(postId, tagNames);
         return ResponseEntity.ok("Tags updated successfully");

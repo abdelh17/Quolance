@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -73,7 +74,7 @@ class UserServiceUnitTest {
 
     private User createMockUser() {
         return User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .email("test@test.com")
                 .password("encoded_password")
                 .firstName("Test")
@@ -289,23 +290,24 @@ class UserServiceUnitTest {
 
     @Test
     void findById_UserFound_ReturnsUser() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+        when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
 
-        Optional<User> result = userService.findById(1L);
+        Optional<User> result = userService.findById(mockUser.getId());
 
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(mockUser);
-        verify(userRepository).findById(1L);
+        assertThat(result).contains(mockUser);
+        verify(userRepository).findById(mockUser.getId());
     }
 
     @Test
     void findById_UserNotFound_ReturnsEmpty() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        UUID id = UUID.randomUUID();
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<User> result = userService.findById(1L);
+        Optional<User> result = userService.findById(id);
 
         assertThat(result).isNotPresent();
-        verify(userRepository).findById(1L);
+        verify(userRepository).findById(id);
     }
 
     @Test
@@ -315,7 +317,7 @@ class UserServiceUnitTest {
         Optional<User> result = userService.findByUsername("testuser");
 
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(mockUser);
+        assertThat(result).contains(mockUser);
         verify(userRepository).findByUsername("testuser");
     }
 

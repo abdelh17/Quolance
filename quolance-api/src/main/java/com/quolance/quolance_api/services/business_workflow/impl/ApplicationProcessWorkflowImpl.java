@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -29,7 +30,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
 
     @Override
     @Transactional
-    public void selectFreelancer(Long applicationId, User client) {
+    public void selectFreelancer(UUID applicationId, User client) {
         try {
             // Fetch the application
             Application application = applicationService.getApplicationById(applicationId);
@@ -56,7 +57,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     }
 
     @Override
-    public void rejectApplication(Long applicationId, User client) {
+    public void rejectApplication(UUID applicationId, User client) {
         try {
             // Fetch the application
             Application application = applicationService.getApplicationById(applicationId);
@@ -74,11 +75,11 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     }
 
     @Override
-    public void rejectManyApplications(List<Long> applicationIds, User client) {
+    public void rejectManyApplications(List<UUID> applicationIds, User client) {
         Map<String, String> combinedResults = new LinkedHashMap<>();
 
         for (int i = 0; i < applicationIds.size(); i++) {
-            Long applicationId = applicationIds.get(i);
+            UUID applicationId = applicationIds.get(i);
             try {
                 rejectApplication(applicationId, client);
                 combinedResults.put("[Request " + (i + 1) + "] Rejecting application with ID " + applicationId + ": ",
@@ -99,7 +100,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
     }
 
     @Override
-    public void cancelApplication(Long applicationId, User freelancer) {
+    public void cancelApplication(UUID applicationId, User freelancer) {
         try {
             Application application = applicationService.getApplicationById(applicationId);
             validateFreelancerApplicationOwnership(application, freelancer.getId());
@@ -118,7 +119,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
 
 
     // ==================== Utility Methods ====================
-    private void validateClientProjectOwnership(Project project, Long clientId) {
+    private void validateClientProjectOwnership(Project project, UUID clientId) {
         if (!project.isOwnedBy(clientId)) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_FORBIDDEN)
@@ -127,7 +128,7 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
         }
     }
 
-    private void validateFreelancerApplicationOwnership(Application application, Long freelancerId) {
+    private void validateFreelancerApplicationOwnership(Application application, UUID freelancerId) {
         if (!application.isOwnedBy(freelancerId)) {
             throw ApiException.builder()
                     .status(403)

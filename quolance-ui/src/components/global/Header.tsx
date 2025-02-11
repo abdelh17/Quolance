@@ -6,7 +6,6 @@ import {
   MenuItem,
   MenuItems,
 } from '@headlessui/react';
-import { BellIcon } from '@heroicons/react/24/outline';
 import { User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -69,8 +68,9 @@ function Header() {
             {/* Left side: Logo and non-user related links */}
             <div className="flex items-center gap-6">
               <div className="flex items-center justify-start gap-3 pb-1">
+                {/* Mobile menu button - only visible below lg breakpoint */}
                 <button
-                  className="4xl:hidden text-4xl !leading-none"
+                  className="lg:hidden text-4xl !leading-none"
                   onClick={() => setShowMobileMenu(true)}
                 >
                   <PiListBold className="text-b500 pt-2" />
@@ -90,8 +90,9 @@ function Header() {
                 )}
               </div>
 
-              <div className="max-4xl:hidden">
-                <ul className="xxl:gap-6 flex items-center justify-start gap-2 font-medium max-sm:hidden">
+              {/* Desktop Navigation - visible from lg breakpoint and up */}
+              <div className="hidden lg:block">
+                <ul className="xxl:gap-6 flex items-center justify-start gap-2 font-medium">
                   {headerMenu.map((menu) => (
                     <li key={menu.id}>
                       {menu.isSubmenu && (
@@ -126,8 +127,8 @@ function Header() {
               </div>
             </div>
 
-            {/* Right side: User-related content */}
-            <div className="max-4xl:hidden flex items-center gap-6">
+            {/* Right side: User-related content - Desktop only */}
+            <div className="hidden lg:flex items-center gap-6">
               {!user?.email ? (
                 <ul className="flex items-center gap-2 font-medium">
                   <li className="hover:text-b500 duration-500">
@@ -143,7 +144,7 @@ function Header() {
                 </ul>
               ) : (
                 <div className="flex items-center gap-6">
-                  <ul className="xxl:gap-6 flex items-center justify-start gap-2 font-medium max-sm:hidden">
+                  <ul className="xxl:gap-6 flex items-center justify-start gap-2 font-medium">
                     <li className="hover:text-b500 duration-500">
                       <Link
                         href={
@@ -262,12 +263,15 @@ function Header() {
         </div>
       </div>
 
-      <MobileMenu
-        showMobileMenu={showMobileMenu}
-        setShowMobileMenu={setShowMobileMenu}
-        user={user}
-        logout={logout}
-      />
+      {/* Mobile Menu - Only render below lg breakpoint */}
+      <div className="lg:hidden">
+        <MobileMenu
+          showMobileMenu={showMobileMenu}
+          setShowMobileMenu={setShowMobileMenu}
+          user={user}
+          logout={logout}
+        />
+      </div>
     </header>
   );
 }

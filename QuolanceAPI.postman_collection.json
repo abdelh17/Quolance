@@ -710,6 +710,14 @@
 								"url": "http://localhost:8081/api/blog-posts/1"
 							},
 							"response": []
+						},
+						{
+							"name": "Get paginated blogposts",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					]
 				},
@@ -847,6 +855,38 @@
 								"method": "PUT",
 								"header": [],
 								"url": "http://localhost:8081/api/blog-comments/3"
+							},
+							"response": []
+						},
+						{
+							"name": "Get paginated comments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/blog-comments/post/1?page=0&size=5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"blog-comments",
+										"post",
+										"1"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "5"
+										}
+									]
+								}
 							},
 							"response": []
 						}

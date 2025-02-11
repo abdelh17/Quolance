@@ -22,10 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -47,7 +44,7 @@ class FileControllerUnitTest {
     @BeforeEach
     void setUp() {
         mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setRole(Role.FREELANCER);
 
@@ -59,13 +56,13 @@ class FileControllerUnitTest {
         );
 
         fileDto1 = FileDto.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .fileName("test1.pdf")
                 .fileUrl("http://example.com/test1.pdf")
                 .build();
 
         fileDto2 = FileDto.builder()
-                .id(2L)
+                .id(UUID.randomUUID())
                 .fileName("test2.pdf")
                 .fileUrl("http://example.com/test2.pdf")
                 .build();

@@ -32,6 +32,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -60,18 +61,18 @@ class FreelancerWorkflowServiceUnitTest {
     @BeforeEach
     void setUp() {
         mockFreelancer = User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .profile(new Profile())
                 .build();
 
         mockProject = Project.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .projectStatus(ProjectStatus.OPEN)
                 .visibilityExpirationDate(LocalDate.now().plusDays(7))
                 .build();
 
         mockApplication = Application.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .project(mockProject)
                 .freelancer(mockFreelancer)
                 .applicationStatus(ApplicationStatus.APPLIED)
@@ -82,8 +83,8 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Test
     void submitApplication_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
-        when(applicationService.getApplicationByFreelancerIdAndProjectId(1L, 1L)).thenReturn(null);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
+        when(applicationService.getApplicationByFreelancerIdAndProjectId(mockFreelancer.getId(), mockProject.getId())).thenReturn(null);
 
         freelancerWorkflowService.submitApplication(applicationCreateDto, mockFreelancer);
 
@@ -95,7 +96,7 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Test
     void submitApplication_AlreadyApplied_ThrowsException() {
-        when(applicationService.getApplicationByFreelancerIdAndProjectId(1L, 1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationByFreelancerIdAndProjectId(mockFreelancer.getId(), mockProject.getId())).thenReturn(mockApplication);
 
         assertThatThrownBy(() -> freelancerWorkflowService.submitApplication(applicationCreateDto, mockFreelancer))
                 .isInstanceOf(ApiException.class)
@@ -106,8 +107,8 @@ class FreelancerWorkflowServiceUnitTest {
     @Test
     void submitApplication_ProjectNotApproved_ThrowsException() {
         mockProject.setProjectStatus(ProjectStatus.PENDING);
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
-        when(applicationService.getApplicationByFreelancerIdAndProjectId(1L, 1L)).thenReturn(null);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
+        when(applicationService.getApplicationByFreelancerIdAndProjectId(mockFreelancer.getId(), mockProject.getId())).thenReturn(null);
 
         assertThatThrownBy(() -> freelancerWorkflowService.submitApplication(applicationCreateDto, mockFreelancer))
                 .isInstanceOf(ApiException.class)
@@ -117,8 +118,8 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Test
     void submitApplication_OptimisticLockException_ThrowsException() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
-        when(applicationService.getApplicationByFreelancerIdAndProjectId(1L, 1L)).thenReturn(null);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
+        when(applicationService.getApplicationByFreelancerIdAndProjectId(mockFreelancer.getId(), mockProject.getId())).thenReturn(null);
         doThrow(new OptimisticLockException("Version mismatch")).when(applicationService).saveApplication(any());
 
         assertThatThrownBy(() -> freelancerWorkflowService.submitApplication(applicationCreateDto, mockFreelancer))
@@ -129,9 +130,9 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Test
     void getApplication_Success() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        ApplicationDto result = freelancerWorkflowService.getApplication(1L, mockFreelancer);
+        ApplicationDto result = freelancerWorkflowService.getApplication(mockApplication.getId(), mockFreelancer);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(mockApplication.getId());
@@ -139,10 +140,10 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Test
     void getApplication_NotOwner_ThrowsException() {
-        User wrongFreelancer = User.builder().id(999L).build();
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        User wrongFreelancer = User.builder().id(UUID.randomUUID()).build();
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        assertThatThrownBy(() -> freelancerWorkflowService.getApplication(1L, wrongFreelancer))
+        assertThatThrownBy(() -> freelancerWorkflowService.getApplication(mockApplication.getId(), wrongFreelancer))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
                 .hasMessage("You are not authorized to view this application.");
@@ -150,9 +151,9 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Test
     void deleteApplication_Success() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        freelancerWorkflowService.deleteApplication(1L, mockFreelancer);
+        freelancerWorkflowService.deleteApplication(mockApplication.getId(), mockFreelancer);
 
         verify(applicationService).deleteApplication(mockApplication);
     }
@@ -162,7 +163,7 @@ class FreelancerWorkflowServiceUnitTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Application> applicationPage = new PageImpl<>(List.of(mockApplication), pageable, 1);
 
-        when(applicationService.getAllApplicationsByFreelancerId(1L, pageable))
+        when(applicationService.getAllApplicationsByFreelancerId(mockFreelancer.getId(), pageable))
                 .thenReturn(applicationPage);
 
         Page<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer, pageable);
@@ -175,7 +176,7 @@ class FreelancerWorkflowServiceUnitTest {
     void getAllFreelancerApplications_NoApplications_ReturnsEmptyList() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Application> emptyPage = Page.empty(pageable);
-        when(applicationService.getAllApplicationsByFreelancerId(1L, pageable))
+        when(applicationService.getAllApplicationsByFreelancerId(mockFreelancer.getId(), pageable))
                 .thenReturn(emptyPage);
 
         Page<ApplicationDto> results = freelancerWorkflowService.getAllFreelancerApplications(mockFreelancer, pageable);
@@ -186,19 +187,19 @@ class FreelancerWorkflowServiceUnitTest {
     @Test
     void getAllVisibleProjects_FiltersExpiredClosedProjects() {
         Project expiredProject = Project.builder()
-                .id(2L)
+                .id(UUID.randomUUID())
                 .projectStatus(ProjectStatus.CLOSED)
                 .visibilityExpirationDate(LocalDate.now().minusDays(1))
                 .build();
 
         Project activeProject = Project.builder()
-                .id(3L)
+                .id(UUID.randomUUID())
                 .projectStatus(ProjectStatus.OPEN)
                 .visibilityExpirationDate(LocalDate.now().plusDays(7))
                 .build();
 
         Project closedButVisibleProject = Project.builder()
-                .id(4L)
+                .id(UUID.randomUUID())
                 .projectStatus(ProjectStatus.CLOSED)
                 .visibilityExpirationDate(LocalDate.now().plusDays(2))
                 .build();
@@ -219,9 +220,9 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Test
     void getProject_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        ProjectPublicDto result = freelancerWorkflowService.getProject(1L);
+        ProjectPublicDto result = freelancerWorkflowService.getProject(mockProject.getId());
 
         assertThat(result).isNotNull();
     }
@@ -229,9 +230,9 @@ class FreelancerWorkflowServiceUnitTest {
     @Test
     void getProject_PendingStatus_ThrowsException() {
         mockProject.setProjectStatus(ProjectStatus.PENDING);
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        assertThatThrownBy(() -> freelancerWorkflowService.getProject(1L))
+        assertThatThrownBy(() -> freelancerWorkflowService.getProject(mockProject.getId()))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("Project is not yet approved.");
@@ -240,9 +241,9 @@ class FreelancerWorkflowServiceUnitTest {
     @Test
     void getProject_ExpiredVisibility_ThrowsException() {
         mockProject.setVisibilityExpirationDate(LocalDate.now().minusDays(1));
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        assertThatThrownBy(() -> freelancerWorkflowService.getProject(1L))
+        assertThatThrownBy(() -> freelancerWorkflowService.getProject(mockProject.getId()))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("Project visibility has expired.");

@@ -1,5 +1,5 @@
 export interface UserResponse {
-  id: number;
+  id: string;
   role: Role;
   firstName?: string;
   lastName?: string;
@@ -13,8 +13,8 @@ export interface UserResponse {
  
  
  export interface FreelancerProfileType {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   username: string | null;
   firstName: string;
   lastName: string;
@@ -41,3 +41,14 @@ export enum Role {
   ADMIN = 'ADMIN',
   PENDING = 'PENDING',
 }
+
+export type EditModesType = {
+  editProfileImage: boolean;
+  editHeader: boolean;
+  editAbout: boolean;
+  editExperience: boolean;
+  editAvailability: boolean;
+  editSkills: boolean;
+  editContactInformation: boolean;
+  editProfile: boolean;
+ };
