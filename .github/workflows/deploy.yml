@@ -34,7 +34,7 @@ jobs:
           
             # Update latest changes and package application
             cd /home/opc/Quolance || { echo "Failed to change directory"; exit 1; }
-            git pull origin BE-61-deployment || { echo "Failed to pull latest changes"; exit 1; }
+            git pull origin main || { echo "Failed to pull latest changes"; exit 1; }
           
             # Decrypt the .env file
             gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
