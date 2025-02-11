@@ -32,10 +32,10 @@ jobs:
 
 
       # Step 3: Build Frontend
-      - name: Build Frontend
-        run: |
-          cd quolance-ui
-          npm run build
+      #      - name: Build Frontend
+      #        run: |
+      #          cd quolance-ui
+      #          npm run build
 
       # Step 4: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
