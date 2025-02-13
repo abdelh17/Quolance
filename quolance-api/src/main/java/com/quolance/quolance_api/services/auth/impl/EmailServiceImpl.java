@@ -24,6 +24,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom("support@quolance.com");
             helper.setTo(to.toArray(new String[0]));
             helper.setSubject(subject);
             helper.setText(htmlBody, true);
@@ -36,6 +37,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendSimpleEmail(List<String> to, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("support@quolance.com");
         message.setTo(to.toArray(new String[0]));
         message.setSubject(subject);
         message.setText(content);
