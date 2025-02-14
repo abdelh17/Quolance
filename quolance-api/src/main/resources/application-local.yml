@@ -76,6 +76,8 @@ logging:
     org.springframework.web: ERROR
 
 server:
+  ssl:
+    enabled: false
   port: 8081
   error:
     include-message: always
