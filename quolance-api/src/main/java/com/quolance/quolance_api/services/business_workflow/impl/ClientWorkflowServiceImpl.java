@@ -8,6 +8,7 @@ import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.Tag;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
@@ -132,7 +133,9 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                 }
 
                 if (filters.getSkills() != null && !filters.getSkills().isEmpty()) {
-                    predicates.add(root.join("profile").join("skills").in(filters.getSkills()));
+                    for(Tag skill : filters.getSkills()) {
+                        predicates.add(root.join("profile").join("skills").in(skill));
+                    }
                 }
             }
 
