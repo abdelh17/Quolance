@@ -138,6 +138,10 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                 if (filters.getPriceRange() != null) {
                     predicates.add(criteriaBuilder.equal(root.get("priceRange"), filters.getPriceRange()));
                 }
+
+                if (filters.getExperienceLevel() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("experienceLevel"), filters.getExperienceLevel()));
+                }
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
