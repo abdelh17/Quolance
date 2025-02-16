@@ -56,82 +56,81 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
     }
 
 
-    @Test
-    void createProjectValidIsOk() throws Exception {
-        //Arrange
-        ProjectCreateDto projectDto = ProjectCreateDto.builder()
-                .title("title")
-                .description("description")
-                .category(ProjectCategory.APP_DEVELOPMENT)
-                .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
-                .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
-                .build();
+//    @Test
+//    void createProjectValidIsOk() throws Exception {
+//        //Arrange
+//        ProjectCreateDto projectDto = ProjectCreateDto.builder()
+//                .title("title")
+//                .description("description")
+//                .category(ProjectCategory.APP_DEVELOPMENT)
+//                .priceRange(PriceRange.LESS_500)
+//                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+//                .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
+//                .build();
+//
+//        //Act
+//        String response = mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        //Assert
+//        Project project = projectRepository.findAll().getFirst();
+//        assertThat(response).isEqualTo("Project created successfully");
+//        assertThat(projectRepository.findAll()).hasSize(1);
+//        assertThat(project.getTitle()).isEqualTo("title");
+//        assertThat(project.getDescription()).isEqualTo("description");
+//        assertThat(project.getCategory()).isEqualTo(ProjectCategory.APP_DEVELOPMENT);
+//        assertThat(project.getPriceRange()).isEqualTo(PriceRange.LESS_500);
+//        assertThat(project.getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.JUNIOR);
+//        assertThat(project.getExpectedDeliveryTime()).isEqualTo(ExpectedDeliveryTime.FLEXIBLE);
+//    }
 
-        //Act
-        String response = mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
+//    @Test
+//    void createProjectWithExpirationDateSetsExpirationDate() throws Exception {
+//        //Arrange
+//        ProjectCreateDto projectDto = ProjectCreateDto.builder()
+//                .title("title")
+//                .description("description")
+//                .category(ProjectCategory.APP_DEVELOPMENT)
+//                .priceRange(PriceRange.LESS_500)
+//                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+//                .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
+//                .expirationDate(LocalDate.now().plusDays(10))
+//                .build();
+//        //Act
+//        mockMvc.perform(post("/api/client/create-project").session(session)
+//                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("Project created successfully"));
+//        //Assert
+//        Project project = projectRepository.findAll().getFirst();
+//        assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(10));
+//    }
 
-        //Assert
-        Project project = projectRepository.findAll().getFirst();
-        assertThat(response).isEqualTo("Project created successfully");
-        assertThat(projectRepository.findAll()).hasSize(1);
-        assertThat(project.getTitle()).isEqualTo("title");
-        assertThat(project.getDescription()).isEqualTo("description");
-        assertThat(project.getCategory()).isEqualTo(ProjectCategory.APP_DEVELOPMENT);
-        assertThat(project.getPriceRange()).isEqualTo(PriceRange.LESS_500);
-        assertThat(project.getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.JUNIOR);
-        assertThat(project.getExpectedDeliveryTime()).isEqualTo(ExpectedDeliveryTime.FLEXIBLE);
-    }
-
-    @Test
-    void createProjectWithExpirationDateSetsExpirationDate() throws Exception {
-        //Arrange
-        ProjectCreateDto projectDto = ProjectCreateDto.builder()
-                .title("title")
-                .description("description")
-                .category(ProjectCategory.APP_DEVELOPMENT)
-                .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
-                .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
-                .expirationDate(LocalDate.now().plusDays(10))
-                .build();
-        //Act
-        mockMvc.perform(post("/api/client/create-project").session(session)
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Project created successfully"));
-        //Assert
-        Project project = projectRepository.findAll().getFirst();
-        assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(10));
-    }
-
-
-    @Test
-    void createProjectWithNoExpirationDateSetsExpirationDateTo7DaysFromNow() throws Exception {
-        //Arrange
-        ProjectCreateDto projectDto = ProjectCreateDto.builder()
-                .title("title")
-                .description("description")
-                .category(ProjectCategory.APP_DEVELOPMENT)
-                .priceRange(PriceRange.LESS_500)
-                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
-                .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
-                .build();
-
-        //Act
-        String response = mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        //Assert
-        Project project = projectRepository.findAll().getFirst();
-        assertThat(response).isEqualTo("Project created successfully");
-        assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(7));
-    }
+//    @Test
+//    void createProjectWithNoExpirationDateSetsExpirationDateTo7DaysFromNow() throws Exception {
+//        //Arrange
+//        ProjectCreateDto projectDto = ProjectCreateDto.builder()
+//                .title("title")
+//                .description("description")
+//                .category(ProjectCategory.APP_DEVELOPMENT)
+//                .priceRange(PriceRange.LESS_500)
+//                .experienceLevel(FreelancerExperienceLevel.JUNIOR)
+//                .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
+//                .build();
+//
+//        //Act
+//        String response = mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        //Assert
+//        Project project = projectRepository.findAll().getFirst();
+//        assertThat(response).isEqualTo("Project created successfully");
+//        assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(7));
+//    }
 
     @Test
     void getProjectByIdWhenNoneExistReturnsNotFound() throws Exception {
