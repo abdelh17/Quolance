@@ -21,23 +21,31 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
     private final GeminiConfig geminiConfig;
     private final ObjectMapper objectMapper;
 
-    private static final double DENY_THRESHOLD = 0.8;
+    private static final double DENY_THRESHOLD = 0.9;
+    private static final double MANUAL_REVIEW_THRESHOLD = 0.7;
     private Map<String, List<String>> contentFilters;
     private String initializedPrompt;
 
     private static final List<String> ILLEGAL_KEYWORDS = Arrays.asList(
-            "hack into", "crack", "exploit", "bypass security",
-            "steal", "fraud", "illegal", "circumvent", "break into"
+            "hack into", "crack passwords", "exploit vulnerabilities",
+            "steal data", "commit fraud", "illegal activities"
     );
 
     private static final List<String> SUSPICIOUS_KEYWORDS = Arrays.asList(
-            "asap", "fake", "duplicate", "spam", "bot",
-            "automatic", "scrape", "scraping", "urgent updates", "quick changes"
+            "fake accounts", "mass spam", "black hat",
+            "automatic posting", "bulk scraping"
     );
 
-    private static final List<String> SECURITY_KEYWORDS = Arrays.asList(
+    private static final List<String> LEGITIMATE_SECURITY_SERVICES = Arrays.asList(
             "penetration testing", "security assessment", "vulnerability assessment",
-            "security audit", "security review", "security testing"
+            "security audit", "security review", "security testing",
+            "ethical hacking", "white hat", "security compliance",
+            "code review", "security consultation"
+    );
+
+    private static final List<String> HIGH_RISK_SECURITY_KEYWORDS = Arrays.asList(
+            "zero-day", "rootkit", "backdoor", "malware development",
+            "system exploitation", "password cracking"
     );
 
     @PostConstruct
@@ -53,13 +61,14 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
         contentFilters = new HashMap<>();
         contentFilters.put("ILLEGAL_ACTIVITY", ILLEGAL_KEYWORDS);
         contentFilters.put("SUSPICIOUS_CONTENT", SUSPICIOUS_KEYWORDS);
-        contentFilters.put("SECURITY_SENSITIVE", SECURITY_KEYWORDS);
+        contentFilters.put("HIGH_RISK_SECURITY", HIGH_RISK_SECURITY_KEYWORDS);
     }
 
     private void initializePrompt() {
         initializedPrompt = """
-            You are a STRICT project moderator for a professional freelance platform.
+            You are a balanced project moderator for a professional freelance platform.
             Review this project for professionalism, clarity, and legitimacy.
+            When in doubt, mark for manual review rather than rejecting.
             Respond with a single valid JSON object in exactly this format:
             {
                 "approved": false,
@@ -76,6 +85,11 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
             4. Complete and clear requirements
             5. Appropriate technical scope
             
+            Guidelines:
+            - If the project seems legitimate but unclear, request manual review
+            - Consider context before flagging technical terms
+            - Give benefit of doubt for ambiguous language
+            
             Project to review:
             Title: %s
             Description: %s
@@ -85,12 +99,13 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
             Experience Level: %s
             
             Common flags to use:
-            - ILLEGAL_ACTIVITY: For projects involving hacking, fraud, or other illegal activities
-            - UNPROFESSIONAL_CONTENT: For projects with inappropriate language or content
-            - UNCLEAR_REQUIREMENTS: For vague or incomplete project specifications
-            - UNREALISTIC_EXPECTATIONS: For projects with mismatched timeline/budget/scope
-            - SUSPICIOUS_INTENT: For projects that seem potentially harmful
-            - SECURITY_SENSITIVE: For projects requiring extra security review
+            - ILLEGAL_ACTIVITY: Only for clear violations of law
+            - UNPROFESSIONAL_CONTENT: Severe cases of inappropriate language
+            - UNCLEAR_REQUIREMENTS: Needs clarification but may be legitimate
+            - UNREALISTIC_EXPECTATIONS: Significant timeline/budget mismatches
+            - SUSPICIOUS_INTENT: Strong indicators of harmful intent
+            - HIGH_RISK_SECURITY: Security projects needing expert review
+            - NEEDS_CLARIFICATION: For ambiguous but potentially valid projects
             """;
     }
 
@@ -107,7 +122,6 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
         try {
             String prompt = formatPrompt(project);
             Map<String, Object> response = callGeminiApi(prompt);
-            log.debug("Received raw API response for project {}", project.getId());
             return parseAndValidateResponse(response);
         } catch (Exception e) {
             log.error("Moderation failed for project {}: {}", project.getId(), e.getMessage(), e);
@@ -118,37 +132,38 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
     private ProjectCreateResponseDto performPreCheck(Project project) {
         String content = (project.getTitle() + " " + project.getDescription()).toLowerCase();
 
-        // Check for illegal activities first
         if (ILLEGAL_KEYWORDS.stream().anyMatch(content::contains)) {
             return ProjectCreateResponseDto.builder()
                     .approved(false)
                     .confidenceScore(1.0)
-                    .reason("Project automatically rejected due to potential illegal activity")
-                    .flags(List.of("ILLEGAL_ACTIVITY", "AUTOMATIC_REJECTION"))
-                    .requiresManualReview(false)
+                    .reason("Project contains terms associated with illegal activities")
+                    .flags(List.of("ILLEGAL_ACTIVITY"))
+                    .requiresManualReview(true)
                     .build();
         }
 
-        // Check for suspicious content
         if (SUSPICIOUS_KEYWORDS.stream().anyMatch(content::contains)) {
             return ProjectCreateResponseDto.builder()
                     .approved(false)
-                    .confidenceScore(1.0)
-                    .reason("Project automatically rejected due to suspicious content or unrealistic timeline")
-                    .flags(List.of("SUSPICIOUS_CONTENT", "AUTOMATIC_REJECTION"))
-                    .requiresManualReview(false)
+                    .confidenceScore(0.8)
+                    .reason("Project requires review due to potentially suspicious content")
+                    .flags(List.of("SUSPICIOUS_CONTENT"))
+                    .requiresManualReview(true)
                     .build();
         }
 
-        // Check for security-related content that needs review
-        if (SECURITY_KEYWORDS.stream().anyMatch(content::contains)) {
+        if (HIGH_RISK_SECURITY_KEYWORDS.stream().anyMatch(content::contains)) {
             return ProjectCreateResponseDto.builder()
                     .approved(false)
                     .confidenceScore(0.8)
-                    .reason("Security-related project requires manual review to verify legitimacy")
-                    .flags(List.of("SECURITY_SENSITIVE"))
+                    .reason("Project contains high-risk security terms requiring verification")
+                    .flags(List.of("HIGH_RISK_SECURITY"))
                     .requiresManualReview(true)
                     .build();
+        }
+
+        if (LEGITIMATE_SECURITY_SERVICES.stream().anyMatch(content::contains)) {
+            return null;
         }
 
         return null;
@@ -156,13 +171,11 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
 
     private void validateApiConfig() {
         if (geminiConfig.getKey() == null || geminiConfig.getKey().isEmpty()) {
-            log.error("Gemini API key not configured");
             throw new IllegalStateException("Gemini API is not properly configured");
         }
     }
 
     private String formatPrompt(Project project) {
-        log.debug("Formatting prompt for project: {}", project.getId());
         return String.format(initializedPrompt,
                 project.getTitle(),
                 project.getDescription(),
@@ -174,7 +187,6 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
     }
 
     private Map<String, Object> callGeminiApi(String prompt) {
-        log.debug("Calling Gemini API");
         try {
             return geminiWebClient.post()
                     .uri(geminiConfig.getBaseUrl() + "?key=" + geminiConfig.getKey())
@@ -203,17 +215,12 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
     private ProjectCreateResponseDto parseAndValidateResponse(Map<String, Object> response) {
         try {
             String responseText = extractResponseText(response);
-            log.debug("Extracted response text: {}", responseText);
-
             String cleanedText = cleanResponseText(responseText);
-            log.debug("Cleaned response text: {}", cleanedText);
-
             ProjectCreateResponseDto result = objectMapper.readValue(cleanedText,
                     ProjectCreateResponseDto.class);
             return applyModerationRules(result);
         } catch (Exception e) {
             log.error("Failed to parse moderation response: {}", e.getMessage());
-            log.error("Raw response: {}", response);
             throw new RuntimeException("Failed to parse moderation response", e);
         }
     }
@@ -242,19 +249,16 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
 
             return text;
         } catch (Exception e) {
-            log.error("Failed to extract response text: {}", e.getMessage());
             throw new IllegalStateException("Invalid response format from API", e);
         }
     }
 
     private String cleanResponseText(String text) {
         String cleaned = text.trim();
-        // Remove markdown code block indicators if present
         cleaned = cleaned.replaceAll("```json\\s*", "")
                 .replaceAll("```\\s*$", "")
                 .trim();
 
-        // Find the first { and last } to extract just the JSON object
         int start = cleaned.indexOf("{");
         int end = cleaned.lastIndexOf("}") + 1;
         if (start >= 0 && end > start) {
@@ -265,20 +269,29 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
     }
 
     private ProjectCreateResponseDto applyModerationRules(ProjectCreateResponseDto result) {
-        if (result.getFlags() != null && !result.getFlags().isEmpty() ||
-                result.getConfidenceScore() < DENY_THRESHOLD) {
-
-            result.setApproved(false);
-            result.setConfidenceScore(1.0);
-            result.setRequiresManualReview(false);
-
-            if (result.getFlags() == null) {
-                result.setFlags(new ArrayList<>());
-            }
-            if (result.getConfidenceScore() < DENY_THRESHOLD) {
+        if (result.getConfidenceScore() < DENY_THRESHOLD) {
+            if (result.getConfidenceScore() >= MANUAL_REVIEW_THRESHOLD) {
+                result.setApproved(false);
+                result.setRequiresManualReview(true);
+                if (result.getFlags() == null) {
+                    result.setFlags(new ArrayList<>());
+                }
+                result.getFlags().add("NEEDS_MANUAL_REVIEW");
+                result.setReason("Project requires human review due to uncertainty: " + result.getReason());
+            } else {
+                result.setApproved(false);
+                result.setRequiresManualReview(false);
+                if (result.getFlags() == null) {
+                    result.setFlags(new ArrayList<>());
+                }
                 result.getFlags().add("LOW_CONFIDENCE");
             }
         }
+
+        if (result.getFlags() != null && result.getFlags().contains("HIGH_RISK_SECURITY")) {
+            result.setRequiresManualReview(true);
+        }
+
         return result;
     }
 
