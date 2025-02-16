@@ -31,4 +31,6 @@ public interface ProjectService {
     void updateProjectStatus(Project project, ProjectStatus newStatus);
 
     void updateSelectedFreelancer(Project project, User freelancer);
+
+    void setProjectRejectionReason(Project project, String rejectionReason);
 }

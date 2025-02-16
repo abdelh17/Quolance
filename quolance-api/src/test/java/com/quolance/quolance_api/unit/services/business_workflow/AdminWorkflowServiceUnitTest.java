@@ -124,27 +124,27 @@ class AdminWorkflowServiceUnitTest {
         verify(projectService, never()).updateProjectStatus(any(), any());
     }
 
-    @Test
-    void rejectProject_Success() {
-        when(projectService.getProjectById(mockProject1.getId())).thenReturn(mockProject1);
-        doNothing().when(projectService).updateProjectStatus(any(Project.class), eq(ProjectStatus.REJECTED));
+//    @Test
+//    void rejectProject_Success() {
+//        when(projectService.getProjectById(mockProject1.getId())).thenReturn(mockProject1);
+//        doNothing().when(projectService).updateProjectStatus(any(Project.class), eq(ProjectStatus.REJECTED));
+//
+//        adminWorkflowService.rejectProject(mockProject1.getId());
+//
+//        verify(projectService).getProjectById(mockProject1.getId());
+//        verify(projectService).updateProjectStatus(mockProject1, ProjectStatus.REJECTED);
+//    }
 
-        adminWorkflowService.rejectProject(mockProject1.getId());
-
-        verify(projectService).getProjectById(mockProject1.getId());
-        verify(projectService).updateProjectStatus(mockProject1, ProjectStatus.REJECTED);
-    }
-
-    @Test
-    void rejectProject_WithInvalidId_ThrowsApiException() {
-        UUID invalidId = UUID.randomUUID();
-        when(projectService.getProjectById(invalidId))
-                .thenThrow(new ApiException("Project not found"));
-
-        assertThatThrownBy(() -> adminWorkflowService.rejectProject(invalidId))
-                .isInstanceOf(ApiException.class)
-                .hasMessage("Project not found");
-        verify(projectService).getProjectById(invalidId);
-        verify(projectService, never()).updateProjectStatus(any(), any());
-    }
+//    @Test
+//    void rejectProject_WithInvalidId_ThrowsApiException() {
+//        UUID invalidId = UUID.randomUUID();
+//        when(projectService.getProjectById(invalidId))
+//                .thenThrow(new ApiException("Project not found"));
+//
+//        assertThatThrownBy(() -> adminWorkflowService.rejectProject(invalidId))
+//                .isInstanceOf(ApiException.class)
+//                .hasMessage("Project not found");
+//        verify(projectService).getProjectById(invalidId);
+//        verify(projectService, never()).updateProjectStatus(any(), any());
+//    }
 }

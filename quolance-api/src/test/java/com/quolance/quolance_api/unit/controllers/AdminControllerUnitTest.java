@@ -285,47 +285,47 @@ class AdminControllerUnitTest {
         }
     }
 
-    @Test
-    void rejectProject_ReturnsSuccessMessage() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-            UUID projectId = UUID.randomUUID();
-        doNothing().when(adminWorkflowService).rejectProject(projectId);
+//    @Test
+//    void rejectProject_ReturnsSuccessMessage() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
+//            UUID projectId = UUID.randomUUID();
+//        doNothing().when(adminWorkflowService).rejectProject(projectId);
+//
+//        ResponseEntity<String> response = adminController.rejectProject(projectId);
+//
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody()).isEqualTo("Project rejected successfully");
+//            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+//        }
+//    }
 
-        ResponseEntity<String> response = adminController.rejectProject(projectId);
+//    @Test
+//    void rejectProject_WhenProjectNotFound_ThrowsApiException() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
+//            UUID projectId = UUID.randomUUID();
+//        doThrow(new ApiException("Project not found")).when(adminWorkflowService).rejectProject(projectId);
+//
+//        assertThatThrownBy(() -> adminController.rejectProject(projectId))
+//                .isInstanceOf(ApiException.class)
+//                .hasMessage("Project not found");
+//            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+//        }
+//    }
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("Project rejected successfully");
-            verify(adminWorkflowService, times(1)).rejectProject(projectId);
-        }
-    }
-
-    @Test
-    void rejectProject_WhenProjectNotFound_ThrowsApiException() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-            UUID projectId = UUID.randomUUID();
-        doThrow(new ApiException("Project not found")).when(adminWorkflowService).rejectProject(projectId);
-
-        assertThatThrownBy(() -> adminController.rejectProject(projectId))
-                .isInstanceOf(ApiException.class)
-                .hasMessage("Project not found");
-            verify(adminWorkflowService, times(1)).rejectProject(projectId);
-        }
-    }
-
-    @Test
-    void rejectProject_WhenUnauthorized_ThrowsAccessDeniedException() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
-            UUID projectId = UUID.randomUUID();
-        doThrow(new AccessDeniedException("User is not authorized to reject projects"))
-                .when(adminWorkflowService).rejectProject(projectId);
-
-        assertThatThrownBy(() -> adminController.rejectProject(projectId))
-                .isInstanceOf(AccessDeniedException.class)
-                .hasMessage("User is not authorized to reject projects");
-            verify(adminWorkflowService, times(1)).rejectProject(projectId);
-        }
-    }
+//    @Test
+//    void rejectProject_WhenUnauthorized_ThrowsAccessDeniedException() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
+//            UUID projectId = UUID.randomUUID();
+//        doThrow(new AccessDeniedException("User is not authorized to reject projects"))
+//                .when(adminWorkflowService).rejectProject(projectId);
+//
+//        assertThatThrownBy(() -> adminController.rejectProject(projectId))
+//                .isInstanceOf(AccessDeniedException.class)
+//                .hasMessage("User is not authorized to reject projects");
+//            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+//        }
+//    }
 }

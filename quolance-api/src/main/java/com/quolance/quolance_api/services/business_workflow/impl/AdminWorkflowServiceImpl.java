@@ -29,7 +29,8 @@ public class AdminWorkflowServiceImpl implements AdminWorkflowService {
     }
 
     @Override
-    public void rejectProject(UUID projectId) {
+    public void rejectProject(UUID projectId, String rejectionReason) {
         projectService.updateProjectStatus(projectService.getProjectById(projectId), ProjectStatus.REJECTED);
+        projectService.setProjectRejectionReason(projectService.getProjectById(projectId), rejectionReason);
     }
 }

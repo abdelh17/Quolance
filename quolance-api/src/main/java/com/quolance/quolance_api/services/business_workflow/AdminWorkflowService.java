@@ -11,5 +11,5 @@ public interface AdminWorkflowService {
 
     void approveProject(UUID projectId);
 
-    void rejectProject(UUID projectId);
+    void rejectProject(UUID projectId, String rejectionReason);
 }

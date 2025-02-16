@@ -252,4 +252,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         log.debug("Completed updating project fields");
     }
+
+    @Override
+    public void setProjectRejectionReason(Project project, String rejectionReason) {
+        log.debug("Setting rejection reason for project {}", project.getId());
+        project.setRejectionReason(rejectionReason);
+        projectRepository.save(project);
+        log.info("Successfully set rejection reason for project {}", project.getId());
+    }
 }
