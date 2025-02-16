@@ -26,13 +26,18 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
     private String initializedPrompt;
 
     private static final List<String> ILLEGAL_KEYWORDS = Arrays.asList(
-            "hack", "hacking", "crack", "cracking", "exploit",
-            "bypass", "steal", "fraud", "illegal", "password"
+            "hack into", "crack", "exploit", "bypass security",
+            "steal", "fraud", "illegal", "circumvent", "break into"
     );
 
     private static final List<String> SUSPICIOUS_KEYWORDS = Arrays.asList(
-            "urgent", "asap", "fake", "duplicate", "spam", "bot",
-            "automatic", "scrape", "scraping"
+            "asap", "fake", "duplicate", "spam", "bot",
+            "automatic", "scrape", "scraping", "urgent updates", "quick changes"
+    );
+
+    private static final List<String> SECURITY_KEYWORDS = Arrays.asList(
+            "penetration testing", "security assessment", "vulnerability assessment",
+            "security audit", "security review", "security testing"
     );
 
     @PostConstruct
@@ -48,6 +53,7 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
         contentFilters = new HashMap<>();
         contentFilters.put("ILLEGAL_ACTIVITY", ILLEGAL_KEYWORDS);
         contentFilters.put("SUSPICIOUS_CONTENT", SUSPICIOUS_KEYWORDS);
+        contentFilters.put("SECURITY_SENSITIVE", SECURITY_KEYWORDS);
     }
 
     private void initializePrompt() {
@@ -112,17 +118,39 @@ public class ProjectModerationServiceImpl implements ProjectModerationService {
     private ProjectCreateResponseDto performPreCheck(Project project) {
         String content = (project.getTitle() + " " + project.getDescription()).toLowerCase();
 
-        for (Map.Entry<String, List<String>> filter : contentFilters.entrySet()) {
-            if (filter.getValue().stream().anyMatch(content::contains)) {
-                return ProjectCreateResponseDto.builder()
-                        .approved(false)
-                        .confidenceScore(1.0)
-                        .reason("Project automatically rejected due to " + filter.getKey().toLowerCase())
-                        .flags(List.of(filter.getKey(), "AUTOMATIC_REJECTION"))
-                        .requiresManualReview(false)
-                        .build();
-            }
+        // Check for illegal activities first
+        if (ILLEGAL_KEYWORDS.stream().anyMatch(content::contains)) {
+            return ProjectCreateResponseDto.builder()
+                    .approved(false)
+                    .confidenceScore(1.0)
+                    .reason("Project automatically rejected due to potential illegal activity")
+                    .flags(List.of("ILLEGAL_ACTIVITY", "AUTOMATIC_REJECTION"))
+                    .requiresManualReview(false)
+                    .build();
         }
+
+        // Check for suspicious content
+        if (SUSPICIOUS_KEYWORDS.stream().anyMatch(content::contains)) {
+            return ProjectCreateResponseDto.builder()
+                    .approved(false)
+                    .confidenceScore(1.0)
+                    .reason("Project automatically rejected due to suspicious content or unrealistic timeline")
+                    .flags(List.of("SUSPICIOUS_CONTENT", "AUTOMATIC_REJECTION"))
+                    .requiresManualReview(false)
+                    .build();
+        }
+
+        // Check for security-related content that needs review
+        if (SECURITY_KEYWORDS.stream().anyMatch(content::contains)) {
+            return ProjectCreateResponseDto.builder()
+                    .approved(false)
+                    .confidenceScore(0.8)
+                    .reason("Security-related project requires manual review to verify legitimacy")
+                    .flags(List.of("SECURITY_SENSITIVE"))
+                    .requiresManualReview(true)
+                    .build();
+        }
+
         return null;
     }
 
