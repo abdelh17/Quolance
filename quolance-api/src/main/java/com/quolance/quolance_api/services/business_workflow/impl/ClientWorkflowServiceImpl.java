@@ -9,6 +9,7 @@ import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
+import com.quolance.quolance_api.services.business_workflow.ProjectModerationService;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
@@ -22,6 +23,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import com.quolance.quolance_api.dtos.project.ProjectCreateResponseDto;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClientWorkflowServiceImpl implements ClientWorkflowService {
@@ -37,16 +43,57 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     private final ApplicationService applicationService;
     private final UserService userService;
     private final NotificationMessageService notificationMessageService;
+    private final ProjectModerationService projectModerationService;
 
     @Override
-    public void createProject(ProjectCreateDto projectCreateDto, User client) {
+    @Transactional
+    public ProjectCreateResponseDto createProject(ProjectCreateDto projectCreateDto, User client) {
+        log.info("Creating project for client: {}", client.getId());
+        Project project = initializeProject(projectCreateDto, client);
+        projectService.saveProject(project);
 
-        Project projectToSave = ProjectCreateDto.toEntity(projectCreateDto);
-        projectToSave.setExpirationDate(projectCreateDto.getExpirationDate() != null ? projectCreateDto.getExpirationDate() : LocalDate.now().plusDays(7));
-        projectToSave.setClient(client);
-        projectService.saveProject(projectToSave);
+        return moderateAndUpdateProject(project);
     }
 
+    private Project initializeProject(ProjectCreateDto dto, User client) {
+        Project project = ProjectCreateDto.toEntity(dto);
+        project.setExpirationDate(dto.getExpirationDate() != null ?
+                dto.getExpirationDate() : LocalDate.now().plusDays(7));
+        project.setClient(client);
+        project.setProjectStatus(ProjectStatus.PENDING);
+        return project;
+    }
+
+    private ProjectCreateResponseDto moderateAndUpdateProject(Project project) {
+        try {
+            ProjectCreateResponseDto result = projectModerationService.moderateProject(project);
+            updateProjectStatus(project, result);
+            return result;
+        } catch (Exception e) {
+            log.error("Moderation failed for project {}: {}", project.getId(), e.getMessage(), e);
+            return buildErrorModerationResult();
+        }
+    }
+
+    private void updateProjectStatus(Project project, ProjectCreateResponseDto result) {
+        if (result.isApproved() && !result.isRequiresManualReview()
+                && result.getConfidenceScore() >= 0.8) {
+            projectService.updateProjectStatus(project, ProjectStatus.OPEN);
+        } else if (!result.isApproved() && result.getConfidenceScore() >= 0.9) {
+            projectService.updateProjectStatus(project, ProjectStatus.REJECTED);
+        }
+        // else: remains in PENDING status
+    }
+
+    private ProjectCreateResponseDto buildErrorModerationResult() {
+        return ProjectCreateResponseDto.builder()
+                .approved(false)
+                .confidenceScore(1.0)
+                .reason("Project moderation encountered an error. Manual review required.")
+                .flags(List.of("SYSTEM_ERROR"))
+                .requiresManualReview(true)
+                .build();
+    }
 
     @Override
     public ProjectDto getProject(UUID projectId, User client) {

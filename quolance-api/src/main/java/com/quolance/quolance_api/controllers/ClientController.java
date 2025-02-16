@@ -8,6 +8,7 @@ import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
+import com.quolance.quolance_api.dtos.project.ProjectCreateResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
@@ -37,14 +38,15 @@ public class ClientController {
     @PostMapping("/create-project")
     @Operation(
             summary = "Create a project",
-            description = "Create a project by passing the project details"
+            description = "Create a project by passing the project details. Returns moderation result."
     )
-    public ResponseEntity<String> createProject(@RequestBody ProjectCreateDto projectCreateDto) {
+    public ResponseEntity<ProjectCreateResponseDto> createProject(@RequestBody ProjectCreateDto projectCreateDto) {
         User client = SecurityUtil.getAuthenticatedUser();
-        log.info("Client with ID {} attempting to create a project", client.getId());
-        clientWorkflowService.createProject(projectCreateDto, client);
-        log.info("Client with ID {} successfully created a project", client.getId());
-        return ResponseEntity.ok("Project created successfully");
+        log.info("Client {} attempting to create project", client.getId());
+        ProjectCreateResponseDto result = clientWorkflowService.createProject(projectCreateDto, client);
+        log.info("Project creation completed for client {}. Moderation status: approved={}, review={}",
+                client.getId(), result.isApproved(), result.isRequiresManualReview());
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/projects/{projectId}")
