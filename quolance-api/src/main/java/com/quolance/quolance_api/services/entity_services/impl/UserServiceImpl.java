@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
         log.info("Successfully created new user with ID: {}", user.getId());
 
         sendVerificationEmail(user);
+        user.setVerified(true); //TODO: Remove this line when email verification is completed
         log.debug("Verification email process initiated for user ID: {}", user.getId());
 
         return new UserResponseDto(user);
@@ -71,6 +72,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User(request);
         user = userRepository.save(user);
+        user.setVerified(true); // TODO: Remove this line when email verification is completed
         log.info("Successfully created new admin user with ID: {}", user.getId());
 
         return new UserResponseDto(user);
