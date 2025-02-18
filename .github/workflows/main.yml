@@ -24,18 +24,17 @@ jobs:
           cd quolance-ui
           npm install
 
-    # Step 2: Run Cypress Tests
-    #  - name: Run Cypress Tests
-    #   run: |
-    #    cd quolance-ui
-    #     npm run e2e:headless
-
+      # Step 2: Run Cypress Tests
+      #  - name: Run Cypress Tests
+      #   run: |
+      #    cd quolance-ui
+      #     npm run e2e:headless
 
       # Step 3: Build Frontend
-      #      - name: Build Frontend
-      #        run: |
-      #          cd quolance-ui
-      #          npm run build
+      - name: Build Frontend
+        run: |
+          cd quolance-ui
+          npm run build
 
       # Step 4: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
@@ -57,6 +56,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SPRING_PROFILES_ACTIVE: test
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: quolance-postgres-db
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v3

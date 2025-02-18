@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         log.info("Successfully created new user with ID: {}", user.getId());
 
+        user.setVerified(true);
         sendVerificationEmail(user);
         log.debug("Verification email process initiated for user ID: {}", user.getId());
 
@@ -70,7 +71,9 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User(request);
+        user.setVerified(true);
         user = userRepository.save(user);
+
         log.info("Successfully created new admin user with ID: {}", user.getId());
 
         return new UserResponseDto(user);

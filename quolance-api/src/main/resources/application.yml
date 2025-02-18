@@ -1,9 +1,13 @@
 app:
   application-name: Quolance
-  base-url: "http://localhost:8080"
+  base-url: "https://api.quolance.com"
   allowed-origins: "http://localhost"
   login-page-url: "${app.base-url}/auth/login"
   login-success-url: "${app.base-url}/auth/login-success"
+
+  admin:
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
 
 spring:
   profiles:
@@ -12,18 +16,15 @@ spring:
   application:
     name: quolance-api
 
-  # File upload configuration
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 20MB
 
-  # Import ENV variables
   config:
     import: "optional:file:../.env[.properties]"
 
-  # Security and OAuth2 configuration
   security:
     oauth2:
       client:
@@ -35,11 +36,9 @@ spring:
             client-id: "${GOOGLE_CLIENT_ID}"
             client-secret: "${GOOGLE_CLIENT_SECRET}"
 
-  # Database configuration
   datasource:
     url: ${PROD_DATASOURCE_URL}
 
-  # JPA and Hibernate configuration
   jpa:
     hibernate:
       ddl-auto: ${DB_DDL_AUTO}
@@ -49,7 +48,6 @@ spring:
         format_sql: true
     database: postgresql
 
-  # Mail configuration
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}
@@ -64,7 +62,6 @@ spring:
         transport:
           protocol: ${MAIL_TRANSPORT_PROTOCOL}
 
-# JobRunr configuration
 org:
   jobrunr:
     background-job-server:
@@ -72,7 +69,6 @@ org:
     dashboard:
       enabled: true
 
-# Logging configuration
 logging:
   file:
     name: ${LOG_FILE}
@@ -83,13 +79,18 @@ logging:
     com.quolance: DEBUG
     org.springframework.web: ERROR
 
-# Server configuration
 server:
   port: 8081
+  ssl:
+    enable: true
+    port: 443
+    key-store: /etc/ssl/private/keystore.p12
+    key-store-password: ${SSL_CERT_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: tomcat
   error:
     include-message: always
 
-# Cloudinary configuration
 cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}
   api_key: ${CLOUDINARY_API_KEY}
