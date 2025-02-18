@@ -100,32 +100,39 @@ Before running the script, ensure the following:
    Alternatively, you can create your own `.env` file with the following template (replace the values as needed):
 
    ```plaintext
-   DB_DDL_AUTO=create-drop
-   MAILPIT_SMTP_PORT=1025
-   MAILPIT_UI_PORT=8025
-   POSTGRES_DB=quolance-postgres-db
-   POSTGRES_PASSWORD=your_postgres_password
-   POSTGRES_HOST_PORT=5434
-   DATASOURCE_URL=jdbc:postgresql://localhost:5434/quolance-postgres-db
-   POSTGRES_CONTAINER_PORT=5432
-   POSTGRES_USER=postgres
-   MAILPIT_USER=mailpit
-   MAILPIT_PASSWORD=mailpit
-
-   ADMIN_EMAIL=admin@quolance.com
-   ADMIN_PASSWORD=admin
-
-   CLOUDINARY_CLOUD_NAME=cloud_name
-   CLOUDINARY_API_KEY=cloudinary_api_key
-   CLOUDINARY_API_SECRET=cloudinary_api_secret
-   CLOUDINARY_API_ENV_VAR=CLOUDINARY_URL=cloudinary_url
-
-   LOG_FILE=./logs/quolance.log
-
-   GITHUB_CLIENT_ID=github_id
-   GITHUB_CLIENT_SECRET=github_secret
-   GOOGLE_CLIENT_ID=google_id
-   GOOGLE_CLIENT_SECRET=google_secret
+   # Database Configuration
+   POSTGRES_DB=YOUR_DB_NAME
+   POSTGRES_HOST_PORT=YOUR_HOST_PORT
+   POSTGRES_CONTAINER_PORT=YOUR_DB_PORT
+   LOCAL_DATASOURCE_URL=YOUR_JDBC_URL
+   
+   # Mail Configuration
+   MAILPIT_SMTP_PORT=YOUR_SMTP_PORT
+   MAILPIT_UI_PORT=YOUR_SMTP_UI_PORT
+   MAILPIT_USER=YOUR_SMTP_USERNAME
+   MAILPIT_PASSWORD=YOUR_SMTP_PASSWORD
+   
+   # Cloudinary Configuration
+   CLOUDINARY_CLOUD_NAME=YOUR_CLOUDINARY_CLOUD_NAME
+   CLOUDINARY_API_KEY=YOUR_CLOUDINARY_API_KEY
+   CLOUDINARY_API_SECRET=YOUR_CLOUDINARY_API_SECRET
+   CLOUDINARY_API_ENV_VAR=YOUR_CLOUDINARY_URL
+   
+   # OAuth2 Configuration
+   GITHUB_CLIENT_ID=YOUR_GITHUB_CLIENT_ID
+   GITHUB_CLIENT_SECRET=YOUR_GITHUB_CLIENT_SECRET
+   GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
+   GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
+   
+   # Admin Configuration
+   ADMIN_EMAIL=YOUR_ADMIN_EMAIL
+   ADMIN_PASSWORD=YOUR_ADMIN_PASSWORD
+   
+   # Logging Configuration
+   LOG_FILE=YOUR_LOG_FILE_PATH
+   
+   # JPA Configuration
+   DB_DDL_AUTO=YOUR_DB_DDL_AUTO
    ```
 
 ---
@@ -177,7 +184,7 @@ Once the containers are running, on your terminal navigate to the `quolance-api`
 ```bash
 cd quolance-api
 ./mvnw clean install
-./mvnw spring-boot:run
+./mvnw spring-boot:run -D"spring-boot.run.profiles"=local
 ```
 
 ### Using profile to create a default admin user while building the springboot App

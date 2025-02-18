@@ -20,24 +20,11 @@ spring:
   config:
     import: "optional:file:../.env[.properties]"
 
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: "${GITHUB_CLIENT_ID}"
-            client-secret: "${GITHUB_CLIENT_SECRET}"
-          google:
-            client-id: "${GOOGLE_CLIENT_ID}"
-            client-secret: "${GOOGLE_CLIENT_SECRET}"
-
   application:
     name: quolance-api
 
   datasource:
-    url: ${DATASOURCE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: ${LOCAL_DATASOURCE_URL}
     driver-class-name: org.postgresql.Driver
 
   jpa:

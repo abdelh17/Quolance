@@ -10,6 +10,7 @@ spring:
     name: quolance-api
 
   datasource:
+    url: "${LOCAL_DATASOURCE_URL}"
     driver-class-name: org.postgresql.Driver
 
   mail:
