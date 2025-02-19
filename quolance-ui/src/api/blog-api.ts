@@ -2,6 +2,9 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import {BlogPostViewType} from '@/constants/types/blog-types';
 import {HttpErrorResponse} from '@/constants/models/http/HttpErrorResponse';
+import { PagedResponse } from '@/constants/models/http/PagedResponse';
+import { PaginationParams } from '@/constants/types/pagination-types';
+import { queryToString } from '@/util/stringUtils';
 
 
 /* ---------- Blog Posts ---------- */
@@ -45,20 +48,18 @@ export const useCreateBlogPost = (options?: {
   });
 };
 
-export const useGetAllBlogPosts = (options?: {
-  onSuccess?: (data: ReactionResponseDto[]) => void;
 
-  onError?: (error: HttpErrorResponse) => void;
-}) => {
-  return useQuery<BlogPostViewType[], HttpErrorResponse>({
-    queryKey: ['all-blog-posts'],
+export const useGetAllBlogPosts = (query: PaginationParams) => {
+  return useQuery({
+    queryKey: ["all-blog-posts", query],
     queryFn: async () => {
-      const response = await httpClient.get('/api/blog-posts/all');
+      const response = await httpClient.get(`/api/blog-posts?${queryToString(query)}`);
       return response.data;
     },
-    ...options,
+    staleTime: 1000 * 60 * 5,
   });
 };
+
 
 // export const useUpdateBlogPost = (options?: {
 //   onSuccess?: (data: BlogPostViewType) => void;
