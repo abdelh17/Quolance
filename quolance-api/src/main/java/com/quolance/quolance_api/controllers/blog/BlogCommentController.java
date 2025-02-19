@@ -7,18 +7,18 @@ import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/blog-comments")
 @RequiredArgsConstructor
+@Slf4j
 public class BlogCommentController {
 
     private final BlogCommentService blogCommentService;
@@ -27,7 +27,9 @@ public class BlogCommentController {
     @Operation(summary = "Create a new blog comment")
     public ResponseEntity<BlogCommentDto> createBlogComment(@PathVariable UUID postId, @Valid @RequestBody BlogCommentDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
+        log.info("User {} is creating a comment on post {}", author.getId(), postId);
         BlogCommentDto response = blogCommentService.createBlogComment(postId, author, request);
+        log.info("Comment created successfully with ID {}", response.getCommentId());
         return ResponseEntity.ok(response);
     }
 
@@ -35,6 +37,7 @@ public class BlogCommentController {
     @Operation(summary = "Get paginated comments for a specific blog post")
     public ResponseEntity<Page<BlogCommentDto>> getCommentsByBlogPostId(
             @PathVariable UUID blogPostId, Pageable pageable) {
+                log.info("Fetching comments for blog post {}", blogPostId);
         return ResponseEntity.ok(blogCommentService.getPaginatedComments(blogPostId, pageable));
     }
 
@@ -42,7 +45,9 @@ public class BlogCommentController {
     @Operation(summary = "Update a blog comment")
     public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable UUID id, @RequestBody BlogCommentDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
+        log.info("User {} is updating comment {}", author.getId(), id);
         BlogCommentDto response = blogCommentService.updateBlogComment(id, request, author);
+        log.info("Comment {} updated successfully", id);
         return ResponseEntity.ok(response);
     }
 
@@ -50,7 +55,9 @@ public class BlogCommentController {
     @Operation(summary = "Delete a blog comment")
     public ResponseEntity<String> deleteBlogComment(@PathVariable UUID id) {
         User author = SecurityUtil.getAuthenticatedUser();
+        log.info("User {} is deleting comment {}", author.getId(), id);
         blogCommentService.deleteBlogComment(id, author);
+        log.info("Comment {} deleted successfully", id);
         return ResponseEntity.ok("The comment was successfully deleted");
     }
 
