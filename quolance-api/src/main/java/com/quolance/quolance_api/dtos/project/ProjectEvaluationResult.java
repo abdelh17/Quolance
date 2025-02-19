@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectCreateResponseDto {
+public class ProjectEvaluationResult {
     private boolean approved;
     private double confidenceScore;
     private String reason;

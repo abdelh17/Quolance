@@ -1,10 +1,12 @@
 package com.quolance.quolance_api.services.entity_services.impl;
 
+import com.quolance.quolance_api.dtos.project.ProjectEvaluationResult;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.repositories.ProjectRepository;
+import com.quolance.quolance_api.services.entity_services.ProjectModerationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +26,7 @@ import java.util.UUID;
 @Slf4j
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
+    private final ProjectModerationService projectModerationService;
 
     @Override
     public void saveProject(Project project) {
@@ -259,5 +262,20 @@ public class ProjectServiceImpl implements ProjectService {
         project.setRejectionReason(rejectionReason);
         projectRepository.save(project);
         log.info("Successfully set rejection reason for project {}", project.getId());
+    }
+
+    @Override
+    public ProjectEvaluationResult evaluateProjectForApproval(Project project) {
+        ProjectEvaluationResult result = projectModerationService.evaluateProject(project);
+
+        if (result.isApproved()
+                && !result.isRequiresManualReview()
+                && result.getConfidenceScore() >= 0.8) {
+            updateProjectStatus(project, ProjectStatus.OPEN);
+        } else if (!result.isApproved()
+                && result.getConfidenceScore() >= 0.9) {
+            updateProjectStatus(project, ProjectStatus.REJECTED);
+        }
+        return result;
     }
 }
