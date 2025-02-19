@@ -39,6 +39,9 @@ jobs:
             # Decrypt the .env file
             gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
           
+            echo -e "\nADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env
+            echo -e "\nADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+          
             # Package the application
             cd /home/opc/Quolance/quolance-api || { echo "Failed to change directory"; exit 1; }
             ./mvnw clean package -DskipTests || { echo "Maven package failed"; exit 1; }
