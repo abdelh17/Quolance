@@ -49,7 +49,10 @@ export const useCreateBlogPost = (options?: {
 };
 
 
-export const useGetAllBlogPosts = (query: PaginationParams) => {
+export const useGetAllBlogPosts = (query: PaginationParams, options?: {
+  onSuccess?: (data: PagedResponse<BlogPostViewType>) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
   return useQuery({
     queryKey: ["all-blog-posts", query],
     queryFn: async () => {
@@ -57,6 +60,7 @@ export const useGetAllBlogPosts = (query: PaginationParams) => {
       return response.data;
     },
     staleTime: 1000 * 60 * 5,
+    ...options,
   });
 };
 
@@ -90,7 +94,7 @@ export const useDeleteBlogPost = (options?: {
 export interface CommentResponseDto {
   commentId: string;
   blogPostId: string;
-  userId: string;
+  username: string;
   content: string;
 }
 
@@ -98,17 +102,19 @@ export interface CommentRequestDto {
   content: string;
 }
 
-export const useGetCommentsByPostId = (postId: string, options?: {
-  onSuccess?: (data: CommentResponseDto[]) => void;
-  onError?: (error: HttpErrorResponse) => void;
+
+export const useGetCommentsByPostId = (postId: string, pagination: PaginationParams, options?: {
+    onSuccess?: (data: PagedResponse<CommentResponseDto>) => void;
+    onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useQuery<CommentResponseDto[], HttpErrorResponse>({
-    queryKey: ['comments', postId],
+  return useQuery<PagedResponse<CommentResponseDto>, HttpErrorResponse>({
+    queryKey: ["comments", postId, pagination],
     queryFn: async () => {
-      const response = await httpClient.get(`/api/blog-comments/post/${postId}`);
+      const response = await httpClient.get(`/api/blog-comments/${postId}?${queryToString(pagination)}`);
       return response.data;
     },
-    enabled: !!postId, // Only fetch if postId is defined
+    staleTime: 1000 * 60 * 5,
+    enabled: !!postId,
     ...options,
   });
 };
