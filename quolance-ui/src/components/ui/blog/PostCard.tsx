@@ -10,6 +10,7 @@ import CommentCard from "./CommentCard";
 import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import UserSummary from "@/components/ui/blog/UserSummary";
 import {
+  CommentRequestDto,
   useAddComment,
   useDeleteBlogPost,
   useGetCommentsByPostId,
@@ -18,6 +19,7 @@ import {
   useRemoveReaction
 } from "@/api/blog-api";
 import {showToast} from "@/util/context/ToastProvider";
+import { PaginationParams } from "@/constants/types/pagination-types";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -43,6 +45,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
   const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
+  const [pagination, setPagination] = useState<PaginationParams>({page: 0, size: 5});
 
   const { user } = useAuthGuard({ middleware: "auth" });
   const { data: authorProfile } = useGetFreelancerProfile(authorName);
@@ -50,7 +53,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const { data: reactionData } = useGetReactionsByPostId(id);
   const { mutate: reactToPost } = useReactToPost();
 
-  const { data: commentsData, refetch: refetchComments } = useGetCommentsByPostId(id);
+  const { data: pagedComments, refetch: refetchComments } = useGetCommentsByPostId(id, pagination);
   const { mutate: addComment } = useAddComment(id, {
     onSuccess: () => {
       setNewComment("");
@@ -68,6 +71,22 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       showToast("Error deleting post.", "error");
     },
   });
+
+  console.log("Paged Comments:", pagedComments);
+  console.log("Paged Comments Content:", pagedComments?.content);
+
+
+  const handleNextPage = () => {
+    if (!pagedComments || pagedComments.page >= (pagedComments.totalPages ?? 1) - 1) return;
+    setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
+  };
+
+  const handlePrevPage = () => {
+    if (!pagedComments || pagedComments.page === 0) return;
+    setPagination((prev) => ({ ...prev, page: prev.page - 1 }));
+  };
+
+  
 
   const userSummaryRef = useRef<HTMLDivElement | null>(null);
   const profileImageRef = useRef<HTMLImageElement | null>(null);
@@ -406,38 +425,55 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             onClick={toggleComments}
             className="text-blue-500 text-sm focus:outline-none"
           >
-            Comments ({commentsData?.length || 0})
+            Comments ({pagedComments?.totalElements ?? 0})
           </button>
 
           {showComments && (
             <div className="bg-gray-50 p-4 rounded-md mt-3">
-              {commentsData?.map((comment) => (
+              {pagedComments?.content?.map((comment) => (
                 <CommentCard
                   key={comment.commentId}
                   commentId={comment.commentId}
-                  authorName={`User #${comment.userId}`}
+                  authorName={comment.username}
                   content={comment.content}
                   dateCreated={new Date().toISOString()}
                 />
               ))}
-            {/* Add Comment Input */}
-            <div className="mt-4">
-              <textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Add a comment..."
-                className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                rows={3}
-              />
-              <button
-                onClick={handleAddComment}
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
-              >
-                Post Comment
-              </button>
+              {/* Pagination Controls */}
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={handlePrevPage}
+                  disabled={pagination.page === 0}
+                >
+                  Previous
+                </button>
+                <span>
+                  Page {pagination.page + 1} of {pagedComments?.totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={(pagedComments?.page ?? 0) >= ((pagedComments?.totalPages ?? 1) - 1)}
+                >
+                  Next
+                </button>
+              </div>
+              {/* Add Comment Input */}
+              <div className="mt-4">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                  rows={3}
+                />
+                <button
+                  onClick={handleAddComment}
+                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
+                >
+                  Post Comment
+                </button>
+              </div>
             </div>
-          </div>
-
           )}
         </div>
       </div>
