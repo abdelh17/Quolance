@@ -10,17 +10,17 @@ import {useAuthGuard} from "@/api/auth-api";
 import {showToast} from "@/util/context/ToastProvider";
 import {useQueryClient} from "@tanstack/react-query";
 import { PaginationParams, PaginationQueryDefault } from "@/constants/types/pagination-types";
+import { BlogPostViewType } from "@/constants/types/blog-types";
 
 
 const BlogContainer: React.FC = () => {
-    //const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [openUserSummaryPostId, setOpenUserSummaryPostId] = useState<string | null>(null);
     const [pagination, setPagination] = useState<PaginationParams>(PaginationQueryDefault);
 
     const {user, isLoading: isUserLoading} = useAuthGuard({middleware: 'auth'});
     const queryClient = useQueryClient();
-    const { data: pagedPosts, isLoading: isBlogLoading, error } = useGetAllBlogPosts(pagination);
+    const { data: pagedPosts, isLoading: isBlogLoading } = useGetAllBlogPosts(pagination);
     console.log(pagedPosts);
 
     const totalPages = pagedPosts?.totalPages ?? 1;
@@ -34,12 +34,6 @@ const BlogContainer: React.FC = () => {
         if (pagedPosts?.number === 0) return;
         setPagination((prev) => ({ ...prev, page: prev.page - 1 }));
     };
-
-    // Filter posts based on the selected tag
-    // const filteredPosts = selectedTag
-    //     ? blogPosts?.filter((post) => post.tags.includes(selectedTag))
-    //     : blogPosts;
-    // const filteredPosts = blogPosts;
 
     const { mutateAsync: mutateBlogPosts } = useCreateBlogPost({
         onSuccess: () => {
@@ -138,7 +132,7 @@ const BlogContainer: React.FC = () => {
                                     <p>Loading...</p>
                                 ) : pagedPosts.content && pagedPosts?.content?.length > 0 ? (
                                     <>
-                                        {pagedPosts.content.map((post, index) => (
+                                        {pagedPosts.content.map((post: BlogPostViewType, index: number) => (
                                             <PostCard 
                                                 key={index} 
                                                 {...post} 
@@ -165,40 +159,11 @@ const BlogContainer: React.FC = () => {
                                             </button>
                                         </div>
                                     </>
-                                        
-                                        
                                     ) : (
                                         <p className="text-center text-gray-500 mt-4">No posts found for this tag.</p>
-                                    )}
-                                </div>
-                            {/* Tabs Component */}
-                            {/* <Tabs
-                                tags={["UX/UI Design", "Backend", "Security", "Finance"]} // each user will have their customized tabs saved in the db and will be fetched on page load
-                                onSelectTag={(tag) => setSelectedTag(tag)}
-                            /> */}
-
-                            {/* Loading State
-                            {postIsLoading && <p className="text-center text-gray-500 mt-4">Loading...</p>}
-
-                            {/* Error State 
-                            {error && <p className="text-center text-red-500 mt-4">An error occurred.</p>}
-
-                            {/* Posts Grid 
-                            <div className="grid sm:grid-cols-1 lg:grid-cols-1 gap-6">
-                                {filteredPosts?.slice().reverse().map((post, index) => (
-                                    <PostCard
-                                        key={index}
-                                        {...post}
-                                        openUserSummaryPostId={openUserSummaryPostId}
-                                        setOpenUserSummaryPostId={setOpenUserSummaryPostId}
-                                    />
-                                ))}
-                            </div> */}
-
-                            {/* No Posts Found
-                            {!postIsLoading && filteredPosts?.length === 0 && (
-                                <p className="text-center text-gray-500 mt-4">No posts found for this tag.</p>
-                            )} */}
+                                    )
+                                }
+                            </div>
                         </>
                     )}
                 </>
