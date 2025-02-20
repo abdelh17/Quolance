@@ -44,8 +44,7 @@ public class ClientController {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client {} attempting to create project", client.getId());
         ProjectEvaluationResult result = clientWorkflowService.createProject(projectCreateDto, client);
-        log.info("Project creation completed for client {}. Moderation status: approved={}, review={}",
-                client.getId(), result.isApproved(), result.isRequiresManualReview());
+        log.info("Client {} successfully created project.", client.getId());
         return ResponseEntity.ok(result);
     }
 

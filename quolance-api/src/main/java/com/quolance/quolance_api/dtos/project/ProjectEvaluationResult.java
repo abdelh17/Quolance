@@ -12,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectEvaluationResult {
-    private boolean approved;
+    private boolean approved = false;
     private double confidenceScore;
     private String reason;
     private List<String> flags;
-    private boolean requiresManualReview;
+    private boolean requiresManualReview = true;
 }
