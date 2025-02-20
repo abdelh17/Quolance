@@ -26,8 +26,9 @@ public class ReactionController {
     public ResponseEntity<ReactionResponseDto> reactToPost(
             @Valid @RequestBody ReactionRequestDto requestDto) {
         User user = SecurityUtil.getAuthenticatedUser();
-        log.info("User {} reacting to post with request: {}", user.getId(), requestDto);
+        log.info("User {} is attempting to react to post with request: {}", user.getId(), requestDto);
         ReactionResponseDto response = reactionService.reactToPost(requestDto, user);
+        log.info("User {} has succesfully reacted to post with request: {}", user.getId(), requestDto);
         return ResponseEntity.ok(response);
     }
 
@@ -35,22 +36,27 @@ public class ReactionController {
     public ResponseEntity<ReactionResponseDto> reactToComment(
             @Valid @RequestBody ReactionRequestDto requestDto) {
         User user = SecurityUtil.getAuthenticatedUser();
-        log.info("User {} reacting to comment with request: {}", user.getId(), requestDto);
+        log.info("User {} is attempting to react to comment with request: {}", user.getId(), requestDto);
         ReactionResponseDto response = reactionService.reactToComment(requestDto, user);
+        log.info("User {} successfully reacted to comment with request: {}", user.getId(), requestDto);
         return ResponseEntity.ok(response);
     }
     
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<ReactionResponseDto>> getReactionsByPost(@PathVariable UUID postId) {
-        log.info("Fetching reactions for post with ID: {}", postId);
+        User user = SecurityUtil.getAuthenticatedUser();
+        log.info("User {} is attempting to Fetch reactions for post with ID: {}",user.getId(), postId);
         List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogPostId(postId);
+        log.info("User {} successfully fetched reactions for post with ID: {}",user.getId(), postId);
         return ResponseEntity.ok(reactions);
     }
 
     @GetMapping("/comment/{commentId}")
     public ResponseEntity<List<ReactionResponseDto>> getReactionsByComment(@PathVariable UUID commentId) {
-        log.info("Fetching reactions for comment with ID: {}", commentId);
+        User user = SecurityUtil.getAuthenticatedUser();
+        log.info("User {} is attempting to Fetch reactions for comment with ID: {}",user.getId(), commentId);
         List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogCommentId(commentId);
+        log.info("User {} successfully fetched reactions for comment with ID: {}",user.getId(), commentId);
         return ResponseEntity.ok(reactions);
     }
 
@@ -59,6 +65,7 @@ public class ReactionController {
         User user = SecurityUtil.getAuthenticatedUser();
         log.info("User {} deleting reaction with ID: {}", user.getId(), reactionId);
         reactionService.deleteReaction(reactionId, user);
+        log.info("User {} successfully deleted reaction with ID: {}", user.getId(), reactionId);
         return ResponseEntity.ok("Reaction deleted successfully.");
     }
 

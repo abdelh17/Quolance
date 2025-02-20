@@ -135,11 +135,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     private boolean isAuthorOfPost(BlogPost blogPost, User author) {
-        boolean isAuthor = blogPost.getUser().getId().equals(author.getId());
-        if (!isAuthor) {
-            log.warn("User {} attempted to modify a blog post they do not own", author.getId());
-        }
-        return isAuthor;
+        return blogPost.getUser().getId().equals(author.getId());
     }
 
     @Override
@@ -147,7 +143,6 @@ public class BlogPostServiceImpl implements BlogPostService {
         log.info("Updating tags for blog post ID: {}", postId);
         BlogPost blogPost;
         try {
-            log.debug("Fetching blog post with ID: {}", postId);
             blogPost = getBlogPostEntity(postId);
         } catch (ApiException e) {
             log.warn("Failed to retrieve blog post with ID: {}. Error: {}", postId, e.getMessage());

@@ -43,7 +43,6 @@ public class BlogCommentServiceImpl implements BlogCommentService {
         blogComment.setUser(author);
 
         BlogComment savedComment = blogCommentRepository.save(blogComment);
-        log.info("Successfully created comment ID: {} for blog post ID: {}", savedComment.getId(), blogPostId);
         return BlogCommentDto.fromEntity(savedComment);
     }
 
@@ -60,7 +59,6 @@ public class BlogCommentServiceImpl implements BlogCommentService {
 
         blogComment.setContent(blogCommentDto.getContent());
         BlogComment updatedComment = blogCommentRepository.save(blogComment);
-        log.info("Successfully updated comment ID: {}", commentId);
 
         return BlogCommentDto.fromEntity(updatedComment);
     }
