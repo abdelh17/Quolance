@@ -15,6 +15,7 @@ import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
+import com.quolance.quolance_api.util.FeatureToggle;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +43,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     private final ApplicationService applicationService;
     private final UserService userService;
     private final NotificationMessageService notificationMessageService;
+    private final FeatureToggle featureToggle;
 
     @Override
     @Transactional
@@ -55,7 +57,13 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         project.setProjectStatus(ProjectStatus.PENDING);
         projectService.saveProject(project);
 
-        return projectService.evaluateProjectForApproval(project);
+        if (featureToggle.isEnabled("useAiProjectEvaluation")) {
+            log.info("Automated evaluation of project enabled. AI evaluation of project for approval....");
+            return projectService.evaluateProjectForApproval(project);
+        } else {
+            log.info("Automated evaluation of project disabled.");
+            return new ProjectEvaluationResult();
+        }
     }
 
     @Override
