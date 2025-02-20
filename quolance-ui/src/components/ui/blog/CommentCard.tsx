@@ -29,7 +29,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
   const { mutate: deleteComment } = useDeleteComment({
     onSuccess: () => {
       showToast("Comment deleted successfully!", "success");
-      window.location.reload(); // Refresh page to reflect deletion
+      window.location.reload();
     },
     onError: () => {
       showToast("Error deleting comment.", "error");
@@ -43,9 +43,6 @@ const CommentCard: React.FC<CommentCardProps> = ({
       deleteComment(commentId);
     }
   }
-
-  // Temporary until comment endpoint returns authorName instead of authorId
-  const tempUserName = "User #" + user?.id;
 
   return (
     <div className="flex items-start gap-4 py-1.5">
@@ -85,11 +82,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
               </button>
             )}
           </p>
-          {/* {user?.username === authorName && (
-            <span className="text-xs text-red-500 cursor-pointer mt-2" onClick={() => handleDeleteComment(commentId)}> Delete </span>
-          )} */}
-          {/* temporary, must use above once comment endpoint returns authorName instead of authorId */}
-          {tempUserName === authorName && (
+          {user?.username === authorName && (
             <span className="text-xs text-red-500 cursor-pointer mt-2" onClick={() => handleDeleteComment(commentId)}> Delete </span>
           )}
         </div>
