@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.integration.tests;
 
+import com.quolance.quolance_api.dtos.project.ProjectRejectionDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
@@ -128,42 +129,51 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
         assertThat(projectRepository.findById(closedProject.getId()).get().getProjectStatus()).isEqualTo(ProjectStatus.CLOSED);
     }
 
-//    @Test
-//    void rejectPendingProjectIsOkBecomesRejected() throws Exception {
-//        // Arrange
-//        Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-//
-//        // Act
-//        String response = mockMvc.perform(post("/api/admin/projects/pending/" + pendingProject.getId() + "/reject")
-//                        .session(session))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        // Assert
-//        assertThat(response).isEqualTo("Project rejected successfully");
-//
-//        Project rejectedProject = projectRepository.findById(pendingProject.getId()).get();
-//        assertThat(rejectedProject.getProjectStatus()).isEqualTo(ProjectStatus.REJECTED);
-//    }
+    @Test
+    void rejectPendingProjectIsOkBecomesRejected() throws Exception {
+        // Arrange
+        Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
-//    @Test
-//    void rejectClosedProjectIsForbidden() throws Exception {
-//        // Arrange
-//        Project closedProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, client));
-//
-//        // Act
-//        String response = mockMvc.perform(post("/api/admin/projects/pending/" + closedProject.getId() + "/reject")
-//                        .session(session))
-//                .andExpect(status().isForbidden())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        // Assert
-//        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-//        assertThat(jsonResponse).containsEntry("message", "Project is closed and cannot be updated.");
-//        assertThat(projectRepository.findById(closedProject.getId()).get().getProjectStatus()).isEqualTo(ProjectStatus.CLOSED);
-//    }
+        ProjectRejectionDto rejectionDto = new ProjectRejectionDto("This project does not respect platform rules.");
+
+        // Act
+        String response = mockMvc.perform(post("/api/admin/projects/pending/" + pendingProject.getId() + "/reject")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(rejectionDto))
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        assertThat(response).isEqualTo("Project rejected successfully");
+
+        Project rejectedProject = projectRepository.findById(pendingProject.getId()).get();
+        assertThat(rejectedProject.getProjectStatus()).isEqualTo(ProjectStatus.REJECTED);
+        assertThat(rejectedProject.getRejectionReason()).isEqualTo("This project does not respect platform rules.");
+
+    }
+
+    @Test
+    void rejectClosedProjectIsForbidden() throws Exception {
+        // Arrange
+        Project closedProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, client));
+        ProjectRejectionDto rejectionDto = new ProjectRejectionDto("This project does not respect platform rules.");
+
+        // Act
+        String response = mockMvc.perform(post("/api/admin/projects/pending/" + closedProject.getId() + "/reject")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(rejectionDto))
+                        .session(session))
+                .andExpect(status().isForbidden())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "Project is closed and cannot be updated.");
+        assertThat(projectRepository.findById(closedProject.getId()).get().getProjectStatus()).isEqualTo(ProjectStatus.CLOSED);
+    }
 }
