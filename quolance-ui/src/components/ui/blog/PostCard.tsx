@@ -20,6 +20,7 @@ import {
 } from "@/api/blog-api";
 import {showToast} from "@/util/context/ToastProvider";
 import { PaginationParams } from "@/constants/types/pagination-types";
+import { Button } from "../button";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -223,7 +224,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   return (
     <div className="bg-white shadow-md rounded-md">
       {/* User Info */}
-      <div className="flex justify-between bg-slate-300 w-full rounded-t-md">
+      <div className="flex justify-between bg-sky-950 w-full rounded-t-md">
         <div className="flex items-center mb-2 mt-2 ml-5 py-3">
           <Image
             ref={profileImageRef}
@@ -256,16 +257,18 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
         </div>
         <span className="text-sm text-gray-500 mr-5 mt-2">
           {user?.username === authorName && (
-            <button
+            <Button
                 onClick={() => handleDeletePost(id)}
-                className="bg-red-500 text-white text-sm mt-3 px-4 py-2 focus:outline-none rounded-md"
+                bgColor="red-600"
+                animation="default"
+                className="mt-3"
             >
                 Delete
-            </button>
+            </Button>
           )}
         </span>
       </div>
-      <div className="m-7">
+      <div className="m-5">
         {/* Post Images */}
         {imageUrls.length > 0 && (
           <div className={`mt-4 ${imageUrls.length === 3 ? 'grid grid-rows-2 gap-2' : imageUrls.length > 1 ? 'grid grid-cols-2 gap-2' : ''}`}>
@@ -466,12 +469,13 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                   className="w-full p-2 border border-gray-300 rounded-md text-sm"
                   rows={3}
                 />
-                <button
+                <Button
                   onClick={handleAddComment}
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
+                  animation="default"
+                  className="mt-2"
                 >
                   Post Comment
-                </button>
+                </Button>
               </div>
             </div>
           )}

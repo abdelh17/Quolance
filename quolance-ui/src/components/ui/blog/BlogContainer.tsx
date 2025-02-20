@@ -11,6 +11,7 @@ import {showToast} from "@/util/context/ToastProvider";
 import {useQueryClient} from "@tanstack/react-query";
 import { PaginationParams, PaginationQueryDefault } from "@/constants/types/pagination-types";
 import { BlogPostViewType } from "@/constants/types/blog-types";
+import { Button } from "@/components/ui/button";
 
 
 const BlogContainer: React.FC = () => {
@@ -77,12 +78,12 @@ const BlogContainer: React.FC = () => {
                                 <p className="text-gray-700">
                                     You must be signed in to create a post. Please log in to continue.
                                 </p>
-                                <button
+                                <Button
                                     onClick={() => (window.location.pathname = "/auth/login")}
-                                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                    animation="default"
                                 >
                                     Sign In
-                                </button>
+                                </Button    >
                             </div>
                         </div>
                     ) : (
@@ -103,24 +104,24 @@ const BlogContainer: React.FC = () => {
                                             <p className="text-gray-700">
                                                 You must be signed in to create a post. Please log in to continue.
                                             </p>
-                                            <button
+                                            <Button
                                                 onClick={() => (window.location.pathname = "/auth/login")}
-                                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                                animation="default"
                                             >
                                                 Sign In
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 )}
                             </CreatePostModal>
                             {/* Create Post Button and Search Bar*/}
                             <div className="relative flex items-center">
-                            <button
+                            <Button
                                 onClick={() => setIsModalOpen(true)}
-                                className="absolute left-0 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                animation="default"
                             >
                                 Create New Post
-                            </button>
+                            </Button>
                                 <div className="flex-grow mx-auto max-w-lg">
                                     <SearchBar />
                                 </div>

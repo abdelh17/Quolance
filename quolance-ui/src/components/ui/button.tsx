@@ -55,6 +55,10 @@ export const animationPresets = {
     hoverTextColor: 'text-n900',
     overlayColor: 'bg-yellow-400',
   },
+  red: {
+    hoverTextColor: 'text-n900',
+    overlayColor: 'bg-red-400',
+  },
 } as const;
 
 export type AnimationPreset = keyof typeof animationPresets;
