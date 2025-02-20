@@ -5,8 +5,9 @@
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
-
+import httpClient from '@/lib/httpClient';
 import { useAuthGuard } from '@/api/auth-api';
+import { useUpdateNotificationSubscription } from '@/api/notifications-api';
 
 export interface Notification {
   id: number;
@@ -22,10 +23,9 @@ interface WebSocketContextProps {
   notifications: Notification[];
   newNotificationCount: number;
   markNotificationsAsRead: () => void;
-  // New functions and flag:
   subscribed: boolean;
-  subscribeToNotifications: () => void;
-  unsubscribeFromNotifications: () => void;
+  subscribeToNotifications: () => Promise<void>;
+  unsubscribeFromNotifications: () => Promise<void>;
 }
 
 const WebSocketContext = createContext<WebSocketContextProps>({
@@ -36,8 +36,8 @@ const WebSocketContext = createContext<WebSocketContextProps>({
   newNotificationCount: 0,
   markNotificationsAsRead: () => {},
   subscribed: true,
-  subscribeToNotifications: () => {},
-  unsubscribeFromNotifications: () => {},
+  subscribeToNotifications: async () => {},
+  unsubscribeFromNotifications: async () => {},
 });
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,8 +47,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [newNotificationCount, setNewNotificationCount] = useState(0);
   const [subscribed, setSubscribed] = useState(true);
   const clientRef = useRef<Client | null>(null);
-  // Ref to hold the subscription so we can unsubscribe later.
   const subscriptionRef = useRef<StompSubscription | null>(null);
+
+  // Hook to update the backend subscription state.
+  const updateSubscription = useUpdateNotificationSubscription();
 
   useEffect(() => {
     if (!user) return;
@@ -112,7 +114,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   // Function to subscribe to notifications.
-  const subscribeToNotifications = () => {
+  const subscribeToNotifications = async () => {
     if (clientRef.current && clientRef.current.connected && !subscriptionRef.current) {
       subscriptionRef.current = clientRef.current.subscribe('/user/topic/notifications', (message: IMessage) => {
         console.log('Received notification:', message.body);
@@ -124,15 +126,25 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           console.error('Error parsing notification:', error);
         }
       });
+      try {
+        await updateSubscription.mutateAsync(true);
+      } catch (error) {
+        console.error('Failed to update subscription preference:', error);
+      }
       setSubscribed(true);
     }
   };
 
   // Function to unsubscribe from notifications.
-  const unsubscribeFromNotifications = () => {
+  const unsubscribeFromNotifications = async () => {
     if (subscriptionRef.current) {
       subscriptionRef.current.unsubscribe();
       subscriptionRef.current = null;
+      try {
+        await updateSubscription.mutateAsync(false);
+      } catch (error) {
+        console.error('Failed to update subscription preference:', error);
+      }
       setSubscribed(false);
     }
   };

@@ -114,4 +114,16 @@ public class UsersController {
         userService.updateNotificationSubscription(user, subscribed);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/notifications/status")
+    @Operation(
+            summary = "Get notifications subscription status",
+            description = "Returns the notifications subscription status for the authenticated user."
+    )
+    public ResponseEntity<NotificationSubscriptionResponseDto> getNotificationSubscriptionStatus() {
+        User user = SecurityUtil.getAuthenticatedUser();
+        NotificationSubscriptionResponseDto dto = new NotificationSubscriptionResponseDto(user);
+        return ResponseEntity.ok(dto);
+    }
+
 }

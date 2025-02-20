@@ -4,6 +4,7 @@ import com.quolance.quolance_api.dtos.websocket.NotificationResponseDto;
 import com.quolance.quolance_api.entities.Notification;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.repositories.NotificationRepository;
+import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.services.websockets.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ public class NotificationMessageService implements NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserService userService;
 
     /**
      * Processes the given Notification by saving it to the database and sending it via WebSocket.
@@ -48,15 +50,22 @@ public class NotificationMessageService implements NotificationService {
         notification.setRead(false);
         notificationRepository.save(notification);
 
+        User recipient = userService.findById(notification.getRecipient().getId())
+                .orElseThrow(() -> new IllegalStateException("Recipient user not found"));
+
+        log.debug("Notification is {} for user: {}",
+                recipient.isNotificationsSubscribed(),
+                recipient.getUsername());
+
         // Check if the recipient is subscribed to notifications.
-        if (!notification.getRecipient().isNotificationsSubscribed()) {
+        if (!recipient.isNotificationsSubscribed()) {
             log.debug("User {} is unsubscribed from notifications. Skipping WebSocket delivery.",
-                    notification.getRecipient().getUsername());
+                    recipient.getUsername());
             return;
         }
 
         NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
-        messagingTemplate.convertAndSendToUser(notification.getRecipient().getUsername(), "/topic/notifications", responseDto);
+        messagingTemplate.convertAndSendToUser(recipient.getUsername(), "/topic/notifications", responseDto);
     }
 
     /**
@@ -135,7 +144,6 @@ public class NotificationMessageService implements NotificationService {
         notification.setSender(sender);
         notification.setRecipient(recipient);
         notification.setMessage(message);
-
         processNotification(notification);
     }
 }

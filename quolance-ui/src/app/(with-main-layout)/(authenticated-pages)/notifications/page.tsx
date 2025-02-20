@@ -1,11 +1,12 @@
 'use client';
-
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   useGetAllNotifications,
   useMarkNotificationAsRead,
   Notification,
+  useGetNotificationSubscription,
+  useUpdateNotificationSubscription,
 } from '@/api/notifications-api';
 import { showToast } from '@/util/context/ToastProvider';
 import { useWebSocket } from '@/util/context/webSocketContext';
@@ -14,7 +15,12 @@ export default function NotificationsPage() {
   const [filter, setFilter] = useState<'all' | 'read' | 'unread'>('all');
   const { data: notifications = [], isLoading, isError, refetch } = useGetAllNotifications();
   const { mutate: markNotificationAsRead } = useMarkNotificationAsRead();
+  const { data: subscriptionStatus, refetch: refetchSubscription } = useGetNotificationSubscription();
+  const { mutate: updateSubscription } = useUpdateNotificationSubscription();
   const { subscribed, subscribeToNotifications, unsubscribeFromNotifications } = useWebSocket();
+
+  // Use the backend subscription status if available; otherwise, fall back to the context value.
+  const currentSubscribed = subscriptionStatus !== undefined ? subscriptionStatus : subscribed;
 
   const filteredNotifications = notifications.filter((notif: Notification) => {
     if (filter === 'all') return true;
@@ -33,11 +39,16 @@ export default function NotificationsPage() {
   };
 
   const handleToggleSubscription = () => {
-    if (subscribed) {
-      unsubscribeFromNotifications();
-    } else {
-      subscribeToNotifications();
-    }
+    updateSubscription(!currentSubscribed, {
+      onSuccess: () => {
+        refetchSubscription(); // Refresh state from backend after update
+        if (currentSubscribed) {
+          unsubscribeFromNotifications();
+        } else {
+          subscribeToNotifications();
+        }
+      },
+    });
   };
 
   return (
@@ -78,32 +89,32 @@ export default function NotificationsPage() {
               Read
             </button>
           </div>
-          {/* Mobile Subscription Toggle Card */}
-          <div className="mb-6">
-            <div className="mx-auto max-w-xs rounded-md border border-gray-300 p-4 flex items-center justify-center space-x-3">
-              <span className="text-sm font-medium text-gray-700">Notifications:</span>
-              <label htmlFor="toggle-subscription-mobile" className="relative inline-block w-12 h-6">
+          {/* Mobile Subscription Toggle */}
+          <div className="mb-6 flex justify-center">
+            <label htmlFor="toggle-subscription-mobile" className="flex items-center cursor-pointer">
+              <div className="relative">
                 <input
                   type="checkbox"
                   id="toggle-subscription-mobile"
-                  className="opacity-0 w-0 h-0"
-                  checked={subscribed}
+                  className="sr-only"
+                  checked={currentSubscribed}
                   onChange={handleToggleSubscription}
                 />
-                <span
-                  className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 rounded-full transition-colors duration-200"
-                  style={{ backgroundColor: subscribed ? '#3B82F6' : '#D1D5DB' }}
-                ></span>
-                <span
-                  className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${
-                    subscribed ? 'translate-x-6' : 'translate-x-0'
+                <div
+                  className={`block w-14 h-8 rounded-full transition-colors duration-200 ${
+                    currentSubscribed ? 'bg-blue-500' : 'bg-gray-300'
                   }`}
-                ></span>
-              </label>
-              <span className="text-sm font-medium text-gray-700">
-                {subscribed ? 'Subscribed' : 'Unsubscribed'}
+                ></div>
+                <div
+                  className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-200 ${
+                    currentSubscribed ? 'translate-x-6' : 'translate-x-0'
+                  }`}
+                ></div>
+              </div>
+              <span className="ml-3 text-sm font-medium text-gray-700">
+                {currentSubscribed ? 'Subscribed' : 'Unsubscribed'}
               </span>
-            </div>
+            </label>
           </div>
         </div>
 
@@ -142,32 +153,31 @@ export default function NotificationsPage() {
                 Read
               </button>
             </div>
-            <div>
-              <label htmlFor="toggle-subscription-desktop" className="flex items-center cursor-pointer">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    id="toggle-subscription-desktop"
-                    className="sr-only"
-                    checked={subscribed}
-                    onChange={handleToggleSubscription}
-                  />
-                  <div
-                    className={`block w-14 h-8 rounded-full transition-colors duration-200 ${
-                      subscribed ? 'bg-blue-500' : 'bg-gray-300'
-                    }`}
-                  ></div>
-                  <div
-                    className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-200 ${
-                      subscribed ? 'translate-x-6' : 'translate-x-0'
-                    }`}
-                  ></div>
-                </div>
-                <span className="ml-3 text-sm font-medium text-gray-700">
-                  {subscribed ? 'Subscribed' : 'Unsubscribed'}
-                </span>
-              </label>
-            </div>
+            {/* Desktop Subscription Toggle */}
+            <label htmlFor="toggle-subscription-desktop" className="flex items-center cursor-pointer">
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  id="toggle-subscription-desktop"
+                  className="sr-only"
+                  checked={currentSubscribed}
+                  onChange={handleToggleSubscription}
+                />
+                <div
+                  className={`block w-14 h-8 rounded-full transition-colors duration-200 ${
+                    currentSubscribed ? 'bg-blue-500' : 'bg-gray-300'
+                  }`}
+                ></div>
+                <div
+                  className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-200 ${
+                    currentSubscribed ? 'translate-x-6' : 'translate-x-0'
+                  }`}
+                ></div>
+              </div>
+              <span className="ml-3 text-sm font-medium text-gray-700">
+                {currentSubscribed ? 'Subscribed' : 'Unsubscribed'}
+              </span>
+            </label>
           </div>
         </div>
 
