@@ -29,7 +29,7 @@ public class BlogCommentController {
         User author = SecurityUtil.getAuthenticatedUser();
         log.info("User {} is creating a comment on post {}", author.getId(), postId);
         BlogCommentDto response = blogCommentService.createBlogComment(postId, author, request);
-        log.info("Comment created successfully with ID {}", response.getCommentId());
+        log.info("User {} successfully created a comment on post {}", author.getId(), postId);
         return ResponseEntity.ok(response);
     }
 
@@ -37,7 +37,8 @@ public class BlogCommentController {
     @Operation(summary = "Get paginated comments for a specific blog post")
     public ResponseEntity<Page<BlogCommentDto>> getCommentsByBlogPostId(
             @PathVariable UUID blogPostId, Pageable pageable) {
-                log.info("Fetching comments for blog post {}", blogPostId);
+                User currentUser =  SecurityUtil.getAuthenticatedUser();
+                log.info("User {} is Fetching comments for blog post {}", currentUser.getId(), blogPostId);
         return ResponseEntity.ok(blogCommentService.getPaginatedComments(blogPostId, pageable));
     }
 
@@ -57,7 +58,7 @@ public class BlogCommentController {
         User author = SecurityUtil.getAuthenticatedUser();
         log.info("User {} is deleting comment {}", author.getId(), id);
         blogCommentService.deleteBlogComment(id, author);
-        log.info("Comment {} deleted successfully", id);
+        log.info("User {} successfully deleted Comment {}", author.getId(), id);
         return ResponseEntity.ok("The comment was successfully deleted");
     }
 

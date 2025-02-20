@@ -149,7 +149,6 @@ public class BlogPostServiceImpl implements BlogPostService {
         try {
             log.debug("Fetching blog post with ID: {}", postId);
             blogPost = getBlogPostEntity(postId);
-            log.debug("Blog post retrieved successfully: {}", blogPost);
         } catch (ApiException e) {
             log.warn("Failed to retrieve blog post with ID: {}. Error: {}", postId, e.getMessage());
             throw new ApiException(e.getMessage());
@@ -181,7 +180,6 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         // Update the post's tags
         blogPost.setTags(newTags);
-        log.debug("Updated tags for blog post ID: {}: {}", postId, newTags);
 
         blogPostRepository.save(blogPost);
         log.info("Tags updated successfully for blog post ID: {}", postId);
@@ -205,7 +203,6 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
-        log.info("Fetching paginated blog posts");
         return blogPostRepository.findAll(pageable).map(BlogPostResponseDto::fromEntity);
     }
 }

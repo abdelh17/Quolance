@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +36,7 @@ public class BlogPostController {
         User author = SecurityUtil.getAuthenticatedUser();
         log.info("User {} is creating a blog post", author.getId());
         BlogPostResponseDto response = blogPostService.create(request, author);
-        log.info("Blog post created successfully with ID {}", response.getId());
+        log.info("User {} created successfully BlogPost with ID {}",  author.getId(), response.getId());
         return ResponseEntity.ok(response);
     }
 

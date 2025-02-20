@@ -34,6 +34,7 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public ReactionResponseDto reactToPost(ReactionRequestDto requestDto, User user) {
         log.info("User {} is reacting to blog post with ID: {}", user.getUsername(), requestDto.getBlogPostId());
+        
         if (requestDto.getBlogPostId() == null) {
             log.warn("BlogPostId must be provided for reacting to a post. User: {}", user.getUsername());
             throw new ApiException("BlogPostId must be provided for reacting to a post.");
@@ -42,7 +43,6 @@ public class ReactionServiceImpl implements ReactionService {
         validateReactionType(requestDto.getReactionType());
 
         BlogPost blogPost = blogPostService.getBlogPostEntity(requestDto.getBlogPostId());
-        log.debug("Found blog post with ID: {}", blogPost.getId());
 
         Reaction existingReaction = reactionRepository.findByUserAndBlogPost(user, blogPost)
                 .orElse(null);
@@ -60,7 +60,6 @@ public class ReactionServiceImpl implements ReactionService {
         newReaction.setUser(user);
 
         Reaction savedReaction = reactionRepository.save(newReaction);
-        log.info("New reaction created for user {} on blog post ID: {}", user.getUsername(), blogPost.getId());
         return ReactionResponseDto.fromEntity(savedReaction);
     }
 
@@ -76,7 +75,6 @@ public class ReactionServiceImpl implements ReactionService {
         validateReactionType(requestDto.getReactionType());
 
         BlogComment blogComment = blogCommentService.getBlogCommentEntity(requestDto.getBlogCommentId());
-        log.debug("Found blog comment with ID: {}", blogComment.getId());
 
         Reaction existingReaction = reactionRepository.findByUserAndBlogComment(user, blogComment)
                 .orElse(null);
@@ -94,7 +92,6 @@ public class ReactionServiceImpl implements ReactionService {
         newReaction.setUser(user);
 
         Reaction savedReaction = reactionRepository.save(newReaction);
-        log.info("New reaction created for user {} on blog comment ID: {}", user.getUsername(), blogComment.getId());
 
         return ReactionResponseDto.fromEntity(savedReaction);
     }
