@@ -23,15 +23,16 @@ public class NotificationMessageService implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
-
     /**
      * Processes the given Notification by saving it to the database and sending it via WebSocket.
      * Ensures that both sender and recipient are present.
      *
+     * If the recipient has unsubscribed from notifications, the notification is persisted but not sent.
+     *
      * @param notification The notification to process.
      */
     private void processNotification(Notification notification) {
-        // Validate that the recipient is not null.
+        // Validate that the recipient and sender are not null.
         if (notification.getRecipient() == null) {
             throw new IllegalArgumentException("Notification recipient cannot be null");
         }
@@ -46,6 +47,13 @@ public class NotificationMessageService implements NotificationService {
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
         notificationRepository.save(notification);
+
+        // Check if the recipient is subscribed to notifications.
+        if (!notification.getRecipient().isNotificationsSubscribed()) {
+            log.debug("User {} is unsubscribed from notifications. Skipping WebSocket delivery.",
+                    notification.getRecipient().getUsername());
+            return;
+        }
 
         NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
         messagingTemplate.convertAndSendToUser(notification.getRecipient().getUsername(), "/topic/notifications", responseDto);

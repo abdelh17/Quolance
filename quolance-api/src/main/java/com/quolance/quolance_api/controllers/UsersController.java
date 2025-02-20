@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
@@ -101,4 +103,15 @@ public class UsersController {
         return ResponseEntity.ok(userResponseDto);
     }
 
+    @PatchMapping("/notifications")
+    @Operation(
+            summary = "Update notifications subscription preference",
+            description = "Update the notifications subscription preference for the authenticated user."
+    )
+    public ResponseEntity<Void> updateNotificationSubscription(@RequestBody Map<String, Boolean> payload) {
+        User user = SecurityUtil.getAuthenticatedUser();
+        boolean subscribed = payload.getOrDefault("subscribed", true);
+        userService.updateNotificationSubscription(user, subscribed);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -59,6 +59,9 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(nullable = false)
     private boolean verified = false;
 
+    @Column(nullable = false)
+    private boolean notificationsSubscribed = true;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profileId")
     private Profile profile;

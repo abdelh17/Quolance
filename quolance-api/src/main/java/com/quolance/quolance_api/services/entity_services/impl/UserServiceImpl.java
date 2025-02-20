@@ -241,4 +241,10 @@ public class UserServiceImpl implements UserService {
         log.info("Successfully updated password for user ID: {}", user.getId());
         return new UserResponseDto(user);
     }
+
+    @Override
+    public void updateNotificationSubscription(User user, boolean subscribed) {
+        user.setNotificationsSubscribed(subscribed);
+        userRepository.save(user);
+    }
 }

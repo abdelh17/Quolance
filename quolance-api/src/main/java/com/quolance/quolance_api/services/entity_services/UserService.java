@@ -36,4 +36,6 @@ public interface UserService {
 
     Page<User> findAllWithFilters(Specification<User> spec, Pageable pageable);
 
+    void updateNotificationSubscription(User user, boolean subscribed);
+
 }
