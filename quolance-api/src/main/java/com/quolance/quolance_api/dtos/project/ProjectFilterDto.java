@@ -15,5 +15,5 @@ public class ProjectFilterDto {
     private PriceRange priceRange;
     private FreelancerExperienceLevel experienceLevel;
     private ProjectStatus projectStatus;
-
+    private Boolean applied;
 }
