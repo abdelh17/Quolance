@@ -69,7 +69,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
             application.setFreelancer(freelancer);
             application.setProject(project);
-
+            application.setMessage(applicationCreateDto.getMessage());
             applicationService.saveApplication(application);
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);

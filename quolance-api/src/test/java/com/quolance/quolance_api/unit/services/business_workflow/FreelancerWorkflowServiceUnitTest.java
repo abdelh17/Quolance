@@ -56,6 +56,7 @@ class FreelancerWorkflowServiceUnitTest {
     private User mockFreelancer;
     private Project mockProject;
     private Application mockApplication;
+    private String applicationMessage;
     private ApplicationCreateDto applicationCreateDto;
 
     @BeforeEach
@@ -78,7 +79,8 @@ class FreelancerWorkflowServiceUnitTest {
                 .applicationStatus(ApplicationStatus.APPLIED)
                 .build();
 
-        applicationCreateDto = new ApplicationCreateDto(mockProject.getId());
+        applicationMessage = "Test application message";
+        applicationCreateDto = new ApplicationCreateDto(mockProject.getId(), applicationMessage);
     }
 
     @Test
