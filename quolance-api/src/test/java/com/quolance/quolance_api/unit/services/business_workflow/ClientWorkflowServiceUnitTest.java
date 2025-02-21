@@ -230,15 +230,14 @@ class ClientWorkflowServiceUnitTest {
     @Test
     void getAllClientProjects_WhenNoProjects_ReturnsEmptyList() {
         Page<Project> emptyPage = Page.empty();
-        when(projectService.getProjectsByClientId(eq(mockClient.getId()), any(Pageable.class)))
+        when(projectService.findAllWithFilters(any(Specification.class), any(Pageable.class)))
                 .thenReturn(emptyPage);
         ProjectFilterDto filters = new ProjectFilterDto();
         Page<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient, Pageable.unpaged(), filters);
 
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
-        verify(projectService).getProjectsByClientId(eq(mockClient.getId()), any(Pageable.class));
-    }
+        verify(projectService).findAllWithFilters(any(Specification.class), any(Pageable.class));}
 
     @Test
     void getAllApplicationsToProject_WhenOwner_Success() {
