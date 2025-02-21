@@ -8,6 +8,7 @@ import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
@@ -218,17 +219,18 @@ class ClientControllerUnitTest {
             PageableRequestDto pageableRequestDto = new PageableRequestDto();
             pageableRequestDto.setPage(0);
             pageableRequestDto.setSize(10);
+            ProjectFilterDto filters = new ProjectFilterDto();
             Page<ProjectDto> projectPage = new PageImpl<>(Arrays.asList(projectDto));
             when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
-            when(clientWorkflowService.getAllClientProjects(eq(mockClient), any(Pageable.class)))
+            when(clientWorkflowService.getAllClientProjects(eq(mockClient), any(Pageable.class), eq((filters))))
                     .thenReturn(projectPage);
 
-            ResponseEntity<PageResponseDto<ProjectDto>> response = clientController.getAllClientProjects(pageableRequestDto);
+            ResponseEntity<PageResponseDto<ProjectDto>> response = clientController.getAllClientProjects(pageableRequestDto, filters);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).hasSize(1);
             assertThat(response.getBody().getContent().getFirst()).isEqualTo(projectDto);
-            verify(clientWorkflowService).getAllClientProjects(eq(mockClient), any(Pageable.class));
+            verify(clientWorkflowService).getAllClientProjects(eq(mockClient), any(Pageable.class), eq(filters));
         }
     }
 
@@ -239,16 +241,17 @@ class ClientControllerUnitTest {
             PageableRequestDto pageableRequestDto = new PageableRequestDto();
             pageableRequestDto.setPage(0);
             pageableRequestDto.setSize(10);
+            ProjectFilterDto filters = new ProjectFilterDto();
             Page<ProjectDto> emptyPage = new PageImpl<>(List.of());
             when(paginationUtils.createPageable(any(PageableRequestDto.class))).thenReturn(PageRequest.of(0, 10));
-            when(clientWorkflowService.getAllClientProjects(eq(mockClient), any(Pageable.class)))
+            when(clientWorkflowService.getAllClientProjects(eq(mockClient), any(Pageable.class), eq(filters)))
                     .thenReturn(emptyPage);
 
-            ResponseEntity<PageResponseDto<ProjectDto>> response = clientController.getAllClientProjects(pageableRequestDto);
+            ResponseEntity<PageResponseDto<ProjectDto>> response = clientController.getAllClientProjects(pageableRequestDto, filters);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getContent()).isEmpty();
-            verify(clientWorkflowService).getAllClientProjects(eq(mockClient), any(Pageable.class));
+            verify(clientWorkflowService).getAllClientProjects(eq(mockClient), any(Pageable.class), eq(filters));
         }
     }
 
