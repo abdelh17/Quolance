@@ -33,6 +33,9 @@ public class Application extends AbstractEntity {
     @Version
     private Long version;
 
+    @Column(length = 1000)
+    private String message;
+    
     /**
      * Checks if the application is owned by a particular freelancer.
      *
