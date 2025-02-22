@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Slf4j
 @RestController
@@ -54,13 +53,13 @@ public class UsersController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/verify-email")
+    @PostMapping("/verify-email")
     @Operation(
             summary = "Verify the email of the user",
             description = "Verify the email of the user by passing the token")
-    public RedirectView verifyEmail(@RequestParam String token) {
-        userService.verifyEmail(token);
-        return new RedirectView(applicationProperties.getLoginPageUrl());
+    public ResponseEntity<String> verifyEmail(@RequestBody VerifyEmailDto verificationDto) {
+        String verificationResponse = userService.verifyEmail(verificationDto);
+        return ResponseEntity.ok(verificationResponse);
     }
 
     @PostMapping("/forgot-password")
