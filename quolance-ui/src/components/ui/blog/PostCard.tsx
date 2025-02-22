@@ -22,6 +22,8 @@ import {
 import {showToast} from "@/util/context/ToastProvider";
 import { PaginationParams } from "@/constants/types/pagination-types";
 import { Button } from "../button";
+import { IoSendSharp } from 'react-icons/io5'
+import { MdExpandMore, MdExpandLess } from 'react-icons/md'
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -49,6 +51,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
   const [pagination, setPagination] = useState<PaginationParams>({page: 0, size: 5});
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { user } = useAuthGuard({ middleware: "auth" });
   const { data: authorProfile } = useGetFreelancerProfile(authorName);
@@ -75,22 +78,20 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     },
   });
 
-  const handleLoadMoreComments = () => {
-    if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
-    setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
-  };
+  
+
+  const userSummaryRef = useRef<HTMLDivElement | null>(null);
+  const profileImageRef = useRef<HTMLImageElement | null>(null);
+  const authorNameRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const isUserSummaryOpen = openUserSummaryPostId === id;
 
   useEffect(() => {
     if (pagedComments?.content) {
       setAllLoadedComments((prevComments) => [...prevComments, ...pagedComments.content]);
     }
   }, [pagedComments]);
-
-  const userSummaryRef = useRef<HTMLDivElement | null>(null);
-  const profileImageRef = useRef<HTMLImageElement | null>(null);
-  const authorNameRef = useRef<HTMLButtonElement | null>(null);
-
-  const isUserSummaryOpen = openUserSummaryPostId === id;
 
   useEffect(() => {
     if (reactionData) {
@@ -138,6 +139,25 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       document.removeEventListener("mousedown", handleCloseUserSummary);
     };
   }, [isUserSummaryOpen, setOpenUserSummaryPostId]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    }
+    
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const handleReactionClick = (reactionType: string) => {
     if (!reactions || !user) return;
@@ -197,8 +217,17 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     }
   };
 
+  const handleEdit = () => {};
+  const handleReport = () => {};
+
+  const handleLoadMoreComments = () => {
+    if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
+    setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
+  };
+
   const toggleExpand = () => setIsExpanded(!isExpanded);
   const toggleComments = () => setShowComments(!showComments);
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   const handleImageClick = (index: number) => {
     setCurrentImageIndex(index);
@@ -219,7 +248,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
 
   return (
-    <div className="bg-white shadow-md rounded-md">
+    <div className="bg-white shadow-md rounded-md font-sans">
       {/* User Info */}
       <div className="flex justify-between bg-n20 w-full rounded-t-md">
         <div className="flex items-center mb-2 mt-2 ml-5 py-3">
@@ -234,7 +263,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           />
           <button
             ref={authorNameRef}
-            className="ml-4 text-gray-800 font-semibold cursor-pointer focus:outline-none"
+            className="ml-4 text-gray-800 font-bold cursor-pointer focus:outline-none"
             onClick={handleShowUserSummary}
           >
             {authorName}
@@ -252,17 +281,51 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             </div>
           )}
         </div>
-        <span className="text-sm text-gray-500 mr-5 mt-2">
-          {user?.username === authorName && (
+        <span className="text-sm text-gray-500 mr-5 mt-3">
+          <div ref={menuRef} className="relative">
             <Button
-                onClick={() => handleDeletePost(id)}
-                bgColor="red-600"
-                animation="default"
-                className="mt-3"
+              onClick={toggleMenu}
+              className="focus:outline-none text-2xl font-bold mt-2"
+              variant="ghost"
             >
-                Delete
+              ...
             </Button>
-          )}
+            {isMenuOpen && (
+              <div className="absolute top-8 right-0 bg-white shadow-md rounded-md mt-5 mr-3 w-28 flex flex-col gap-1">
+                {user?.username === authorName ? (
+                  <>
+                    <button 
+                      onClick={handleEdit} 
+                      className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full"
+                    >
+                      <div className="mt-2 ml-2">
+                        Edit
+                      </div>
+                    </button>
+                    <button
+                        onClick={() => handleDeletePost(id)}
+                        className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full "
+                    >
+                      <div className="ml-2 mb-2">
+                        Delete
+                      </div>
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    onClick={handleReport} 
+                    className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full"
+                  >
+                    <div className="mt-2 ml-2 mb-2">
+                      Report
+                    </div>
+                  </button>
+                )
+              }
+              </div>
+            )}
+          </div>
+          
         </span>
       </div>
       <div className="m-5">
@@ -380,7 +443,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       </div>
 
       {/* Post Content */}
-      <div className="m-5">
+      <div className="md:pb-5 md:px-8 px-2 pb-0.5">
         <div className="flex justify-between">
           <h3 className="text-md font-semibold text-gray-800">{title}</h3>
           <span className="text-sm text-gray-500">
@@ -417,19 +480,17 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               />
           ))}
         </div>
-
+        <button
+          onClick={toggleComments}
+          className="text-blue-500 text-sm focus:outline-none mt-3 mb-3"
+        >
+          {pagedComments?.totalElements ?? 0} Comments {showComments ? <MdExpandLess className="inline-block text-xl"/> : <MdExpandMore className="inline-block text-xl"/>}
+        </button>
 
         {/* Comments Section */}
-        <div className="mt-4">
-          <button
-            onClick={toggleComments}
-            className="text-blue-500 text-sm focus:outline-none"
-          >
-            Comments ({pagedComments?.totalElements ?? 0})
-          </button>
-
+        <div className="md:mx-2 md:px-3">
           {showComments && (
-            <div className="bg-gray-50 p-4 rounded-md mt-3 content-center">
+            <div className="border-solid border-2 shadow-md mb-2 p-3 rounded-md content-center">
               {allLoadedComments.map((comment) => (
                 <CommentCard
                   key={comment.commentId}
@@ -452,21 +513,18 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               )}
 
               {/* Add Comment Input */}
-              <div className="mt-4">
+              <div className="mt-4 flex flex-row justify-between gap-2">
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Add a comment..."
-                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                  className="w-full h-10 p-2 border border-gray-300 rounded-md text-sm"
                   rows={3}
                 />
-                <Button
+                <IoSendSharp
                   onClick={handleAddComment}
-                  animation="default"
-                  className="mt-2"
-                >
-                  Post Comment
-                </Button>
+                  className="text-3xl text-blue-600 cursor-pointer mt-1"
+                />
               </div>
             </div>
           )}

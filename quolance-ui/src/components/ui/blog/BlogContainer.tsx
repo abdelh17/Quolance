@@ -133,20 +133,21 @@ const BlogContainer: React.FC = () => {
                                 )}
                             </CreatePostModal>
                             {/* Create Post Button and Search Bar*/}
-                            <div className="relative flex items-center">
-                            <Button
-                                onClick={() => setIsModalOpen(true)}
-                                animation="default"
-                            >
-                                Create New Post
-                            </Button>
-                                <div className="flex-grow mx-auto max-w-lg">
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <Button
+                                    onClick={() => setIsModalOpen(true)}
+                                    animation="default"
+                                    className="w-full md:w-auto"
+                                >
+                                    Create New Post
+                                </Button>
+                                <div className="w-full">
                                     <SearchBar />
                                 </div>
                             </div>
 
                             {/* Blog Posts */}
-                            <div>
+                            <div className="space-y-4 w-full">
                                 {isLoading ? (
                                     <Loading />
                                 ) : (
