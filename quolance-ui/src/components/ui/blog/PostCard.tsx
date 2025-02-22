@@ -11,6 +11,7 @@ import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import UserSummary from "@/components/ui/blog/UserSummary";
 import {
   CommentRequestDto,
+  CommentResponseDto,
   useAddComment,
   useDeleteBlogPost,
   useGetCommentsByPostId,
@@ -44,6 +45,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const [reactions, setReactions] = useState<ReactionState | null>(null);
   const [showFullScreen, setShowFullScreen] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [allLoadedComments, setAllLoadedComments] = useState<CommentResponseDto[]>([]);
 
   const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
   const [pagination, setPagination] = useState<PaginationParams>({page: 0, size: 5});
@@ -73,17 +75,16 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     },
   });
 
-  const handleNextPage = () => {
+  const handleLoadMoreComments = () => {
     if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
     setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  const handlePrevPage = () => {
-    if (!pagedComments || pagedComments.number === 0) return;
-    setPagination((prev) => ({ ...prev, page: prev.page - 1 }));
-  };
-
-  
+  useEffect(() => {
+    if (pagedComments?.content) {
+      setAllLoadedComments((prevComments) => [...prevComments, ...pagedComments.content]);
+    }
+  }, [pagedComments]);
 
   const userSummaryRef = useRef<HTMLDivElement | null>(null);
   const profileImageRef = useRef<HTMLImageElement | null>(null);
@@ -147,7 +148,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       const userReaction = reactionData?.find(
         (reaction) => reaction.reactionType.toLowerCase() === reactionType && reaction.userName === user.username
       );
-      ``
+      
       if (userReaction) {
         removeReaction(userReaction.id);
       }
@@ -379,7 +380,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       </div>
 
       {/* Post Content */}
-      <div className="ml-5 mr-5 mb-5">
+      <div className="m-5">
         <div className="flex justify-between">
           <h3 className="text-md font-semibold text-gray-800">{title}</h3>
           <span className="text-sm text-gray-500">
@@ -428,8 +429,8 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           </button>
 
           {showComments && (
-            <div className="bg-gray-50 p-4 rounded-md mt-3">
-              {pagedComments?.content?.map((comment) => (
+            <div className="bg-gray-50 p-4 rounded-md mt-3 content-center">
+              {allLoadedComments.map((comment) => (
                 <CommentCard
                   key={comment.commentId}
                   commentId={comment.commentId}
@@ -438,24 +439,18 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                   dateCreated={new Date().toISOString()}
                 />
               ))}
-              {/* Pagination Controls */}
-              <div className="flex justify-between mt-4">
-                <button
-                  onClick={handlePrevPage}
-                  disabled={pagination.page === 0}
-                >
-                  Previous
-                </button>
-                <span>
-                  Page {pagination.page + 1} of {pagedComments?.totalPages}
-                </span>
-                <button
-                  onClick={handleNextPage}
-                  disabled={(pagedComments?.number ?? 0) >= ((pagedComments?.totalPages ?? 1) - 1)}
-                >
-                  Next
-                </button>
-              </div>
+              {(pagedComments?.number ?? 0) < ((pagedComments?.totalPages ?? 1) - 1) && (
+                <div className="flex justify-center">
+                  <Button
+                    onClick={handleLoadMoreComments}
+                    variant="white"
+                    className="mt-2"
+                  >
+                    See More Comments
+                  </Button>
+                </div>
+              )}
+
               {/* Add Comment Input */}
               <div className="mt-4">
                 <textarea
