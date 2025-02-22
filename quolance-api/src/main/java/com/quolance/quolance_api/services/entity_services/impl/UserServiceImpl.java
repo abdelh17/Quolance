@@ -53,7 +53,6 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         log.info("Successfully created new user with ID: {}", user.getId());
 
-        user.setVerified(true);
         sendVerificationEmail(user);
         log.debug("Verification email process initiated for user ID: {}", user.getId());
 
