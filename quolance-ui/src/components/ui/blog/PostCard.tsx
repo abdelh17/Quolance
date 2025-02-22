@@ -73,17 +73,13 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     },
   });
 
-  console.log("Paged Comments:", pagedComments);
-  console.log("Paged Comments Content:", pagedComments?.content);
-
-
   const handleNextPage = () => {
-    if (!pagedComments || pagedComments.page >= (pagedComments.totalPages ?? 1) - 1) return;
+    if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
     setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
   const handlePrevPage = () => {
-    if (!pagedComments || pagedComments.page === 0) return;
+    if (!pagedComments || pagedComments.number === 0) return;
     setPagination((prev) => ({ ...prev, page: prev.page - 1 }));
   };
 
@@ -224,7 +220,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   return (
     <div className="bg-white shadow-md rounded-md">
       {/* User Info */}
-      <div className="flex justify-between bg-sky-950 w-full rounded-t-md">
+      <div className="flex justify-between bg-n20 w-full rounded-t-md">
         <div className="flex items-center mb-2 mt-2 ml-5 py-3">
           <Image
             ref={profileImageRef}
@@ -455,7 +451,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                 </span>
                 <button
                   onClick={handleNextPage}
-                  disabled={(pagedComments?.page ?? 0) >= ((pagedComments?.totalPages ?? 1) - 1)}
+                  disabled={(pagedComments?.number ?? 0) >= ((pagedComments?.totalPages ?? 1) - 1)}
                 >
                   Next
                 </button>

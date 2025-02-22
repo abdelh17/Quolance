@@ -5,6 +5,7 @@ import {HttpErrorResponse} from '@/constants/models/http/HttpErrorResponse';
 import { PagedResponse } from '@/constants/models/http/PagedResponse';
 import { PaginationParams } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 
 /* ---------- Blog Posts ---------- */
@@ -24,13 +25,11 @@ export const useCreateBlogPost = (options?: {
         throw new Error("User ID is undefined. User must be logged in.");
       }
 
-      // Construct FormData
       const formData = new FormData();
       formData.append("title", blogpost.title);
       formData.append("content", blogpost.content);
       formData.append("userId", String(blogpost.userId));
 
-      // Correctly append multiple files under the key "files"
       if (blogpost.files && blogpost.files.length > 0) {
         blogpost.files.forEach((file) => {
           formData.append("images", file);
@@ -49,18 +48,21 @@ export const useCreateBlogPost = (options?: {
 };
 
 
-export const useGetAllBlogPosts = (query: PaginationParams, options?: {
-  onSuccess?: (data: PagedResponse<BlogPostViewType>) => void;
-  onError?: (error: HttpErrorResponse) => void;
-}) => {
-  return useQuery({
-    queryKey: ["all-blog-posts", query],
-    queryFn: async () => {
-      const response = await httpClient.get(`/api/blog-posts?${queryToString(query)}`);
+export const useGetAllBlogPosts = () => {
+  return useInfiniteQuery<PagedResponse<BlogPostViewType>, HttpErrorResponse>({
+    queryKey: ["all-blog-posts"],
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await httpClient.get(`/api/blog-posts?page=${pageParam}&size=10`);
       return response.data;
     },
-    staleTime: 1000 * 60 * 5,
-    ...options,
+    initialPageParam: 0,
+    getNextPageParam: (prevPage) => {
+      if (prevPage.number < prevPage.totalPages - 1) {
+        const nextPage = prevPage.number + 1;
+        return nextPage;
+      }
+      return undefined;
+    },
   });
 };
 
