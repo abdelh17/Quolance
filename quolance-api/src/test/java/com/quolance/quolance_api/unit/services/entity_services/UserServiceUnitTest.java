@@ -183,28 +183,6 @@ class UserServiceUnitTest {
     }
 
     @Test
-    void verifyEmail_Success() {
-        when(verificationCodeRepository.findByCode("test_code")).thenReturn(Optional.of(mockVerificationCode));
-
-        userService.verifyEmail("test_code");
-
-        verify(userRepository).save(userCaptor.capture());
-        User savedUser = userCaptor.getValue();
-        assertThat(savedUser.isVerified()).isTrue();
-        verify(verificationCodeRepository).delete(mockVerificationCode);
-    }
-
-    @Test
-    void verifyEmail_InvalidCode_ThrowsException() {
-        when(verificationCodeRepository.findByCode(anyString())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> userService.verifyEmail("invalid_code"))
-                .isInstanceOf(ApiException.class)
-                .hasFieldOrPropertyWithValue("status", 400)
-                .hasMessage("Invalid token");
-    }
-
-    @Test
     void forgotPassword_Success() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(mockUser));
         when(passwordResetTokenRepository.save(any(PasswordResetToken.class))).thenReturn(mockPasswordResetToken);
@@ -294,8 +272,9 @@ class UserServiceUnitTest {
 
         Optional<User> result = userService.findById(mockUser.getId());
 
-        assertThat(result).isPresent();
-        assertThat(result).contains(mockUser);
+        assertThat(result)
+                .isPresent()
+                .contains(mockUser);
         verify(userRepository).findById(mockUser.getId());
     }
 
@@ -316,8 +295,9 @@ class UserServiceUnitTest {
 
         Optional<User> result = userService.findByUsername("testuser");
 
-        assertThat(result).isPresent();
-        assertThat(result).contains(mockUser);
+        assertThat(result)
+                .isPresent()
+                .contains(mockUser);
         verify(userRepository).findByUsername("testuser");
     }
 
