@@ -8,7 +8,10 @@
     <title>Document</title>
 </head>
 <body>
-<p th:text="'Hi 👋' + ${user.firstName} + '!'"></p>
-<p th:text="'Welcome to Quolance, your account is created successfully'"></p>
+<p th:text="'Hi 👋 ' + ${user.firstName} + '!'"></p>
+<p th:text="'We are happy to see you join us for great opportunities! To complete your account creation, please enter the following code on the site:'"></p>
+<p th:text="'Verification code: ' + ${verificationCode}"></p>
+<p th:text="'Do not share the code with anyone. It will expire in 10 minutes.'"></p>
+<p th:text="'If you did not request this code, please ignore this email.'"></p>
 </body>
 </html>
