@@ -7,6 +7,7 @@ import {
   PaginationQueryDefault,
 } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
+import { ProjectType } from '@/constants/types/project-types';
 
 /*--- Filters ---*/
 export interface CandidateFilterQuery extends PaginationParams {
@@ -25,7 +26,7 @@ export const CandidateFilterQueryDefault = {
 };
 
 /*--- Hooks ---*/
-export const useGetProjectSubmissions = (projectId: number) => {
+export const useGetProjectSubmissions = (projectId: string) => {
   return useQuery({
     queryKey: ['project-submissions', projectId], // Add projectId to queryKey, important for caching
     queryFn: () =>
@@ -33,10 +34,10 @@ export const useGetProjectSubmissions = (projectId: number) => {
   });
 };
 
-export const useApproveSubmission = (projectId: number) => {
+export const useApproveSubmission = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (applicationId: number) =>
+    mutationFn: (applicationId: string) =>
       httpClient.post(
         `api/client/applications/${applicationId}/select-freelancer`
       ),
@@ -54,10 +55,10 @@ export const useApproveSubmission = (projectId: number) => {
   });
 };
 
-export const useRejectSubmissions = (projectId: number) => {
+export const useRejectSubmissions = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (applicationIds: number[]) =>
+    mutationFn: (applicationIds: string[]) =>
       httpClient.post(
         `api/client/applications/bulk/reject-freelancer`,
         applicationIds
@@ -71,7 +72,11 @@ export const useRejectSubmissions = (projectId: number) => {
   });
 };
 
-export const useGetAllClientProjects = (params: PaginationParams) => {
+export const useGetAllClientProjects = (
+  params: PaginationParams,
+  enabled = true,
+  completed = false
+) => {
   const queryString = new URLSearchParams({
     page: params.page?.toString() || '0',
     size: params.size?.toString() || '10',
@@ -80,12 +85,20 @@ export const useGetAllClientProjects = (params: PaginationParams) => {
   }).toString();
 
   return useQuery({
-    queryKey: ['clientProjects', params],
+    queryKey: ['clientProjects', params, completed],
+    enabled,
     queryFn: async () => {
       const response = await httpClient.get(
         `/api/client/projects/all?${queryString}`
       );
-      return response.data; // Return the data from the Axios response
+      // Check if filter is completed
+      if (completed) {
+        return response.data.filter(
+          (project: ProjectType) => project.projectStatus === 'CLOSED'
+        );
+      }
+
+      return response.data;
     },
   });
 };

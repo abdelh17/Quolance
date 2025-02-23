@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ApplicationService {
 
@@ -13,17 +14,17 @@ public interface ApplicationService {
 
     void deleteApplication(Application application);
 
-    Application getApplicationById(Long applicationId);
+    Application getApplicationById(UUID applicationId);
 
     void updateApplicationStatus(Application application, ApplicationStatus newStatus);
 
-    Application getApplicationByFreelancerIdAndProjectId(Long freelancerId, Long projectId);
+    Application getApplicationByFreelancerIdAndProjectId(UUID freelancerId, UUID projectId);
 
     List<Application> getAllApplications();
 
-    Page<Application> getAllApplicationsByFreelancerId(Long freelancerId, Pageable pageable);
+    Page<Application> getAllApplicationsByFreelancerId(UUID freelancerId, Pageable pageable);
 
-    List<Application> getAllApplicationsByProjectId(Long projectId);
+    List<Application> getAllApplicationsByProjectId(UUID projectId);
 
 
 }

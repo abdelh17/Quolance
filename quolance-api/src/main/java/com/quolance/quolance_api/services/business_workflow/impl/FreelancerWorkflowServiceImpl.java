@@ -30,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -78,7 +75,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public ApplicationDto getApplication(Long applicationId, User freelancer) {
+    public ApplicationDto getApplication(UUID applicationId, User freelancer) {
         Application application = applicationService.getApplicationById(applicationId);
         if (!application.isOwnedBy(freelancer.getId())) {
             throw ApiException.builder()
@@ -90,7 +87,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public void deleteApplication(Long applicationId, User freelancer) {
+    public void deleteApplication(UUID applicationId, User freelancer) {
         Application application = applicationService.getApplicationById(applicationId);
         if (!application.isOwnedBy(freelancer.getId())) {
             throw ApiException.builder()
@@ -151,7 +148,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
-    public ProjectPublicDto getProject(Long projectId) {
+    public ProjectPublicDto getProject(UUID projectId) {
 
         Project project = projectService.getProjectById(projectId);
         LocalDate currentDate = LocalDate.now();

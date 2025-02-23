@@ -28,7 +28,7 @@ export const ProjectFilterQueryDefault = {
 
 /*--- Hooks ---*/
 export const useGetProjectInfo = (
-  projectId: number,
+  projectId: string,
   role: 'client' | 'freelancer' | 'public',
   isUserLoading: boolean
 ) => {
@@ -39,9 +39,13 @@ export const useGetProjectInfo = (
   });
 };
 
-export const useGetAllPublicProjects = (query: ProjectFilterQuery) => {
+export const useGetAllPublicProjects = (
+  query: ProjectFilterQuery,
+  enabled = true
+) => {
   return useQuery({
     queryKey: ['all-public-projects', query],
+    enabled,
     queryFn: () =>
       httpClient.get(`/api/public/projects/all?${queryToString(query)}`),
   });
@@ -60,7 +64,7 @@ export const usePostProject = (options?: {
 };
 
 export const useUpdateProject = (
-  projectId: number,
+  projectId: string,
   options?: {
     onSuccess?: () => void;
     onError?: (error: AxiosError) => void;

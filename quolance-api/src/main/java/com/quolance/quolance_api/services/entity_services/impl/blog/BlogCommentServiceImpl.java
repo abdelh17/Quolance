@@ -12,8 +12,11 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +27,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     private final BlogPostService blogPostService;
 
     @Override
-    public BlogCommentDto createBlogComment(Long blogPostId, User author, BlogCommentDto blogCommentDto) {
+    public BlogCommentDto createBlogComment(UUID blogPostId, User author, BlogCommentDto blogCommentDto) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
         if (blogCommentDto.getContent() == null || blogCommentDto.getContent().isEmpty()) {
@@ -39,8 +42,12 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public BlogCommentDto updateBlogComment(Long commentId, BlogCommentDto blogCommentDto) {
+    public BlogCommentDto updateBlogComment(UUID commentId, BlogCommentDto blogCommentDto, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
+
+        if (!isAuthorOfPost(blogComment, author)) {
+            throw new ApiException("You cannot update a comment that does not belong to you.");
+        }
 
         blogComment.setContent(blogCommentDto.getContent());
         BlogComment updatedComment = blogCommentRepository.save(blogComment);
@@ -49,14 +56,18 @@ public class BlogCommentServiceImpl implements BlogCommentService {
     }
 
     @Override
-    public void deleteBlogComment(Long commentId) {
+    public void deleteBlogComment(UUID commentId, User author) {
         BlogComment blogComment = getBlogCommentEntity(commentId);
+
+        if (!isAuthorOfPost(blogComment, author)) {
+            throw new ApiException("You cannot delete a comment that does not belong to you.");
+        }
 
         blogCommentRepository.delete(blogComment);
     }
 
     @Override
-    public List<BlogCommentDto> getCommentsByBlogPostId(Long blogPostId) {
+    public List<BlogCommentDto> getCommentsByBlogPostId(UUID blogPostId) {
         BlogPost blogPost = blogPostService.getBlogPostEntity(blogPostId);
 
         List<BlogComment> comments = blogCommentRepository.findByBlogPost(blogPost);
@@ -66,11 +77,21 @@ public class BlogCommentServiceImpl implements BlogCommentService {
                 .toList();
     }
 
-    public BlogComment getBlogCommentEntity(Long commentId) {
+    private boolean isAuthorOfPost(BlogComment blogComment, User author) {
+        return blogComment.getUser().getId().equals(author.getId());
+    }
+
+    public BlogComment getBlogCommentEntity(UUID commentId) {
         BlogComment blogComment = blogCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "BlogComment not found with ID: " + commentId));
 
         return blogComment;
+    }
+
+    @Override
+    public Page<BlogCommentDto> getPaginatedComments(UUID blogPostId, Pageable pageable) {
+        return blogCommentRepository.findByBlogPostId(blogPostId, pageable)
+                .map(BlogCommentDto::fromEntity);
     }
 }

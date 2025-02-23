@@ -7,6 +7,7 @@ public enum ProjectSortFields {
     ID("id"),
     TITLE("title"),
     EXPIRATION_DATE("expirationDate"),
+    CREATION_DATE("creationDate"),
     PROJECT_STATUS("projectStatus");
 
     private final String fieldName;

@@ -27,7 +27,7 @@ function ProjectPage() {
   const projectId = Array.isArray(id) ? id[0] : id;
 
   const { data, isLoading: isLoadingProject } = useGetProjectInfo(
-    parseInt(projectId),
+    projectId,
     getUserRoleForAPI(role),
     isLoadingUser
   );

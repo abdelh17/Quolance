@@ -3,13 +3,14 @@ package com.quolance.quolance_api.services.business_workflow;
 import com.quolance.quolance_api.entities.User;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ApplicationProcessWorkflow {
-    void selectFreelancer(Long applicationId, User client); // used by client
+    void selectFreelancer(UUID applicationId, User client); // used by client
 
-    void rejectApplication(Long applicationId, User client); // used by client
+    void rejectApplication(UUID applicationId, User client); // used by client
 
-    void rejectManyApplications(List<Long> applicationId, User client); // used by client
+    void rejectManyApplications(List<UUID> applicationId, User client); // used by client
 
-    void cancelApplication(Long applicationId, User freelancer); // used by freelancer
+    void cancelApplication(UUID applicationId, User freelancer); // used by freelancer
 }

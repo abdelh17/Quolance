@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project getProjectById(Long projectId) {
+    public Project getProjectById(UUID projectId) {
         log.debug("Fetching project with ID: {}", projectId);
         Project project = projectRepository.findById(projectId).orElseThrow(() -> {
             log.warn("No project found with ID: {}", projectId);
@@ -69,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Page<Project> getProjectsByClientId(Long clientId, Pageable pageable) {
+    public Page<Project> getProjectsByClientId(UUID clientId, Pageable pageable) {
         log.debug("Fetching projects for client ID: {}", clientId);
         Page<Project> projects = projectRepository.findProjectsByClientId(clientId, pageable);
         log.debug("Found {} projects for client", projects.getTotalElements());

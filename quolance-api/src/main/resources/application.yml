@@ -1,19 +1,26 @@
 app:
   application-name: Quolance
-  base-url: "http://localhost:8080"
+  base-url: "https://api.quolance.com"
   allowed-origins: "http://localhost"
   login-page-url: "${app.base-url}/auth/login"
   login-success-url: "${app.base-url}/auth/login-success"
 
+  admin:
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
+
 spring:
   profiles:
     default: default
+
+  application:
+    name: quolance-api
+
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
-      max-request-size: 10MB
-
+      max-request-size: 20MB
 
   config:
     import: "optional:file:../.env[.properties]"
@@ -29,32 +36,31 @@ spring:
             client-id: "${GOOGLE_CLIENT_ID}"
             client-secret: "${GOOGLE_CLIENT_SECRET}"
 
-  application:
-    name: quolance-api
-
   datasource:
-    url: ${DATASOURCE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    url: ${PROD_DATASOURCE_URL}
 
   jpa:
     hibernate:
       ddl-auto: ${DB_DDL_AUTO}
     show-sql: false
     properties:
-      hibernate.format_sql: true
+      hibernate:
+        format_sql: true
     database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
-    host: localhost
-    port: ${MAILPIT_SMTP_PORT}
-    username: ${MAILPIT_USER}
-    password: ${MAILPIT_PASSWORD}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE}
+        transport:
+          protocol: ${MAIL_TRANSPORT_PROTOCOL}
 
 org:
   jobrunr:
@@ -75,6 +81,13 @@ logging:
 
 server:
   port: 8081
+  ssl:
+    enable: true
+    port: 443
+    key-store: /etc/ssl/private/keystore.p12
+    key-store-password: ${SSL_CERT_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: tomcat
   error:
     include-message: always
 
@@ -82,4 +95,3 @@ cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}
   api_key: ${CLOUDINARY_API_KEY}
   api_secret: ${CLOUDINARY_API_SECRET}
-

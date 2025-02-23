@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -18,8 +19,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class FreelancerProfileDto {
 
-    private Long id;
-    private Long userId;
+    private UUID id;
+    private UUID userId;
 
     private String firstName;
     private String lastName;

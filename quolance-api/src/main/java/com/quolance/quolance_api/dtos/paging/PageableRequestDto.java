@@ -21,7 +21,7 @@ public class PageableRequestDto {
 
 
     @ValidSortField
-    private String sortBy = "id";
+    private String sortBy = "creationDate";
 
     @Pattern(regexp = "^(asc|desc)$", flags = Pattern.Flag.CASE_INSENSITIVE)
     private String sortDirection = "desc";

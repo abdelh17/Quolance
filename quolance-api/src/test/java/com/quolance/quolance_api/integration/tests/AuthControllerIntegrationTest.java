@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 class AuthControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
@@ -215,7 +217,7 @@ class AuthControllerIntegrationTest extends BaseIntegrationTest {
                 .getContentAsString();
 
         Map<String, Object> sessionResponse = objectMapper.readValue(response, LinkedHashMap.class);
-        assertThat(sessionResponse).containsEntry("id", client.getId().intValue())
+        assertThat(sessionResponse).containsEntry("id", client.getId().toString())
                 .containsEntry("email", "client@test.com")
                 .containsEntry("role", "CLIENT")
                 .containsEntry("firstName", "Client")

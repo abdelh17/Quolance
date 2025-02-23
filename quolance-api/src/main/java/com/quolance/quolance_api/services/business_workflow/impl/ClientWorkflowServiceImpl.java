@@ -12,6 +12,7 @@ import com.quolance.quolance_api.services.business_workflow.ClientWorkflowServic
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     private final ProjectService projectService;
     private final ApplicationService applicationService;
     private final UserService userService;
+    private final NotificationMessageService notificationMessageService;
 
     @Override
     public void createProject(ProjectCreateDto projectCreateDto, User client) {
@@ -46,13 +49,13 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
 
     @Override
-    public ProjectDto getProject(Long projectId, User client) {
+    public ProjectDto getProject(UUID projectId, User client) {
         Project project = projectService.getProjectById(projectId);
         return ProjectDto.fromEntity(project);
     }
 
     @Override
-    public void deleteProject(Long projectId, User client) {
+    public void deleteProject(UUID projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
         if (!project.isOwnedBy(client.getId())) {
@@ -73,7 +76,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
 
     @Override
-    public List<ApplicationDto> getAllApplicationsToProject(Long projectId, User client) {
+    public List<ApplicationDto> getAllApplicationsToProject(UUID projectId, User client) {
         Project project = projectService.getProjectById(projectId);
 
         if (!project.isOwnedBy(client.getId())) {
@@ -87,7 +90,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     }
 
     @Override
-    public ProjectDto updateProject(Long projectId, ProjectUpdateDto projectUpdateDto, User client) {
+    public ProjectDto updateProject(UUID projectId, ProjectUpdateDto projectUpdateDto, User client) {
         Project existingProject = projectService.getProjectById(projectId);
 
         if (!existingProject.isOwnedBy(client.getId())) {

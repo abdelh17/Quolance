@@ -35,6 +35,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -68,12 +69,12 @@ class ClientWorkflowServiceUnitTest {
     @BeforeEach
     void setUp() {
         mockClient = User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .email("client@test.com")
                 .build();
 
         mockFreelancer = User.builder()
-                .id(2L)
+                .id(UUID.randomUUID())
                 .role(Role.FREELANCER)
                 .firstName("John")
                 .lastName("Doe")
@@ -82,7 +83,7 @@ class ClientWorkflowServiceUnitTest {
                 .build();
 
         mockProject = Project.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .title("Test Project")
                 .description("Test Description")
                 .client(mockClient)
@@ -115,7 +116,7 @@ class ClientWorkflowServiceUnitTest {
                 .build();
 
         mockApplication = Application.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .project(mockProject)
                 .freelancer(mockFreelancer)
                 .build();
@@ -166,31 +167,31 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void getProject_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        ProjectDto result = clientWorkflowService.getProject(1L, mockClient);
+        ProjectDto result = clientWorkflowService.getProject(mockProject.getId(), mockClient);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(mockProject.getId());
         assertThat(result.getTitle()).isEqualTo(mockProject.getTitle());
-        verify(projectService).getProjectById(1L);
+        verify(projectService).getProjectById(mockProject.getId());
     }
 
     @Test
     void deleteProject_WhenOwner_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        clientWorkflowService.deleteProject(1L, mockClient);
+        clientWorkflowService.deleteProject(mockProject.getId(), mockClient);
 
         verify(projectService).deleteProject(mockProject);
     }
 
     @Test
     void deleteProject_WhenNotOwner_ThrowsApiException() {
-        User wrongClient = User.builder().id(999L).build();
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        User wrongClient = User.builder().id(UUID.randomUUID()).build();
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        assertThatThrownBy(() -> clientWorkflowService.deleteProject(1L, wrongClient))
+        assertThatThrownBy(() -> clientWorkflowService.deleteProject(mockProject.getId(), wrongClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
                 .hasMessage("You are not authorized to remove this project");
@@ -198,15 +199,15 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void deleteProject_WhenProjectDeletionFails_ThrowsException() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
         doThrow(new ApiException("Project deletion failed"))
                 .when(projectService).deleteProject(mockProject);
 
-        assertThatThrownBy(() -> clientWorkflowService.deleteProject(1L, mockClient))
+        assertThatThrownBy(() -> clientWorkflowService.deleteProject(mockProject.getId(), mockClient))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project deletion failed");
 
-        verify(projectService).getProjectById(1L);
+        verify(projectService).getProjectById(mockProject.getId());
         verify(projectService).deleteProject(mockProject);
     }
 
@@ -239,11 +240,11 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void getAllApplicationsToProject_WhenOwner_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
-        when(applicationService.getAllApplicationsByProjectId(1L))
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
+        when(applicationService.getAllApplicationsByProjectId(mockProject.getId()))
                 .thenReturn(Arrays.asList(mockApplication));
 
-        List<ApplicationDto> result = clientWorkflowService.getAllApplicationsToProject(1L, mockClient);
+        List<ApplicationDto> result = clientWorkflowService.getAllApplicationsToProject(mockProject.getId(), mockClient);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getId()).isEqualTo(mockApplication.getId());
@@ -251,10 +252,10 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void getAllApplicationsToProject_WhenNotOwner_ThrowsApiException() {
-        User wrongClient = User.builder().id(999L).build();
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        User wrongClient = User.builder().id(UUID.randomUUID()).build();
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        assertThatThrownBy(() -> clientWorkflowService.getAllApplicationsToProject(1L, wrongClient))
+        assertThatThrownBy(() -> clientWorkflowService.getAllApplicationsToProject(mockProject.getId(), wrongClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
                 .hasMessage("You are not authorized to view this project applications");
@@ -262,9 +263,9 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void updateProject_WhenOwner_Success() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        ProjectDto result = clientWorkflowService.updateProject(1L, mockProjectUpdateDto, mockClient);
+        ProjectDto result = clientWorkflowService.updateProject(mockProject.getId(), mockProjectUpdateDto, mockClient);
 
         assertThat(result).isNotNull();
         verify(projectService).updateProject(mockProject, mockProjectUpdateDto);
@@ -273,10 +274,10 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void updateProject_WhenNotOwner_ThrowsApiException() {
-        User wrongClient = User.builder().id(999L).build();
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        User wrongClient = User.builder().id(UUID.randomUUID()).build();
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
 
-        assertThatThrownBy(() -> clientWorkflowService.updateProject(1L, mockProjectUpdateDto, wrongClient))
+        assertThatThrownBy(() -> clientWorkflowService.updateProject(mockProject.getId(), mockProjectUpdateDto, wrongClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
                 .hasMessage("You don't have permission to update this project");
@@ -284,15 +285,15 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void updateProject_WhenProjectUpdateFails_ThrowsException() {
-        when(projectService.getProjectById(1L)).thenReturn(mockProject);
+        when(projectService.getProjectById(mockProject.getId())).thenReturn(mockProject);
         doThrow(new ApiException("Project update failed"))
                 .when(projectService).updateProject(any(Project.class), any(ProjectUpdateDto.class));
 
-        assertThatThrownBy(() -> clientWorkflowService.updateProject(1L, mockProjectUpdateDto, mockClient))
+        assertThatThrownBy(() -> clientWorkflowService.updateProject(mockProject.getId(), mockProjectUpdateDto, mockClient))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project update failed");
 
-        verify(projectService).getProjectById(1L);
+        verify(projectService).getProjectById(mockProject.getId());
         verify(projectService).updateProject(any(Project.class), any(ProjectUpdateDto.class));
     }
 

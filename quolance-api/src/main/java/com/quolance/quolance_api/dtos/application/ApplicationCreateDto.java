@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ApplicationCreateDto {
 
     @JsonProperty("projectId")
-    private Long projectId;
+    private UUID projectId;
 
     public static Application toEntity(ApplicationCreateDto applicationCreateDto) {
         return Application.builder()

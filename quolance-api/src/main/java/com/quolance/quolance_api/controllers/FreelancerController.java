@@ -4,9 +4,12 @@ import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.paging.PageResponseDto;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.profile.ProfileCompletionCalculator;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
@@ -20,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -47,7 +52,7 @@ public class FreelancerController {
             summary = "View an application.",
             description = "View an application by passing the application ID."
     )
-    public ResponseEntity<ApplicationDto> getApplication(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<ApplicationDto> getApplication(@PathVariable(name = "applicationId") UUID applicationId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         log.info("Freelancer with ID {} attempting to get application with ID {}", freelancer.getId(), applicationId);
         ApplicationDto application = freelancerWorkflowService.getApplication(applicationId, freelancer);
@@ -60,7 +65,7 @@ public class FreelancerController {
             summary = "Delete an application.",
             description = "Delete an application by passing the application ID."
     )
-    public ResponseEntity<String> deleteApplication(@PathVariable(name = "applicationId") Long applicationId) {
+    public ResponseEntity<String> deleteApplication(@PathVariable(name = "applicationId") UUID applicationId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         log.info("Freelancer with ID {} attempting to delete application with ID {}", freelancer.getId(), applicationId);
         applicationProcessWorkflow.cancelApplication(applicationId, freelancer);
@@ -104,7 +109,7 @@ public class FreelancerController {
             summary = "View a project.",
             description = "View a project by passing the project ID."
     )
-    public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") Long projectId) {
+    public ResponseEntity<ProjectPublicDto> getProjectById(@PathVariable(name = "projectId") UUID projectId) {
         User freelancer = SecurityUtil.getAuthenticatedUser();
         log.info("Freelancer with ID {} attempting to get project with ID {}", freelancer.getId(), projectId);
         ProjectPublicDto project = freelancerWorkflowService.getProject(projectId);
@@ -136,6 +141,18 @@ public class FreelancerController {
         freelancerWorkflowService.uploadProfilePicture(photo, freelancer);
         log.info("Freelancer with ID {} successfully uploaded profile picture", freelancer.getId());
         return ResponseEntity.ok("Profile picture uploaded successfully");
+    }
+
+    @GetMapping("/profile/completion")
+    @Operation(
+            summary = "Get freelancer profile completion",
+            description = "Get the completion percentage of the authenticated freelancer's profile"
+    )
+    public ResponseEntity<Integer> getProfileCompletion() {
+        User freelancer = SecurityUtil.getAuthenticatedUser();
+        ProfileCompletionCalculator profileCompletionCalculator = new ProfileCompletionCalculator();
+        int completionPercentage = profileCompletionCalculator.calculateCompletion(freelancerWorkflowService.getFreelancerProfile(freelancer.getUsername()));
+        return ResponseEntity.ok(completionPercentage);
     }
 
 }

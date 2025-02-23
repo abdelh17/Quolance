@@ -1,11 +1,23 @@
+app:
+  application-name: Quolance
+  base-url: "http://localhost:8080"
+  allowed-origins: "http://localhost"
+  login-page-url: "${app.base-url}/auth/login"
+  login-success-url: "${app.base-url}/auth/login-success"
+  admin:
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
+
 spring:
   application:
     name: quolance-api
+
   datasource:
-    url: jdbc:tc:postgresql:latest:///testdb
-    username: test
-    password: test
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: "${LOCAL_DATASOURCE_URL}"
+    username: "postgres"
+    password: "postgres"
+    driver-class-name: org.postgresql.Driver
+
   mail:
     host: localhost
     port: 1025
@@ -14,6 +26,18 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: test
+            client-secret: test
+          google:
+            client-id: test
+            client-secret: test
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -28,3 +52,9 @@ org:
       enabled: false
     dashboard:
       enabled: false
+
+logging:
+  level:
+    root: INFO
+    com.quolance: DEBUG
+    org.springframework.web: ERROR

@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 import org.jobrunr.jobs.lambdas.JobRequest;
 import org.jobrunr.jobs.lambdas.JobRequestHandler;
 
+import java.util.UUID;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SendResetPasswordEmailJob implements JobRequest {
 
-    private Long tokenId;
+    private UUID tokenId;
 
     @Override
     public Class<? extends JobRequestHandler> getJobRequestHandler() {

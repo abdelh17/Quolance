@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface ApplicationRepository extends JpaRepository<Application, Long> {
+public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
-    Page<Application> findApplicationsByFreelancerId(Long freelancerId, Pageable pageable);
+    Page<Application> findApplicationsByFreelancerId(UUID freelancerId, Pageable pageable);
 
-    List<Application> findApplicationsByProjectId(Long projectId);
+    List<Application> findApplicationsByProjectId(UUID projectId);
 
-    Application findApplicationByFreelancerIdAndProjectId(Long freelancerId, Long projectId);
+    Application findApplicationByFreelancerIdAndProjectId(UUID freelancerId, UUID projectId);
 }

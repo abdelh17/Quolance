@@ -24,10 +24,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -59,7 +56,7 @@ class FileServiceUnitTest {
     @BeforeEach
     void setUp() {
         mockUser = User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .build();
 
         mockImageFile = new MockMultipartFile(
@@ -190,13 +187,13 @@ class FileServiceUnitTest {
     @Test
     void getAllFileUploadsByUser_Success() {
         FileEntity file1 = new FileEntity();
-        file1.setId(1L);
+        file1.setId(UUID.randomUUID());
         file1.setFileName("file1.jpg");
         file1.setFileUrl("url1");
         file1.setUser(mockUser);
 
         FileEntity file2 = new FileEntity();
-        file2.setId(2L);
+        file2.setId(UUID.randomUUID());
         file2.setFileName("file2.pdf");
         file2.setFileUrl("url2");
         file2.setUser(mockUser);
@@ -217,15 +214,15 @@ class FileServiceUnitTest {
     @Test
     void getAllFileUploadsByUser_WithPaging_Success() {
         FileEntity file1 = new FileEntity();
-        file1.setId(1L);
+        file1.setId(UUID.randomUUID());
         file1.setFileName("file1.jpg");
 
         FileEntity file2 = new FileEntity();
-        file2.setId(2L);
+        file2.setId(UUID.randomUUID());
         file2.setFileName("file2.pdf");
 
         FileEntity file3 = new FileEntity();
-        file3.setId(3L);
+        file3.setId(UUID.randomUUID());
         file3.setFileName("file3.doc");
 
         List<FileEntity> allFiles = Arrays.asList(file1, file2, file3);

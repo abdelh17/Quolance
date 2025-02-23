@@ -1,11 +1,11 @@
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 
 export interface ApplicationResponse {
-  id: number;
+  id: string;
   status: ApplicationStatus;
-  projectId: number;
-  freelancerId: number;
-  freelancerProfile: FreelancerProfileType; // Define FreelancerProfile type
+  projectId: string;
+  freelancerId: string;
+  freelancerProfile: FreelancerProfileType;
 }
 
 export enum ApplicationStatus {
