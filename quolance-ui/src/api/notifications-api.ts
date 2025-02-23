@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-
 import httpClient from '@/lib/httpClient';
 
 export interface Notification {
@@ -70,6 +69,37 @@ export const useMarkNotificationAsRead = () => {
           notif.id === id ? { ...notif, read: true } : notif
         );
       });
+    },
+  });
+};
+
+/**
+ * Hook to update the notification subscription preference for the authenticated user.
+ * Sends a PATCH request with the "subscribed" boolean.
+ */
+export const useUpdateNotificationSubscription = () => {
+  const queryClient = useQueryClient();
+  return useMutation<void, AxiosError, boolean>({
+    mutationFn: async (subscribed: boolean) => {
+      await httpClient.patch('/api/users/notifications', { subscribed });
+    },
+    onSuccess: () => {
+      // Optionally invalidate notifications queries if needed.
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+};
+
+/**
+ * Hook to get the current notification subscription status for the authenticated user.
+ * (Endpoint: /api/users/notifications/status)
+ */
+export const useGetNotificationSubscription = () => {
+  return useQuery<boolean, AxiosError>({
+    queryKey: ['notifications', 'subscriptionStatus'],
+    queryFn: async () => {
+      const { data } = await httpClient.get('/api/users/notifications/status');
+      return data.subscribed;
     },
   });
 };

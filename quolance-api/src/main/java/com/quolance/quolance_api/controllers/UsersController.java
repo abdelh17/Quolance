@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
@@ -98,6 +100,29 @@ public class UsersController {
         User user = SecurityUtil.getAuthenticatedUser();
         UserResponseDto userResponseDto = userService.updatePassword(requestDTO, user);
         return ResponseEntity.ok(userResponseDto);
+    }
+
+    @PatchMapping("/notifications")
+    @Operation(
+            summary = "Update notifications subscription preference",
+            description = "Update the notifications subscription preference for the authenticated user."
+    )
+    public ResponseEntity<Void> updateNotificationSubscription(@RequestBody Map<String, Boolean> payload) {
+        User user = SecurityUtil.getAuthenticatedUser();
+        boolean subscribed = payload.getOrDefault("subscribed", true);
+        userService.updateNotificationSubscription(user, subscribed);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/notifications/status")
+    @Operation(
+            summary = "Get notifications subscription status",
+            description = "Returns the notifications subscription status for the authenticated user."
+    )
+    public ResponseEntity<NotificationSubscriptionResponseDto> getNotificationSubscriptionStatus() {
+        User user = SecurityUtil.getAuthenticatedUser();
+        NotificationSubscriptionResponseDto dto = new NotificationSubscriptionResponseDto(user);
+        return ResponseEntity.ok(dto);
     }
 
 }
