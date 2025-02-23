@@ -44,11 +44,10 @@ const FreelancerProfile: React.FC = () => {
     editContactInformation: false,
     editProfile: false,
   });
-  const [showStatus, setShowStatus] = useState(true);
 
   const [profile, setProfile] = useState<FreelancerProfileType>({
-    id: "0",
-    userId: "0",
+    id: '0',
+    userId: '0',
     username: '',
     firstName: '',
     lastName: '',
@@ -68,10 +67,6 @@ const FreelancerProfile: React.FC = () => {
       setProfile(data);
     }
   }, [data]);
-
-  const dontShowStatus = () => {
-    setShowStatus(false);
-  };
 
   const handleImageClick = () => {
     setIsModalOpen(true);
@@ -245,16 +240,13 @@ const FreelancerProfile: React.FC = () => {
           checkEditModes={checkEditModes}
         />
 
-        {showStatus && (
-          <ProfileStatus
-            profile={profile}
-            profilePercentage={profilePercentage}
-            isHidden={profilePercentage === 100}
-            updateEditModes={updateEditModes}
-            checkEditModes={checkEditModes}
-            dontShowStatus={dontShowStatus}
-          />
-        )}
+        <ProfileStatus
+          profile={profile}
+          profilePercentage={profilePercentage}
+          isHidden={profilePercentage === 100}
+          updateEditModes={updateEditModes}
+          checkEditModes={checkEditModes}
+        />
 
         {/* About Section */}
         <AboutSection

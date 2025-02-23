@@ -48,7 +48,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const checkModes = checkEditModes('editProfileImage');
   return (
     <section className='relative mb-8 rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-md'>
-      <div className='relative h-48 rounded-t-xl bg-gray-200'></div>
+      <div className='relative h-48 rounded-t-xl bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 '></div>
       <div className='mr-4 mt-4 flex justify-end'>
         {!editModes.editHeader ? (
           <EditButton
@@ -187,7 +187,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               )}
               <span className='text-gray-700'>
                 {profile.city && profile.state
-                  ? `${profile.city}, ${profile.state}`
+                  ? <span className='flex'><MapPin className='text-b300 mr-2' /> {profile.city}, {profile.state}</span>
                   : 'Not Specified'}
               </span>
             </div>

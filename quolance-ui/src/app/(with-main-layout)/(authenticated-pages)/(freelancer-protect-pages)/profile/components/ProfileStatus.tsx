@@ -11,7 +11,6 @@ profilePercentage:number;
 isHidden: boolean;
 updateEditModes:(value:string)=>void;
 checkEditModes:(value:string)=>boolean;
-dontShowStatus:()=>void;
 }
 
 
@@ -23,7 +22,6 @@ profilePercentage,
 isHidden,
 updateEditModes,
 checkEditModes,
-dontShowStatus
 }) => {
 
 
@@ -52,14 +50,6 @@ const filterMissingFields = () => {
 
  setMissingFields(uniqueRecommendations);
 };
-
-
-
-
-
-
-
-
 
 
 const getRecommendation = (key: string) => {
@@ -94,16 +84,6 @@ const getRecommendation = (key: string) => {
 const handleClick = () => {
   updateEditModes("editProfile");
 };
-
-
-
-
-const removeStatus= () =>{
-  dontShowStatus();
-}
-
-
-
 
 useEffect(() => {
   filterMissingFields();
@@ -162,11 +142,6 @@ return (
     
       <div className="flex  items-end  w-full  gap-2">
           <div className="flex w-full justify-end gap-2">
-              <button className="bg-blue-50 text-grey-500 text-xs px-4 py-2 rounded-md hover:bg-blue-100 max-h-max"
-              onClick={removeStatus}
-              >
-              Don't show again
-              </button>
               <button
               className={`bg-blue-500 text-white text-xs px-4 py-2 rounded-md  max-h-max ${
                 checkModes ? "cursor-not-allowed" : "hover:bg-blue-600"
