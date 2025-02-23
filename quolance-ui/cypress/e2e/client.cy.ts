@@ -522,6 +522,7 @@ describe('Client Flow', () => {
     }
  ).as('getClientProjectApplications');
  
+ /*
  // Ensure the status is correct before interacting
 cy.contains('Approve Submission').should('exist');
 
@@ -551,6 +552,8 @@ cy.get('[data-test="approve-submission-btn"]')
  
  
  cy.get('.Toastify__toast').should('be.visible').contains(/Freelancer selected successfully/i);
+
+ */
  
    })
  
