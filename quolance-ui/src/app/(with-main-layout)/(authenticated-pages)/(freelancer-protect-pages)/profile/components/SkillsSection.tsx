@@ -103,7 +103,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
             })
           ) : (
             <div className='flex items-center'>
-              <Wrench className='text-b300 mr-3' />
+              <Wrench className=' mr-3' />
               <span className='text-gray-700'>Not specified</span>
             </div>
           )}

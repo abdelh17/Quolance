@@ -174,7 +174,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 </h2>
               ) : (
                 <div className='flex items-center'>
-                  <Contact className='text-b300 mr-2' />
+                  <Contact className=' mr-2' />
                   <span className='text-gray-700'>Not Specified</span>
                 </div>
               )}
@@ -183,11 +183,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             {/* City and State Display */}
             <div className='mt-4 flex items-center'>
               {!(profile.city && profile.state) && (
-                <MapPin className='text-b300 mr-2' />
+                <MapPin className='mr-2' />
               )}
               <span className='text-gray-700'>
                 {profile.city && profile.state
-                  ? <span className='flex'><MapPin className='text-b300 mr-2' /> {profile.city}, {profile.state}</span>
+                  ? <span className='flex'><MapPin className='mr-2' /> {profile.city}, {profile.state}</span>
                   : 'Not Specified'}
               </span>
             </div>
