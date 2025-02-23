@@ -8,8 +8,8 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")  // This will make Spring use application-test.yml
 class QuolanceApiApplicationTests {
 
-//    @Test
-//    void contextLoads() {
-//        // This test will now load with test configuration
-//    }
+    @Test
+    void contextLoads() {
+        // This test will now load with test configuration
+    }
 }
