@@ -181,6 +181,7 @@ function FreelancerCard({
               </button>
             ) : (
               <button
+                data-test="approve-submission-btn"
                 onClick={() => setIsApprovalModalOpen(true)}
                 disabled={!canSelect}
                 className={`relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:duration-700 hover:after:w-[calc(100%+2px)]
