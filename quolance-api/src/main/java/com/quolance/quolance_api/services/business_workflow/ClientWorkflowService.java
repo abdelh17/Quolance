@@ -5,6 +5,7 @@ import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ public interface ClientWorkflowService {
 
     void deleteProject(UUID projectId, User client);
 
-    Page<ProjectDto> getAllClientProjects(User client, Pageable pageable);
+    Page<ProjectDto> getAllClientProjects(User client, Pageable pageable, ProjectFilterDto filters);
 
     List<ApplicationDto> getAllApplicationsToProject(UUID projectId, User client);
 

@@ -58,11 +58,11 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
     void applyToProjectIsOk() throws Exception {
         //Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-
+        String message = "This is a test application message.";
         //Act
         mockMvc.perform(post("/api/freelancer/submit-application")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId())))
+                        .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId(), message)))
                         .session(session))
                 .andExpect(status().isOk());
 
@@ -79,11 +79,12 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
         //Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
+        String message = "This is a test application message.";
 
         //Act
         String response = mockMvc.perform(post("/api/freelancer/submit-application")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId())))
+                        .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId(), message)))
                         .session(session))
                 .andExpect(status().isConflict())
                 .andReturn()
@@ -103,11 +104,11 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
     void applyToNotOpenProjectDoesNotCreateApplication(String status) throws Exception {
         //Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.valueOf(status), client));
-
+        String message = "This is a test application message.";
         //Act
         String response = mockMvc.perform(post("/api/freelancer/submit-application")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId())))
+                        .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId(), message)))
                         .session(session))
                 .andExpect(status().isConflict())
                 .andReturn()
