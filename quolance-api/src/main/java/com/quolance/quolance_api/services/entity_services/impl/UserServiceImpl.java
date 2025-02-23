@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +53,7 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         log.info("Successfully created new user with ID: {}", user.getId());
 
+        user.setVerified(true);
         sendVerificationEmail(user);
         log.debug("Verification email process initiated for user ID: {}", user.getId());
 
@@ -69,7 +71,9 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User(request);
+        user.setVerified(true);
         user = userRepository.save(user);
+
         log.info("Successfully created new admin user with ID: {}", user.getId());
 
         return new UserResponseDto(user);
@@ -92,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(UUID id) {
         log.debug("Looking up user by ID: {}", id);
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {

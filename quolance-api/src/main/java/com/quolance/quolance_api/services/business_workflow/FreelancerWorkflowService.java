@@ -11,19 +11,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 public interface FreelancerWorkflowService {
 
     void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer);
 
-    void deleteApplication(Long applicationId, User freelancer);
+    void deleteApplication(UUID applicationId, User freelancer);
 
-    ApplicationDto getApplication(Long applicationId, User freelancer);
+    ApplicationDto getApplication(UUID applicationId, User freelancer);
 
     Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable);
 
     Page<ProjectPublicDto> getAllVisibleProjects(Pageable pageable, ProjectFilterDto filters);
 
-    ProjectPublicDto getProject(Long projectId);
+    ProjectPublicDto getProject(UUID projectId);
 
     FreelancerProfileDto getFreelancerProfile(String username);
 

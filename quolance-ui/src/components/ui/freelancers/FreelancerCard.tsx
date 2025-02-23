@@ -11,38 +11,33 @@ import Link from 'next/link';
 import { Send } from 'lucide-react';
 import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStatusBadge';
 
+import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
+import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+
 interface FreelancerCardProps {
-  img: ImageURL | StaticImageData;
-  freelancerName: string;
+  freelancerProfile: FreelancerProfileType;
   handleApproveSubmission: () => void;
-  location: string;
   selected?: boolean;
   canSelect?: boolean;
   onSelect: (selected: boolean) => void;
   status: ApplicationStatus;
 }
 
-type ImageURL = {
-  url: string;
-  width: number;
-  height: number;
-};
-
 export const StatusColors = {
   APPLIED: {
-    checkbox_outline: 'border-blue-400',
+    checkbox_outline: 'border-blue-300',
     outline: 'ring-blue-400',
     header: 'from-blue-200/90 to-blue-300/90 bg-gradient-to-r',
     container: 'ring-0 bg-white ring-blue-700/10',
   },
   REJECTED: {
-    checkbox_outline: 'border-red-400',
+    checkbox_outline: 'border-red-300',
     outline: 'ring-red-400',
     header: 'bg-red-600/5 bg-gradient-to-r',
     container: 'ring-0 bg-white ring-red-700/10',
   },
   ACCEPTED: {
-    checkbox_outline: 'border-green-400',
+    checkbox_outline: 'border-green-300',
     outline: 'ring-green-400',
     header: 'bg-green-600/5 bg-gradient-to-r',
     container: 'ring-1 ring-green-700/10',
@@ -63,15 +58,19 @@ export const formatStatusLabel = (status: ApplicationStatus): string => {
     .join(' ');
 };
 
+type ImageURL = {
+  url: string;
+  width: number;
+  height: number;
+};
+
 const isImageURL = (img: ImageURL | StaticImageData): img is ImageURL => {
   return (img as ImageURL).url !== undefined;
 };
 
 function FreelancerCard({
-  img,
-  freelancerName,
+  freelancerProfile,
   handleApproveSubmission,
-  location,
   selected = false,
   canSelect = false,
   onSelect,
@@ -80,15 +79,24 @@ function FreelancerCard({
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
   const statusConfig = getStatusConfig(status);
 
-  const imageProps = isImageURL(img)
+  const fullName = `${freelancerProfile.firstName} ${freelancerProfile.lastName}`;
+  const location = freelancerProfile.state || '';
+
+  // Determine which image to show:
+  const profileImage: ImageURL | StaticImageData =
+    freelancerProfile.profileImageUrl
+      ? { url: freelancerProfile.profileImageUrl, width: 88, height: 88 }
+      : FreelancerDefaultProfilePic;
+
+  const imageProps = isImageURL(profileImage)
     ? {
-        src: img.url,
-        width: img.width,
-        height: img.height,
+        src: profileImage.url,
+        width: profileImage.width,
+        height: profileImage.height,
         fill: false,
       }
     : {
-        src: img,
+        src: profileImage,
         fill: true,
       };
 
@@ -130,12 +138,12 @@ function FreelancerCard({
         <Link href={''}>
           <div className='mt-5 flex items-center justify-start gap-5 px-3 sm:px-6'>
             <div className='relative'>
-              <div className='relative h-[88px] w-[88px] rounded-full'>
+              <div className='relative aspect-square h-[88px] w-[88px] rounded-full'>
                 {/* Profile image */}
                 <Image
                   {...imageProps}
-                  alt={`${freelancerName}'s profile`}
-                  className={`rounded-full object-cover ring-2 ring-offset-[3px] ${statusConfig.classes.outline}`}
+                  alt={`${fullName}'s profile`}
+                  className={`aspect-square rounded-full object-cover ring-2 ring-offset-[3px] ${statusConfig.classes.outline}`}
                   sizes='88px'
                   priority
                 />
@@ -152,28 +160,12 @@ function FreelancerCard({
             </div>
             <div className='max-[350px]:max-w-20'>
               <div className='flex items-center justify-start gap-3'>
-                <h5 className='heading-5'>{freelancerName}</h5>
-                {/* PRO badge */}
-                {/*<p className='bg-y300 rounded-full px-2 py-1 text-xs font-medium'>*/}
-                {/*  PRO*/}
-                {/*</p>*/}
+                <h5 className='heading-5'>{fullName}</h5>
+                {/* PRO badge could be added here */}
               </div>
               <p className='text-n500 pt-2'>{location}</p>
             </div>
           </div>
-
-          {/* Freelancer Tags */}
-          {/*<div className='mt-6 flex flex-wrap gap-2 px-6 text-[13px]'>*/}
-          {/*  <p className='bg-r50 text-r300 rounded-full px-2 py-1 font-medium'>*/}
-          {/*    $75 - $100/hr*/}
-          {/*  </p>*/}
-          {/*  <p className='bg-g50 text-g400 rounded-full px-2 py-1 font-medium'>*/}
-          {/*    TOP INDEPENDENT*/}
-          {/*  </p>*/}
-          {/*  <p className='bg-v50 text-v300 rounded-full px-2 py-1 font-medium'>*/}
-          {/*    AVAILABLE*/}
-          {/*  </p>*/}
-          {/*</div>*/}
 
           {/* Approve submission buttons */}
           <div className='mt-6 flex items-center justify-start gap-2 px-6'>
@@ -221,7 +213,7 @@ function FreelancerCard({
         isOpen={isApprovalModalOpen}
         setIsOpen={setIsApprovalModalOpen}
         onConfirm={handleApproveSubmission}
-        freelancerName={freelancerName}
+        freelancerName={fullName}
       />
     </div>
   );

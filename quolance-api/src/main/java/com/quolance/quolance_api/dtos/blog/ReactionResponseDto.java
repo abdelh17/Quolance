@@ -5,15 +5,17 @@ import com.quolance.quolance_api.entities.enums.ReactionType;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Builder
 public class ReactionResponseDto {
 
-    private Long id;
+    private UUID id;
     private String userName;
     private ReactionType reactionType;
-    private Long blogPostId;
-    private Long blogCommentId;
+    private UUID blogPostId;
+    private UUID blogCommentId;
 
     public static ReactionResponseDto fromEntity(Reaction reaction) {
         return ReactionResponseDto.builder()

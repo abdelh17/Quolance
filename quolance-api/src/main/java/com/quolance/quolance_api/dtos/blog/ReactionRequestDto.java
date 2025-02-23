@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -19,10 +21,10 @@ public class ReactionRequestDto {
     private ReactionType reactionType; 
 
     @JsonProperty("blogPostId")
-    private Long blogPostId; 
+    private UUID blogPostId;
 
     @JsonProperty("blogCommentId")
-    private Long blogCommentId; 
+    private UUID blogCommentId;
 
    public static Reaction toEntity(ReactionRequestDto reactionRequestDto) {
         return Reaction.builder()

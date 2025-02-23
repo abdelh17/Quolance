@@ -5,10 +5,14 @@ import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogPost;
+
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public interface BlogPostService {
 
@@ -16,15 +20,17 @@ public interface BlogPostService {
 
     List<BlogPostResponseDto> getAll();
 
-    BlogPost getBlogPostEntity(Long id);
+    BlogPost getBlogPostEntity(UUID id);
 
-    List<BlogPostResponseDto> getBlogPostsByUserId(Long userId);
+    List<BlogPostResponseDto> getBlogPostsByUserId(UUID userId);
 
     BlogPostResponseDto update(BlogPostUpdateDto request, User author);
 
-    void deletePost(Long id, User author);
+    void deletePost(UUID id, User author);
 
-    BlogPostResponseDto getBlogPost(Long id);
+    BlogPostResponseDto getBlogPost(UUID id);
 
-    Set<String> updateTagsForPost(Long postId, List<String> tagNames);
+    Set<String> updateTagsForPost(UUID postId, List<String> tagNames);
+
+    Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable);
 }

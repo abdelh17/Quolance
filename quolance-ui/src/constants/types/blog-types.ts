@@ -1,5 +1,5 @@
 export type BlogPostViewType = {
-    id: number;
+    id: string;
     title: string;
     content: string;
     authorName: string;
@@ -10,7 +10,7 @@ export type BlogPostViewType = {
 export type BlogPostType = {
     title: string;
     content: string;
-    userId: number;
+    userId: string;
 };
 
 export type CommentType = {

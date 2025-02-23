@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 
 interface FreelancerCatalogCardProps {
   freelancer: FreelancerProfileType;
-  onMessageClick: (freelancerId: number) => void;
+  onMessageClick: (freelancerId: string) => void;
 }
 
 const FreelancerCatalogCard = ({
@@ -44,13 +44,13 @@ const FreelancerCatalogCard = ({
 
         <div className='mt-5 px-6'>
           <div className='flex items-center gap-5'>
-            <div className='relative flex h-[88px] w-[88px] items-center rounded-full'>
+            <div className='relative flex aspect-square h-[88px] w-[88px] items-center rounded-full'>
               <Image
                 src={freelancer.profileImageUrl || FreelancerDefaultAvatar}
                 alt={`${freelancer.firstName}'s profile`}
                 width={88}
                 height={88}
-                className='rounded-full object-cover ring-2 ring-blue-400 ring-offset-[3px]'
+                className='aspect-square rounded-full object-cover ring-2 ring-blue-400 ring-offset-[3px]'
                 priority
               />
             </div>

@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -45,43 +46,43 @@ class ApplicationProcessWorkflowUnitTest {
     @BeforeEach
     void setUp() {
         mockClient = User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .email("client@test.com")
                 .build();
 
         mockFreelancer = User.builder()
-                .id(2L)
+                .id(UUID.randomUUID())
                 .email("freelancer@test.com")
                 .build();
 
         mockProject = Project.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .client(mockClient)
                 .projectStatus(ProjectStatus.OPEN)
                 .build();
 
         mockApplication = Application.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .project(mockProject)
                 .freelancer(mockFreelancer)
                 .applicationStatus(ApplicationStatus.APPLIED)
                 .build();
 
         mockApplication2 = Application.builder()
-                .id(2L)
+                .id(UUID.randomUUID())
                 .project(mockProject)
-                .freelancer(User.builder().id(3L).build())
+                .freelancer(User.builder().id(mockFreelancer.getId()).build())
                 .applicationStatus(ApplicationStatus.APPLIED)
                 .build();
     }
 
     @Test
     void selectFreelancer_Success() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
-        when(applicationService.getAllApplicationsByProjectId(1L))
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
+        when(applicationService.getAllApplicationsByProjectId(mockProject.getId()))
                 .thenReturn(Arrays.asList(mockApplication, mockApplication2));
 
-        applicationProcessWorkflow.selectFreelancer(1L, mockClient);
+        applicationProcessWorkflow.selectFreelancer(mockApplication.getId(), mockClient);
 
         verify(applicationService).updateApplicationStatus(mockApplication, ApplicationStatus.ACCEPTED);
         verify(projectService).updateProjectStatus(mockProject, ProjectStatus.CLOSED);
@@ -91,10 +92,10 @@ class ApplicationProcessWorkflowUnitTest {
 
     @Test
     void selectFreelancer_WhenNotProjectOwner_ThrowsApiException() {
-        User wrongClient = User.builder().id(999L).build();
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        User wrongClient = User.builder().id(UUID.randomUUID()).build();
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(1L, wrongClient))
+        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(mockApplication.getId(), wrongClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_FORBIDDEN)
                 .hasMessage("You are not authorized to perform this action on this project");
@@ -103,9 +104,9 @@ class ApplicationProcessWorkflowUnitTest {
     @Test
     void selectFreelancer_WhenProjectNotOpen_ThrowsApiException() {
         mockProject.setProjectStatus(ProjectStatus.PENDING);
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(1L, mockClient))
+        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(mockApplication.getId(), mockClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("Cannot perform this action, project is either pending or rejected");
@@ -114,9 +115,9 @@ class ApplicationProcessWorkflowUnitTest {
     @Test
     void selectFreelancer_WhenFreelancerAlreadySelected_ThrowsApiException() {
         mockProject.setSelectedFreelancer(mockFreelancer);
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(1L, mockClient))
+        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(mockApplication.getId(), mockClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("A freelancer is already working on this project");
@@ -124,11 +125,11 @@ class ApplicationProcessWorkflowUnitTest {
 
     @Test
     void selectFreelancer_WhenOptimisticLockException_ThrowsApiException() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
         doThrow(new OptimisticLockException("Resource was updated")).when(applicationService)
                 .updateApplicationStatus(any(), any());
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(1L, mockClient))
+        assertThatThrownBy(() -> applicationProcessWorkflow.selectFreelancer(mockApplication.getId(), mockClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("The resource was modified by another user. Please refresh the page and try again.");
@@ -136,19 +137,19 @@ class ApplicationProcessWorkflowUnitTest {
 
     @Test
     void rejectApplication_Success() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        applicationProcessWorkflow.rejectApplication(1L, mockClient);
+        applicationProcessWorkflow.rejectApplication(mockApplication.getId(), mockClient);
 
         verify(applicationService).updateApplicationStatus(mockApplication, ApplicationStatus.REJECTED);
     }
 
     @Test
     void rejectManyApplications_AllSuccessful() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
-        when(applicationService.getApplicationById(2L)).thenReturn(mockApplication2);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication2.getId())).thenReturn(mockApplication2);
 
-        List<Long> applicationIds = Arrays.asList(1L, 2L);
+        List<UUID> applicationIds = Arrays.asList(mockApplication.getId(), mockApplication2.getId());
         assertThatThrownBy(() -> applicationProcessWorkflow.rejectManyApplications(applicationIds, mockClient))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_PARTIAL_CONTENT);
@@ -159,19 +160,19 @@ class ApplicationProcessWorkflowUnitTest {
 
     @Test
     void cancelApplication_Success() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        applicationProcessWorkflow.cancelApplication(1L, mockFreelancer);
+        applicationProcessWorkflow.cancelApplication(mockApplication.getId(), mockFreelancer);
 
         verify(applicationService).deleteApplication(mockApplication);
     }
 
     @Test
     void cancelApplication_WhenNotOwner_ThrowsApiException() {
-        User wrongFreelancer = User.builder().id(999L).build();
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        User wrongFreelancer = User.builder().id(UUID.randomUUID()).build();
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(1L, wrongFreelancer))
+        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(mockApplication.getId(), wrongFreelancer))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", 403)
                 .hasMessage("You are not authorized to perform this action on that application");
@@ -180,9 +181,9 @@ class ApplicationProcessWorkflowUnitTest {
     @Test
     void cancelApplication_WhenAlreadyAccepted_ThrowsApiException() {
         mockApplication.setApplicationStatus(ApplicationStatus.ACCEPTED);
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(1L, mockFreelancer))
+        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(mockApplication.getId(), mockFreelancer))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("You cannot cancel an application that has been accepted");
@@ -190,11 +191,11 @@ class ApplicationProcessWorkflowUnitTest {
 
     @Test
     void cancelApplication_WhenOptimisticLockException_ThrowsApiException() {
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
         doThrow(new OptimisticLockException("Resource was updated")).when(applicationService)
                 .deleteApplication(any());
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(1L, mockFreelancer))
+        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(mockApplication.getId(), mockFreelancer))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
                 .hasMessage("The resource was modified by another user. Please refresh the page and try again.");
@@ -203,13 +204,13 @@ class ApplicationProcessWorkflowUnitTest {
     @Test
     void cancelApplication_WhenApplicationNotCancelable_ThrowsException() {
         mockApplication.setApplicationStatus(ApplicationStatus.ACCEPTED);
-        when(applicationService.getApplicationById(1L)).thenReturn(mockApplication);
+        when(applicationService.getApplicationById(mockApplication.getId())).thenReturn(mockApplication);
 
-        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(1L, mockFreelancer))
+        assertThatThrownBy(() -> applicationProcessWorkflow.cancelApplication(mockApplication.getId(), mockFreelancer))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("You cannot cancel an application that has been accepted");
 
-        verify(applicationService).getApplicationById(1L);
+        verify(applicationService).getApplicationById(mockApplication.getId());
         verify(applicationService, never()).deleteApplication(any());
     }
 }

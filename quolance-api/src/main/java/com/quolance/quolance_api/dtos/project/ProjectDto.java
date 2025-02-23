@@ -9,7 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,8 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectDto {
 
-
-    private Long id;
+    private UUID id;
 
     private String title;
 
@@ -40,11 +41,13 @@ public class ProjectDto {
 
     private List<Tag> tags;
 
-    private Long clientId;
+    private UUID clientId;
 
-    private Long selectedFreelancerId;
+    private UUID selectedFreelancerId;
 
     private List<ApplicationDto> applications;
+
+    private LocalDateTime creationDate;
 
     public static ProjectDto fromEntity(Project project) {
         return ProjectDto.builder()
@@ -64,6 +67,7 @@ public class ProjectDto {
                 .applications(project.getApplications() != null ? project.getApplications().stream()
                         .map(ApplicationDto::fromEntity)
                         .toList() : null)
+                .creationDate(project.getCreationDate())
                 .build();
     }
 }

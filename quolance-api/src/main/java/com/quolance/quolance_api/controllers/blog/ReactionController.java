@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/blog-posts/reactions")
@@ -36,19 +37,19 @@ public class ReactionController {
     }
     
     @GetMapping("/post/{postId}")
-    public ResponseEntity<List<ReactionResponseDto>> getReactionsByPost(@PathVariable Long postId) {
+    public ResponseEntity<List<ReactionResponseDto>> getReactionsByPost(@PathVariable UUID postId) {
         List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogPostId(postId);
         return ResponseEntity.ok(reactions);
     }
 
     @GetMapping("/comment/{commentId}")
-    public ResponseEntity<List<ReactionResponseDto>> getReactionsByComment(@PathVariable Long commentId) {
+    public ResponseEntity<List<ReactionResponseDto>> getReactionsByComment(@PathVariable UUID commentId) {
         List<ReactionResponseDto> reactions = reactionService.getReactionsByBlogCommentId(commentId);
         return ResponseEntity.ok(reactions);
     }
 
     @DeleteMapping("/{reactionId}")
-    public ResponseEntity<String> deleteReaction(@PathVariable Long reactionId) {
+    public ResponseEntity<String> deleteReaction(@PathVariable UUID reactionId) {
         User user = SecurityUtil.getAuthenticatedUser();
         reactionService.deleteReaction(reactionId, user);
         return ResponseEntity.ok("Reaction deleted successfully.");

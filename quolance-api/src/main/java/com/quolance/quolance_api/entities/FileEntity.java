@@ -1,6 +1,8 @@
 package com.quolance.quolance_api.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +11,6 @@ import lombok.Setter;
 @Setter
 public class FileEntity extends AbstractEntity {
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long id;
-
     private String fileName;
 
     private String fileUrl;
@@ -22,8 +18,7 @@ public class FileEntity extends AbstractEntity {
     private String fileType;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
-
 
 }

@@ -10,6 +10,7 @@ import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
@@ -51,7 +53,6 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
         String response = mockMvc.perform(get("/api/admin/projects/pending/all")
                         .param("page", "0")
                         .param("size", "10")
-                        .param("sortDirection", "asc")
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -66,7 +67,7 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
         Map<String, Object> projectResponse = content.getFirst();
 
         assertThat(projectResponse)
-                .containsEntry("id", pendingProject.getId().intValue())
+                .containsEntry("id", pendingProject.getId().toString())
                 .containsEntry("projectStatus", "PENDING");
     }
 

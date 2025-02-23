@@ -1,0 +1,58 @@
+name: Deploy application to Oracle Instance
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Oracle Instance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Confirm Deployment
+        run: |
+          echo "Starting deployment to Oracle Instance..."
+
+      - name: SSH to Oracle Instance and Update Project
+        run: |
+          # Create SSH directory
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          
+          # Add the private key directly
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Add the host to known_hosts
+          ssh-keyscan -H 155.248.225.24 >> ~/.ssh/known_hosts
+          
+          # SSH and execute commands
+          ssh -i ~/.ssh/id_rsa opc@155.248.225.24 << 'EOF'
+          
+            # Update latest changes and package application
+            cd /home/opc/Quolance || { echo "Failed to change directory"; exit 1; }
+            git pull origin main || { echo "Failed to pull latest changes"; exit 1; }
+          
+            # Decrypt the .env file
+            gpg --batch --yes --passphrase "${{ secrets.ENV_PASSPHRASE }}" --decrypt --output .env .env.gpg
+          
+            echo -e "\nADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env
+            echo -e "\nADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+          
+            # Package the application
+            cd /home/opc/Quolance/quolance-api || { echo "Failed to change directory"; exit 1; }
+            ./mvnw clean package -DskipTests || { echo "Maven package failed"; exit 1; }
+            sleep 10
+          
+            # Restart the application in tmux
+            tmux send-keys -t quolance-api C-c
+            sleep 5
+            tmux send-keys -t quolance-api 'java -jar target/quolance-api-0.0.1-SNAPSHOT.jar' Enter
+            sleep 20
+          
+            echo "Deployment successful."
+            exit
+          EOF

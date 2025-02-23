@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public Application getApplicationById(Long applicationId) {
+    public Application getApplicationById(UUID applicationId) {
         log.debug("Fetching application with ID: {}", applicationId);
         Application application = applicationRepository.findById(applicationId).orElseThrow(() -> {
             log.warn("No application found with ID: {}", applicationId);
@@ -51,17 +52,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public Application getApplicationByFreelancerIdAndProjectId(Long freelancerId, Long projectId) {
+    public Application getApplicationByFreelancerIdAndProjectId(UUID freelancerId, UUID projectId) {
         return applicationRepository.findApplicationByFreelancerIdAndProjectId(freelancerId, projectId);
     }
 
     @Override
-    public Page<Application> getAllApplicationsByFreelancerId(Long freelancerId, Pageable pageable) {
+    public Page<Application> getAllApplicationsByFreelancerId(UUID freelancerId, Pageable pageable) {
         return applicationRepository.findApplicationsByFreelancerId(freelancerId, pageable);
     }
 
     @Override
-    public List<Application> getAllApplicationsByProjectId(Long projectId) {
+    public List<Application> getAllApplicationsByProjectId(UUID projectId) {
         return applicationRepository.findApplicationsByProjectId(projectId);
     }
 
