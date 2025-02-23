@@ -25,7 +25,6 @@ jobs:
           cd quolance-ui
           npm install
 
-
       # Step 3: Run Cypress Tests in Headless Mode
       - name: Run Cypress Tests (Headless)
         run: |
@@ -36,7 +35,7 @@ jobs:
       - name: Generate Code Coverage Summary
         run: |
           cd quolance-ui
-          npm run code:coverage
+          npm run code:coverage:summary
 
       # Step 5: Extract Coverage Percentage
       - name: Extract Coverage Percentage

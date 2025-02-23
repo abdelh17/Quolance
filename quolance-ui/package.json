@@ -18,6 +18,7 @@
     "e2e:headless": "npm run build:instrumented && cross-env NEXT_TEST=1 start-server-and-test start http://localhost:3000 \"cypress run --e2e --env coverage=true\"",
     "coverage-report": "nyc report --reported=text",
     "coverage:report": "nyc report --reporter=html --reporter=text-summary --reporter=json --reporter=json-summary --report-dir=./coverage",
+    "code:coverage:summary": "nyc report --reporter=json-summary",
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "postbuild": "next-sitemap --config next-sitemap.config.js"
