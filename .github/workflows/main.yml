@@ -41,7 +41,7 @@ jobs:
       - name: Extract Coverage Percentage
         run: |
           cd quolance-ui
-          npx ts-node --loader ts-node/esm extract-coverage-pct.ts
+          node --loader ts-node/esm extract-coverage-pct.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
