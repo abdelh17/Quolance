@@ -25,20 +25,29 @@ jobs:
           cd quolance-ui
           npm install
 
-      # Step 3: Run Cypress Tests
-      - name: Run Cypress Tests
+      # Step 3: Run Cypress Tests in Headless Mode
+      - name: Run Cypress Tests (Headless)
         run: |
           cd quolance-ui
           npm run e2e:headless
 
-      # Step 4: Log lcov.info for Verification
-      - name: Log lcov.info File
+      # Step 4: Generate Code Coverage Summary
+      - name: Generate Code Coverage Summary
         run: |
           cd quolance-ui
-          echo "Logging lcov.info file for verification:"
-          cat coverage/lcov.info || echo "lcov.info file not found"
+          npm run code:coverage
 
-      # Step 5: Run SonarScanner with npx
+      # Step 5: Extract Coverage Percentage
+      - name: Extract Coverage Percentage
+        run: |
+          cd quolance-ui
+          ts-node extract-coverage-pct.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+
+      # Step 6: Run SonarScanner with npx
       - name: Run SonarScanner
         run: |
           cd quolance-ui

@@ -17,10 +17,19 @@
     "e2e:chrome": "cypress run --browser chrome",
     "e2e:headless": "npm run build:instrumented && cross-env NEXT_TEST=1 start-server-and-test start http://localhost:3000 \"cypress run --e2e --env coverage=true\"",
     "coverage-report": "nyc report --reported=text",
-    "coverage:report": "nyc report --reporter=lcov --report-dir=coverage",
+    "coverage:report": "nyc report --reporter=html --reporter=text-summary --reporter=json --reporter=json-summary --report-dir=./coverage",
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "postbuild": "next-sitemap --config next-sitemap.config.js"
+  },
+  "nyc": {
+    "reporter": [
+      "json",
+      "html",
+      "text-summary",
+      "json-summary"
+    ],
+    "report-dir": "./coverage"
   },
   "dependencies": {
     "@emailjs/browser": "^4.3.3",
@@ -42,6 +51,7 @@
     "dotenv": "^16.4.5",
     "emailjs": "^4.0.3",
     "framer-motion": "^11.11.10",
+    "got": "^14.4.6",
     "install": "^0.13.0",
     "lucide-react": "^0.260.0",
     "matter-js": "^0.19.0",
