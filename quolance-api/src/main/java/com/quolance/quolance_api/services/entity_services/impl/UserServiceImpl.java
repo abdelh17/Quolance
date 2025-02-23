@@ -9,6 +9,7 @@ import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.VerificationCodeRepository;
+import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationCodeService verificationCodeService;
 
     @Override
     @Transactional
@@ -53,7 +55,6 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         log.info("Successfully created new user with ID: {}", user.getId());
 
-        user.setVerified(true);
         sendVerificationEmail(user);
         log.debug("Verification email process initiated for user ID: {}", user.getId());
 
@@ -119,6 +120,17 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    private User findByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            log.warn("No user found with email: {}", email);
+            return ApiException.builder()
+                    .status(HttpServletResponse.SC_NOT_FOUND)
+                    .message("User not found")
+                    .build();
+        });
+        return user;
+    }
+
     private void sendVerificationEmail(User user) {
         log.debug("Creating verification code for user ID: {}", user.getId());
         VerificationCode verificationCode = new VerificationCode(user);
@@ -138,22 +150,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void verifyEmail(String code) {
-        log.debug("Attempting to verify email with code: {}", code);
-        VerificationCode verificationCode = verificationCodeRepository.findByCode(code)
-                .orElseThrow(() -> {
-                    log.warn("Email verification failed - invalid code: {}", code);
-                    return ApiException.builder()
-                            .status(HttpServletResponse.SC_BAD_REQUEST)
-                            .message("Invalid token")
-                            .build();
-                });
+    public String verifyEmail(VerifyEmailDto verifyEmailDto) {
+        log.debug("Attempting to verify email: {}", verifyEmailDto.getEmail());
+        VerificationCode verificationCode = verificationCodeService.findByCode(verifyEmailDto.getVerificationCode());
+        User user = findByEmail(verifyEmailDto.getEmail());
 
-        User user = verificationCode.getUser();
+        if (user.isVerified()) {
+            log.warn("User {} - already verified.", verifyEmailDto.getEmail());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Email already verified")
+                    .build();
+        }
+        if (verificationCode == null) {
+            log.warn("Email verification failed for {} - invalid code.", verifyEmailDto.getEmail());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_NOT_FOUND)
+                    .message("Invalid code")
+                    .build();
+        }
+        if (!verificationCode.getCode().equals(verifyEmailDto.getVerificationCode())) {
+            log.warn("Email verification failed for {} - invalid code: {}", verifyEmailDto.getEmail());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Invalid code")
+                    .build();
+        }
+
         user.setVerified(true);
         userRepository.save(user);
         verificationCodeRepository.delete(verificationCode);
-        log.info("Successfully verified email for user ID: {}", user.getId());
+        log.info("Successfully verified email for: {}", user.getEmail());
+        return "Email verified successfully";
     }
 
     @Override

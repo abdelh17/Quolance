@@ -1,24 +1,21 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
+import {useForm} from 'react-hook-form';
+import {toast} from 'sonner';
+import {z} from 'zod';
 
 import httpClient from '@/lib/httpClient';
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
-import { Button } from '@/components/ui/button';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
-import { cn } from '@/util/utils';
-import { RegistrationUserType } from '@/app/(without-main-layout)/auth/register/page';
-import { Role } from '@/constants/models/user/UserResponse';
-import {
-  FormInput,
-  SocialAuthLogins,
-} from '@/app/(without-main-layout)/auth/shared/auth-components';
+import {Button} from '@/components/ui/button';
+import {HttpErrorResponse} from '@/constants/models/http/HttpErrorResponse';
+import {cn} from '@/util/utils';
+import {RegistrationUserType} from '@/app/(without-main-layout)/auth/register/page';
+import {Role} from '@/constants/models/user/UserResponse';
+import {FormInput, SocialAuthLogins,} from '@/app/(without-main-layout)/auth/shared/auth-components';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
   userRole: RegistrationUserType;
@@ -83,10 +80,10 @@ export function UserRegisterForm({
       <SuccessFeedback
         show={success}
         message='Account created'
-        description='Verfication email will be sent to your inbox, please click the link in the email to verify your account'
+        description='An email verification code has been sent to your inbox. Please enter the code to verify your account.'
         action={
-          <Link href='/auth/login' className='underline'>
-            Login
+            <Link href='/auth/verify-email' className='underline'>
+                Verify Email
           </Link>
         }
         data-test = "success-message"
