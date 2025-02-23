@@ -3,12 +3,15 @@ package com.quolance.quolance_api.services.business_workflow.impl;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
+import com.quolance.quolance_api.dtos.project.*;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectEvaluationResult;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.entities.enums.Tag;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
@@ -87,9 +90,43 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     }
 
     @Override
-    public Page<ProjectDto> getAllClientProjects(User client, Pageable pageable) {
-        Page<Project> projectPage = projectService.getProjectsByClientId(client.getId(), pageable);
-        return projectPage.map(ProjectDto::fromEntity); // Map entities to DTOs
+    public Page<ProjectDto> getAllClientProjects(User client, Pageable pageable, ProjectFilterDto filters) {
+        Specification<Project> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Add search filters if provided
+            if (filters != null) {
+                if (filters.getSearchTitle() != null && !filters.getSearchTitle().trim().isEmpty()) {
+                    predicates.add(criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("title")),
+                            "%" + filters.getSearchTitle().toLowerCase() + "%"
+                    ));
+                }
+
+                if (filters.getCategory() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("category"), filters.getCategory()));
+                }
+
+                if (filters.getPriceRange() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("priceRange"), filters.getPriceRange()));
+                }
+
+                if (filters.getExperienceLevel() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("experienceLevel"), filters.getExperienceLevel()));
+                }
+
+                if (filters.getProjectStatus() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("projectStatus"), filters.getProjectStatus()));
+                }
+
+
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<Project> projectPage = projectService.findAllWithFilters(spec, pageable);
+        return projectPage.map(ProjectDto::fromEntity);
     }
 
 
@@ -150,7 +187,9 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                 }
 
                 if (filters.getSkills() != null && !filters.getSkills().isEmpty()) {
-                    predicates.add(root.join("profile").join("skills").in(filters.getSkills()));
+                    for(Tag skill : filters.getSkills()) {
+                        predicates.add(root.join("profile").join("skills").in(skill));
+                    }
                 }
             }
 

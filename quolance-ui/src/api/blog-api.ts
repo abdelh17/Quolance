@@ -2,6 +2,9 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import {BlogPostViewType} from '@/constants/types/blog-types';
 import {HttpErrorResponse} from '@/constants/models/http/HttpErrorResponse';
+import { PagedResponse } from '@/constants/models/http/PagedResponse';
+import { PaginationParams } from '@/constants/types/pagination-types';
+import { queryToString } from '@/util/stringUtils';
 
 
 /* ---------- Blog Posts ---------- */
@@ -45,20 +48,22 @@ export const useCreateBlogPost = (options?: {
   });
 };
 
-export const useGetAllBlogPosts = (options?: {
-  onSuccess?: (data: ReactionResponseDto[]) => void;
 
+export const useGetAllBlogPosts = (query: PaginationParams, options?: {
+  onSuccess?: (data: PagedResponse<BlogPostViewType>) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useQuery<BlogPostViewType[], HttpErrorResponse>({
-    queryKey: ['all-blog-posts'],
+  return useQuery({
+    queryKey: ["all-blog-posts", query],
     queryFn: async () => {
-      const response = await httpClient.get('/api/blog-posts/all');
+      const response = await httpClient.get(`/api/blog-posts?${queryToString(query)}`);
       return response.data;
     },
+    staleTime: 1000 * 60 * 5,
     ...options,
   });
 };
+
 
 // export const useUpdateBlogPost = (options?: {
 //   onSuccess?: (data: BlogPostViewType) => void;
@@ -89,7 +94,7 @@ export const useDeleteBlogPost = (options?: {
 export interface CommentResponseDto {
   commentId: string;
   blogPostId: string;
-  userId: string;
+  username: string;
   content: string;
 }
 
@@ -97,17 +102,19 @@ export interface CommentRequestDto {
   content: string;
 }
 
-export const useGetCommentsByPostId = (postId: string, options?: {
-  onSuccess?: (data: CommentResponseDto[]) => void;
-  onError?: (error: HttpErrorResponse) => void;
+
+export const useGetCommentsByPostId = (postId: string, pagination: PaginationParams, options?: {
+    onSuccess?: (data: PagedResponse<CommentResponseDto>) => void;
+    onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useQuery<CommentResponseDto[], HttpErrorResponse>({
-    queryKey: ['comments', postId],
+  return useQuery<PagedResponse<CommentResponseDto>, HttpErrorResponse>({
+    queryKey: ["comments", postId, pagination],
     queryFn: async () => {
-      const response = await httpClient.get(`/api/blog-comments/post/${postId}`);
+      const response = await httpClient.get(`/api/blog-comments/${postId}?${queryToString(pagination)}`);
       return response.data;
     },
-    enabled: !!postId, // Only fetch if postId is defined
+    staleTime: 1000 * 60 * 5,
+    enabled: !!postId,
     ...options,
   });
 };

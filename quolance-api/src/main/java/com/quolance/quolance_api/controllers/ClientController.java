@@ -8,6 +8,7 @@ import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectEvaluationResult;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
@@ -95,12 +96,14 @@ public class ClientController {
             description = "Get all projects of a client"
     )
     public ResponseEntity<PageResponseDto<ProjectDto>> getAllClientProjects(
-            @Valid PageableRequestDto pageableRequest) {
+            @Valid PageableRequestDto pageableRequest,
+            @Valid ProjectFilterDto filters) {
         User client = SecurityUtil.getAuthenticatedUser();
         log.info("Client with ID {} attempting to get all his projects", client.getId());
         Page<ProjectDto> projects = clientWorkflowService.getAllClientProjects(
                 client,
-                paginationUtils.createPageable(pageableRequest)
+                paginationUtils.createPageable(pageableRequest),
+                filters
         );
         log.info("Client with ID {} successfully got all his projects. {} returned", client.getId(), projects.getTotalElements());
         return ResponseEntity.ok(new PageResponseDto<>(projects));

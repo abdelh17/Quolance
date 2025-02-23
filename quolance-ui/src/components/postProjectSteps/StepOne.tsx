@@ -39,7 +39,7 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h4 className='heading-4'>Basic Project Information</h4>
+      <h4 data-test="project-step1-title" className='heading-4'>Basic Project Information</h4>
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
         Project Category <span className='text-red-500'>* </span>
       </p>
@@ -60,7 +60,7 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
         className='bg-n30 w-full rounded-lg p-3 outline-none'
       />
       {errors.projectTitle && (
-        <p className='text-red-500'>{errors.projectTitle.message}</p>
+        <p data-test="project-title-error"  className='text-red-500'>{errors.projectTitle.message}</p>
       )}
 
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
@@ -82,7 +82,7 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
         )}
       />
       {errors.projectDescription && (
-        <p className='text-red-500'>{errors.projectDescription.message}</p>
+        <p data-test="project-desc-error"  className='text-red-500'>{errors.projectDescription.message}</p>
       )}
 
       <p className='pb-4 pt-6 lg:pt-10'>
@@ -94,11 +94,12 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
         className='bg-n30 w-full rounded-lg p-3 outline-none'
       />
       {errors.location && (
-        <p className='text-red-500'>{errors.location.message}</p>
+        <p data-test="project-location-error" className='text-red-500'>{errors.location.message}</p>
       )}
 
       <div className='mt-8 flex justify-center'>
         <button
+          data-test="next-btn-step1"
           type='submit'
           className='bg-b300 hover:text-n900 relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] lg:px-8 lg:py-3'
         >

@@ -62,6 +62,7 @@ class FreelancerControllerUnitTest {
     private ApplicationDto applicationDto;
     private ProjectPublicDto projectPublicDto;
     private ProjectDto projectDto;
+    private String applicationMessage;
 
     @BeforeEach
     void setUp() {
@@ -74,7 +75,8 @@ class FreelancerControllerUnitTest {
         projectDto.setId(UUID.randomUUID());
         projectDto.setTitle("Test Project");
 
-        applicationCreateDto = new ApplicationCreateDto(projectDto.getId());
+        applicationMessage = "Test Application Message";
+        applicationCreateDto = new ApplicationCreateDto(projectDto.getId(), applicationMessage);
 
 
         applicationDto = ApplicationDto.builder()
