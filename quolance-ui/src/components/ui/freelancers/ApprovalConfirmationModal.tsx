@@ -57,6 +57,7 @@ function ApprovalConfirmationModal({
               <span className='relative z-10'>Cancel</span>
             </button>
             <button
+              data-test="approve-submission-modal-btn"
               onClick={handleConfirm}
               className='hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full bg-green-600 px-6 py-2 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
             >
