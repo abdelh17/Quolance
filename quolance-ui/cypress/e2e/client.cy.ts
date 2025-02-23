@@ -522,10 +522,17 @@ describe('Client Flow', () => {
     }
  ).as('getClientProjectApplications');
  
+ // Ensure the status is correct before interacting
+cy.contains('Approve Submission').should('exist');
+
+// Check if the button exists and is not disabled
+cy.get('[data-test="approve-submission-btn"]')
+  .should('exist')
+  .should('not.be.disabled')
+  .click();
  
  
- 
- cy.get('[data-test="approve-submission-btn"]').click();
+ //cy.get('[data-test="approve-submission-btn"]').click();
  
  
  cy.intercept(
