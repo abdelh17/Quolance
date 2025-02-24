@@ -13,9 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +57,50 @@ public class FileServiceImpl implements FileService {
         }
 
         return uploadResult;
+    }
+
+    @Override
+    public void deleteFile(UUID fileId, User user) {
+        FileEntity file = fileRepository.findByIdAndUserId(fileId, user.getId())
+                .orElseThrow(() -> new ApiException("File not found in user's uploads"));
+
+        String fileUrl = file.getFileUrl();
+        String publicId = fileUrl
+                .replaceAll("^.*/upload/(?:v\\d+/)?", "")
+                .replaceFirst("\\.[^.]+$", "");
+
+        // file type mapping
+        Map<String, String> RESOURCE_TYPE_MAP = Map.of(
+                "image/jpeg", "image",
+                "image/png", "image",
+                "image/gif", "image",
+                "video/mp4", "video",
+                "video/mpeg", "video",
+                "application/javascript", "javascript",
+                "text/css", "css"
+        );
+
+        String resourceType = RESOURCE_TYPE_MAP.getOrDefault(file.getFileType(), "raw");
+
+
+        try {
+            // Delete from Cloudinary
+            Map<String, Object> result = cloudinary.uploader().destroy(publicId, Map.of("resource_type", resourceType));
+
+            log.debug("Cloudinary delete result: {}", result);
+            if ("not found".equals(result.get("result"))) {
+                log.warn("File not found in Cloudinary: {}", file.getFileUrl());
+            } else if (!"ok".equals(result.get("result"))) {
+                throw new ApiException("Error deleting file from Cloudinary: " + result.get("result"));
+            }
+
+            // Delete the file from the database
+            fileRepository.delete(file);
+
+        } catch (IOException e) {
+            log.error("Error deleting file from Cloudinary: {}", file.getFileUrl(), e);
+            throw new ApiException("Error deleting file from Cloudinary");
+        }
     }
 
     @Override
