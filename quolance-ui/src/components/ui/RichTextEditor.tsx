@@ -5,7 +5,7 @@ import 'react-quill-new/dist/quill.snow.css';
 
 interface RichTextEditorProps {
   value: string;
-  onChange: (key: string, value: string) => void;
+  onChange?: (key: string, value: string) => void;
   name: string;
   placeholder?: string;
   readOnly?: boolean;
@@ -77,7 +77,7 @@ const RichTextEditor = ({
     (content: string) => {
       setEditorValue(content);
       debounceTimer(() => {
-        onChange(name, content);
+        onChange && onChange(name, content);
       });
     },
     [name, onChange, debounceTimer]

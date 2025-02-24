@@ -102,6 +102,11 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     }
 
     @Override
+    public Boolean hasFreelancerAppliedToProject(UUID freelancerId, UUID projectId) {
+        return applicationService.getApplicationByFreelancerIdAndProjectId(freelancerId, projectId) != null;
+    }
+
+    @Override
     public Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable) {
         Page<Application> applicationPage = applicationService.getAllApplicationsByFreelancerId(freelancer.getId(), pageable);
         return applicationPage.map(ApplicationDto::fromEntity);
@@ -159,6 +164,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                         predicates.add(criteriaBuilder.not(root.get("id").in(subquery)));
                     }
                 }
+
 
             }
 

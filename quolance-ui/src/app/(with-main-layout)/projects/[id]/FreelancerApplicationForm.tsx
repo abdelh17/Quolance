@@ -35,9 +35,9 @@ export default function FreelancerApplicationForm({
 
   const { data: application } = useGetProjectApplication(projectId);
 
-  const onSubmit: SubmitHandler<ApplicationFormFields> = async (data) => {
+  const onSubmit: SubmitHandler<ApplicationFormFields> = async (formData) => {
     if (!user) return;
-    submitApplication(); // Add data to submitApplication
+    submitApplication(formData.motivationalLetter);
   };
 
   if (projectStatus === ProjectStatus.CLOSED && !application) {
@@ -131,16 +131,16 @@ export default function FreelancerApplicationForm({
                   <h3 className='text-n700 mb-2 text-sm font-medium'>
                     Your Application
                   </h3>
-                  <p className='text-n300 text-base'>
-                    No message provided yet. This feature will be available
-                    soon.
-                  </p>
+                  <p className='text-n300 text-base'>{application.message}</p>
                 </div>
 
                 {/* Metadata */}
                 <div className='text-n300 text-sm'>
                   <p>Application ID: #{application.id}</p>
-                  <p>Submitted on: {new Date().toLocaleDateString()}</p>
+                  <p>
+                    Submitted on:{' '}
+                    {new Date(application.creationDate).toLocaleString()}
+                  </p>
                 </div>
               </div>
 

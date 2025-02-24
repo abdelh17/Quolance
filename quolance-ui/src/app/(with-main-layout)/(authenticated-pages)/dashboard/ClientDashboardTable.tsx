@@ -33,8 +33,8 @@ export default function ClientDashboardTable() {
     sortDirection,
   });
 
-  const projects = data?.content || [];
-  const metadata = data?.metadata;
+  const projects = data?.data.content || [];
+  const metadata = data?.data.metadata;
 
   const router = useRouter();
 
@@ -181,7 +181,7 @@ export default function ClientDashboardTable() {
                       <Link
                         href={`/projects/${project.id}?edit`}
                         className='text-b300 hover:text-indigo-900'
-                        data-test="edit-project-btn"
+                        data-test='edit-project-btn'
                       >
                         Edit Project
                       </Link>
@@ -189,7 +189,7 @@ export default function ClientDashboardTable() {
                         href={`/projects/${project.id}/#applicants-section`}
                         onClick={() => scrollToApplicants(project.id)}
                         className='text-b300 hover:text-indigo-900'
-                         data-test="view-applicants-btn"
+                        data-test='view-applicants-btn'
                       >
                         View Applicants
                       </Link>
