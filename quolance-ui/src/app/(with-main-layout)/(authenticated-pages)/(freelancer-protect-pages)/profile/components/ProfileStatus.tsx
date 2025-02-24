@@ -119,7 +119,13 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
 
       <div className='flex  w-full  items-end  gap-2'>
         <div className='flex w-full justify-end gap-2'>
-          <Button disabled={checkModes} onClick={handleClick}>
+          <Button
+            variant='default'
+            animation='default'
+            size='sm'
+            disabled={checkModes}
+            onClick={handleClick}
+          >
             Update profile
           </Button>
         </div>
