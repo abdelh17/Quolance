@@ -11,7 +11,10 @@ import ToastProvider from '@/util/context/ToastProvider';
 
 // Dynamically import the WebSocketProvider so that it loads only on the client
 const WebSocketProvider = dynamic(
-  () => import('@/util/context/webSocketContext').then((mod) => mod.WebSocketProvider),
+  () =>
+    import('@/util/context/webSocketContext').then(
+      (mod) => mod.WebSocketProvider
+    ),
   { ssr: false }
 );
 
@@ -26,15 +29,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" dir="ltr">
-      <body className="flex min-h-screen flex-col">
+    <html lang='en' dir='ltr'>
+      <body className='flex min-h-screen flex-col'>
         <ToastProvider>
           <ReactQueryProvider>
             <StepsProvider>
               <WebSocketProvider>
-                <main className="flex-grow">{children}</main>
+                <div className='flex flex-grow flex-col'>
+                  <main className='flex-grow'>{children}</main>
+                  <Footer />
+                </div>
               </WebSocketProvider>
-              <Footer />
             </StepsProvider>
           </ReactQueryProvider>
         </ToastProvider>
