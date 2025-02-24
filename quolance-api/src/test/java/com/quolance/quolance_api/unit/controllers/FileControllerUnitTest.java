@@ -41,6 +41,7 @@ class FileControllerUnitTest {
     private MultipartFile mockFile;
     private FileDto fileDto1;
     private FileDto fileDto2;
+    private UUID mockFileId;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +49,7 @@ class FileControllerUnitTest {
         mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setRole(Role.FREELANCER);
+        mockFileId = UUID.randomUUID();
 
         mockFile = new MockMultipartFile(
                 "file",
@@ -103,6 +105,19 @@ class FileControllerUnitTest {
             verify(fileService).uploadFile(mockFile, mockUser);
         }
     }
+
+    @Test
+    void deleteFile_Success() {
+        try (var securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+
+            ResponseEntity<Void> response = fileController.deleteFile(mockFileId);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            verify(fileService).deleteFile(mockFileId, mockUser);
+        }
+    }
+
 
     @Test
     void getAllUserFiles_ReturnsPageOfFiles() {
