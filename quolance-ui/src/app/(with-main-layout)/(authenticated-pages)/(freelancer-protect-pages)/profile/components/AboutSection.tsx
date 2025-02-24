@@ -52,7 +52,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
          <p className="text-gray-700">{profile.bio}</p>
        ) : (
          <div className="flex items-center">
-           <Book className="text-b300 mr-3" />
+           <Book className=" mr-3" />
            <p className="text-gray-700">Not Specified</p>
          </div>
        )}
