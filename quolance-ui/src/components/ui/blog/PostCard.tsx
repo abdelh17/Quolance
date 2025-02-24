@@ -24,6 +24,7 @@ import { PaginationParams } from "@/constants/types/pagination-types";
 import { Button } from "../button";
 import { IoSendSharp } from 'react-icons/io5'
 import { MdExpandMore, MdExpandLess } from 'react-icons/md'
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -56,6 +57,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const { user } = useAuthGuard({ middleware: "auth" });
   const { data: authorProfile } = useGetFreelancerProfile(authorName);
 
+  const queryClient = useQueryClient();
   const { data: reactionData } = useGetReactionsByPostId(id);
   const { mutate: reactToPost } = useReactToPost();
 
@@ -71,14 +73,12 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const { mutate: deletePost } = useDeleteBlogPost({
     onSuccess: () => {
       showToast("Post deleted successfully!", "success");
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ["all-blog-posts"] }); // Re-fetch posts
     },
     onError: () => {
       showToast("Error deleting post.", "error");
     },
   });
-
-  
 
   const userSummaryRef = useRef<HTMLDivElement | null>(null);
   const profileImageRef = useRef<HTMLImageElement | null>(null);
@@ -89,7 +89,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   useEffect(() => {
     if (pagedComments?.content) {
-      setAllLoadedComments((prevComments) => [...prevComments, ...pagedComments.content]);
+      setAllLoadedComments(pagedComments.content);
     }
   }, [pagedComments]);
 

@@ -6,6 +6,7 @@ import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import {showToast} from "@/util/context/ToastProvider";
 import {useDeleteComment} from "@/api/blog-api";
 import {useAuthGuard} from "@/api/auth-api";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 interface CommentCardProps {
@@ -25,16 +26,17 @@ const CommentCard: React.FC<CommentCardProps> = ({
 
   const { data: authorProfile } = useGetFreelancerProfile(authorName);
   const { user } = useAuthGuard({ middleware: "auth" });
+  const queryClient = useQueryClient();
   
   const { mutate: deleteComment } = useDeleteComment({
     onSuccess: () => {
       showToast("Comment deleted successfully!", "success");
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
     onError: () => {
       showToast("Error deleting comment.", "error");
     },
-  })
+  });
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
