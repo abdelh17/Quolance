@@ -1,13 +1,12 @@
-// pages/reviews.tsx
 'use client';
 
 import React from 'react';
 import { StarIcon } from '@heroicons/react/20/solid';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/free-mode';
-import { Autoplay, FreeMode } from 'swiper/modules';
-
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
 
 const reviews = [
   {
@@ -91,46 +90,45 @@ const ReviewsPage = () => {
             </p>
           </div>
 
-          <div className="hide-scrollbar">
+          <div className="max-w-5xl mx-auto">
             <Swiper
-              slidesPerView="auto"
-              spaceBetween={30}
-              freeMode={{
-                enabled: true,
-                momentum: true,
-                momentumRatio: 0.4,
-                momentumVelocityRatio: 0.4,
-              }}
+              modules={[EffectCoverflow, Pagination, Autoplay]}
+              effect="coverflow"
+              grabCursor={true}
+              centeredSlides={true}
               loop={true}
-              speed={5000}
+              slidesPerView={3}
+              coverflowEffect={{
+                rotate: 0,
+                stretch: 0,
+                depth: 100,
+                modifier: 2.5,
+                slideShadows: false,
+              }}
+              pagination={{ clickable: true }}
               autoplay={{
-                delay: 0,
+                delay: 3000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
-                waitForTransition: true,
               }}
-              modules={[FreeMode, Autoplay]}
-              className="!overflow-visible"
+              className="pb-12"
               breakpoints={{
-                640: {
-                  slidesPerView: 2,
+                320: {
+                  slidesPerView: 1,
                 },
-                768: {
+                640: {
                   slidesPerView: 2,
                 },
                 1024: {
                   slidesPerView: 3,
                 },
-                1280: {
-                  slidesPerView: 3,
-                },
               }}
             >
-              {[...reviews, ...reviews].map((review, index) => (
-                <SwiperSlide key={`${review.id}-${index}`} className="!w-[380px] !h-auto">
+              {reviews.map((review) => (
+                <SwiperSlide key={review.id}>
                   <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl">
                     <div className="flex items-center gap-x-4 mb-4">
-                      <img src={review.image} alt="" className="h-12 w-12 rounded-full" />
+                      <img src={review.image} alt="" className="h-12 w-12 rounded-full bg-gray-100" />
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">{review.name}</h3>
                         <p className="text-sm text-gray-500">{review.role}</p>
@@ -160,7 +158,7 @@ const ReviewsPage = () => {
           <div className="mt-10 flex items-center gap-x-6 lg:mt-0 lg:flex-shrink-0">
             <a
               href="/auth/register"
-              className="bg-b300 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
+              className="bg-b300 hover:text-n900 relative flex items-center justify-center  rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
             >
               <span className="relative z-10">Get Started</span>
             </a>
