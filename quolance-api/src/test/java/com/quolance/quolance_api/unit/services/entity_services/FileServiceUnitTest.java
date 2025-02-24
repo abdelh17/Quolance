@@ -51,6 +51,7 @@ class FileServiceUnitTest {
     private User mockUser;
     private MultipartFile mockImageFile;
     private MultipartFile mockDocFile;
+    private FileEntity mockFile;
     private Map<String, Object> mockCloudinaryResponse;
 
     @BeforeEach
@@ -72,6 +73,12 @@ class FileServiceUnitTest {
                 "application/pdf",
                 "test doc content".getBytes()
         );
+
+        mockFile = new FileEntity();
+        mockFile.setId(UUID.randomUUID());
+        mockFile.setFileUrl("https://res.cloudinary.com/dt1m5nygt/image/upload/v1740430982/images/wjwojzhdkapbxq0a1vjp.png");
+        mockFile.setFileType("image/png");
+        mockFile.setUser(mockUser);
 
         mockCloudinaryResponse = new HashMap<>();
         mockCloudinaryResponse.put("secure_url", "https://cloudinary.com/test-url");
@@ -182,6 +189,77 @@ class FileServiceUnitTest {
                 .hasMessage("Error uploading file");
 
         verify(fileRepository, never()).save(any(FileEntity.class));
+    }
+
+    @Test
+    void deleteFile_Success() throws IOException {
+        when(fileRepository.findByIdAndUserId(mockFile.getId(), mockUser.getId()))
+                .thenReturn(Optional.of(mockFile));
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(anyString(), anyMap()))
+                .thenReturn(Map.of("result", "ok"));
+
+        fileService.deleteFile(mockFile.getId(), mockUser);
+
+        verify(uploader).destroy(eq("images/wjwojzhdkapbxq0a1vjp"), eq(Map.of("resource_type", "image")));
+        verify(fileRepository).delete(mockFile);
+    }
+
+    @Test
+    void deleteFile_FileNotFoundInDatabase_ThrowsException() {
+        when(fileRepository.findByIdAndUserId(mockFile.getId(), mockUser.getId()))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> fileService.deleteFile(mockFile.getId(), mockUser))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("File not found in user's uploads");
+
+        verify(fileRepository, never()).delete(any(FileEntity.class));
+    }
+
+    @Test
+    void deleteFile_FileNotFoundInCloudinary_WarnsAndDeletesFromDatabase() throws IOException {
+        when(fileRepository.findByIdAndUserId(mockFile.getId(), mockUser.getId()))
+                .thenReturn(Optional.of(mockFile));
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(anyString(), anyMap()))
+                .thenReturn(Map.of("result", "not found"));
+
+        fileService.deleteFile(mockFile.getId(), mockUser);
+
+        verify(uploader).destroy(eq("images/wjwojzhdkapbxq0a1vjp"), eq(Map.of("resource_type", "image")));
+        verify(fileRepository).delete(mockFile);
+    }
+
+    @Test
+    void deleteFile_CloudinaryDeletionResultNotOk_ThrowsException() throws IOException {
+        when(fileRepository.findByIdAndUserId(mockFile.getId(), mockUser.getId()))
+                .thenReturn(Optional.of(mockFile));
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(anyString(), anyMap()))
+                .thenReturn(Map.of("result", "error"));
+
+        assertThatThrownBy(() -> fileService.deleteFile(mockFile.getId(), mockUser))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Error deleting file from Cloudinary: error");
+
+        verify(fileRepository, never()).delete(any(FileEntity.class));
+    }
+
+    @Test
+    void deleteFile_FileUrlWithoutVersion_Success() throws IOException {
+        mockFile.setFileUrl("https://res.cloudinary.com/dt1m5nygt/image/upload/images/wjwojzhdkapbxq0a1vjp.png");
+
+        when(fileRepository.findByIdAndUserId(mockFile.getId(), mockUser.getId()))
+                .thenReturn(Optional.of(mockFile));
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(anyString(), anyMap()))
+                .thenReturn(Map.of("result", "ok"));
+
+        fileService.deleteFile(mockFile.getId(), mockUser);
+
+        verify(uploader).destroy(eq("images/wjwojzhdkapbxq0a1vjp"), eq(Map.of("resource_type", "image")));
+        verify(fileRepository).delete(mockFile);
     }
 
     @Test
