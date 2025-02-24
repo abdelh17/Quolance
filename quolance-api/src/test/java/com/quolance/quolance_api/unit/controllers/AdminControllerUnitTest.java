@@ -3,6 +3,7 @@ package com.quolance.quolance_api.unit.controllers;
 import com.quolance.quolance_api.controllers.AdminController;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectRejectionDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
@@ -290,13 +291,13 @@ class AdminControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
             UUID projectId = UUID.randomUUID();
-        doNothing().when(adminWorkflowService).rejectProject(projectId);
+            doNothing().when(adminWorkflowService).rejectProject(projectId, "Bad project");
 
-        ResponseEntity<String> response = adminController.rejectProject(projectId);
+            ResponseEntity<String> response = adminController.rejectProject(projectId, new ProjectRejectionDto("Bad project"));
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("Project rejected successfully");
-            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo("Project rejected successfully");
+            verify(adminWorkflowService, times(1)).rejectProject(projectId, "Bad project");
         }
     }
 
@@ -305,12 +306,12 @@ class AdminControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
             UUID projectId = UUID.randomUUID();
-        doThrow(new ApiException("Project not found")).when(adminWorkflowService).rejectProject(projectId);
+            doThrow(new ApiException("Project not found")).when(adminWorkflowService).rejectProject(projectId, "Bad project");
 
-        assertThatThrownBy(() -> adminController.rejectProject(projectId))
-                .isInstanceOf(ApiException.class)
-                .hasMessage("Project not found");
-            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+            assertThatThrownBy(() -> adminController.rejectProject(projectId, new ProjectRejectionDto("Bad project")))
+                    .isInstanceOf(ApiException.class)
+                    .hasMessage("Project not found");
+            verify(adminWorkflowService, times(1)).rejectProject(projectId, "Bad project");
         }
     }
 
@@ -319,13 +320,13 @@ class AdminControllerUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockAdmin);
             UUID projectId = UUID.randomUUID();
-        doThrow(new AccessDeniedException("User is not authorized to reject projects"))
-                .when(adminWorkflowService).rejectProject(projectId);
+            doThrow(new AccessDeniedException("User is not authorized to reject projects"))
+                    .when(adminWorkflowService).rejectProject(projectId, "Bad project");
 
-        assertThatThrownBy(() -> adminController.rejectProject(projectId))
-                .isInstanceOf(AccessDeniedException.class)
-                .hasMessage("User is not authorized to reject projects");
-            verify(adminWorkflowService, times(1)).rejectProject(projectId);
+            assertThatThrownBy(() -> adminController.rejectProject(projectId, new ProjectRejectionDto("Bad project")))
+                    .isInstanceOf(AccessDeniedException.class)
+                    .hasMessage("User is not authorized to reject projects");
+            verify(adminWorkflowService, times(1)).rejectProject(projectId, "Bad project");
         }
     }
 }

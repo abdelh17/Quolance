@@ -13,15 +13,18 @@ import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
+import com.quolance.quolance_api.util.FeatureToggle;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClientWorkflowServiceImpl implements ClientWorkflowService {
@@ -37,16 +41,28 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     private final ApplicationService applicationService;
     private final UserService userService;
     private final NotificationMessageService notificationMessageService;
+    private final FeatureToggle featureToggle;
 
     @Override
-    public void createProject(ProjectCreateDto projectCreateDto, User client) {
+    @Transactional
+    public ProjectEvaluationResult createProject(ProjectCreateDto projectCreateDto, User client) {
+        log.info("Creating project for client: {}", client.getId());
 
-        Project projectToSave = ProjectCreateDto.toEntity(projectCreateDto);
-        projectToSave.setExpirationDate(projectCreateDto.getExpirationDate() != null ? projectCreateDto.getExpirationDate() : LocalDate.now().plusDays(7));
-        projectToSave.setClient(client);
-        projectService.saveProject(projectToSave);
+        Project project = ProjectCreateDto.toEntity(projectCreateDto);
+        project.setExpirationDate(projectCreateDto.getExpirationDate() != null ?
+                projectCreateDto.getExpirationDate() : LocalDate.now().plusDays(7));
+        project.setClient(client);
+        project.setProjectStatus(ProjectStatus.PENDING);
+        projectService.saveProject(project);
+
+        if (featureToggle.isEnabled("useAiProjectEvaluation")) {
+            log.info("Automated evaluation of project enabled. AI evaluation of project for approval....");
+            return projectService.evaluateProjectForApproval(project);
+        } else {
+            log.info("Automated evaluation of project disabled.");
+            return new ProjectEvaluationResult();
+        }
     }
-
 
     @Override
     public ProjectDto getProject(UUID projectId, User client) {

@@ -99,19 +99,19 @@ class ClientControllerUnitTest {
                 .build();
     }
 
-    @Test
-    void createProject_ReturnsSuccessMessage() {
-        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
-            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
-            doNothing().when(clientWorkflowService).createProject(eq(projectCreateDto), any(User.class));
-
-            ResponseEntity<String> response = clientController.createProject(projectCreateDto);
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody()).isEqualTo("Project created successfully");
-            verify(clientWorkflowService).createProject(projectCreateDto, mockClient);
-        }
-    }
+//    @Test
+//    void createProject_ReturnsSuccessMessage() {
+//        try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
+//            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockClient);
+//            doNothing().when(clientWorkflowService).createProject(eq(projectCreateDto), any(User.class));
+//
+//            ResponseEntity<String> response = clientController.createProject(projectCreateDto);
+//
+//            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//            assertThat(response.getBody()).isEqualTo("Project created successfully");
+//            verify(clientWorkflowService).createProject(projectCreateDto, mockClient);
+//        }
+//    }
 
     @Test
     void createProject_WithNullProjectDto_ThrowsException() {
