@@ -6,6 +6,8 @@ export interface ApplicationResponse {
   projectId: string;
   freelancerId: string;
   freelancerProfile: FreelancerProfileType;
+  creationDate: string;
+  message: string;
 }
 
 export enum ApplicationStatus {
