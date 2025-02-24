@@ -162,14 +162,20 @@ export const ProjectDetails: React.FC<ProjectDetailsProps> = ({
           <div>
             <Listbox value={selectedStatus} onChange={handleStatusChange}>
               <div className='relative'>
-                <ListboxButton className='flex w-full items-center justify-between rounded-xl border border-gray-300 p-2 lg:w-96'>
+                <ListboxButton
+                  className='flex w-full items-center justify-between rounded-xl border border-gray-300 p-2 lg:w-96'
+                  data-test='status-dropdown'
+                >
                   {selectedStatus.name}
                   <ChevronDownIcon
                     aria-hidden='true'
                     className='h-5 w-5 text-gray-500'
                   />
                 </ListboxButton>
-                <ListboxOptions className='absolute z-10 mt-1 w-full rounded border bg-white shadow-md lg:w-96'>
+                <ListboxOptions
+                  className='absolute z-10 mt-1 w-full rounded border bg-white shadow-md lg:w-96'
+                  data-test='status-options'
+                >
                   {statuses.map((statusOption) => (
                     <ListboxOption
                       key={statusOption.id}
@@ -179,6 +185,7 @@ export const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                           active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
                         }`
                       }
+                      data-test={`status-option-${statusOption.name}`}
                     >
                       {statusOption.name}
                     </ListboxOption>

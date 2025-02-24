@@ -138,7 +138,8 @@ export default function FreelancerApplicationForm({
                 <div className='text-n300 text-sm'>
                   <p>Application ID: #{application.id}</p>
                   <p>
-                    Submitted on: {application.creationDate.toLocaleString()}
+                    Submitted on:{' '}
+                    {new Date(application.creationDate).toLocaleString()}
                   </p>
                 </div>
               </div>
