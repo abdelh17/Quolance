@@ -109,7 +109,7 @@ export const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({
                             onClick={() => handleSkillClick(skill.value)}
                             className={`rounded-lg px-4 py-2 text-xs transition-all duration-200 ${
                               profile.skills.includes(skill.value)
-                                ? 'bg-blue-500 text-white'
+                                ? 'py-3.5 px-7 rounded-full bg-orange-50 font-semibold text-base leading-7 text-gray-700'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
                           >

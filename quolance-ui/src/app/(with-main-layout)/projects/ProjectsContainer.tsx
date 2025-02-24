@@ -5,7 +5,7 @@ import {
   useGetAllPublicProjects,
 } from '@/api/projects-api';
 import Loading from '@/components/ui/loading/loading';
-import ProjectListType from '@/components/ui/projects/projectFIlter/ProjectListType';
+import ProjectSubListSelect from '@/components/ui/projects/projectFIlter/ProjectSubListSelect';
 import Link from 'next/link';
 import Image from 'next/image';
 import heroImage2 from '@/public/images/freelancer-hero-img-2.jpg';
@@ -17,36 +17,34 @@ import { useGetFreelancerProjects } from '@/api/freelancer-api';
 import { useGetAllClientProjects } from '@/api/client-api';
 
 function ProjectsContainer() {
-  const [currentListType, setCurrentListType] = useState('All Projects');
+  const [currentSubList, setCurrentSubList] = useState('All Projects');
   const { user } = useAuthGuard({ middleware: 'auth' });
   const [projectQuery, setProjectQuery] = useState<ProjectFilterQuery>(
     ProjectFilterQueryDefault
   );
 
-  // Filter projects based on user role and current list type
-  // There is a small bug here, which will be fixed in the next iteration
   const useGetFilteredProjects = (
     query: ProjectFilterQuery,
-    currentListType: string,
-    role: Role
+    currentSubList: string,
+    role: Role | undefined
   ) => {
     const isPublicEnabled =
-      currentListType === 'All Projects' && role !== Role.FREELANCER;
+      currentSubList === 'All Projects' && role !== Role.FREELANCER;
     const isFreelancerEnabled = role === Role.FREELANCER;
     const isClientEnabled =
-      (currentListType === 'Posted' || currentListType === 'Completed') &&
+      (currentSubList === 'Posted' || currentSubList === 'Completed') &&
       role === Role.CLIENT;
 
     const publicProjects = useGetAllPublicProjects(query, isPublicEnabled);
     const freelancerProjects = useGetFreelancerProjects(
       query,
       isFreelancerEnabled,
-      currentListType === 'Applied'
+      currentSubList === 'Applied'
     );
     const clientProjects = useGetAllClientProjects(
       query,
       isClientEnabled,
-      currentListType === 'Completed'
+      currentSubList === 'Completed'
     );
 
     if (isPublicEnabled) return publicProjects;
@@ -56,7 +54,11 @@ function ProjectsContainer() {
     return { data: null, isLoading: true, isSuccess: false };
   };
 
-  const { data, isLoading, isSuccess } = useGetAllPublicProjects(projectQuery);
+  const { data, isLoading, isSuccess } = useGetFilteredProjects(
+    projectQuery,
+    currentSubList,
+    user?.role
+  );
 
   const pageMetaData = data?.data.metadata;
   const projectsData = data?.data.content;
@@ -99,9 +101,9 @@ function ProjectsContainer() {
         <Loading />
       ) : (
         <>
-          <ProjectListType
-            currentListType={currentListType}
-            setCurrentListType={setCurrentListType}
+          <ProjectSubListSelect
+            currentSubList={currentSubList}
+            setCurrentSubList={setCurrentSubList}
           />
           <ProjectListLayout
             isLoading={isLoading}

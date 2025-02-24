@@ -91,14 +91,17 @@ export const useGetAllClientProjects = (
       const response = await httpClient.get(
         `/api/client/projects/all?${queryString}`
       );
-      // Check if filter is completed
-      if (completed) {
-        return response.data.filter(
-          (project: ProjectType) => project.projectStatus === 'CLOSED'
-        );
-      }
 
-      return response.data;
+      return {
+        data: completed
+          ? {
+              ...response.data,
+              content: response.data.content.filter(
+                (project: ProjectType) => project.projectStatus === 'CLOSED'
+              ),
+            }
+          : response.data,
+      };
     },
   });
 };

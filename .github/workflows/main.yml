@@ -24,19 +24,13 @@ jobs:
           cd quolance-ui
           npm install
 
-      # Step 2: Run Cypress Tests
-      #  - name: Run Cypress Tests
-      #   run: |
-      #    cd quolance-ui
-      #     npm run e2e:headless
-
-      # Step 3: Build Frontend
-      - name: Build Frontend
+      # Step 2: Build Frontend && Run Cypress Tests
+      - name: Build Frontend && Run Cypress Tests
         run: |
           cd quolance-ui
-          npm run build
+          npm run e2e:headless
 
-      # Step 4: SonarCloud Scan for Frontend
+      # Step 3: SonarCloud Scan for Frontend
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarqube-scan-action@master
         env:

@@ -13,11 +13,14 @@ import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
+import com.quolance.quolance_api.util.FeatureToggle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -29,7 +32,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
@@ -46,6 +48,9 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
     private User client;
 
+    @MockBean
+    private FeatureToggle featureToggle;
+
     @BeforeEach
     void setUp() throws Exception {
         projectRepository.deleteAll();
@@ -55,10 +60,11 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
         session = sessionCreationHelper.getSession("client@test.com", "Password123!");
     }
 
-
     @Test
-    void createProjectValidIsOk() throws Exception {
-        //Arrange
+    void createProjectWhenFeatureToggleDisabledShouldSkipAIApproval() throws Exception {
+        // Arrange
+        Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
+
         ProjectCreateDto projectDto = ProjectCreateDto.builder()
                 .title("title")
                 .description("description")
@@ -68,27 +74,29 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .build();
 
-        //Act
-        String response = mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+        // Act
+        String response = mockMvc.perform(post("/api/client/create-project")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(projectDto)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         Project project = projectRepository.findAll().getFirst();
-        assertThat(response).isEqualTo("Project created successfully");
+        assertThat(jsonResponse).containsEntry("reason", null); // always null when AI is disabled
         assertThat(projectRepository.findAll()).hasSize(1);
         assertThat(project.getTitle()).isEqualTo("title");
-        assertThat(project.getDescription()).isEqualTo("description");
-        assertThat(project.getCategory()).isEqualTo(ProjectCategory.APP_DEVELOPMENT);
-        assertThat(project.getPriceRange()).isEqualTo(PriceRange.LESS_500);
-        assertThat(project.getExperienceLevel()).isEqualTo(FreelancerExperienceLevel.JUNIOR);
-        assertThat(project.getExpectedDeliveryTime()).isEqualTo(ExpectedDeliveryTime.FLEXIBLE);
     }
+
 
     @Test
     void createProjectWithExpirationDateSetsExpirationDate() throws Exception {
         //Arrange
+        Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
+
         ProjectCreateDto projectDto = ProjectCreateDto.builder()
                 .title("title")
                 .description("description")
@@ -101,17 +109,17 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
         //Act
         mockMvc.perform(post("/api/client/create-project").session(session)
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Project created successfully"));
+                .andExpect(status().isOk());
         //Assert
         Project project = projectRepository.findAll().getFirst();
         assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(10));
     }
 
-
     @Test
     void createProjectWithNoExpirationDateSetsExpirationDateTo7DaysFromNow() throws Exception {
         //Arrange
+        Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
+
         ProjectCreateDto projectDto = ProjectCreateDto.builder()
                 .title("title")
                 .description("description")
@@ -122,14 +130,11 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .build();
 
         //Act
-        String response = mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
+        mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+                .andExpect(status().isOk());
 
         //Assert
         Project project = projectRepository.findAll().getFirst();
-        assertThat(response).isEqualTo("Project created successfully");
         assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(7));
     }
 

@@ -19,6 +19,8 @@ public interface FreelancerWorkflowService {
 
     void deleteApplication(UUID applicationId, User freelancer);
 
+    Boolean hasFreelancerAppliedToProject(UUID freelancerId, UUID projectId);
+
     ApplicationDto getApplication(UUID applicationId, User freelancer);
 
     Page<ApplicationDto> getAllFreelancerApplications(User freelancer, Pageable pageable);
