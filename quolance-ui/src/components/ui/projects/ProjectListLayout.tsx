@@ -65,6 +65,7 @@ const ProjectListLayout = ({
                   location={project.location}
                   projectStatus={project.projectStatus}
                   clientId={project.clientId}
+                  hasApplied={project.hasApplied}
                 />
               ))}
             </div>

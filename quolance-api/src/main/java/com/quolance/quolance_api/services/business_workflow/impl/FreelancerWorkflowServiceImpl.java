@@ -17,9 +17,12 @@ import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +69,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
             application.setFreelancer(freelancer);
             application.setProject(project);
-
+            application.setMessage(applicationCreateDto.getMessage());
             applicationService.saveApplication(application);
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
@@ -96,6 +99,11 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .build();
         }
         applicationService.deleteApplication(application);
+    }
+
+    @Override
+    public Boolean hasFreelancerAppliedToProject(UUID freelancerId, UUID projectId) {
+        return applicationService.getApplicationByFreelancerIdAndProjectId(freelancerId, projectId) != null;
     }
 
     @Override
@@ -138,6 +146,26 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                 if (filters.getPriceRange() != null) {
                     predicates.add(criteriaBuilder.equal(root.get("priceRange"), filters.getPriceRange()));
                 }
+
+                if (filters.getExperienceLevel() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("experienceLevel"), filters.getExperienceLevel()));
+                }
+
+                if (filters.getApplied() != null) {
+                    User freelancer = SecurityUtil.getAuthenticatedUser();
+                    Subquery<UUID> subquery = query.subquery(UUID.class);
+                    Root<Application> applicationRoot = subquery.from(Application.class);
+                    subquery.select(applicationRoot.get("project").get("id"))
+                            .where(criteriaBuilder.equal(applicationRoot.get("freelancer").get("id"), freelancer.getId()));
+
+                    if (filters.getApplied()) {
+                        predicates.add(root.get("id").in(subquery));
+                    } else {
+                        predicates.add(criteriaBuilder.not(root.get("id").in(subquery)));
+                    }
+                }
+
+
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

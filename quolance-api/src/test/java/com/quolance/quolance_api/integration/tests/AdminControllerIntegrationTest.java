@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.integration.tests;
 
+import com.quolance.quolance_api.dtos.project.ProjectRejectionDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
@@ -133,8 +134,12 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
         // Arrange
         Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
+        ProjectRejectionDto rejectionDto = new ProjectRejectionDto("This project does not respect platform rules.");
+
         // Act
         String response = mockMvc.perform(post("/api/admin/projects/pending/" + pendingProject.getId() + "/reject")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(rejectionDto))
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -146,16 +151,20 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
         Project rejectedProject = projectRepository.findById(pendingProject.getId()).get();
         assertThat(rejectedProject.getProjectStatus()).isEqualTo(ProjectStatus.REJECTED);
-    }
+        assertThat(rejectedProject.getRejectionReason()).isEqualTo("This project does not respect platform rules.");
 
+    }
 
     @Test
     void rejectClosedProjectIsForbidden() throws Exception {
         // Arrange
         Project closedProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, client));
+        ProjectRejectionDto rejectionDto = new ProjectRejectionDto("This project does not respect platform rules.");
 
         // Act
         String response = mockMvc.perform(post("/api/admin/projects/pending/" + closedProject.getId() + "/reject")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(rejectionDto))
                         .session(session))
                 .andExpect(status().isForbidden())
                 .andReturn()
@@ -167,5 +176,4 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
         assertThat(jsonResponse).containsEntry("message", "Project is closed and cannot be updated.");
         assertThat(projectRepository.findById(closedProject.getId()).get().getProjectStatus()).isEqualTo(ProjectStatus.CLOSED);
     }
-
 }

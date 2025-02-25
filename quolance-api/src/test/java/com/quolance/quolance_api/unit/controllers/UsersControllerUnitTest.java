@@ -1,6 +1,5 @@
 package com.quolance.quolance_api.unit.controllers;
 
-import com.quolance.quolance_api.configs.ApplicationProperties;
 import com.quolance.quolance_api.controllers.UsersController;
 import com.quolance.quolance_api.dtos.users.*;
 import com.quolance.quolance_api.entities.User;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.UUID;
 
@@ -31,9 +29,6 @@ class UsersControllerUnitTest {
 
     @Mock
     private UserService userService;
-
-    @Mock
-    private ApplicationProperties applicationProperties;
 
     @InjectMocks
     private UsersController usersController;
@@ -271,36 +266,6 @@ class UsersControllerUnitTest {
         verify(userService).createAdmin(invalidRequest);
         verifyNoMoreInteractions(userService);
         }
-    }
-
-    @Test
-    void verifyEmail_Success() {
-        String token = "valid-token";
-        String loginPageUrl = "http://example.com/login";
-        when(applicationProperties.getLoginPageUrl()).thenReturn(loginPageUrl);
-        doNothing().when(userService).verifyEmail(token);
-
-        RedirectView response = usersController.verifyEmail(token);
-
-        assertThat(response.getUrl()).isEqualTo(loginPageUrl);
-        verify(userService).verifyEmail(token);
-        verifyNoMoreInteractions(userService);
-    }
-
-    @Test
-    void verifyEmail_WithInvalidToken_ThrowsApiException() {
-        String invalidToken = "invalid-token";
-        doThrow(ApiException.builder()
-                .message("Invalid token")
-                .status(400)
-                .build())
-                .when(userService).verifyEmail(invalidToken);
-
-        assertThatThrownBy(() -> usersController.verifyEmail(invalidToken))
-                .isInstanceOf(ApiException.class)
-                .hasMessage("Invalid token");
-        verify(userService).verifyEmail(invalidToken);
-        verifyNoMoreInteractions(userService);
     }
 
     @Test

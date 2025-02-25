@@ -18,6 +18,8 @@ public class ApplicationCreateDto {
     @JsonProperty("projectId")
     private UUID projectId;
 
+    private String message;
+
     public static Application toEntity(ApplicationCreateDto applicationCreateDto) {
         return Application.builder()
                 .build();

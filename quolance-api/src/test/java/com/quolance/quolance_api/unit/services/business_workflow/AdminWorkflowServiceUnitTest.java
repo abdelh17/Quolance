@@ -129,9 +129,7 @@ class AdminWorkflowServiceUnitTest {
         when(projectService.getProjectById(mockProject1.getId())).thenReturn(mockProject1);
         doNothing().when(projectService).updateProjectStatus(any(Project.class), eq(ProjectStatus.REJECTED));
 
-        adminWorkflowService.rejectProject(mockProject1.getId());
-
-        verify(projectService).getProjectById(mockProject1.getId());
+        adminWorkflowService.rejectProject(mockProject1.getId(), "Test Reason");
         verify(projectService).updateProjectStatus(mockProject1, ProjectStatus.REJECTED);
     }
 
@@ -141,7 +139,7 @@ class AdminWorkflowServiceUnitTest {
         when(projectService.getProjectById(invalidId))
                 .thenThrow(new ApiException("Project not found"));
 
-        assertThatThrownBy(() -> adminWorkflowService.rejectProject(invalidId))
+        assertThatThrownBy(() -> adminWorkflowService.rejectProject(invalidId, "Test Reason"))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("Project not found");
         verify(projectService).getProjectById(invalidId);

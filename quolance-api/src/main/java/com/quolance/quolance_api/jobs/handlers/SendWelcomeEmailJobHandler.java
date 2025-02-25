@@ -56,13 +56,12 @@ public class SendWelcomeEmailJobHandler implements JobRequestHandler<SendWelcome
     }
 
     private void sendWelcomeEmail(User user, VerificationCode code) throws MessagingException {
-        String verificationLink = applicationProperties.getBaseUrl() + "/api/users/verify-email?token=" + code.getCode();
         Context thymeleafContext = new Context();
         thymeleafContext.setVariable("user", user);
-        thymeleafContext.setVariable("verificationLink", verificationLink);
-        thymeleafContext.setVariable("applicationName", applicationProperties.getApplicationName());
+        thymeleafContext.setVariable("verificationCode", code.getCode());
+        thymeleafContext.setVariable("verificationLink", applicationProperties.getVerifyEmailUrl());
         String htmlBody = templateEngine.process("welcome-email", thymeleafContext);
-        emailService.sendHtmlMessage(List.of(user.getEmail()), "Welcome to our platform", htmlBody);
+        emailService.sendHtmlMessage(List.of(user.getEmail()), "Welcome to Quolance", htmlBody);
         code.setEmailSent(true);
         verificationCodeService.updateVerificationCodeStatus(code);
     }

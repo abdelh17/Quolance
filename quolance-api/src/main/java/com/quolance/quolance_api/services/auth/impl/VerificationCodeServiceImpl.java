@@ -6,8 +6,6 @@ import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class VerificationCodeServiceImpl implements VerificationCodeService {
@@ -20,7 +18,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
-    public Optional<VerificationCode> findByCode(String code) {
+    public VerificationCode findByCode(String code) {
         return verificationCodeRepository.findByCode(code);
     }
 

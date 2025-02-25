@@ -49,6 +49,8 @@ public class ProjectDto {
 
     private LocalDateTime creationDate;
 
+    private String rejectionReason;
+
     public static ProjectDto fromEntity(Project project) {
         return ProjectDto.builder()
                 .id(project.getId())
@@ -68,6 +70,7 @@ public class ProjectDto {
                         .map(ApplicationDto::fromEntity)
                         .toList() : null)
                 .creationDate(project.getCreationDate())
+                .rejectionReason(project.getRejectionReason())
                 .build();
     }
 }

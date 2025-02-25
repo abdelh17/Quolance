@@ -1,9 +1,11 @@
 app:
   application-name: Quolance
   base-url: "https://api.quolance.com"
+  ui-url: "https://quolance.com"
   allowed-origins: "http://localhost"
   login-page-url: "${app.base-url}/auth/login"
   login-success-url: "${app.base-url}/auth/login-success"
+  verify-email-url: "${app.ui-url}/auth/verify-email"
 
   admin:
     email: ${ADMIN_EMAIL}
@@ -95,3 +97,7 @@ cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}
   api_key: ${CLOUDINARY_API_KEY}
   api_secret: ${CLOUDINARY_API_SECRET}
+
+google:
+  api:
+    key: ${GOOGLE_API_KEY}

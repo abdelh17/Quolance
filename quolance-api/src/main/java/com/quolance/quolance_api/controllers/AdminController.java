@@ -2,6 +2,7 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectRejectionDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
 import com.quolance.quolance_api.util.PaginationUtils;
@@ -54,14 +55,15 @@ public class AdminController {
             summary = "Reject a pending project"
     )
     @PostMapping("projects/pending/{projectId}/reject")
-    public ResponseEntity<String> rejectProject(@PathVariable(name = "projectId") UUID projectId) {
+    public ResponseEntity<String> rejectProject(
+            @PathVariable(name = "projectId") UUID projectId,
+            @Valid @RequestBody ProjectRejectionDto rejectionDto
+    ) {
         User admin = SecurityUtil.getAuthenticatedUser();
-        log.info("Admin with ID {} attempting to reject pending project {}", admin.getId(), projectId);
-        adminWorkflowService.rejectProject(projectId);
+        log.info("Admin with ID {} attempting to reject pending project {} with reason: {}",
+                admin.getId(), projectId, rejectionDto.getRejectionReason());
+        adminWorkflowService.rejectProject(projectId, rejectionDto.getRejectionReason());
         log.info("Admin with ID {} successfully rejected pending project {}", admin.getId(), projectId);
-
         return ResponseEntity.ok("Project rejected successfully");
-
     }
-
 }

@@ -37,6 +37,8 @@ public class ProjectPublicDto {
 
     private List<Tag> tags;
 
+    private Boolean hasApplied;
+
     public static ProjectPublicDto fromEntity(Project project) {
         return ProjectPublicDto.builder()
                 .id(project.getId())

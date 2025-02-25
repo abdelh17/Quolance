@@ -18,7 +18,7 @@ public interface UserService {
 
     Optional<User> findByUsername(String username);
 
-    void verifyEmail(String code);
+    String verifyEmail(VerifyEmailDto verifyEmailDto);
 
     void forgotPassword(String email);
 
@@ -35,5 +35,7 @@ public interface UserService {
     void updateProfilePicture(User user, String photoUrl);
 
     Page<User> findAllWithFilters(Specification<User> spec, Pageable pageable);
+
+    void updateNotificationSubscription(User user, boolean subscribed);
 
 }

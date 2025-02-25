@@ -1,38 +1,17 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import DOMPurify, { Config } from 'dompurify';
+import { cn } from '@/util/utils';
 
 interface SanitizedHtmlDisplayProps {
   /** HTML content to be displayed */
   htmlContent: string;
-  /** Maximum height in pixels. Content will be truncated with gradient if it exceeds this height */
+  /** Maximum height in pixels. Content will be truncated with ellipsis if it exceeds this height */
   maxHeight?: number;
   /** Custom CSS class name */
   className?: string;
   /** Custom sanitization options */
   sanitizeOptions?: Config;
-  /** Custom gradient colors for the fade effect */
-  gradientColors?: {
-    from: string;
-    to: string;
-  };
-}
-
-interface ContainerStyles extends React.CSSProperties {
-  maxHeight: string | number;
-  overflow: 'hidden' | 'visible';
-  position: 'relative';
-}
-
-interface GradientStyles extends React.CSSProperties {
-  display: 'none' | 'block';
-  position: 'absolute';
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: string;
-  background: string;
-  pointerEvents: 'none';
 }
 
 const SanitizedHtmlDisplay: React.FC<SanitizedHtmlDisplayProps> = ({
@@ -40,11 +19,10 @@ const SanitizedHtmlDisplay: React.FC<SanitizedHtmlDisplayProps> = ({
   maxHeight,
   className = '',
   sanitizeOptions,
-  gradientColors = { from: 'transparent', to: 'white' },
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState<boolean>(false);
   const [sanitizedHtml, setSanitizedHtml] = useState<string>('');
+  const [lineClamp, setLineClamp] = useState<number>(0);
 
   useEffect(() => {
     const defaultSanitizeOptions: Config = {
@@ -71,7 +49,6 @@ const SanitizedHtmlDisplay: React.FC<SanitizedHtmlDisplayProps> = ({
       ALLOWED_ATTR: ['href', 'target', 'src', 'alt', 'class', 'style'],
     };
 
-    // Convert TrustedHTML to string
     const clean = DOMPurify.sanitize(
       htmlContent,
       sanitizeOptions || defaultSanitizeOptions
@@ -81,53 +58,40 @@ const SanitizedHtmlDisplay: React.FC<SanitizedHtmlDisplayProps> = ({
   }, [htmlContent, sanitizeOptions]);
 
   useEffect(() => {
-    const checkOverflow = (): void => {
-      if (contentRef.current && maxHeight) {
-        const element = contentRef.current;
-        setIsOverflowing(element.scrollHeight > element.clientHeight);
-      }
-    };
+    if (maxHeight && contentRef.current) {
+      const lineHeight =
+        parseInt(window.getComputedStyle(contentRef.current).lineHeight) || 20;
+      const estimatedLines = Math.floor(maxHeight / lineHeight);
+      setLineClamp(estimatedLines);
+    }
+  }, [maxHeight]);
 
-    checkOverflow();
-    window.addEventListener('resize', checkOverflow);
-    return () => window.removeEventListener('resize', checkOverflow);
-  }, [maxHeight, sanitizedHtml]);
+  // Determine the line-clamp class based on the calculated number of lines
+  const getLineClampClass = () => {
+    if (!maxHeight) return '';
 
-  const containerStyle: ContainerStyles = {
-    maxHeight: maxHeight ? `${maxHeight}px` : 'none',
-    overflow: maxHeight ? 'hidden' : 'visible',
-    position: 'relative',
-  };
+    // Tailwind provides line-clamp-1 through line-clamp-6 by default
+    if (lineClamp <= 6) return `line-clamp-${lineClamp}`;
 
-  const gradientStyle: GradientStyles = {
-    display: isOverflowing ? 'block' : 'none',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '50px',
-    background: `linear-gradient(to bottom, ${gradientColors.from}, ${gradientColors.to})`,
-    pointerEvents: 'none',
+    // For larger values, we'll need to use arbitrary values
+    // Note: This might need to be added to your Tailwind config
+    return `line-clamp-[${lineClamp}]`;
   };
 
   return (
-    <div
-      className={`relative ${className}`.trim()}
-      style={{ position: 'relative' }}
-    >
+    <div className={cn('relative', className)}>
       <div
         ref={contentRef}
-        style={containerStyle}
         dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-        className='prose max-w-none'
+        className={cn(
+          'prose max-w-none',
+          maxHeight && [
+            'overflow-hidden',
+            getLineClampClass(),
+            `max-h-[${maxHeight}px]`,
+          ]
+        )}
       />
-      {maxHeight && (
-        <div
-          style={gradientStyle}
-          aria-hidden='true'
-          data-testid='gradient-overlay'
-        />
-      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.services.entity_services;
 
 
+import com.quolance.quolance_api.dtos.project.ProjectEvaluationResult;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
@@ -31,4 +32,8 @@ public interface ProjectService {
     void updateProjectStatus(Project project, ProjectStatus newStatus);
 
     void updateSelectedFreelancer(Project project, User freelancer);
+
+    void setProjectRejectionReason(Project project, String rejectionReason);
+
+    ProjectEvaluationResult evaluateProjectForApproval(Project project);
 }

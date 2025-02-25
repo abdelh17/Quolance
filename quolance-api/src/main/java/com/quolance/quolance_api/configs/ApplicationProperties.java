@@ -19,4 +19,5 @@ public class ApplicationProperties {
     private String loginSuccessUrl;
     private String adminUserEmail;
     private String adminUserPassword;
+    private String verifyEmailUrl;
 }

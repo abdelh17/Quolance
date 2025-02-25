@@ -5,13 +5,17 @@ import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 import { ProjectFilterQuery } from '@/api/projects-api';
 import { queryToString } from '@/util/stringUtils';
+import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
 
 /*--- Hooks ---*/
 export const useSubmitApplication = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () =>
-      httpClient.post(`api/freelancer/submit-application`, { projectId }),
+    mutationFn: (message: string) =>
+      httpClient.post(`api/freelancer/submit-application`, {
+        message,
+        projectId,
+      }),
     onSuccess: () => {
       showToast('Application submitted successfully', 'success');
       queryClient.invalidateQueries({ queryKey: ['applications', projectId] });
@@ -49,7 +53,10 @@ interface PaginationParams {
   sortDirection?: string;
 }
 
-export const useGetAllFreelancerApplications = (params: PaginationParams) => {
+export const useGetAllFreelancerApplications = (
+  params: PaginationParams,
+  enabled = true
+) => {
   const queryString = new URLSearchParams({
     page: params.page?.toString() || '0',
     size: params.size?.toString() || '10',
@@ -59,6 +66,7 @@ export const useGetAllFreelancerApplications = (params: PaginationParams) => {
 
   return useQuery({
     queryKey: ['freelancerApplications', params],
+    enabled,
     queryFn: async () => {
       const response = await httpClient.get(
         `/api/freelancer/applications/all?${queryString}`
@@ -69,13 +77,13 @@ export const useGetAllFreelancerApplications = (params: PaginationParams) => {
 };
 
 export const useGetProjectApplication = (projectId: string) => {
-  return useQuery({
+  return useQuery<ApplicationResponse>({
     queryKey: ['applications', projectId],
     queryFn: async () => {
       const { data } = await httpClient.get('api/freelancer/applications/all');
       return (
         data.content.find(
-          (application: { projectId: string }) =>
+          (application: ApplicationResponse) =>
             application.projectId === projectId
         ) || null
       );
@@ -93,9 +101,9 @@ export const useGetFreelancerProjects = (
     enabled,
     queryFn: () =>
       httpClient.get(
-        `/api/freelancer/projects/applied?${queryToString({
+        `/api/freelancer/projects/all?${queryToString({
           ...query,
-          applied: showOnlyApplied,
+          ...(showOnlyApplied && { applied: true }),
         })}`
       ),
   });
@@ -170,8 +178,10 @@ export const useGetProfileCompletion = () => {
   return useQuery<number>({
     queryKey: ['profileCompletion'],
     queryFn: async () => {
-      const response = await httpClient.get('/api/freelancer/profile/completion');
-      return response.data; 
+      const response = await httpClient.get(
+        '/api/freelancer/profile/completion'
+      );
+      return response.data;
     },
   });
 };

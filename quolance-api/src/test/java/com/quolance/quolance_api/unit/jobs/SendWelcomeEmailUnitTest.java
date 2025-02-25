@@ -32,8 +32,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SendWelcomeEmailUnitTest {
 
-    private static final String APP_NAME = "Quolance";
-    private static final String BASE_URL = "http://localhost:8080";
     private static final String VERIFICATION_CODE = "123456";
     @Mock
     private UserService userService;
@@ -72,11 +70,9 @@ class SendWelcomeEmailUnitTest {
     @Test
     void run_WithValidUser_SendsEmail() throws Exception {
         String expectedHtmlBody = "<html>Test email body</html>";
-        String expectedVerificationLink = BASE_URL + "/api/users/verify-email?token=" + VERIFICATION_CODE;
+        String expectedVerificationCode = VERIFICATION_CODE;
 
         when(userService.findById(mockJob.getUserId())).thenReturn(Optional.of(mockUser));
-        when(applicationProperties.getBaseUrl()).thenReturn(BASE_URL);
-        when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("welcome-email"), any(IContext.class))).thenReturn(expectedHtmlBody);
 
         jobHandler.run(mockJob);
@@ -84,12 +80,11 @@ class SendWelcomeEmailUnitTest {
         verify(templateEngine).process(eq("welcome-email"), contextCaptor.capture());
         Context capturedContext = contextCaptor.getValue();
         assertThat(capturedContext.getVariable("user")).isEqualTo(mockUser);
-        assertThat(capturedContext.getVariable("verificationLink")).isEqualTo(expectedVerificationLink);
-        assertThat(capturedContext.getVariable("applicationName")).isEqualTo(APP_NAME);
+        assertThat(capturedContext.getVariable("verificationCode")).isEqualTo(expectedVerificationCode);
 
         verify(emailService).sendHtmlMessage(
                 List.of(mockUser.getEmail()),
-                "Welcome to our platform",
+                "Welcome to Quolance",
                 expectedHtmlBody
         );
 
@@ -137,8 +132,6 @@ class SendWelcomeEmailUnitTest {
     @Test
     void run_WithTemplateEngineFailure_PropagatesException() throws MessagingException {
         when(userService.findById(mockJob.getUserId())).thenReturn(Optional.of(mockUser));
-        when(applicationProperties.getBaseUrl()).thenReturn(BASE_URL);
-        when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("welcome-email"), any(IContext.class)))
                 .thenThrow(new RuntimeException("Template processing failed"));
 
@@ -154,8 +147,6 @@ class SendWelcomeEmailUnitTest {
     @Test
     void run_WithEmailServiceFailure_PropagatesException() throws MessagingException {
         when(userService.findById(mockJob.getUserId())).thenReturn(Optional.of(mockUser));
-        when(applicationProperties.getBaseUrl()).thenReturn(BASE_URL);
-        when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("welcome-email"), any(IContext.class))).thenReturn("<html></html>");
         doThrow(new RuntimeException("Email service failed"))
                 .when(emailService).sendHtmlMessage(any(), any(), any());
@@ -175,8 +166,6 @@ class SendWelcomeEmailUnitTest {
         mockUser.setEmail(invalidEmail);
 
         when(userService.findById(mockJob.getUserId())).thenReturn(Optional.of(mockUser));
-        when(applicationProperties.getBaseUrl()).thenReturn(BASE_URL);
-        when(applicationProperties.getApplicationName()).thenReturn(APP_NAME);
         when(templateEngine.process(eq("welcome-email"), any(IContext.class))).thenReturn("<html></html>");
         doThrow(new MessagingException("Invalid email address"))
                 .when(emailService).sendHtmlMessage(any(), any(), any());

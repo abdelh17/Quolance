@@ -39,6 +39,7 @@ export type ProjectType = {
   location: string;
   projectStatus: ProjectStatus | string;
   clientId: string; // Unique identifier for the client
+  hasApplied?: boolean;
 };
 
 //This is the type that is sent to the API (used for POST)

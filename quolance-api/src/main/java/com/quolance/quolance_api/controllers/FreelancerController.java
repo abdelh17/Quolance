@@ -4,12 +4,10 @@ import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.paging.PageResponseDto;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
-import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.ProfileCompletionCalculator;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
-import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
@@ -100,6 +98,10 @@ public class FreelancerController {
                 paginationUtils.createPageable(pageableRequest),
                 filters
         );
+        availableProjects.forEach(project -> {
+            boolean hasApplied = freelancerWorkflowService.hasFreelancerAppliedToProject(freelancer.getId(), project.getId());
+            project.setHasApplied(hasApplied);
+        });
         log.info("Freelancer with ID {} successfully got all available projects. {} returned", freelancer.getId(), availableProjects.getTotalElements());
         return ResponseEntity.ok(new PageResponseDto<>(availableProjects));
     }

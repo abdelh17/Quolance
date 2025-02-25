@@ -138,6 +138,7 @@ export default function ProjectDetailsHeader({
                 />
               }
               onClick={updateProject}
+              data-test="update-project-btn"
             >
               Update
             </Button>
