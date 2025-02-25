@@ -6,6 +6,7 @@ import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import {showToast} from "@/util/context/ToastProvider";
 import {useDeleteComment} from "@/api/blog-api";
 import {useAuthGuard} from "@/api/auth-api";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 interface CommentCardProps {
@@ -25,16 +26,18 @@ const CommentCard: React.FC<CommentCardProps> = ({
 
   const { data: authorProfile } = useGetFreelancerProfile(authorName);
   const { user } = useAuthGuard({ middleware: "auth" });
+  const queryClient = useQueryClient();
   
   const { mutate: deleteComment } = useDeleteComment({
     onSuccess: () => {
       showToast("Comment deleted successfully!", "success");
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
     onError: () => {
       showToast("Error deleting comment.", "error");
     },
-  })
+  });
+  
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
@@ -45,31 +48,32 @@ const CommentCard: React.FC<CommentCardProps> = ({
   }
 
   return (
-    <div className="flex items-start gap-4 py-1.5">
-      {/* User Profile Picture */}
-      <Image
-        alt={`${authorName}'s profile`}
-        src={authorProfile?.profileImageUrl || icon}
-        width={32}
-        height={32}
-        className="rounded-full object-cover"
-      />
-
-      {/* Comment Content */}
+    <div className="flex items-start md:gap-4 md:px-3 py-2 w-full">
       <div className="flex-1">
-        <div className="flex justify-between items-center">
-          <p className="text-sm font-semibold text-gray-800">{authorName}</p>
+        <div className="flex gap-5 items-center">
+          {/* User Profile Picture */}
+          <Image
+            alt={`${authorName}'s profile`}
+            src={authorProfile?.profileImageUrl || icon}
+            width={24}
+            height={24}
+            className="rounded-full object-cover"
+          />
+          <p className="text-sm font-semibold text-gray-800 font-sans">{authorName}</p>
           <span className="text-xs text-gray-500">
             {new Intl.DateTimeFormat("en-US", {
               year: "numeric",
               month: "short",
               day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
             }).format(new Date(dateCreated))}
           </span>
         </div>
 
-        <div className="flex justify-between">
-          <p className="text-sm text-gray-700 mt-1">
+        {/* Comment Content */}
+        <div className="flex justify-between mt-2 gap-2">
+          <p className="text-sm text-gray-700 mt-1 break-all overflow-hidden w-full">
             {content.length > 150 && !isExpanded
               ? `${content.substring(0, 150)}...`
               : content}
@@ -84,7 +88,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
           </p>
           {user?.username === authorName && (
             <span className="text-xs text-red-500 cursor-pointer mt-2" onClick={() => handleDeleteComment(commentId)}> Delete </span>
-          )}
+          )} 
         </div>
       </div>
     </div>
