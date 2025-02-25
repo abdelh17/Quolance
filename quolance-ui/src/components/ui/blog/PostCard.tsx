@@ -10,7 +10,6 @@ import CommentCard from "./CommentCard";
 import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import UserSummary from "@/components/ui/blog/UserSummary";
 import {
-  CommentRequestDto,
   CommentResponseDto,
   useAddComment,
   useDeleteBlogPost,
@@ -61,7 +60,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const { data: reactionData } = useGetReactionsByPostId(id);
   const { mutate: reactToPost } = useReactToPost();
 
-  const { data: pagedComments, refetch: refetchComments } = useGetCommentsByPostId(id, pagination);
+  const { data: pagedComments } = useGetCommentsByPostId(id, pagination);
   const { mutate: addComment } = useAddComment(id, {
     onSuccess: () => {
       setNewComment(""); 
@@ -224,8 +223,8 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     }
   };
 
-  const handleEdit = () => {};
-  const handleReport = () => {};
+  const handleEdit = () => {console.log("Edit post")};
+  const handleReport = () => {console.log("Report post")};
 
   const handleLoadMoreComments = () => {
     if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
