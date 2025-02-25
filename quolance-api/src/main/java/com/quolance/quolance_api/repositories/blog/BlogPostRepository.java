@@ -1,7 +1,6 @@
 package com.quolance.quolance_api.repositories.blog;
 
 import com.quolance.quolance_api.entities.blog.BlogPost;
-import com.quolance.quolance_api.entities.enums.BlogTags;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +17,24 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
     List<BlogPost> findByUserId(UUID userId);
 
     Page<BlogPost> findAll(Pageable pageable);
+    @Query("SELECT b FROM BlogPost b " +
+            "JOIN b.tags t " +
+            "WHERE (:title IS NULL OR LOWER(CAST(b.title AS string)) LIKE LOWER(CONCAT('%', CAST(:title AS string), '%'))) " +
+            "AND (:content IS NULL OR LOWER(CAST(b.content AS string)) LIKE LOWER(CONCAT('%', CAST(:content AS string), '%'))) " +
+            "AND (cast(:startDate as date) IS NULL OR b.creationDate >= :startDate) " +
+            "AND (cast(:tags as string) IS NULL OR (SELECT COUNT(t2) FROM BlogPost b2 JOIN b2.tags t2 WHERE b2.id = b.id AND t2 IN :tags) = CAST(:tagCount AS int))" +
+            "GROUP BY b.id " +
+            "ORDER BY b.creationDate DESC")
+    Page<BlogPost> findFilteredPosts(
+            @Param("title") String title,
+            @Param("content") String content,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("tags") List<String> tags,
+            @Param("tagCount") Integer tagCount,
+            Pageable pageable
+    );
+
+
 
 
 }

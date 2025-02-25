@@ -13,11 +13,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,7 +83,7 @@ public class BlogPostController {
     @GetMapping("/filter")
     @Operation(summary = "Filter blog posts with pagination")
     public ResponseEntity<Page<BlogPostResponseDto>> filterBlogPosts(@RequestBody BlogFilterRequestDto filterDto, Pageable pageable) {
-
+        System.out.println("Received filter request: " + filterDto);
         Page<BlogPostResponseDto> responses = blogPostService.getFilteredPosts(filterDto, pageable);
         return ResponseEntity.ok(responses);
     }
