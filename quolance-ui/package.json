@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:instrumented": "cross-env NEXT_TEST=1 npm run build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -14,13 +15,18 @@
     "test": "jest",
     "cy:open": "cypress open",
     "e2e:chrome": "cypress run --browser chrome",
-    "e2e:headless": "cross-env NEXT_TEST=1 start-server-and-test dev http://localhost:3000 \"cypress run --e2e --env coverage=true\"",
+   "e2e:headless": "npm run build:instrumented && cross-env NEXT_TEST=1 start-server-and-test start http://localhost:3000 \"cypress run --e2e --env coverage=true\"",
     "coverage-report": "nyc report --reported=text",
     "coverage:report": "nyc report --reporter=lcov --report-dir=coverage",
+    "coverage:summary":"nyc report --reporter=json-summary",
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "postbuild": "next-sitemap --config next-sitemap.config.js"
   },
+  "nyc": {
+   "reporter": ["json", "html", "text-summary", "json-summary"],
+   "report-dir": "./coverage"
+ },
   "dependencies": {
     "@emailjs/browser": "^4.3.3",
     "@headlessui/react": "^2.2.0",

@@ -70,7 +70,7 @@ public class SecurityConfiguration {
                             .requestMatchers(antMatcher(HttpMethod.GET, "/ws/**")).permitAll() // Allow WebSocket handshake
                             .requestMatchers(WHITE_LIST_URL).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.POST, "/api/users")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/users/verify-email")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/verify-email")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-password")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")

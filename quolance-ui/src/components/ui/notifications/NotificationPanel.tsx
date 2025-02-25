@@ -1,6 +1,7 @@
 'use client';
 
 import { BellIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -65,9 +66,7 @@ const NotificationPanel: React.FC = () => {
         <BellIcon className="h-6 w-6" aria-hidden="true" />
         {unreadCount > 0 && (
           <div
-            className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center 
-                       rounded-full bg-red-600 text-xs font-bold text-white transition-transform 
-                       duration-200"
+            className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white transition-transform duration-200"
           >
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-600 opacity-75"></span>
             <span className="relative">{unreadCount}</span>
@@ -76,20 +75,14 @@ const NotificationPanel: React.FC = () => {
       </button>
       {/* Dropdown panel with smooth fade/scale transition */}
       {isOpen && (
-        <div
-        className="absolute right-0 mt-2 w-80 origin-top-right rounded-md bg-white 
-        shadow-lg ring-1 ring-black/5 p-4 z-50 transition-all duration-300 ease-out 
-        transform opacity-100 scale-100"
-        >
+        <div className="absolute right-0 mt-2 w-80 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 p-4 z-50 transition-all duration-300 ease-out transform opacity-100 scale-100">
           <h3 className="mb-2 border-b pb-1 text-lg font-semibold">Notifications</h3>
           {isLoading ? (
             <p className="text-sm text-gray-500">Loading notifications...</p>
           ) : isError ? (
             <p className="text-sm text-gray-500">Error loading notifications.</p>
           ) : notifications.length === 0 ? (
-            <p className="text-sm text-gray-500">
-            No unread notifications available.
-          </p>
+            <p className="text-sm text-gray-500">No unread notifications available.</p>
           ) : (
             <ul className="max-h-64 overflow-y-auto space-y-1">
               {notifications.map((notif: Notification) => (
@@ -101,9 +94,7 @@ const NotificationPanel: React.FC = () => {
                     }
                   }}
                   className={`p-2 border-b last:border-0 cursor-pointer flex justify-between items-center transition-colors duration-200 ease-in-out hover:bg-gray-50 ${
-                    notif.read
-                      ? 'bg-gray-100 text-gray-500'
-                      : 'bg-white text-gray-800'
+                    notif.read ? 'bg-gray-100 text-gray-500' : 'bg-white text-gray-800'
                   }`}
                 >
                   <div>
@@ -116,12 +107,20 @@ const NotificationPanel: React.FC = () => {
               ))}
             </ul>
           )}
-          <button
-            onClick={toggleDropdown}
-            className="mt-2 block text-sm text-blue-600 hover:underline transition-colors duration-200"
-          >
-            Close
-          </button>
+          <div className="mt-2 flex justify-between">
+            <button
+              onClick={toggleDropdown}
+              className="text-sm text-blue-600 hover:underline transition-colors duration-200"
+            >
+              Close
+            </button>
+            <Link
+              href="/notifications"
+              className="text-sm text-blue-600 hover:underline transition-colors duration-200"
+            >
+              View All Notifications
+            </Link>
+          </div>
         </div>
       )}
     </div>

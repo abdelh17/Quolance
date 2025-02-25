@@ -32,7 +32,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, childr
                     <div className="flex justify-end">
                         <button
                             onClick={closeDialog}
-                            className="text-gray-500 text-2xl"
+                            className="text-gray-500 text-2xl hover:text-red-600"
                         >
                             ✖
                         </button>

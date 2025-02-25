@@ -31,6 +31,8 @@ public class ApplicationDto {
 
     private LocalDateTime creationDate;
 
+    private String message;
+
     public static ApplicationDto fromEntity(Application application) {
         return ApplicationDto.builder()
                 .id(application.getId())
@@ -40,6 +42,7 @@ public class ApplicationDto {
                 .freelancerId(application.getFreelancer() != null ? application.getFreelancer().getId() : null)
                 .freelancerProfile(FreelancerProfileDto.fromEntity(application.getFreelancer()))
                 .creationDate(application.getCreationDate())
+                .message(application.getMessage())
                 .build();
     }
 }

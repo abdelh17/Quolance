@@ -5,6 +5,7 @@ import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectUpdateDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
@@ -15,15 +16,13 @@ import com.quolance.quolance_api.services.business_workflow.impl.ClientWorkflowS
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.util.FeatureToggle;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -55,6 +54,8 @@ class ClientWorkflowServiceUnitTest {
 
     @InjectMocks
     private ClientWorkflowServiceImpl clientWorkflowService;
+
+    private FeatureToggle featureToggle = mock(FeatureToggle.class);
 
     @Captor
     private ArgumentCaptor<Project> projectCaptor;
@@ -124,6 +125,8 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void createProject_WithExpirationDate_Success() {
+        Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
+
         clientWorkflowService.createProject(mockProjectCreateDto, mockClient);
 
         verify(projectService).saveProject(projectCaptor.capture());
@@ -142,6 +145,8 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void createProject_WithoutExpirationDate_SetsDefaultDate() {
+        Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
+
         mockProjectCreateDto.setExpirationDate(null);
 
         clientWorkflowService.createProject(mockProjectCreateDto, mockClient);
@@ -214,29 +219,29 @@ class ClientWorkflowServiceUnitTest {
     @Test
     void getAllClientProjects_Success() {
         Page<Project> projectPage = new PageImpl<>(List.of(mockProject));
-        when(projectService.getProjectsByClientId(eq(mockClient.getId()), any(Pageable.class)))
+        when(projectService.findAllWithFilters(any(Specification.class), any(Pageable.class)))
                 .thenReturn(projectPage);
+        ProjectFilterDto filters = new ProjectFilterDto();
 
-        Page<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient, Pageable.unpaged());
+        Page<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient, Pageable.unpaged(), filters);
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getId()).isEqualTo(mockProject.getId());
         assertThat(result.getContent().get(0).getTitle()).isEqualTo(mockProject.getTitle());
-        verify(projectService).getProjectsByClientId(eq(mockClient.getId()), any(Pageable.class));
+        verify(projectService).findAllWithFilters(any(Specification.class), any(Pageable.class));
     }
 
     @Test
     void getAllClientProjects_WhenNoProjects_ReturnsEmptyList() {
         Page<Project> emptyPage = Page.empty();
-        when(projectService.getProjectsByClientId(eq(mockClient.getId()), any(Pageable.class)))
+        when(projectService.findAllWithFilters(any(Specification.class), any(Pageable.class)))
                 .thenReturn(emptyPage);
-
-        Page<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient, Pageable.unpaged());
+        ProjectFilterDto filters = new ProjectFilterDto();
+        Page<ProjectDto> result = clientWorkflowService.getAllClientProjects(mockClient, Pageable.unpaged(), filters);
 
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
-        verify(projectService).getProjectsByClientId(eq(mockClient.getId()), any(Pageable.class));
-    }
+        verify(projectService).findAllWithFilters(any(Specification.class), any(Pageable.class));}
 
     @Test
     void getAllApplicationsToProject_WhenOwner_Success() {

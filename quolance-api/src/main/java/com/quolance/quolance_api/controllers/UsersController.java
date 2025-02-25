@@ -13,7 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -54,13 +55,13 @@ public class UsersController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/verify-email")
+    @PostMapping("/verify-email")
     @Operation(
             summary = "Verify the email of the user",
             description = "Verify the email of the user by passing the token")
-    public RedirectView verifyEmail(@RequestParam String token) {
-        userService.verifyEmail(token);
-        return new RedirectView(applicationProperties.getLoginPageUrl());
+    public ResponseEntity<String> verifyEmail(@RequestBody VerifyEmailDto verificationDto) {
+        String verificationResponse = userService.verifyEmail(verificationDto);
+        return ResponseEntity.ok(verificationResponse);
     }
 
     @PostMapping("/forgot-password")
@@ -99,6 +100,29 @@ public class UsersController {
         User user = SecurityUtil.getAuthenticatedUser();
         UserResponseDto userResponseDto = userService.updatePassword(requestDTO, user);
         return ResponseEntity.ok(userResponseDto);
+    }
+
+    @PatchMapping("/notifications")
+    @Operation(
+            summary = "Update notifications subscription preference",
+            description = "Update the notifications subscription preference for the authenticated user."
+    )
+    public ResponseEntity<Void> updateNotificationSubscription(@RequestBody Map<String, Boolean> payload) {
+        User user = SecurityUtil.getAuthenticatedUser();
+        boolean subscribed = payload.getOrDefault("subscribed", true);
+        userService.updateNotificationSubscription(user, subscribed);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/notifications/status")
+    @Operation(
+            summary = "Get notifications subscription status",
+            description = "Returns the notifications subscription status for the authenticated user."
+    )
+    public ResponseEntity<NotificationSubscriptionResponseDto> getNotificationSubscriptionStatus() {
+        User user = SecurityUtil.getAuthenticatedUser();
+        NotificationSubscriptionResponseDto dto = new NotificationSubscriptionResponseDto(user);
+        return ResponseEntity.ok(dto);
     }
 
 }

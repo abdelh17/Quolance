@@ -10,7 +10,7 @@ import CommentCard from "./CommentCard";
 import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import UserSummary from "@/components/ui/blog/UserSummary";
 import {
-  CommentRequestDto,
+  CommentResponseDto,
   useAddComment,
   useDeleteBlogPost,
   useGetCommentsByPostId,
@@ -20,6 +20,10 @@ import {
 } from "@/api/blog-api";
 import {showToast} from "@/util/context/ToastProvider";
 import { PaginationParams } from "@/constants/types/pagination-types";
+import { Button } from "../button";
+import { IoSendSharp } from 'react-icons/io5'
+import { MdExpandMore, MdExpandLess } from 'react-icons/md'
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -43,56 +47,57 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const [reactions, setReactions] = useState<ReactionState | null>(null);
   const [showFullScreen, setShowFullScreen] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [allLoadedComments, setAllLoadedComments] = useState<CommentResponseDto[]>([]);
 
   const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
   const [pagination, setPagination] = useState<PaginationParams>({page: 0, size: 5});
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { user } = useAuthGuard({ middleware: "auth" });
   const { data: authorProfile } = useGetFreelancerProfile(authorName);
 
+  const queryClient = useQueryClient();
   const { data: reactionData } = useGetReactionsByPostId(id);
   const { mutate: reactToPost } = useReactToPost();
 
-  const { data: pagedComments, refetch: refetchComments } = useGetCommentsByPostId(id, pagination);
+  const { data: pagedComments } = useGetCommentsByPostId(id, pagination);
   const { mutate: addComment } = useAddComment(id, {
     onSuccess: () => {
-      setNewComment("");
-      refetchComments();
+      setNewComment(""); 
+      queryClient.invalidateQueries({ queryKey: ["comments", id] });
     },
   });
+  
 
   const { mutate: removeReaction } = useRemoveReaction();
   const { mutate: deletePost } = useDeleteBlogPost({
     onSuccess: () => {
       showToast("Post deleted successfully!", "success");
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ["all-blog-posts"] }); // Re-fetch posts
     },
     onError: () => {
       showToast("Error deleting post.", "error");
     },
   });
 
-  console.log("Paged Comments:", pagedComments);
-  console.log("Paged Comments Content:", pagedComments?.content);
-
-
-  const handleNextPage = () => {
-    if (!pagedComments || pagedComments.page >= (pagedComments.totalPages ?? 1) - 1) return;
-    setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
-  };
-
-  const handlePrevPage = () => {
-    if (!pagedComments || pagedComments.page === 0) return;
-    setPagination((prev) => ({ ...prev, page: prev.page - 1 }));
-  };
-
-  
-
   const userSummaryRef = useRef<HTMLDivElement | null>(null);
   const profileImageRef = useRef<HTMLImageElement | null>(null);
   const authorNameRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const isUserSummaryOpen = openUserSummaryPostId === id;
+
+  useEffect(() => {
+    if (pagedComments?.content) {
+      setAllLoadedComments((prevComments) => {
+        const newComments = pagedComments.content.filter(
+          (newComment) => !prevComments.some((prevComment) => prevComment.commentId === newComment.commentId)
+        );
+        return [...prevComments, ...newComments];
+      });
+    }
+  }, [pagedComments]);
+  
 
   useEffect(() => {
     if (reactionData) {
@@ -141,6 +146,25 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     };
   }, [isUserSummaryOpen, setOpenUserSummaryPostId]);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    }
+    
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
   const handleReactionClick = (reactionType: string) => {
     if (!reactions || !user) return;
 
@@ -150,7 +174,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       const userReaction = reactionData?.find(
         (reaction) => reaction.reactionType.toLowerCase() === reactionType && reaction.userName === user.username
       );
-      ``
+      
       if (userReaction) {
         removeReaction(userReaction.id);
       }
@@ -199,8 +223,17 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     }
   };
 
+  const handleEdit = () => {console.log("Edit post")};
+  const handleReport = () => {console.log("Report post")};
+
+  const handleLoadMoreComments = () => {
+    if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
+    setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
+  };
+
   const toggleExpand = () => setIsExpanded(!isExpanded);
   const toggleComments = () => setShowComments(!showComments);
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   const handleImageClick = (index: number) => {
     setCurrentImageIndex(index);
@@ -221,9 +254,9 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
 
   return (
-    <div className="bg-white shadow-md rounded-md">
+    <div className="bg-white shadow-md rounded-md font-sans">
       {/* User Info */}
-      <div className="flex justify-between bg-slate-300 w-full rounded-t-md">
+      <div className="flex justify-between bg-n20 w-full rounded-t-md">
         <div className="flex items-center mb-2 mt-2 ml-5 py-3">
           <Image
             ref={profileImageRef}
@@ -236,7 +269,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           />
           <button
             ref={authorNameRef}
-            className="ml-4 text-gray-800 font-semibold cursor-pointer focus:outline-none"
+            className="ml-4 text-gray-800 font-bold cursor-pointer focus:outline-none"
             onClick={handleShowUserSummary}
           >
             {authorName}
@@ -254,18 +287,54 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             </div>
           )}
         </div>
-        <span className="text-sm text-gray-500 mr-5 mt-2">
-          {user?.username === authorName && (
-            <button
-                onClick={() => handleDeletePost(id)}
-                className="bg-red-500 text-white text-sm mt-3 px-4 py-2 focus:outline-none rounded-md"
+        <span className="text-sm text-gray-500 mr-5 mt-3">
+          <div ref={menuRef} className="relative">
+            <Button
+              onClick={toggleMenu}
+              className="focus:outline-none text-2xl font-bold mt-2"
+              variant="ghost"
             >
-                Delete
-            </button>
-          )}
+              ...
+            </Button>
+            {isMenuOpen && (
+              <div className="absolute top-8 right-0 bg-white shadow-md rounded-md mt-5 mr-3 w-28 flex flex-col gap-1">
+                {user?.username === authorName ? (
+                  <>
+                    <button 
+                      onClick={handleEdit} 
+                      className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full"
+                    >
+                      <div className="mt-2 ml-2">
+                        Edit
+                      </div>
+                    </button>
+                    <button
+                        onClick={() => handleDeletePost(id)}
+                        className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full "
+                    >
+                      <div className="ml-2 mb-2">
+                        Delete
+                      </div>
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    onClick={handleReport} 
+                    className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full"
+                  >
+                    <div className="mt-2 ml-2 mb-2">
+                      Report
+                    </div>
+                  </button>
+                )
+              }
+              </div>
+            )}
+          </div>
+          
         </span>
       </div>
-      <div className="m-7">
+      <div className="m-5">
         {/* Post Images */}
         {imageUrls.length > 0 && (
           <div className={`mt-4 ${imageUrls.length === 3 ? 'grid grid-rows-2 gap-2' : imageUrls.length > 1 ? 'grid grid-cols-2 gap-2' : ''}`}>
@@ -380,7 +449,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       </div>
 
       {/* Post Content */}
-      <div className="ml-5 mr-5 mb-5">
+      <div className="md:pb-5 md:px-8 px-2 pb-0.5">
         <div className="flex justify-between">
           <h3 className="text-md font-semibold text-gray-800">{title}</h3>
           <span className="text-sm text-gray-500">
@@ -417,20 +486,18 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               />
           ))}
         </div>
-
+        <button
+          onClick={toggleComments}
+          className="text-blue-500 text-sm focus:outline-none mt-3 mb-3"
+        >
+          {pagedComments?.totalElements ?? 0} Comments {showComments ? <MdExpandLess className="inline-block text-xl"/> : <MdExpandMore className="inline-block text-xl"/>}
+        </button>
 
         {/* Comments Section */}
-        <div className="mt-4">
-          <button
-            onClick={toggleComments}
-            className="text-blue-500 text-sm focus:outline-none"
-          >
-            Comments ({pagedComments?.totalElements ?? 0})
-          </button>
-
+        <div className="md:mx-2 md:px-3">
           {showComments && (
-            <div className="bg-gray-50 p-4 rounded-md mt-3">
-              {pagedComments?.content?.map((comment) => (
+            <div className="border-solid border-2 shadow-md mb-2 p-3 rounded-md content-center">
+              {allLoadedComments.map((comment) => (
                 <CommentCard
                   key={comment.commentId}
                   commentId={comment.commentId}
@@ -439,39 +506,31 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                   dateCreated={new Date().toISOString()}
                 />
               ))}
-              {/* Pagination Controls */}
-              <div className="flex justify-between mt-4">
-                <button
-                  onClick={handlePrevPage}
-                  disabled={pagination.page === 0}
-                >
-                  Previous
-                </button>
-                <span>
-                  Page {pagination.page + 1} of {pagedComments?.totalPages}
-                </span>
-                <button
-                  onClick={handleNextPage}
-                  disabled={(pagedComments?.page ?? 0) >= ((pagedComments?.totalPages ?? 1) - 1)}
-                >
-                  Next
-                </button>
-              </div>
+              {(pagedComments?.number ?? 0) < ((pagedComments?.totalPages ?? 1) - 1) && (
+                <div className="flex justify-center">
+                  <Button
+                    onClick={handleLoadMoreComments}
+                    variant="white"
+                    className="mt-2"
+                  >
+                    See More Comments
+                  </Button>
+                </div>
+              )}
+
               {/* Add Comment Input */}
-              <div className="mt-4">
+              <div className="mt-4 flex flex-row justify-between gap-2">
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Add a comment..."
-                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                  className="w-full h-10 p-2 border border-gray-300 rounded-md text-sm"
                   rows={3}
                 />
-                <button
+                <IoSendSharp
                   onClick={handleAddComment}
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
-                >
-                  Post Comment
-                </button>
+                  className="text-3xl text-blue-600 cursor-pointer mt-1"
+                />
               </div>
             </div>
           )}

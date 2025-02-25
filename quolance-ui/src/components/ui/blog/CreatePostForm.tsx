@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuthGuard } from '@/api/auth-api';
+import { Button } from '../button';
 
 interface CreatePostFormProps {
   // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
@@ -120,7 +121,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
               <button
                 type="button"
                 onClick={() => handleRemoveFile(index)}
-                className="text-red-500 text-sm"
+                className="text-red-500 bg-red text-sm"
               >
                 Remove
               </button>
@@ -130,16 +131,19 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
       )}
 
       <div className="flex items-center justify-end space-x-4 mb-4">
-        <button
-          type="button"
+        <Button
           onClick={onClose}
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
+          bgColor='red-600'
+          animation="default"
         >
           Cancel
-        </button>
-        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">
+        </Button>
+        <Button
+          onClick={handleFormSubmit}
+          animation="default"
+        >
           Submit
-        </button>
+        </Button>
       </div>
     </form>
   );

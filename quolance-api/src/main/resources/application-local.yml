@@ -1,9 +1,11 @@
 app:
   application-name: Quolance
   base-url: "http://localhost:8080"
+  ui-url: "http://localhost:3000"
   allowed-origins: "http://localhost"
   login-page-url: "${app.base-url}/auth/login"
   login-success-url: "${app.base-url}/auth/login-success"
+  verify-email-url: "${app.ui-url}/auth/verify-email"
 
 spring:
   servlet:

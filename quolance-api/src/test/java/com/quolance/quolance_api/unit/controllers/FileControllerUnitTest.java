@@ -2,6 +2,7 @@ package com.quolance.quolance_api.unit.controllers;
 
 import com.quolance.quolance_api.controllers.FileController;
 import com.quolance.quolance_api.dtos.FileDto;
+import com.quolance.quolance_api.dtos.paging.PageResponseDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.services.entity_services.FileService;
@@ -40,6 +41,7 @@ class FileControllerUnitTest {
     private MultipartFile mockFile;
     private FileDto fileDto1;
     private FileDto fileDto2;
+    private UUID mockFileId;
 
     @BeforeEach
     void setUp() {
@@ -47,6 +49,7 @@ class FileControllerUnitTest {
         mockUser.setId(UUID.randomUUID());
         mockUser.setEmail("test@example.com");
         mockUser.setRole(Role.FREELANCER);
+        mockFileId = UUID.randomUUID();
 
         mockFile = new MockMultipartFile(
                 "file",
@@ -104,6 +107,19 @@ class FileControllerUnitTest {
     }
 
     @Test
+    void deleteFile_Success() {
+        try (var securityUtil = mockStatic(SecurityUtil.class)) {
+            securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
+
+            ResponseEntity<Void> response = fileController.deleteFile(mockFileId);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            verify(fileService).deleteFile(mockFileId, mockUser);
+        }
+    }
+
+
+    @Test
     void getAllUserFiles_ReturnsPageOfFiles() {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
@@ -115,7 +131,7 @@ class FileControllerUnitTest {
             when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
-            ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "desc");
+            ResponseEntity<PageResponseDto<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "desc");
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
@@ -136,7 +152,7 @@ class FileControllerUnitTest {
             when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(emptyPage);
 
-            ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "desc");
+            ResponseEntity<PageResponseDto<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "desc");
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
@@ -157,7 +173,7 @@ class FileControllerUnitTest {
             when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
-            ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 5, "id", "desc");
+            ResponseEntity<PageResponseDto<FileDto>> response = fileController.getAllUserFiles(0, 5, "id", "desc");
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
@@ -179,7 +195,7 @@ class FileControllerUnitTest {
             when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
-            ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "fileName", "desc");
+            ResponseEntity<PageResponseDto<FileDto>> response = fileController.getAllUserFiles(0, 10, "fileName", "desc");
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();
@@ -201,7 +217,7 @@ class FileControllerUnitTest {
             when(fileService.getAllFileUploadsByUser(mockUser, pageRequest))
                     .thenReturn(filePage);
 
-            ResponseEntity<Page<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "asc");
+            ResponseEntity<PageResponseDto<FileDto>> response = fileController.getAllUserFiles(0, 10, "id", "asc");
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isNotNull();

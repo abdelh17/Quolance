@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import PostCard from "./PostCard";
 import {useCreateBlogPost, useGetAllBlogPosts} from "@/api/blog-api";
 import CreatePostModal from "./CreatePostModal";
@@ -11,6 +11,8 @@ import {showToast} from "@/util/context/ToastProvider";
 import {useQueryClient} from "@tanstack/react-query";
 import { PaginationParams, PaginationQueryDefault } from "@/constants/types/pagination-types";
 import { BlogPostViewType } from "@/constants/types/blog-types";
+import { Button } from "@/components/ui/button";
+import Loading from "../loading/loading";
 
 
 const BlogContainer: React.FC = () => {
@@ -20,20 +22,37 @@ const BlogContainer: React.FC = () => {
 
     const {user, isLoading: isUserLoading} = useAuthGuard({middleware: 'auth'});
     const queryClient = useQueryClient();
-    const { data: pagedPosts, isLoading: isBlogLoading } = useGetAllBlogPosts(pagination);
-    console.log(pagedPosts);
+    
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useGetAllBlogPosts();
 
-    const totalPages = pagedPosts?.totalPages ?? 1;
+    const observerRef = useRef<IntersectionObserver | null>(null);
 
-    const handleNextPage = () => {
-        if (pagedPosts?.number >= totalPages - 1) return;
-        setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
-    };
-
-    const handlePrevPage = () => {
-        if (pagedPosts?.number === 0) return;
-        setPagination((prev) => ({ ...prev, page: prev.page - 1 }));
-    };
+    const lastPostRef = useCallback(
+        (node: HTMLDivElement) => {
+          if (isLoading || isFetchingNextPage || !hasNextPage) return;
+      
+          if (observerRef.current) {
+            observerRef.current.disconnect();
+          }
+      
+          observerRef.current = new IntersectionObserver(
+            (entries) => {
+              const lastPost = entries[0];
+              if (lastPost.isIntersecting) {
+                fetchNextPage();
+              }
+            },
+            {
+              root: null,
+              rootMargin: "0px",
+              threshold: 1.0,
+            }
+          );
+      
+          if (node) observerRef.current.observe(node);
+        },
+        [isLoading, isFetchingNextPage, hasNextPage, fetchNextPage]
+      );
 
     const { mutateAsync: mutateBlogPosts } = useCreateBlogPost({
         onSuccess: () => {
@@ -77,12 +96,12 @@ const BlogContainer: React.FC = () => {
                                 <p className="text-gray-700">
                                     You must be signed in to create a post. Please log in to continue.
                                 </p>
-                                <button
+                                <Button
                                     onClick={() => (window.location.pathname = "/auth/login")}
-                                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                    animation="default"
                                 >
                                     Sign In
-                                </button>
+                                </Button    >
                             </div>
                         </div>
                     ) : (
@@ -90,7 +109,7 @@ const BlogContainer: React.FC = () => {
                             {/* Create Post Modal */}
                             <CreatePostModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
                                 {isUserLoading ? (
-                                    <p>Loading...</p>
+                                    <Loading />
                                 ) : user ? (
                                     <CreatePostForm
                                         onSubmit={handleFormSubmit}
@@ -103,66 +122,62 @@ const BlogContainer: React.FC = () => {
                                             <p className="text-gray-700">
                                                 You must be signed in to create a post. Please log in to continue.
                                             </p>
-                                            <button
+                                            <Button
                                                 onClick={() => (window.location.pathname = "/auth/login")}
-                                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                                animation="default"
                                             >
                                                 Sign In
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 )}
                             </CreatePostModal>
                             {/* Create Post Button and Search Bar*/}
-                            <div className="relative flex items-center">
-                            <button
-                                onClick={() => setIsModalOpen(true)}
-                                className="absolute left-0 px-4 py-2 bg-blue-500 text-white rounded-md"
-                            >
-                                Create New Post
-                            </button>
-                                <div className="flex-grow mx-auto max-w-lg">
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
+                                <Button
+                                    onClick={() => setIsModalOpen(true)}
+                                    animation="default"
+                                    className="w-full md:w-auto"
+                                >
+                                    Create New Post
+                                </Button>
+                                <div className="w-full">
                                     <SearchBar />
                                 </div>
                             </div>
 
                             {/* Blog Posts */}
-                            <div>
-                                {isBlogLoading? (
-                                    <p>Loading...</p>
-                                ) : pagedPosts.content && pagedPosts?.content?.length > 0 ? (
+                            <div className="space-y-4 w-full">
+                                {isLoading ? (
+                                    <Loading />
+                                ) : (
                                     <>
-                                        {pagedPosts.content.map((post: BlogPostViewType, index: number) => (
-                                            <PostCard 
-                                                key={index} 
-                                                {...post} 
-                                                openUserSummaryPostId={openUserSummaryPostId}
-                                                setOpenUserSummaryPostId={setOpenUserSummaryPostId}
-                                            />
-                                        ))}
-                                        {/* Pagination Controls */}
-                                        <div className="flex justify-between mt-4">
-                                            <button
-                                                onClick={handlePrevPage} 
-                                                disabled={pagination.page === 0}
-                                            >
-                                                Previous
-                                            </button>
-                                            <span>
-                                                Page {pagination.page + 1} of {pagedPosts?.totalPages}
-                                            </span>
-                                            <button 
-                                                onClick={handleNextPage} 
-                                                disabled={pagedPosts?.number >= totalPages - 1}
-                                            >
-                                                Next
-                                            </button>
-                                        </div>
+                                        {data?.pages.map((page, pageIndex) =>
+                                            page.content.map((post: BlogPostViewType, index: number) => {
+                                                const isLastPost = (pageIndex === data.pages.length - 1) && (index === page.content.length - 1);
+
+                                                return (
+                                                    <div
+                                                        key={post.id}
+                                                        ref={isLastPost ? lastPostRef : undefined}
+                                                    >
+                                                        <PostCard
+                                                            {...post}
+                                                            openUserSummaryPostId={openUserSummaryPostId}
+                                                            setOpenUserSummaryPostId={setOpenUserSummaryPostId}
+                                                        />
+                                                    </div>
+                                                );
+                                            })
+                                        )}
                                     </>
-                                    ) : (
-                                        <p className="text-center text-gray-500 mt-4">No posts found for this tag.</p>
-                                    )
-                                }
+                                )}
+
+                                {isFetchingNextPage && (
+                                    <div className="flex justify-center items-center h-24">
+                                        <Loading />
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}

@@ -4,6 +4,8 @@ import { FreelancerProfileType,EditModesType } from "@/constants/models/user/Use
 import { AvailabilityRadioGroup } from "@/components/ui/freelancers/FreelancerProfileRadioGroups";
 import EditButton from "./EditButton";
 import SaveButton from "./SaveButton";
+import { CalendarDaysIcon } from "lucide-react";
+
 
 
 interface AvailabilitySectionProps {
@@ -37,7 +39,7 @@ const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
      {editModes.editAvailability ? (
       <div>
        <div className="flex items-center">
-       <Calendar className="text-b300 mr-3" />
+       <CalendarDaysIcon className=" mr-3" />
        <AvailabilityRadioGroup
          name="availability"
          value={profile.availability ?? ""} // Default to empty string if null or undefined
@@ -50,7 +52,7 @@ const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
       </div>
      ) : (
        <div className="flex items-center">
-         <Calendar className="text-b300 mr-3" />
+         <CalendarDaysIcon className=" mr-3" />
           <span className="text-gray-700 capitalize">
          {profile.availability?.toLowerCase().replace("_", " ") ?? "Not specified"}
          </span>
