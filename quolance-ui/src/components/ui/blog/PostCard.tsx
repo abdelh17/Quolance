@@ -64,10 +64,11 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const { data: pagedComments, refetch: refetchComments } = useGetCommentsByPostId(id, pagination);
   const { mutate: addComment } = useAddComment(id, {
     onSuccess: () => {
-      setNewComment("");
-      refetchComments();
+      setNewComment(""); 
+      queryClient.invalidateQueries({ queryKey: ["comments", id] });
     },
   });
+  
 
   const { mutate: removeReaction } = useRemoveReaction();
   const { mutate: deletePost } = useDeleteBlogPost({
@@ -89,9 +90,15 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   useEffect(() => {
     if (pagedComments?.content) {
-      setAllLoadedComments(pagedComments.content);
+      setAllLoadedComments((prevComments) => {
+        const newComments = pagedComments.content.filter(
+          (newComment) => !prevComments.some((prevComment) => prevComment.commentId === newComment.commentId)
+        );
+        return [...prevComments, ...newComments];
+      });
     }
   }, [pagedComments]);
+  
 
   useEffect(() => {
     if (reactionData) {

@@ -37,6 +37,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
       showToast("Error deleting comment.", "error");
     },
   });
+  
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
