@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.controllers.blog;
 
+import com.quolance.quolance_api.dtos.blog.BlogFilterRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
@@ -12,9 +13,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,4 +81,13 @@ public class BlogPostController {
         blogPostService.updateTagsForPost(postId, tagNames);
         return ResponseEntity.ok("Tags updated successfully");
     }
+
+    @GetMapping("/filter")
+    @Operation(summary = "Filter blog posts with pagination")
+    public ResponseEntity<Page<BlogPostResponseDto>> filterBlogPosts(@RequestBody BlogFilterRequestDto filterDto, Pageable pageable) {
+
+        Page<BlogPostResponseDto> responses = blogPostService.getFilteredPosts(filterDto, pageable);
+        return ResponseEntity.ok(responses);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.entity_services.impl.blog;
 
+import com.quolance.quolance_api.dtos.blog.BlogFilterRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
@@ -16,12 +17,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -174,4 +179,63 @@ public class BlogPostServiceImpl implements BlogPostService {
     public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
         return blogPostRepository.findAll(pageable).map(BlogPostResponseDto::fromEntity);
     }
+
+
+    @Override
+    public Page<BlogPostResponseDto> getFilteredPosts(BlogFilterRequestDto filterDto, Pageable pageable) {
+        List<BlogPost> allPosts = blogPostRepository.findAll();
+
+        List<BlogPost> filteredPosts = allPosts.stream()
+                .filter(post -> {
+                    if (filterDto.getTitle() != null && !filterDto.getTitle().trim().isEmpty()) {
+                        String searchTitle = filterDto.getTitle().trim().toLowerCase();
+                        String postTitle = (post.getTitle() != null) ? post.getTitle().toLowerCase() : "";
+                        if (!postTitle.contains(searchTitle)) return false;
+                    }
+
+                    if (filterDto.getContent() != null && !filterDto.getContent().trim().isEmpty()) {
+                        String searchContent = filterDto.getContent().trim().toLowerCase();
+                        String postContent = post.getContent() != null ? post.getContent().toLowerCase() : "";
+                        if (!postContent.contains(searchContent)) return false;
+                    }
+
+                    if (filterDto.getTag() != null && !filterDto.getTag().trim().isEmpty()) {
+                        String tagFilter = filterDto.getTag().trim().toUpperCase();
+                        if (post.getTags() == null || post.getTags().stream()
+                                .map(tag -> tag.name().toUpperCase())
+                                .noneMatch(tag -> tag.equals(tagFilter))) return false;
+                    }
+
+                    if (filterDto.getTimeRange() != null) {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalDateTime startDate = switch (filterDto.getTimeRange().toUpperCase()) {
+                            case "TODAY" -> now.withHour(0).withMinute(0).withSecond(0);
+                            case "LAST_WEEK" -> now.minusWeeks(1);
+                            case "LAST_MONTH" -> now.minusMonths(1);
+                            default -> null;
+                        };
+                        if (startDate != null && (post.getCreationDate() == null || post.getCreationDate().isBefore(startDate))) return false;
+                    }
+
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        if (filterDto.getSortByNewest() != null) {
+            filteredPosts.sort(filterDto.getSortByNewest()
+                    ? Comparator.comparing(BlogPost::getCreationDate, Comparator.nullsLast(Comparator.reverseOrder()))
+                    : Comparator.comparing(BlogPost::getCreationDate, Comparator.nullsLast(Comparator.naturalOrder())));
+        }
+
+        int start = Math.min((int) pageable.getOffset(), filteredPosts.size());
+        int end = Math.min(start + pageable.getPageSize(), filteredPosts.size());
+
+        List<BlogPostResponseDto> responseList = filteredPosts.subList(start, end)
+                .stream()
+                .map(BlogPostResponseDto::fromEntity)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(responseList, pageable, filteredPosts.size());
+    }
+
 }
