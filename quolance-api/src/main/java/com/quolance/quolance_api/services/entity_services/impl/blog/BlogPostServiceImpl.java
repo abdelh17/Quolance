@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.entity_services.impl.blog;
 
+import com.quolance.quolance_api.dtos.blog.BlogFilterRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -200,4 +202,26 @@ public class BlogPostServiceImpl implements BlogPostService {
     public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
         return blogPostRepository.findAll(pageable).map(BlogPostResponseDto::fromEntity);
     }
+    @Override
+    public Page<BlogPostResponseDto> getFilteredPosts(BlogFilterRequestDto filterDto, Pageable pageable) {
+        LocalDateTime startDate = filterDto.getCreationDate();
+        if (startDate == null) {
+            startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
+        }
+
+        List<String> tagStrings = filterDto.getTags() == null || filterDto.getTags().isEmpty()
+                ? null
+                : filterDto.getTags().stream().map(Enum::name).toList();
+        int tagCount = (tagStrings == null) ? 0 : tagStrings.size();
+
+        return blogPostRepository.findFilteredPosts(
+                filterDto.getTitle(),
+                filterDto.getContent(),
+                startDate,
+                tagStrings,
+                tagCount,
+                pageable
+        ).map(BlogPostResponseDto::fromEntity);
+    }
+
 }

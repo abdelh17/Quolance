@@ -10,8 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.quolance.quolance_api.dtos.blog.BlogFilterRequestDto;
+import com.quolance.quolance_api.entities.enums.BlogTags;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +39,10 @@ import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -65,6 +70,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         userRepository.deleteAll();
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
         session = sessionCreationHelper.getSession(loggedInUser.getEmail(), "Password123!");
+        EntityCreationHelper.createFullBlogPost(loggedInUser,"java", "freelancing", List.of(BlogTags.SUPPORT, BlogTags.FREELANCING), LocalDateTime.of(2024, 2, 1, 0, 0));
     }
 
     @Test
@@ -232,4 +238,47 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         assertThat(pageResponse.getTotalPages()).isEqualTo(2);
     }
 
+    @Test
+    void testFilterBlogPostsByTitle() throws Exception {
+        BlogFilterRequestDto filterRequest = new BlogFilterRequestDto();
+        filterRequest.setTitle("java");
+        performFilterRequest(filterRequest).andExpect(status().isOk());
+    }
+
+    @Test
+    void testFilterBlogPostsByContent() throws Exception {
+        BlogFilterRequestDto filterRequest = new BlogFilterRequestDto();
+        filterRequest.setContent("freelancing");
+        performFilterRequest(filterRequest).andExpect(status().isOk());
+    }
+
+    @Test
+    void testFilterBlogPostsByTags() throws Exception {
+        BlogFilterRequestDto filterRequest = new BlogFilterRequestDto();
+        filterRequest.setTags(Set.of(BlogTags.SUPPORT, BlogTags.FREELANCING));
+        performFilterRequest(filterRequest).andExpect(status().isOk());
+    }
+
+    @Test
+    void testFilterBlogPostsByCreationDate() throws Exception {
+        BlogFilterRequestDto filterRequest = new BlogFilterRequestDto();
+        filterRequest.setCreationDate(LocalDateTime.of(2024, 2, 1, 0, 0));
+        performFilterRequest(filterRequest).andExpect(status().isOk());
+    }
+
+    @Test
+    void testFilterBlogPostsByAllFields() throws Exception {
+        BlogFilterRequestDto filterRequest = new BlogFilterRequestDto();
+        filterRequest.setTitle("java");
+        filterRequest.setContent("freelancing");
+        filterRequest.setCreationDate(LocalDateTime.of(2024, 2, 1, 0, 0));
+        filterRequest.setTags(Set.of(BlogTags.SUPPORT, BlogTags.FREELANCING));
+        performFilterRequest(filterRequest).andExpect(status().isOk());
+    }
+
+    private ResultActions performFilterRequest(BlogFilterRequestDto filterRequest) throws Exception {
+        return mockMvc.perform(get("/api/blog-posts/filter").session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(filterRequest)));
+    }
 }
