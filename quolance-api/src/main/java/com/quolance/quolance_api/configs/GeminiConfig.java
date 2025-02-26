@@ -11,8 +11,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Data
 public class GeminiConfig {
     private String key;
-    private String baseUrl = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent";
+    private String model;
+    private String baseUrl;
 
+    public void setModel(String model) {
+        this.model = model;
+        this.baseUrl = "https://generativelanguage.googleapis.com/v1/models/" + model + ":generateContent";
+    }
     @Bean
     public WebClient geminiWebClient() {
         return WebClient.builder()
