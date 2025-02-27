@@ -101,3 +101,4 @@ cloudinary:
 google:
   api:
     key: ${GOOGLE_API_KEY}
+    model: ${MODEL_NAME}
