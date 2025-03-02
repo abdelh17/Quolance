@@ -110,7 +110,7 @@ export const useGetFreelancerProjects = (
 };
 
 export const useGetFreelancerProfile = (username?: string) => {
-  return useQuery({
+  return useQuery<FreelancerProfileType>({
     queryKey: ['freelancerProfile', username],
     queryFn: async () => {
       if (!username) {

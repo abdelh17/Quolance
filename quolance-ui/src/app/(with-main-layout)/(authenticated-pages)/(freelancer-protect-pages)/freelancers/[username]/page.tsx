@@ -8,11 +8,6 @@ import {
   PiStarFill,
 } from 'react-icons/pi';
 
-import BreadCrumb from '@/components/global/BreadCrumb';
-import ProjectCard from '@/components/ui/projects/ProjectCard';
-
-import { freelancerServices } from '@/app/(with-main-layout)/(authenticated-pages)/(client-protected-pages)/my-projects/ClientProjectsView';
-
 const tabButton = ['Projects', 'Works'];
 
 function WorkerDynamicProfile() {
@@ -22,7 +17,6 @@ function WorkerDynamicProfile() {
 
   return (
     <>
-      <BreadCrumb pageName='Worker Profile' />
       <section className='sbp-30 stp-30'>
         <div className='container grid grid-cols-12 gap-6'>
           <div className='border-n30 col-span-12 rounded-xl border px-6 py-8 lg:col-span-4'>
@@ -35,12 +29,9 @@ function WorkerDynamicProfile() {
                         <div className='hexagon-styles bg-b50 z-10 my-[calc(180px*0.5/2)] h-[calc(180px*0.57736720554273)] w-[180px] rounded-[calc(180px/50)] before:rounded-[calc(180px/50)] after:rounded-[calc(180px/50)]'>
                           <div className='r-hex3 absolute -left-[5px] -top-[43px] z-30 inline-block w-[190px] overflow-hidden'>
                             <div className='r-hex-inner3'>
+                              {/* Profile image */}
                               <div
-                                className={`${
-                                  bodyData !== undefined
-                                    ? bodyData.img
-                                    : 'expertImgBig'
-                                } r-hex-inner-3 before:h-[190px] before:bg-cover`}
+                                className={`r-hex-inner-3 before:h-[190px] before:bg-cover`}
                               ></div>
                             </div>
                           </div>
