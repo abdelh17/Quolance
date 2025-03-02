@@ -140,7 +140,7 @@ export default function FreelancerPage() {
                 <p className='bg-r50 text-r300 rounded-full px-3 py-1 text-[13px]'>
                   {freelancer.experienceLevel
                     ? formatEnumString(freelancer.experienceLevel)
-                    : 'N/A'}
+                    : 'Not Specified'}
                 </p>
               </div>
 
@@ -157,6 +157,16 @@ export default function FreelancerPage() {
                     </p>
                   ))}
                 </div>
+              </div>
+
+              {/* Availability */}
+              <div className='flex flex-col items-start justify-start gap-3 pt-8'>
+                <p className='text-sm font-medium'>AVAILABILITY</p>
+                <p className='bg-v50 rounded-full px-3 py-1 text-[13px]'>
+                  {freelancer.availability
+                    ? formatEnumString(freelancer.availability)
+                    : 'Not Specified'}
+                </p>
               </div>
 
               {/* About (bio) */}
