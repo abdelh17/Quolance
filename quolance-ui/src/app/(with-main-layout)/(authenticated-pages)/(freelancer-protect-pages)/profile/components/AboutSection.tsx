@@ -25,8 +25,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
  updateEditModes,
  editModes,
  handleSave,
-                                                       checkEditModes
-                                                   }) => {
+ checkEditModes }) => {
     const maxBioLength = 2000;
 
     const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
