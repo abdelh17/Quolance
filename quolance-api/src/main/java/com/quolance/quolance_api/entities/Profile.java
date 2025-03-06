@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Set;
 
@@ -19,6 +20,8 @@ import java.util.Set;
 @Table(name = "profile")
 public class Profile extends AbstractEntity {
 
+    @Length(max = 2000)
+    @Column(length = 2000)
     private String bio;
 
     private String contactEmail;
