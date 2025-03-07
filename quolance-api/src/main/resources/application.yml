@@ -37,6 +37,7 @@ spring:
           google:
             client-id: "${GOOGLE_CLIENT_ID}"
             client-secret: "${GOOGLE_CLIENT_SECRET}"
+            scope: profile, email
 
   datasource:
     url: ${PROD_DATASOURCE_URL}
