@@ -3,6 +3,7 @@ package com.quolance.quolance_api.dtos.profile;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
 import com.quolance.quolance_api.entities.enums.Tag;
+import com.quolance.quolance_api.entities.profile.ProjectExperience;
 import com.quolance.quolance_api.entities.profile.WorkExperience;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,4 +31,5 @@ public class UpdateFreelancerProfileDto {
     private List<WorkExperience> workExperiences;
     private Set<String> certifications;
     private Set<String> languagesSpoken;
+    private List<ProjectExperience> projectExperiences;
 }

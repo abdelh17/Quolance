@@ -3,6 +3,7 @@ package com.quolance.quolance_api.entities;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
 import com.quolance.quolance_api.entities.enums.Tag;
+import com.quolance.quolance_api.entities.profile.ProjectExperience;
 import com.quolance.quolance_api.entities.profile.WorkExperience;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -52,7 +53,7 @@ public class Profile extends AbstractEntity {
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
     private List<WorkExperience> workExperiences;
 
@@ -65,4 +66,8 @@ public class Profile extends AbstractEntity {
     @CollectionTable(name = "languagesSpoken", joinColumns = @JoinColumn(name = "profile_id"))
     @Column(name = "language")
     private Set<String> languagesSpoken;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "profile_id")
+    private List<ProjectExperience> projectExperiences;
 }

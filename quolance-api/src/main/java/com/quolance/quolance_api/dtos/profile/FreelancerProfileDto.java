@@ -5,6 +5,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
 import com.quolance.quolance_api.entities.enums.Tag;
+import com.quolance.quolance_api.entities.profile.ProjectExperience;
 import com.quolance.quolance_api.entities.profile.WorkExperience;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,7 @@ public class FreelancerProfileDto {
     private List<WorkExperience> workExperiences;
     private Set<String> certifications;
     private Set<String> languagesSpoken;
+    private List<ProjectExperience> projectExperiences;
 
     public static FreelancerProfileDto fromEntity(User user) {
         Profile profile = user.getProfile();
@@ -60,6 +62,7 @@ public class FreelancerProfileDto {
                 .workExperiences(profile.getWorkExperiences())
                 .certifications(profile.getCertifications())
                 .languagesSpoken(profile.getLanguagesSpoken())
+                .projectExperiences(profile.getProjectExperiences())
                 .build();
     }
 }
