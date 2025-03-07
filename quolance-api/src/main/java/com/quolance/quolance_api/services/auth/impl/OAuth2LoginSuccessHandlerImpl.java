@@ -58,31 +58,41 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
     @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
+        log.info("OAuth2 authentication success handler triggered.");
+
         OAuth2AuthenticationToken authenticationToken = (OAuth2AuthenticationToken) authentication;
         String provider = authenticationToken.getAuthorizedClientRegistrationId();
         String providerId = authentication.getName();
         String email = authenticationToken.getPrincipal().getAttribute("email");
 
+        log.info("Received OAuth2 authentication with provider: {}, providerId: {}, email: {}",
+                provider, providerId, email);
+
         // Check if we have the user based on a connected account (provider / providerId)
         Optional<UserConnectedAccount> connectedAccount = connectedAccountRepository.findByProviderAndProviderId(provider, providerId);
         if (connectedAccount.isPresent()) {
-            // Authenticate the existing user
+            log.info("Connected account found for provider {} and providerId {}. Authenticating existing user.",
+                    provider, providerId);
             authenticateUser(connectedAccount.get().getUser(), response);
             return;
         }
 
-        // If no connected account exists, find or create the user
+        // No connected account exists, check if user exists by email
         User existingUser = userRepository.findByEmail(email).orElse(null);
         if (existingUser != null) {
+            log.info("Existing user found by email {}. Linking new connected account.", email);
             // Link the connected account to the existing user
             UserConnectedAccount newConnectedAccount = new UserConnectedAccount(provider, providerId, existingUser);
             existingUser.addConnectedAccount(newConnectedAccount);
             userRepository.save(existingUser);
             connectedAccountRepository.save(newConnectedAccount);
+            log.info("Connected account linked for user id: {}", existingUser.getId());
             authenticateUser(existingUser, response);
         } else {
+            log.info("No existing user found for email {}. Creating a new user.", email);
             // Create a new user and authenticate
             User newUser = createUserFromOauth2User(authenticationToken);
+            log.info("New user created with id: {}", newUser.getId());
             authenticateUser(newUser, response);
         }
     }
@@ -96,14 +106,16 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
      * @throws IOException if an error occurs during redirection
      */
     private void authenticateUser(User user, HttpServletResponse response) throws IOException {
+        log.info("Authenticating user with id: {}", user.getId());
         // Create an authentication token for the user
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
         // Set the authentication in the security context
         SecurityContextHolder.getContext().setAuthentication(token);
+        log.info("User with id: {} is now authenticated.", user.getId());
 
-        // Redirect to the login success URL
+        // Redirect to the login success URL (public UI)
         response.sendRedirect(applicationProperties.getLoginSuccessUrl());
     }
 
@@ -116,33 +128,43 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
      * @return the newly created user
      */
     private User createUserFromOauth2User(OAuth2AuthenticationToken authentication) {
+        log.info("Creating new user from OAuth2 token.");
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
 
         // Initialize the user entity with attributes from the authentication token
         User user = new User(authentication.getPrincipal());
+        log.debug("User details extracted: {}", user);
 
         // Generate a random 10-character password
         String randomPassword = generateRandomPassword(10);
+        log.debug("Generated random password: {}", randomPassword);
         user.setPassword(passwordEncoder.encode(randomPassword));
 
         // Save the user to the database first
         userRepository.save(user);
+        log.info("New user saved with id: {}", user.getId());
 
         // Enqueue the job to send the temporary password email
         enqueueTempPasswordEmailJob(user, randomPassword);
+        log.info("Enqueued temporary password email job for user id: {}", user.getId());
 
         // Link the connected account
         String provider = authentication.getAuthorizedClientRegistrationId();
         String providerId = authentication.getName();
+        log.info("Linking connected account for provider: {} and providerId: {}", provider, providerId);
         UserConnectedAccount connectedAccount = new UserConnectedAccount(provider, providerId, user);
         user.addConnectedAccount(connectedAccount);
-
         connectedAccountRepository.save(connectedAccount);
+        log.info("Connected account saved for user id: {}", user.getId());
 
         return user;
     }
 
+    /**
+     * Enqueues a job to send the temporary password email.
+     */
     private void enqueueTempPasswordEmailJob(User user, String tempPassword) {
+        log.info("Enqueuing email job for user id: {} with temporary password.", user.getId());
         SendTempPasswordEmailJob sendTempPasswordEmailJob = new SendTempPasswordEmailJob(user.getId(), tempPassword);
         BackgroundJobRequest.enqueue(sendTempPasswordEmailJob);
     }
@@ -162,5 +184,4 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
         }
         return password.toString();
     }
-
 }
