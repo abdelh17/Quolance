@@ -38,6 +38,8 @@ public class FreelancerProfileDto {
     private Set<Tag> skills;
     private Availability availability;
     private List<WorkExperience> workExperiences;
+    private Set<String> certifications;
+    private Set<String> languagesSpoken;
 
     public static FreelancerProfileDto fromEntity(User user) {
         Profile profile = user.getProfile();
@@ -56,6 +58,8 @@ public class FreelancerProfileDto {
                 .skills(profile.getSkills())
                 .availability(profile.getAvailability())
                 .workExperiences(profile.getWorkExperiences())
+                .certifications(profile.getCertifications())
+                .languagesSpoken(profile.getLanguagesSpoken())
                 .build();
     }
 }

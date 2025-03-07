@@ -28,4 +28,6 @@ public class UpdateFreelancerProfileDto {
     private Set<Tag> skills;
     private Availability availability;
     private List<WorkExperience> workExperiences;
+    private Set<String> certifications;
+    private Set<String> languagesSpoken;
 }

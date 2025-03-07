@@ -55,4 +55,14 @@ public class Profile extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private List<WorkExperience> workExperiences;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "certifications", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "certification")
+    private Set<String> certifications;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "languagesSpoken", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "language")
+    private Set<String> languagesSpoken;
 }
