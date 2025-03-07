@@ -3,6 +3,7 @@ package com.quolance.quolance_api.entities;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
 import com.quolance.quolance_api.entities.enums.Tag;
+import com.quolance.quolance_api.entities.profile.WorkExperience;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -49,4 +51,8 @@ public class Profile extends AbstractEntity {
     @OneToOne(mappedBy = "profile")
     @JoinColumn(name = "userId")
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
+    private List<WorkExperience> workExperiences;
 }
