@@ -34,7 +34,6 @@ export default function FreelancerPage() {
     <>
       <section className='sbp-30 stp-30'>
         <div className='container'>
-          <BreadCrumb pageName='Worker Profile' />
           <div className='grid grid-cols-12 gap-6'>
             <div className='border-n30 col-span-12 rounded-xl border px-6 py-14 lg:col-span-4'>
               <div className='flex flex-col items-center justify-center'>
