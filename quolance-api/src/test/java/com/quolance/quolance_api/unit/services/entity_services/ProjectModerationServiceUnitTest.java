@@ -130,7 +130,7 @@ class ProjectModerationServiceUnitTest {
 
     //     assertThat(result).isNotNull();
     //     assertThat(result.isApproved()).isFalse();
-    //     assertThat(result.getFlags()).isNotNull().contains("LOW_CONFIDENCE"); // ✅ Fix: Direct contains() check
+    //     assertThat(result.getFlags()).isNotNull().contains("LOW_CONFIDENCE"); 
     // }
     
     
