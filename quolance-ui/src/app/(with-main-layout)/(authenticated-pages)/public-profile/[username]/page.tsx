@@ -111,7 +111,7 @@ export default function FreelancerPage() {
                 </div>
 
                 {/* View Portfolio */}
-                <Link
+                {/* <Link
                   href='/worker-portfolio'
                   className='border-n30 mt-7 flex w-full items-center justify-between rounded-xl border px-5 py-4'
                 >
@@ -119,7 +119,7 @@ export default function FreelancerPage() {
                   <span className='text-xl !leading-none'>
                     <PiCaretRight />
                   </span>
-                </Link>
+                </Link> */}
               </div>
 
               {/* Experience Level */}
