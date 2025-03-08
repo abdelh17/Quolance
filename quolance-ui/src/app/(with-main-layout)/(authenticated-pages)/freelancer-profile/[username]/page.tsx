@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import BreadCrumb from '@/components/global/BreadCrumb';
 import { PiCaretRight, PiPaperPlaneTilt, PiStarFill } from 'react-icons/pi';
 import { useGetFreelancerProfile } from '@/api/freelancer-api';
 import Loading from '@/components/ui/loading/loading';
@@ -18,6 +17,7 @@ const tabButton = ['Services', 'Works', 'Jobs', 'Recommendations'];
 
 export default function FreelancerPage() {
   const [activeTab, setActiveTab] = useState('Services');
+  
   const { username } = useParams();
   const { data: freelancer, isLoading } = useGetFreelancerProfile(
     username as string
@@ -43,6 +43,8 @@ export default function FreelancerPage() {
                     src={
                       freelancer.profileImageUrl || FreelancerDefaultProfilePic
                     }
+                    width={180}
+                    height={180}
                     className={`aspect-square rounded-full object-cover ring-4 ring-blue-400 ring-offset-[5px]`}
                     priority
                   />
@@ -100,7 +102,7 @@ export default function FreelancerPage() {
                   </div>
                   <div className='flex items-center justify-end gap-2'>
                     <div className='flex items-center justify-start max-xl:hidden'>
-                      {/* Fix empty src attributes */}
+                      {/* Fixed placeholder images with width and height */}
                       <Image
                         src='/placeholder1.jpg'
                         alt='User'

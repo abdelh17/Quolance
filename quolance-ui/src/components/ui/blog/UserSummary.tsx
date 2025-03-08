@@ -2,23 +2,10 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import FreelancerDefaultIcon from '@/public/images/freelancer_default_icon.png';
 
-interface UserProfile {
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImageUrl: string;
-    bio: string;
-    contactEmail: string;
-    city: string;
-    state: string;
-    experienceLevel: string;
-    socialMediaLinks: string[];
-    skills: string[];
-    availability: string;
-};
-
-const UserSummary: React.FC<{user: UserProfile}> = ({ user }) => {
+const UserSummary: React.FC<{user: FreelancerProfileType}> = ({ user }) => {
     return (
         <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -35,7 +22,7 @@ const UserSummary: React.FC<{user: UserProfile}> = ({ user }) => {
                 </div>
                 <Image
                     alt={`${user.firstName} ${user.lastName}'s profile`}
-                    src={user.profileImageUrl}
+                    src={user.profileImageUrl || FreelancerDefaultIcon}
                     width={100}
                     height={100}
                     className="rounded-full object-cover"

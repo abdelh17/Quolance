@@ -13,4 +13,5 @@ export interface CandidateResponse {
   socialMediaLinks: string[];
   skills: string[];
   availability: string;
+  projectExperiences: any[]; 
 }

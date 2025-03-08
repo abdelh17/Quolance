@@ -283,7 +283,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                 left: userSummaryPosition.x
               }}
             >
-              <UserSummary user={authorProfile} />
+              {authorProfile && <UserSummary user={authorProfile} />}
             </div>
           )}
         </div>
