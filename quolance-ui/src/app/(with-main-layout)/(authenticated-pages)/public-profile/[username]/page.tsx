@@ -4,40 +4,25 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PiCaretRight, PiPaperPlaneTilt, PiStarFill } from 'react-icons/pi';
+import { PiCaretRight, PiPaperPlaneTilt } from 'react-icons/pi';
 import { useGetFreelancerProfile } from '@/api/freelancer-api';
 import Loading from '@/components/ui/loading/loading';
 import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 import badge from '@/public/images/verify-badge.png';
 import { formatEnumString } from '@/util/stringUtils';
-import { 
-  FaFacebook, 
-  FaYoutube, 
-  FaGithub, 
-  FaTiktok,
-  FaGlobe
-} from 'react-icons/fa';
-import { BsTwitter, BsLinkedin, BsInstagram } from 'react-icons/bs';
+import { FaFacebook, FaGithub } from 'react-icons/fa';
+import { BsTwitter, BsLinkedin } from 'react-icons/bs';
+import { Users } from 'lucide-react';
 
 const tabButton = ['Services', 'Recommendations'];
 
-// Social media platform configurations
+// Only allow 4 platforms to match ContactSection
 const SOCIAL_PLATFORMS = [
   { name: "Facebook", icon: <FaFacebook className="text-blue-600" />, prefix: "https://facebook.com/" },
-  { name: "Twitter/X", icon: <BsTwitter className="text-blue-400" />, prefix: "https://twitter.com/" },
+  { name: "X", icon: <BsTwitter className="text-blue-400" />, prefix: "https://twitter.com/" },
   { name: "LinkedIn", icon: <BsLinkedin className="text-blue-700" />, prefix: "https://linkedin.com/in/" },
-  { name: "Instagram", icon: <BsInstagram className="text-pink-600" />, prefix: "https://instagram.com/" },
-  { name: "YouTube", icon: <FaYoutube className="text-red-600" />, prefix: "https://youtube.com/" },
-  { name: "GitHub", icon: <FaGithub className="text-gray-800" />, prefix: "https://github.com/" },
-  { name: "TikTok", icon: <FaTiktok className="text-black" />, prefix: "https://tiktok.com/@" },
-  { name: "Website", icon: <FaGlobe className="text-blue-500" />, prefix: "https://" }
+  { name: "GitHub", icon: <FaGithub className="text-gray-800" />, prefix: "https://github.com/" }
 ];
-
-// Function to get the appropriate icon for a URL
-const getSocialMediaIcon = (url : string) => {
-  const platform = SOCIAL_PLATFORMS.find(p => url.includes(p.prefix.replace("https://", "")));
-  return platform ? platform.icon : <FaGlobe className="text-blue-500" />; // Default to globe icon
-};
 
 export default function FreelancerPage() {
   const [activeTab, setActiveTab] = useState('Services');
@@ -46,8 +31,6 @@ export default function FreelancerPage() {
   const { data: freelancer, isLoading } = useGetFreelancerProfile(
     username as string
   );
-
-  console.log(freelancer);
 
   if (isLoading) {
     return <Loading />;
@@ -80,10 +63,6 @@ export default function FreelancerPage() {
                     priority
                   />
                   <div className='absolute bottom-5 right-[-0.3rem] z-30'>
-                    {/*
-                      Profile badge? Might delete... (verified icon)
-                      An idea: We can use the verified icon when the freelancer completes their profile
-                    */}
                     <Image
                       src={badge}
                       alt='Profile badge'
@@ -123,7 +102,6 @@ export default function FreelancerPage() {
                     <PiCaretRight />
                   </span>
                 </Link>
-                
               </div>
 
               {/* Experience Level */}
@@ -135,6 +113,7 @@ export default function FreelancerPage() {
                     : 'Not Specified'}
                 </p>
               </div>
+              
               {/* Skills */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
                 <p className='text-sm font-medium'>SKILLS</p>
@@ -166,28 +145,38 @@ export default function FreelancerPage() {
                 <p className='text-n300'>{freelancer.bio}</p>
               </div>
 
-              {/* Social Media Links - Now Dynamic */}
+              {/* Social Media Links - Display only the 4 allowed platforms */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
                 <p className='text-sm font-medium'>LINKS</p>
                 {hasSocialLinks ? (
                   <div className='flex flex-wrap gap-2'>
-                    {socialMediaLinks.map((link, index) => (
-                      link.trim() !== "" && (
+                    {/* Filter links to only show supported platforms */}
+                    {socialMediaLinks.map((link, index) => {
+                      // Check if this link belongs to one of our supported platforms
+                      const platform = SOCIAL_PLATFORMS.find(p => 
+                        link.includes(p.prefix.replace("https://", ""))
+                      );
+                      
+                      // Only display if it's a supported platform
+                      return link.trim() !== "" && platform && (
                         <Link
                           key={index}
                           href={link}
                           target="_blank"
                           rel="noopener noreferrer"
                           className='rounded-full bg-gray-100 p-3 font-medium hover:bg-gray-200 transition-colors duration-200'
-                          title={link}
+                          title={platform.name}
                         >
-                          {getSocialMediaIcon(link)}
+                          {platform.icon}
                         </Link>
-                      )
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
-                  <p className='text-gray-500 italic'>No social links provided</p>
+                  <div className="flex items-center">
+                    <Users className="text-blue-500 mr-3" />
+                    <span className="text-gray-700">Not Specified</span>
+                  </div>
                 )}
               </div>
             </div>
@@ -219,7 +208,6 @@ export default function FreelancerPage() {
                     {/* List of services */}
                   </div>
                 )}
-
 
                 {activeTab === 'Recommendations' && (
                   <div className='flex flex-col gap-4 pt-8'>
