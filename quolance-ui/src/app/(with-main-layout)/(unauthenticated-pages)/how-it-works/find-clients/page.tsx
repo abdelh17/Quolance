@@ -57,7 +57,7 @@ function FindClientsPage() {
       <div className='relative bg-gray-900'>
         <div className='relative h-80 overflow-hidden bg-b300 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2'>
           <img
-            data-test="hero-title-client"
+            data-test="hero-image-client"
             alt='Freelancer working on a project'
             src='https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
             className='size-full object-cover'
