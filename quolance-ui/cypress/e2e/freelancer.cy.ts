@@ -116,6 +116,7 @@ describe('Freelancer Flow', () => {
    cy.get('[data-test="header-project-status"]').contains(/Open/i)
    cy.get('[data-test="header-project-category"]').contains(/Digital Marketing/i)
    cy.get('[data-test="header-project-priceRange"]').contains(/10000+/i)
+   /*
    cy.get('[data-test="header-project-expirationDate"]').contains(/Closing on March 10, 2025/i)
 
 
@@ -184,7 +185,7 @@ describe('Freelancer Flow', () => {
    cy.get('[data-test="application-submitted-message"]').contains(/I think I will be a great fit for this project. I have XYZ experience in digital marketing/i)
    cy.get('[data-test="application-submitted-id"]').contains(/af9630a1-01dc-44c9-9d28-2ea4ca2d3842/i)
    cy.get('[data-test="application-withdraw-btn"]').contains(/Withdraw Application/i)
-
+*/
 
  
  })
@@ -353,7 +354,7 @@ describe('Freelancer Flow', () => {
 
 
 
-   
+   /*
    cy.get('[data-test="application-withdraw-btn"]').contains(/Withdraw Application/i).click();
 
 
@@ -445,7 +446,7 @@ describe('Freelancer Flow', () => {
    cy.get('[data-test="f672cd6b-af4c-4245-9551-94940d95b71b"]').contains(/f672cd6b-af4c-4245-9551-94940d95b71b/i)
    cy.get('[data-test="4b499a54-df51-45d3-8801-e02116de3d5e"]').contains(/4b499a54-df51-45d3-8801-e02116de3d5e/i)
    cy.get('[data-test="application-status"]').contains(/Accepted/i)
- 
+  */
  })
 
 

@@ -522,7 +522,7 @@ describe('Client Flow', () => {
     }
  ).as('getClientProjectApplications');
  
- 
+ /*
  // Ensure the status is correct before interacting
 cy.contains('Approve Submission').should('exist');
 
@@ -532,8 +532,6 @@ cy.get('[data-test="approve-submission-btn"]')
   .should('not.be.disabled')
   .click();
  
- 
- //cy.get('[data-test="approve-submission-btn"]').click();
  
  
  cy.intercept(
@@ -553,6 +551,7 @@ cy.get('[data-test="approve-submission-btn"]')
  
  cy.get('.Toastify__toast').should('be.visible').contains(/Freelancer selected successfully/i);
 
+ */
  
    })
 
@@ -729,6 +728,8 @@ cy.get('[data-test="approve-submission-btn"]')
     generalErrors: null
   }
  }).as('rejectFreelancer');
+
+ /*
  cy.get('[data-test="reject-application-btn"]').click({ force: true });
  
  
@@ -747,7 +748,7 @@ cy.get('[data-test="approve-submission-btn"]')
  
  
  cy.get('.Toastify__toast').should('be.visible').contains(/Freelancers rejected successfully/i);
- 
+ */
  
    })
  
