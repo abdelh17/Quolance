@@ -29,10 +29,9 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectModerationService projectModerationService;
 
     @Override
-    public void saveProject(Project project) {
+    public Project saveProject(Project project) {
         log.debug("Saving project: {} for client {}", project.getTitle(), project.getClient().getId());
-        projectRepository.save(project);
-        log.info("Successfully saved project with ID: {} for client {}", project.getId(), project.getClient().getId());
+        return projectRepository.save(project);
     }
 
     @Override

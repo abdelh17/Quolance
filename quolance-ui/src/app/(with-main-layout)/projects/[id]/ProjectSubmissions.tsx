@@ -169,6 +169,7 @@ export default function ProjectSubmissions({
           </button>
 
           <button
+            data-test="reject-selected-btn"
             onClick={() => setIsRefuseModalOpen(true)}
             className='hover:text-n900 relative overflow-hidden rounded-full bg-red-600 px-6 py-3 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
           >

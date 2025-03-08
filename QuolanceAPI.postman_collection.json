@@ -1111,6 +1111,68 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Chat",
+			"item": [
+				{
+					"name": "Send Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiver_id\": \"YOUR_RECEIVER_USER_ID\",\r\n    \"content\": \"Hello! This is a test message.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/api/chat/send"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Messages With User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/chat/messages/:userId?page=0&size=20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"chat",
+								"messages",
+								":userId"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "YOUR_OTHER_USER_ID",
+									"description": "ID of the user you're chatting with"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

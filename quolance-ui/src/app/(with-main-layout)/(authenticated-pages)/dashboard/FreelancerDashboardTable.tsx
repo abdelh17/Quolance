@@ -149,15 +149,15 @@ export default function FreelancerDashboardTable() {
             ) : (
                 applications.map((application: Application) => (
                     <tr key={application.id}>
-                        <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
+                        <td data-test={`${application.projectTitle}`} className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
                             <Link href={`/projects/${application.projectId}`}>
                                 {application.projectTitle}
                             </Link>
                         </td>
-                        <td className='hidden w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:table-cell sm:w-auto sm:max-w-none sm:pl-0'>
+                        <td data-test={`${application.id}`} className='hidden w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:table-cell sm:w-auto sm:max-w-none sm:pl-0'>
                             {application.id}
                         </td>
-                        <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
+                        <td data-test={`${application.projectId}`} className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
                             {application.projectId}
                         </td>
                         <td className='px-3 py-4 text-sm'>

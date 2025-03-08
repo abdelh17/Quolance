@@ -62,8 +62,8 @@ const FAQPage: React.FC = () => {
   return (
     <div className="bg-white">
     <div className="mx-auto max-w-7xl px-6 py-8 sm:py-16 lg:px-8">
-      <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Frequently asked questions</h2>
-      <p className="mt-6 max-w-2xl text-base/7 text-gray-600">
+      <h2 data-test="faq-title" className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Frequently asked questions</h2>
+      <p data-test="faq-desc" className="mt-6 max-w-2xl text-base/7 text-gray-600">
         Have a different question and can’t find the answer you’re looking for? Reach out to our support team by{' '}
         <Link href="/support/contact-us" className="font-semibold text-b300 hover:text-b400">
           contacting us
@@ -74,8 +74,8 @@ const FAQPage: React.FC = () => {
         <dl className="space-y-16 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-16 sm:space-y-0 lg:gap-x-10">
           {faqs.map((faq) => (
             <div key={faq.id}>
-              <dt className="text-base/7 font-semibold text-gray-900">{faq.question}</dt>
-              <dd className="mt-2 text-base/7 text-gray-600">{faq.answer}</dd>
+              <dt data-test={`${faq.question}`} className="text-base/7 font-semibold text-gray-900">{faq.question}</dt>
+              <dd data-test={`${faq.answer.split(' ')[0]}`}  className="mt-2 text-base/7 text-gray-600">{faq.answer}</dd>
             </div>
           ))}
         </dl>

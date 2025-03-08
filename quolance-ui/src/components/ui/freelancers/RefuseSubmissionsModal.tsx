@@ -25,7 +25,7 @@ export default function RefuseSubmissionsModal({
           <div className='flex items-center justify-between gap-3'>
             <div className='flex items-center gap-3'>
               <PiX className='text-3xl text-red-600' />
-              <p className='text-xl font-medium'>Refuse Submissions</p>
+              <p data-test="modal-refuse-submission-title" className='text-xl font-medium'>Refuse Submissions</p>
             </div>
             <button onClick={() => setIsOpen(false)}>
               <PiX className='text-2xl' />
@@ -33,14 +33,14 @@ export default function RefuseSubmissionsModal({
           </div>
 
           <div className='py-6'>
-            <p className='text-n300 text-lg'>
+            <p data-test="modal-refuse-submission-question" className='text-n300 text-lg'>
               Are you sure you want to refuse {selectedCount} submission
               {selectedCount !== 1 ? 's' : ''}? This action will:
             </p>
             <ul className='text-n300 mt-4 list-disc pl-6'>
-              <li>Mark the submissions as rejected</li>
-              <li>Notify the freelancers</li>
-              <li>Remove them from consideration</li>
+              <li data-test="modal-refuse-submission-statement1">Mark the submissions as rejected</li>
+              <li data-test="modal-refuse-submission-statement2">Notify the freelancers</li>
+              <li data-test="modal-refuse-submission-statement3">Remove them from consideration</li>
             </ul>
           </div>
 
@@ -52,6 +52,7 @@ export default function RefuseSubmissionsModal({
               <span className='relative z-10'>Cancel</span>
             </button>
             <button
+              data-test="modal-refuse-submission-btn"
               onClick={onConfirm}
               className='hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full bg-red-600 px-6 py-2 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
             >

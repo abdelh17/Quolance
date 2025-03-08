@@ -41,7 +41,7 @@ const ProjectCard = ({
       >
         {/* Header (Title + Applied? + Badge) */}
         <div className='flex items-center justify-between rounded-t-2xl bg-gradient-to-r from-blue-200/20 to-blue-300/30 p-5'>
-          <h3 className='text-n600 text-lg font-semibold duration-150 group-hover:text-blue-600'>
+          <h3 data-test={`${title}`} className='text-n600 text-lg font-semibold duration-150 group-hover:text-blue-600'>
             {title}
           </h3>
           <div className='flex items-center space-x-2'>
@@ -71,13 +71,13 @@ const ProjectCard = ({
             <div className='flex flex-row justify-between gap-4'>
               <div className='flex items-center space-x-2'>
                 <DollarSign className='h-4 w-4 text-gray-400' />
-                <span className='text-sm text-gray-600'>
+                <span data-test={`${priceRange}`} className='text-sm text-gray-600'>
                   {formatPriceRangeNoDollar(priceRange)}
                 </span>
               </div>
               <div className='flex items-center space-x-2'>
                 <Award className='h-4 w-4 text-gray-400' />
-                <span className='text-sm text-gray-600'>
+                <span data-test={`${category}`} className='text-sm text-gray-600'>
                   {formatEnumString(category)}
                 </span>
               </div>
@@ -104,7 +104,7 @@ const ProjectCard = ({
             </div>
             <div className='flex items-center space-x-2'>
               <Clock className='h-4 w-4 text-gray-400' />
-              <span className='text-sm text-gray-600'>
+              <span data-test={`${expectedDeliveryTime}`} className='text-sm text-gray-600'>
                 {EXPECTED_DELIVERY_OPTIONS.find(
                   (option) => option.value === expectedDeliveryTime
                 )?.label ?? ''}
