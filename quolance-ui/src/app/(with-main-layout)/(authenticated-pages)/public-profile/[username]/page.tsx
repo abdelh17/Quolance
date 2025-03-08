@@ -18,15 +18,31 @@ const tabButton = ['Services', 'Recommendations'];
 
 // Only allow 4 platforms to match ContactSection
 const SOCIAL_PLATFORMS = [
-  { name: "Facebook", icon: <FaFacebook className="text-blue-600" />, prefix: "https://facebook.com/" },
-  { name: "X", icon: <BsTwitter className="text-blue-400" />, prefix: "https://twitter.com/" },
-  { name: "LinkedIn", icon: <BsLinkedin className="text-blue-700" />, prefix: "https://linkedin.com/in/" },
-  { name: "GitHub", icon: <FaGithub className="text-gray-800" />, prefix: "https://github.com/" }
+  {
+    name: 'Facebook',
+    icon: <FaFacebook className='text-blue-600' />,
+    prefix: 'https://facebook.com/',
+  },
+  {
+    name: 'X',
+    icon: <BsTwitter className='text-blue-400' />,
+    prefix: 'https://twitter.com/',
+  },
+  {
+    name: 'LinkedIn',
+    icon: <BsLinkedin className='text-blue-700' />,
+    prefix: 'https://linkedin.com/in/',
+  },
+  {
+    name: 'GitHub',
+    icon: <FaGithub className='text-gray-800' />,
+    prefix: 'https://github.com/',
+  },
 ];
 
 export default function FreelancerPage() {
   const [activeTab, setActiveTab] = useState('Services');
-  
+
   const { username } = useParams();
   const { data: freelancer, isLoading } = useGetFreelancerProfile(
     username as string
@@ -42,7 +58,9 @@ export default function FreelancerPage() {
 
   // Extract social media links from the freelancer profile
   const socialMediaLinks = freelancer.socialMediaLinks || [];
-  const hasSocialLinks = socialMediaLinks.length > 0 && socialMediaLinks.some(link => link.trim() !== "");
+  const hasSocialLinks =
+    socialMediaLinks.length > 0 &&
+    socialMediaLinks.some((link) => link.trim() !== '');
 
   return (
     <>
@@ -113,7 +131,7 @@ export default function FreelancerPage() {
                     : 'Not Specified'}
                 </p>
               </div>
-              
+
               {/* Skills */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
                 <p className='text-sm font-medium'>SKILLS</p>
@@ -153,29 +171,32 @@ export default function FreelancerPage() {
                     {/* Filter links to only show supported platforms */}
                     {socialMediaLinks.map((link, index) => {
                       // Check if this link belongs to one of our supported platforms
-                      const platform = SOCIAL_PLATFORMS.find(p => 
-                        link.includes(p.prefix.replace("https://", ""))
+                      const platform = SOCIAL_PLATFORMS.find((p) =>
+                        link.includes(p.prefix.replace('https://', ''))
                       );
-                      
+
                       // Only display if it's a supported platform
-                      return link.trim() !== "" && platform && (
-                        <Link
-                          key={index}
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className='rounded-full bg-gray-100 p-3 font-medium hover:bg-gray-200 transition-colors duration-200'
-                          title={platform.name}
-                        >
-                          {platform.icon}
-                        </Link>
+                      return (
+                        link.trim() !== '' &&
+                        platform && (
+                          <Link
+                            key={index}
+                            href={link}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='rounded-full bg-gray-100 p-3 font-medium transition-colors duration-200 hover:bg-gray-200'
+                            title={platform.name}
+                          >
+                            {platform.icon}
+                          </Link>
+                        )
                       );
                     })}
                   </div>
                 ) : (
-                  <div className="flex items-center">
-                    <Users className="text-blue-500 mr-3" />
-                    <span className="text-gray-700">Not Specified</span>
+                  <div className='flex items-center'>
+                    <Users className='mr-3 text-blue-500' />
+                    <span className='text-gray-700'>Not Specified</span>
                   </div>
                 )}
               </div>
@@ -210,16 +231,24 @@ export default function FreelancerPage() {
                 )}
 
                 {activeTab === 'Recommendations' && (
-                  <div className='flex flex-col gap-4 pt-8'>
-                    {/* List of recommendations */}
-                    <span>
-                      It was a pleasure working with Albert. He is very
-                      professional
-                    </span>
-                    <span>
-                      Albert is very professional and his work is top-notch
-                    </span>
-                  </div>
+                  <>
+                    <div className='border-n30 rounded-2xl border p-10'>
+                      <div className='flex items-center justify-start gap-3 pb-2'>
+                        <div className=''>
+                          <div className='flex items-center justify-start gap-3'>
+                            <h5 className='heading-5'>John Doe</h5>
+                          </div>
+                          <p className='text-n500 pt-2'>Project for frontend development</p>
+                        </div>
+                      </div>
+                      <p className='text-n300 pt-3 font-medium'>
+                        It was a pleasure working with Alice. She was super
+                        clear and detailed with the project requirements. I
+                        appreciate her wonderful communication, collaboration,
+                        and flexibility. Thanks, Alice!
+                      </p>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
