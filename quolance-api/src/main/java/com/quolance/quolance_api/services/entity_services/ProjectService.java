@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public interface ProjectService {
 
-    void saveProject(Project project);
+    Project saveProject(Project project);
 
     void deleteProject(Project project);
 
