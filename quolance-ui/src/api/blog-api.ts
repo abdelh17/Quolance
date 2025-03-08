@@ -20,7 +20,7 @@ export const useCreateBlogPost = (options?: {
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: (blogpost: { title: string; content: string; userId?: string; files?: File[] }) => {
+    mutationFn: (blogpost: { title: string; content: string; userId?: string; tags: string[]; files?: File[] }) => {
       if (!blogpost.userId) {
         throw new Error("User ID is undefined. User must be logged in.");
       }
@@ -29,6 +29,7 @@ export const useCreateBlogPost = (options?: {
       formData.append("title", blogpost.title);
       formData.append("content", blogpost.content);
       formData.append("userId", String(blogpost.userId));
+      blogpost.tags.forEach(tag => formData.append("tags", tag));
 
       if (blogpost.files && blogpost.files.length > 0) {
         blogpost.files.forEach((file) => {

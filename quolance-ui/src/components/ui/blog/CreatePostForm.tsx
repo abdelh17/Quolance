@@ -10,24 +10,24 @@ import {
   DropdownMenuItem,
  } from '../dropdown-menu';
 
-const blogTags = [
-  'Question',
-  'Support',
-  'Freelancing',
-  'Skill Matching',
-  'Remote Work',
-  'AI Suggestions',
-  'Security',
-  'Talent Marketplace',
-  'Global Opportunities',
-  'Verified Profiles',
-  'Collaboration Tools',
-  'Professional Network',
-  'Billing',
+ const blogTags = [
+  { label: 'Question', value: 'QUESTION' },
+  { label: 'Support', value: 'SUPPORT' },
+  { label: 'Freelancing', value: 'FREELANCING' },
+  { label: 'Skill Matching', value: 'SKILL_MATCHING' },
+  { label: 'Remote Work', value: 'REMOTE_WORK' },
+  { label: 'AI Suggestions', value: 'AI_SUGGESTIONS' },
+  { label: 'Security', value: 'SECURITY' },
+  { label: 'Talent Marketplace', value: 'TALENT_MARKETPLACE' },
+  { label: 'Global Opportunities', value: 'GLOBAL_OPPORTUNITIES' },
+  { label: 'Verified Profiles', value: 'VERIFIED_PROFILES' },
+  { label: 'Collaboration Tools', value: 'COLLABORATION_TOOLS' },
+  { label: 'Professional Network', value: 'PROFESSIONAL_NETWORK' },
+  { label: 'Billing', value: 'BILLING' },
 ];
 
 interface CreatePostFormProps {
-  onSubmit: (postData: { title: string; content: string; userId: string | undefined; files?: File[]  }) => void;
+  onSubmit: (postData: { title: string; content: string; userId: string | undefined; tags: string[]; files?: File[]  }) => void;
   onClose: () => void;
 }
 
@@ -83,8 +83,9 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
       return;
     }
 
+    console.log({ title, content, tags });
 
-    onSubmit({ title, content, userId: user?.id, files });
+    onSubmit({ title, content, userId: user?.id, tags, files });
     setTitle('');
     setContent('');
     setFiles([]);
@@ -133,13 +134,13 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
           <DropdownMenuContent className="w-full bg-white">
             {blogTags.map((tag) => (
               <DropdownMenuItem
-                key={tag}
-                onSelect={() => handleTagSelection(tag)}
+                key={tag.value}
+                onSelect={() => handleTagSelection(tag.value)}
                 className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                  tags.includes(tag) ? 'bg-gray-300' : ''
+                  tags.includes(tag.value) ? 'bg-gray-300' : ''
                 }`}
               >
-                {tag}
+                {tag.label}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -149,7 +150,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
           <div className="mt-2 flex flex-wrap gap-2">
             {tags.map((tag) => (
               <span key={tag} className="bg-gray-200 px-2 py-1 rounded-md flex items-center text-sm">
-                {tag}
+                {blogTags.find((t) => t.value === tag)?.label || tag}
                 <button
                   onClick={() => handleRemoveTag(tag)}
                   className="ml-2 text-red-500"
