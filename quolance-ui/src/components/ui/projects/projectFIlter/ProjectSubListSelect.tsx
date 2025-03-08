@@ -64,6 +64,7 @@ export const GenericSubListComponent = ({
                     : 'text-gray-500 hover:border-gray-300 hover:text-gray-700'
                 }
               `}
+              data-test={`${type}`}
             >
               {type}
             </button>

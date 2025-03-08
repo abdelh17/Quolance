@@ -52,6 +52,7 @@ const ApplicationStatusBadge: React.FC<ApplicationStatusBadgeProps> = ({
   return (
     <>
       <span
+        data-test="application-status"
         className={`inline-flex items-center rounded-full py-[7px] pl-[11px] pr-[13px] text-sm font-semibold text-white ${config.bgColor} ${className}`}
       >
         <StatusIcon

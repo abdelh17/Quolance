@@ -38,6 +38,7 @@ export default function ProjectDetailsContent({
               <div className='max-w-xl lg:pr-4'>
                 <div className='relative overflow-hidden rounded-3xl bg-gray-900 px-6 pb-9 pt-64 shadow-2xl sm:px-12 lg:max-w-lg lg:px-8 lg:pb-8 xl:px-10 xl:pb-10'>
                   <Image
+                      data-test="project-img"
                       alt=''
                       src={freelancerImg}
                       className='absolute inset-0 h-full w-full object-cover'
@@ -45,7 +46,7 @@ export default function ProjectDetailsContent({
                   <div className='absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/50 to-transparent' />
                   <figure className='relative isolate'>
                     <blockquote className='mt-6 text-xl/8 font-semibold text-white'>
-                      <p>
+                      <p data-test="project-quote">
                         Bring your ideas to life with skilled freelancers ready to
                         make them reality. Post your project or browse talent to
                         get started.
@@ -55,7 +56,7 @@ export default function ProjectDetailsContent({
                         href='/auth/register'
                         className='bg-b300 hover:text-n900 relative mt-4 flex w-1/2 items-center justify-center overflow-hidden rounded-full px-6 py-2.5 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
                     >
-                      <span className='relative z-10'>Sign Up For Free</span>
+                      <span data-test="sign-up-for-free-btn" className='relative z-10'>Sign Up For Free</span>
                     </Link>
                   </figure>
                 </div>

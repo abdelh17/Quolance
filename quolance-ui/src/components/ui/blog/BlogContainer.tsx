@@ -92,11 +92,12 @@ const BlogContainer: React.FC = () => {
                     {!user ? (
                         <div className="flex justify-center items-center h-full">
                             <div className="p-4 text-center">
-                                <h2 className="text-lg font-bold mb-2">Sign In Required</h2>
-                                <p className="text-gray-700">
+                                <h2 data-test="blog-title-unauthenticated" className="text-lg font-bold mb-2">Sign In Required</h2>
+                                <p data-test="blog-desc-unauthenticated" className="text-gray-700">
                                     You must be signed in to create a post. Please log in to continue.
                                 </p>
                                 <Button
+                                    data-test="blog-btn-unauthenticated"
                                     onClick={() => (window.location.pathname = "/auth/login")}
                                     animation="default"
                                 >

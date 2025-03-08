@@ -85,7 +85,7 @@ function Header() {
                   </Link>
                 ) : (
                   <Link href="/">
-                    <h1 className="text-2xl font-bold">Quolance</h1>
+                    <h1 data-test="quolance-header-unauthenticated"  className="text-2xl font-bold">Quolance</h1>
                   </Link>
                 )}
               </div>
@@ -101,6 +101,7 @@ function Header() {
                             className={`subMenuTitle hover:text-b500 relative flex items-center justify-center gap-1 px-2 py-3 ${
                               isMenuActive(menu) ? 'text-b500' : ''
                             }`}
+                            data-test={`${menu.name}`}
                           >
                             {menu.name}
                             <PiCaretDown className="block pt-0.5 duration-700 group-hover:rotate-180" />
@@ -113,6 +114,7 @@ function Header() {
                                   className={`subMenuItem hover:text-y200 px-6 duration-500 hover:ml-2 ${
                                     path === link && 'text-y200'
                                   }`}
+                                  data-test={`${name}`}
                                 >
                                   {name}
                                 </Link>
@@ -132,12 +134,12 @@ function Header() {
               {!user?.email ? (
                 <ul className="flex items-center gap-2 font-medium">
                   <li className="hover:text-b500 duration-500">
-                    <Link href="/auth/register" className="rounded-lg px-2 py-3">
+                    <Link data-test="sign-up-header" href="/auth/register" className="rounded-lg px-2 py-3">
                       Sign up
                     </Link>
                   </li>
                   <li className="hover:text-b500 duration-500">
-                    <Link href="/auth/login" className="rounded-lg px-2 py-3">
+                    <Link data-test="sign-in-header" href="/auth/login" className="rounded-lg px-2 py-3">
                       Sign in
                     </Link>
                   </li>

@@ -66,10 +66,10 @@ const ReviewsPage = () => {
       <div className="relative isolate px-6 lg:px-8">
         <div className="mx-auto max-w-2xl py-12 sm:py-16">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+            <h1 data-test="hero-section-title" className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Client Success Stories
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
+            <p data-test="hero-section-desc" className="mt-6 text-lg leading-8 text-gray-600">
               Discover how Quolance has helped businesses and freelancers achieve their goals. 
               Our platform has enabled countless successful collaborations and projects.
             </p>
@@ -81,11 +81,11 @@ const ReviewsPage = () => {
       <div className="bg-gray-50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:text-center mb-16">
-            <h2 className="text-base font-semibold leading-7 text-b300">Testimonials</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 data-test="reviews-section-title" className="text-base font-semibold leading-7 text-b300">Testimonials</h2>
+            <p data-test="reviews-section-slogan" className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Trusted by Businesses Worldwide
             </p>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
+            <p data-test="reviews-section-desc" className="mt-6 text-lg leading-8 text-gray-600">
               Read what our clients say about their experience with Quolance
             </p>
           </div>
@@ -130,8 +130,8 @@ const ReviewsPage = () => {
                     <div className="flex items-center gap-x-4 mb-4">
                       <img src={review.image} alt="" className="h-12 w-12 rounded-full bg-gray-100" />
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{review.name}</h3>
-                        <p className="text-sm text-gray-500">{review.role}</p>
+                        <h3 data-test={`${review.name}`} className="text-lg font-semibold text-gray-900">{review.name}</h3>
+                        <p data-test={`${review.role}`} className="text-sm text-gray-500">{review.role}</p>
                       </div>
                     </div>
                     <div className="flex gap-x-1 mb-4">
@@ -139,7 +139,7 @@ const ReviewsPage = () => {
                         <StarIcon key={i} className="h-5 w-5 text-yellow-400" />
                       ))}
                     </div>
-                    <p className="text-gray-600 italic">{review.comment}</p>
+                    <p data-test={`${review.comment.split(' ')[0]}`}  className="text-gray-600 italic">{review.comment}</p>
                   </div>
                 </SwiperSlide>
               ))}
@@ -151,7 +151,7 @@ const ReviewsPage = () => {
       {/* CTA Section */}
       <div className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:flex lg:items-center lg:justify-between lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h2 data-test="cta-section-title" className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Ready to experience the difference?<br />
             Join our growing community today.
           </h2>
@@ -160,7 +160,7 @@ const ReviewsPage = () => {
               href="/auth/register"
               className="bg-b300 hover:text-n900 relative flex items-center justify-center  rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
             >
-              <span className="relative z-10">Get Started</span>
+              <span data-test="get-started-btn" className="relative z-10">Get Started</span>
             </a>
           </div>
         </div>

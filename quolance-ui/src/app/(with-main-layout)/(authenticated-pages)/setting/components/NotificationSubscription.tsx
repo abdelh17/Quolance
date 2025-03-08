@@ -32,8 +32,8 @@ export default function NotificationSubscription() {
   return (
     <div className="grid grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
       <div>
-        <h2 className="text-base/7 font-semibold">Notification Preferences</h2>
-        <p className="mt-1 text-sm/6 text-gray-400">
+        <h2 data-test="notification-preferences" className="text-base/7 font-semibold">Notification Preferences</h2>
+        <p data-test="notification-desc" className="mt-1 text-sm/6 text-gray-400">
           Manage your notifications. Toggle the switch on the right to{' '}
           {currentSubscribed ? 'unsubscribe from' : 'subscribe to'} notifications.
         </p>
@@ -43,6 +43,7 @@ export default function NotificationSubscription() {
         <label htmlFor="toggle-subscription" className="flex items-center cursor-pointer">
           <div className="relative">
             <input
+              data-test="notification-input"
               type="checkbox"
               id="toggle-subscription"
               className="sr-only"

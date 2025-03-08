@@ -91,7 +91,7 @@ export const PageInfoResults = ({ metadata }: { metadata: PageMetaData }) => {
   const { pageNumber, totalElements, pageSize } = metadata;
 
   return (
-    <p className='text-sm text-gray-700'>
+    <p data-test="pagination" className='text-sm text-gray-700'>
       Showing{' '}
       <span className='font-medium'>
         {totalElements > 0 ? pageNumber * pageSize + 1 : 0}

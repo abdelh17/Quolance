@@ -48,11 +48,12 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
       <div className='space-y-4'>
         {/* Title Search */}
         <div>
-          <label className='mb-1 block text-sm font-medium text-gray-700'>
+          <label data-test="project-filter-label-title" className='mb-1 block text-sm font-medium text-gray-700'>
             Search by title
           </label>
           <div className='relative'>
             <Input
+              data-test="project-filter-input-title"
               type='text'
               placeholder='Type to search...'
               value={localQuery.searchTitle || ''}
@@ -74,7 +75,7 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
 
         {/* Category Filter */}
         <div>
-          <label className='mb-1 block text-sm font-medium text-gray-700'>
+          <label data-test="project-filter-label-category" className='mb-1 block text-sm font-medium text-gray-700'>
             Category
           </label>
           <CustomListbox
@@ -93,7 +94,7 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
 
         {/* Budget Filter */}
         <div>
-          <label className='mb-1 block text-sm font-medium text-gray-700'>
+          <label  data-test="project-filter-label-budget" className='mb-1 block text-sm font-medium text-gray-700'>
             Budget
           </label>
           <CustomListbox
@@ -112,7 +113,7 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
 
         {/* Experience Level Filter */}
         <div>
-          <label className='mb-1 block text-sm font-medium text-gray-700'>
+          <label  data-test="project-filter-label-experience" className='mb-1 block text-sm font-medium text-gray-700'>
             Experience Level
           </label>
           <CustomListbox
@@ -133,6 +134,7 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
       {/* Action Buttons */}
       <div className='space-y-2'>
         <Button
+          data-test="apply-filters-btn"
           onClick={handleApplyFilters}
           className='relative z-0 w-full bg-blue-600 text-white hover:bg-blue-700'
           animation={'default'}
@@ -140,6 +142,7 @@ function ProjectFilter({ query, setQuery }: ProjectFilterProps) {
           Apply Filters
         </Button>
         <Button
+          data-test="reset-filters-btn"
           onClick={handleResetFilters}
           variant='outline'
           className='relative z-0 w-full'
