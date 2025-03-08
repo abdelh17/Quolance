@@ -48,19 +48,23 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     public ProjectEvaluationResult createProject(ProjectCreateDto projectCreateDto, User client) {
         log.info("Creating project for client: {}", client.getId());
 
-        Project project = ProjectCreateDto.toEntity(projectCreateDto);
-        project.setExpirationDate(projectCreateDto.getExpirationDate() != null ?
+        Project projectToSave = ProjectCreateDto.toEntity(projectCreateDto);
+        projectToSave.setExpirationDate(projectCreateDto.getExpirationDate() != null ?
                 projectCreateDto.getExpirationDate() : LocalDate.now().plusDays(7));
-        project.setClient(client);
-        project.setProjectStatus(ProjectStatus.PENDING);
-        projectService.saveProject(project);
+        projectToSave.setClient(client);
+        projectToSave.setProjectStatus(ProjectStatus.PENDING);
+        Project savedProject = projectService.saveProject(projectToSave);
 
         if (featureToggle.isEnabled("useAiProjectEvaluation")) {
             log.info("Automated evaluation of project enabled. AI evaluation of project for approval....");
-            return projectService.evaluateProjectForApproval(project);
+            ProjectEvaluationResult result = projectService.evaluateProjectForApproval(savedProject);
+            result.setProjectId(savedProject.getId());
+            return result;
         } else {
             log.info("Automated evaluation of project disabled.");
-            return new ProjectEvaluationResult();
+            ProjectEvaluationResult result = new ProjectEvaluationResult();
+            result.setProjectId(savedProject.getId());
+            return result;
         }
     }
 
