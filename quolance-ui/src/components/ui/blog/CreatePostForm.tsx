@@ -3,8 +3,28 @@
 import React, { useState } from 'react';
 import { useAuthGuard } from '@/api/auth-api';
 import { Button } from '../button';
+import { 
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+ } from '../dropdown-menu';
 
-const mockTags = ['Web-development', 'React', 'JavaScript', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'GraphQL', 'REST', 'API', 'Frontend', 'Backend', 'Fullstack', 'UI/UX', 'Design', 'Testing'];
+const blogTags = [
+  'Question',
+  'Support',
+  'Freelancing',
+  'Skill Matching',
+  'Remote Work',
+  'AI Suggestions',
+  'Security',
+  'Talent Marketplace',
+  'Global Opportunities',
+  'Verified Profiles',
+  'Collaboration Tools',
+  'Professional Network',
+  'Billing',
+];
 
 interface CreatePostFormProps {
   onSubmit: (postData: { title: string; content: string; userId: string | undefined; files?: File[]  }) => void;
@@ -40,10 +60,9 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const handleTagSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
-    if (!tags.includes(selectedValue)) {
-      setTags((prevTags) => [...prevTags, selectedValue]);
+  const handleTagSelection = (tag: string) => {
+    if (!tags.includes(tag)) {
+      setTags((prevTags) => [...prevTags, tag]);
     }
   };
 
@@ -104,37 +123,43 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
 
       <div>
         <label className="block text-gray-700 font-medium mb-1">Tags</label>
-        <select
-          id="tags"
-          title="Select tags"
-          onChange={handleTagSelection} 
-          className="w-full p-2 border rounded-md"
-        >
-          <option value="">Select a tag</option>
-          {mockTags.map((tag) => (
-            <option key={tag} value={tag}>
-              {tag}
-            </option>
-          ))}
-        </select>
 
-        <div className="mt-2 flex flex-wrap gap-2">
-          {tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
-              {tags.map((tag) => (
-                <span key={tag} className="bg-gray-200 px-2 py-1 rounded-md flex items-center text-sm">
-                  {tag}
-                  <button
-                    onClick={() => handleRemoveTag(tag)}
-                    className="ml-2 text-red-500"
-                  >
-                    ✖
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-full p-2 border rounded-md bg-white text-left">
+              Select a tag
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-full bg-white">
+            {blogTags.map((tag) => (
+              <DropdownMenuItem
+                key={tag}
+                onSelect={() => handleTagSelection(tag)}
+                className={`p-2 cursor-pointer hover:bg-gray-200 ${
+                  tags.includes(tag) ? 'bg-gray-300' : ''
+                }`}
+              >
+                {tag}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {tags.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span key={tag} className="bg-gray-200 px-2 py-1 rounded-md flex items-center text-sm">
+                {tag}
+                <button
+                  onClick={() => handleRemoveTag(tag)}
+                  className="ml-2 text-red-500"
+                >
+                  ✖
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* File Drop Area */}
