@@ -4,15 +4,14 @@ export interface UserResponse {
   firstName?: string;
   lastName?: string;
   email: string;
-  username:string,
+  username: string;
   verified: boolean;
   profileImageUrl?: string;
   connectedAccounts: ConnectedAccount[];
   authorities: string[];
- }
- 
- 
- export interface FreelancerProfileType {
+}
+
+export interface FreelancerProfileType {
   id: string;
   userId: string;
   username: string | null;
@@ -27,8 +26,8 @@ export interface UserResponse {
   socialMediaLinks: string[];
   skills: string[];
   availability: string | null; // FULL_TIME, PART_TIME ...
- }
- 
+  projectExperiences: ProjectExperience[];
+}
 
 interface ConnectedAccount {
   provider: 'google' | 'github' | 'facebook' | 'okta';
@@ -42,6 +41,15 @@ export enum Role {
   PENDING = 'PENDING',
 }
 
+export interface ProjectExperience {
+  id: string;
+  projectName?: string;
+  description?: string;
+  startDate?: Date;
+  endDate?: Date;
+  projectLink?: string;
+}
+
 export type EditModesType = {
   editProfileImage: boolean;
   editHeader: boolean;
@@ -51,4 +59,9 @@ export type EditModesType = {
   editSkills: boolean;
   editContactInformation: boolean;
   editProfile: boolean;
- };
+  editWorkExperience: boolean;
+  editProjectExperience: boolean;
+  editEducation: boolean;
+  editLanguages: boolean;
+  editCertifications: boolean;
+};
