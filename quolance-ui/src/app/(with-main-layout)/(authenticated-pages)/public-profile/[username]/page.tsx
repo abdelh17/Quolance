@@ -157,11 +157,6 @@ export default function FreelancerPage() {
                 </p>
               </div>
 
-              {/* About (bio) */}
-              <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>ABOUT</p>
-                <p className='text-n300'>{freelancer.bio}</p>
-              </div>
 
               {/* Social Media Links - Display only the 4 allowed platforms */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
@@ -203,9 +198,9 @@ export default function FreelancerPage() {
             </div>
 
             <div className='border-n30 col-span-12 rounded-xl border p-4 sm:p-8 lg:col-span-8'>
-              <h3 className='heading-3'>Add heading for tab: {activeTab}</h3>
+              <h3 className='heading-3'>About me</h3>
               <p className='text-bg-n300 pt-3 font-medium'>
-                Add subtext for tab: {activeTab}
+              {freelancer.bio}
               </p>
 
               <div className='flex flex-col gap-4 pt-10'>
