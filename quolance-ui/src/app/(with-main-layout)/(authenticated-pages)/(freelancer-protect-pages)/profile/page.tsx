@@ -297,12 +297,22 @@ const FreelancerProfile: React.FC = () => {
       {/* View as Guest Button */}
       <div className='fixed bottom-8 right-8 z-10'>
         <a
-          href={`http://localhost:3000/public-profile/${
-            user?.username || 'client1999'
-          }`}
-          className='flex items-center space-x-2 rounded-lg bg-amber-400 px-6 py-3 text-amber-900 shadow-lg transition-all duration-200 hover:scale-105 hover:bg-amber-300'
+          href={`http://localhost:3000/public-profile/${user?.username || ''}`}
+          className='group flex items-center space-x-2 rounded-full bg-amber-400 px-5 py-2.5 text-amber-900 shadow-lg transition-all duration-200 hover:bg-amber-300 hover:shadow-xl'
         >
-          <span>View profile as a guest →</span>
+          <span className='font-medium'><span className='font-bold'>Done editing?</span> <span className='underline'>See what others see</span></span>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 20 20'
+            fill='currentColor'
+            className='h-4 w-4 transform transition-transform duration-200 group-hover:translate-x-1'
+          >
+            <path
+              fillRule='evenodd'
+              d='M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z'
+              clipRule='evenodd'
+            />
+          </svg>
         </a>
       </div>
     </div>
