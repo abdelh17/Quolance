@@ -13,6 +13,7 @@ import { formatEnumString } from '@/util/stringUtils';
 import { FaFacebook, FaGithub } from 'react-icons/fa';
 import { BsTwitter, BsLinkedin } from 'react-icons/bs';
 import { Users, MapPin } from 'lucide-react';
+import StarRating from '@/components/ui/StarRating';
 
 const tabButton = ['Services', 'Recommendations'];
 
@@ -98,7 +99,9 @@ export default function FreelancerPage() {
                 </div>
                 <div className='w-full pt-6 sm:px-12'>
                   <a
-                    href={`mailto:${freelancer.contactEmail || 'example@domain.com'}`}
+                    href={`mailto:${
+                      freelancer.contactEmail || 'example@domain.com'
+                    }`}
                     className='bg-n700 hover:text-n900 relative block w-full overflow-hidden rounded-full px-6 py-3 text-sm font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
                   >
                     <div className='relative z-20 flex items-center justify-center gap-3'>
@@ -253,24 +256,10 @@ export default function FreelancerPage() {
                         appreciate her wonderful communication, collaboration,
                         and flexibility. Thanks, Alice!
                       </p>
-                      
+
                       {/* 5-Star Rating */}
-                      <div className='flex items-center pt-4'>
-                        {[...Array(5)].map((_, i) => (
-                          <svg 
-                            key={i} 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            viewBox="0 0 24 24" 
-                            fill="currentColor" 
-                            className="w-5 h-5 text-yellow-500"
-                          >
-                            <path 
-                              fillRule="evenodd" 
-                              d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" 
-                              clipRule="evenodd" 
-                            />
-                          </svg>
-                        ))}
+                      <div className='flex items-center justify-start gap-2 pt-5'>
+                        <StarRating rating={4.5} />
                       </div>
                     </div>
                   </>
