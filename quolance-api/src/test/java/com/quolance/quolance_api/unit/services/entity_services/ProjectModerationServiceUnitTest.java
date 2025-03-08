@@ -127,7 +127,6 @@ class ProjectModerationServiceUnitTest {
 
     //     ProjectEvaluationResult result = projectModerationService.evaluateProject(project);
     
-    //     System.out.println("⚠️ Actual Result Flags: " + result.getFlags());
 
     //     assertThat(result).isNotNull();
     //     assertThat(result.isApproved()).isFalse();
