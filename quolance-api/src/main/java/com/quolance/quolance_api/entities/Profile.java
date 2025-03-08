@@ -3,6 +3,8 @@ package com.quolance.quolance_api.entities;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
 import com.quolance.quolance_api.entities.enums.Tag;
+import com.quolance.quolance_api.entities.profile.ProjectExperience;
+import com.quolance.quolance_api.entities.profile.WorkExperience;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -49,4 +52,22 @@ public class Profile extends AbstractEntity {
     @OneToOne(mappedBy = "profile")
     @JoinColumn(name = "userId")
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "profile_id")
+    private List<WorkExperience> workExperiences;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "certifications", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "certification")
+    private Set<String> certifications;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "languagesSpoken", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "language")
+    private Set<String> languagesSpoken;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "profile_id")
+    private List<ProjectExperience> projectExperiences;
 }
