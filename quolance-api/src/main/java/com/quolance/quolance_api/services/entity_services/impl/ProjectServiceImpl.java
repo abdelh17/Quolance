@@ -273,7 +273,7 @@ public class ProjectServiceImpl implements ProjectService {
                 && result.getConfidenceScore() >= 0.8) {
             updateProjectStatus(project, ProjectStatus.OPEN);
         } else if (!result.isApproved()
-                && result.getConfidenceScore() >= 0.9) {
+                && result.getConfidenceScore() >= 0.9 && !result.isRequiresManualReview()) {
             updateProjectStatus(project, ProjectStatus.REJECTED);
         }
         log.info("Moderation status for project with ID {}: approved={}, review={}", project.getId(), result.isApproved(), result.isRequiresManualReview());
