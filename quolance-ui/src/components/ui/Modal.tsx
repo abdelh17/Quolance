@@ -46,12 +46,14 @@ export default function Modal({
 
           <div className='flex items-end justify-end gap-4'>
             <button
+              data-test="cancel-btn"
               onClick={() => setIsOpen(false)}
               className='bg-n30 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-6 py-2 font-medium duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-gray-200 after:duration-700 hover:after:w-[calc(100%+2px)]'
             >
               <span className='relative z-10'>Cancel</span>
             </button>
             <button
+              data-test="confirm-btn"
               onClick={onConfirm}
               className={`hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full ${confirmButtonColor} px-6 py-2 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]`}
             >

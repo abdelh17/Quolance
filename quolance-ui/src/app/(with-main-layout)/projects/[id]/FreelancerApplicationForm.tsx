@@ -51,18 +51,19 @@ export default function FreelancerApplicationForm({
   return (
     <section className='py-8'>
       <div>
-        <h2 className='heading-2 pb-2'>
+        <h2 data-test="application-title" className='heading-2 pb-2'>
           {application ? 'Your Application' : 'Submit Application'}
         </h2>
         {!application && (
           <>
-            <p className='text-n300 pb-6 font-medium'>
+            <p data-test="application-desc" className='text-n300 pb-6 font-medium'>
               Tell us why you're perfect for this project
             </p>
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
               {/* Motivational Letter Section */}
               <div>
                 <label
+                  data-test="application-label"
                   htmlFor='motivationalLetter'
                   className='text-n700 mb-2 block text-sm font-medium'
                 >
@@ -72,15 +73,17 @@ export default function FreelancerApplicationForm({
                   id='motivationalLetter'
                   {...register('motivationalLetter')}
                   rows={12}
+                  data-test="application-input"
                   className='bg-n10 focus:bg-n20 focus:ring-n100 w-full resize-none rounded-lg px-4 py-3 text-base outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:ring-2'
                   placeholder="Introduce yourself and explain why you're a great fit for this project..."
                 />
                 <div className='mt-2 flex justify-between text-sm'>
-                  <p className='text-n300'>
+                  <p data-test="application-advise" className='text-n300'>
                     Be sure to include your relevant experience, skills, and why
                     you are interested in this project.
                   </p>
                   <p
+                    data-test="application-word-count"
                     className={`${
                       wordCount > maxWords ? 'text-red-500' : 'text-n300'
                     }`}
@@ -93,6 +96,7 @@ export default function FreelancerApplicationForm({
               {/* Submit Button Section */}
               <div className='flex items-center justify-end gap-3'>
                 <Button
+                  data-test="application-submit-btn"
                   type='submit'
                   disabled={wordCount > maxWords}
                   shape='full'
@@ -121,22 +125,22 @@ export default function FreelancerApplicationForm({
             )}
             <div className='border-n30 rounded-lg border bg-white'>
               {/* Status Badge Section */}
-              <div className='border-n30 border-b px-6 py-4'>
+              <div data-test="applied-status" className='border-n30 border-b px-6 py-4'>
                 <ApplicationStatusBadge status={application.status} />
               </div>
 
               {/* Application Content */}
               <div className='space-y-7 px-6 py-6'>
                 <div>
-                  <h3 className='text-n700 mb-2 text-sm font-medium'>
+                  <h3 data-test="application-submitted-title" className='text-n700 mb-2 text-sm font-medium'>
                     Your Application
                   </h3>
-                  <p className='text-n300 text-base'>{application.message}</p>
+                  <p data-test="application-submitted-message" className='text-n300 text-base'>{application.message}</p>
                 </div>
 
                 {/* Metadata */}
                 <div className='text-n300 text-sm'>
-                  <p>Application ID: #{application.id}</p>
+                  <p data-test="application-submitted-id" >Application ID: #{application.id}</p>
                   <p>
                     Submitted on:{' '}
                     {new Date(application.creationDate).toLocaleString()}
@@ -148,6 +152,7 @@ export default function FreelancerApplicationForm({
               <div className='border-n30 border-t bg-gray-50/50 px-6 py-4'>
                 <div className='flex justify-end'>
                   <Button
+                    data-test="application-withdraw-btn"
                     onClick={() => setIsDeleteModalOpen(true)}
                     shape='full'
                     animation='default'
@@ -181,13 +186,13 @@ export default function FreelancerApplicationForm({
           }
         }}
       >
-        <p className='text-n300 text-lg'>
+        <p data-test="modal-widthdraw-question" className='text-n300 text-lg'>
           Are you sure you want to withdraw your application? This action:
         </p>
         <ul className='text-n300 mt-4 list-disc pl-6'>
-          <li>Cannot be undone</li>
-          <li>Will remove your application from consideration</li>
-          <li>Will allow you to apply again if you change your mind</li>
+          <li data-test="modal-widthdraw-statement1">Cannot be undone</li>
+          <li data-test="modal-widthdraw-statement2">Will remove your application from consideration</li>
+          <li data-test="modal-widthdraw-statement3">Will allow you to apply again if you change your mind</li>
         </ul>
       </Modal>
     </section>

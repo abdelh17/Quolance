@@ -41,26 +41,26 @@ export default function ProjectDetailsHeader({
   return (
     <div className='lg:flex lg:items-center lg:justify-between'>
       <div className='min-w-0 flex-1'>
-        <h2 className='mt-2 text-2xl/7 font-bold sm:truncate sm:text-3xl sm:tracking-tight'>
+        <h2 data-test="header-project-title" className='mt-2 text-2xl/7 font-bold sm:truncate sm:text-3xl sm:tracking-tight'>
           {project.title}
         </h2>
-        <div className='mt-2 flex flex-col items-start gap-3 sm:flex-wrap md:flex-row md:items-center'>
+        <div  data-test="header-project-status" className='mt-2 flex flex-col items-start gap-3 sm:flex-wrap md:flex-row md:items-center'>
           <ProjectStatusBadge status={project.projectStatus as ProjectStatus} />
-          <div className='flex items-center text-sm text-gray-500'>
+          <div data-test="header-project-category" className='flex items-center text-sm text-gray-500'>
             <BriefcaseIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
             />
             {formatEnumString(project.category)}
           </div>
-          <div className='flex items-center text-sm text-gray-500'>
+          <div data-test="header-project-priceRange" className='flex items-center text-sm text-gray-500'>
             <CurrencyDollarIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
             />
             {formatPriceRange(project.priceRange)}
           </div>
-          <div className='flex items-center text-sm text-gray-500'>
+          <div data-test="header-project-expirationDate" className='flex items-center text-sm text-gray-500'>
             <CalendarIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
