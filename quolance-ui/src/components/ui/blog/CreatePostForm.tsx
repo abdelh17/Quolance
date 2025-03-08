@@ -62,7 +62,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className="space-y-4">
+    <form onSubmit={handleFormSubmit} className="space-y-4 m-2">
       <h2 className="text-lg font-bold mb-4">Create a New Post</h2>
 
       {error && <p className="text-red-500">{error}</p>}
