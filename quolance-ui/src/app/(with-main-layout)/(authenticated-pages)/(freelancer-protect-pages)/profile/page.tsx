@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Github, Link, Linkedin } from 'lucide-react';
 import { useAuthGuard } from '@/api/auth-api';
 import {
@@ -26,9 +25,6 @@ import { SKILLS_OPTIONS } from '@/constants/types/form-types';
 import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
 
 const FreelancerProfile: React.FC = () => {
-  const searchParams = useSearchParams();
-  const [editMode, setEditMode] = useState(false);
-  const [showBanner, setShowBanner] = useState(false);
   const { user, mutate } = useAuthGuard({ middleware: 'auth' });
   const [isImageError, setIsImageError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -134,18 +130,6 @@ const FreelancerProfile: React.FC = () => {
   };
 
   useEffect(() => {
-    setEditMode(searchParams.has('edit'));
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (editMode) {
-      setShowBanner(true);
-    } else {
-      setShowBanner(false);
-    }
-  }, [editMode]);
-
-  useEffect(() => {
     if (fetchedPercentage !== undefined) {
       setProfilePercentage(fetchedPercentage);
     }
@@ -203,17 +187,6 @@ const FreelancerProfile: React.FC = () => {
 
   return (
     <div className='min-h-screen bg-gray-50'>
-      {/* Notification Banner */}
-      <div
-        className={`fixed bottom-4 left-1/2 -translate-x-1/2 transform rounded-lg bg-amber-400 px-4 py-2 text-amber-900 shadow-lg transition-all duration-300 ${
-          showBanner ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-        }`}
-      >
-        <div className='whitespace-nowrap text-sm font-medium'>
-          ✏️ Edit mode enabled
-        </div>
-      </div>
-
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
         {editModes.editProfile && (
@@ -321,27 +294,17 @@ const FreelancerProfile: React.FC = () => {
         />
       </main>
 
-      {/* Floating Action Buttons */}
-
-      {/*
-    <div className="fixed bottom-8 right-8">
-      {editMode ? (
-        <button
-          onClick={handleSave}
-          className="bg-b300 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-b500 transition-all duration-200 flex items-center space-x-2 hover:scale-105"
+      {/* View as Guest Button */}
+      <div className='fixed bottom-8 right-8 z-10'>
+        <a
+          href={`http://localhost:3000/public-profile/${
+            user?.username || 'client1999'
+          }`}
+          className='flex items-center space-x-2 rounded-lg bg-amber-400 px-6 py-3 text-amber-900 shadow-lg transition-all duration-200 hover:scale-105 hover:bg-amber-300'
         >
-          <span>Save Changes</span>
-        </button>
-      ) : (
-        <button
-          onClick={handleEnableEdit}
-          className="bg-amber-400 text-b500 px-6 py-3 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200 flex items-center space-x-2 hover:scale-105"
-        >
-          <span>Enable Edit</span>
-        </button>
-      )}
-    </div>
-*/}
+          <span>View profile as a guest →</span>
+        </a>
+      </div>
     </div>
   );
 };
