@@ -144,5 +144,29 @@ describe('Settings flow', () => {
       // Verify the toast message for successful password change
      cy.get('.Toastify__toast').should('be.visible').contains(/The password has been changed successfully/i);
      });
+
+     it("Toggle Notification Flow", () => {
+        // Mock api call for client authentication
+        cy.intercept('GET', '/api/auth/me', {
+          statusCode: 200,
+          body: {
+          firstName: 'John',
+          role: 'CLIENT',
+          verified: true,
+          },
+      }).as('getClientUser');
+  
+     // Visit the login page
+     cy.visit("/setting");
+     // Wait for the mocked API call
+    cy.wait('@getClientUser');
+ 
+ 
+    cy.get('[data-test="notification-preferences"]').contains(/Notification Preferences/i)
+    cy.get('[data-test="notification-desc"]').contains(/Manage your notifications. Toggle the switch on the right to unsubscribe from notifications./i)
+   
+  
+   });
+ 
    });
  
