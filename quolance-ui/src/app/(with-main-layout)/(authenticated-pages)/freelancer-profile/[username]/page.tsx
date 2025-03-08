@@ -10,10 +10,37 @@ import Loading from '@/components/ui/loading/loading';
 import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 import badge from '@/public/images/verify-badge.png';
 import { formatEnumString } from '@/util/stringUtils';
-import { FaFacebook } from 'react-icons/fa';
-import { BsInstagram, BsLinkedin, BsTwitter } from 'react-icons/bs';
+import { 
+  FaFacebook, 
+  FaTwitter, 
+  FaLinkedin, 
+  FaInstagram, 
+  FaYoutube, 
+  FaGithub, 
+  FaTiktok,
+  FaGlobe
+} from 'react-icons/fa';
+import { BsTwitter, BsLinkedin, BsInstagram } from 'react-icons/bs';
 
 const tabButton = ['Services', 'Works', 'Jobs', 'Recommendations'];
+
+// Social media platform configurations
+const SOCIAL_PLATFORMS = [
+  { name: "Facebook", icon: <FaFacebook className="text-blue-600" />, prefix: "https://facebook.com/" },
+  { name: "Twitter/X", icon: <BsTwitter className="text-blue-400" />, prefix: "https://twitter.com/" },
+  { name: "LinkedIn", icon: <BsLinkedin className="text-blue-700" />, prefix: "https://linkedin.com/in/" },
+  { name: "Instagram", icon: <BsInstagram className="text-pink-600" />, prefix: "https://instagram.com/" },
+  { name: "YouTube", icon: <FaYoutube className="text-red-600" />, prefix: "https://youtube.com/" },
+  { name: "GitHub", icon: <FaGithub className="text-gray-800" />, prefix: "https://github.com/" },
+  { name: "TikTok", icon: <FaTiktok className="text-black" />, prefix: "https://tiktok.com/@" },
+  { name: "Website", icon: <FaGlobe className="text-blue-500" />, prefix: "https://" }
+];
+
+// Function to get the appropriate icon for a URL
+const getSocialMediaIcon = (url : string) => {
+  const platform = SOCIAL_PLATFORMS.find(p => url.includes(p.prefix.replace("https://", "")));
+  return platform ? platform.icon : <FaGlobe className="text-blue-500" />; // Default to globe icon
+};
 
 export default function FreelancerPage() {
   const [activeTab, setActiveTab] = useState('Services');
@@ -23,6 +50,8 @@ export default function FreelancerPage() {
     username as string
   );
 
+  console.log(freelancer);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -30,6 +59,11 @@ export default function FreelancerPage() {
   if (!freelancer) {
     return <div>Freelancer not found</div>;
   }
+
+  // Extract social media links from the freelancer profile
+  const socialMediaLinks = freelancer.socialMediaLinks || [];
+  const hasSocialLinks = socialMediaLinks.length > 0 && socialMediaLinks.some(link => link.trim() !== "");
+
   return (
     <>
       <section className='sbp-30 stp-30'>
@@ -176,35 +210,29 @@ export default function FreelancerPage() {
                 <p className='text-n300'>{freelancer.bio}</p>
               </div>
 
-              {/* Social Media Links */}
+              {/* Social Media Links - Now Dynamic */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
                 <p className='text-sm font-medium'>LINKS</p>
-                <div className='flex flex-wrap gap-2'>
-                  <Link
-                    href={'#'}
-                    className='rounded-full bg-gray-100 p-3 font-medium'
-                  >
-                    <FaFacebook />
-                  </Link>
-                  <Link
-                    href={'#'}
-                    className='rounded-full bg-gray-100 p-3 font-medium'
-                  >
-                    <BsTwitter />
-                  </Link>
-                  <Link
-                    href={'#'}
-                    className='rounded-full bg-gray-100 p-3 font-medium'
-                  >
-                    <BsLinkedin />
-                  </Link>
-                  <Link
-                    href={'#'}
-                    className='rounded-full bg-gray-100 p-3 font-medium'
-                  >
-                    <BsInstagram />
-                  </Link>
-                </div>
+                {hasSocialLinks ? (
+                  <div className='flex flex-wrap gap-2'>
+                    {socialMediaLinks.map((link, index) => (
+                      link.trim() !== "" && (
+                        <Link
+                          key={index}
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className='rounded-full bg-gray-100 p-3 font-medium hover:bg-gray-200 transition-colors duration-200'
+                          title={link}
+                        >
+                          {getSocialMediaIcon(link)}
+                        </Link>
+                      )
+                    ))}
+                  </div>
+                ) : (
+                  <p className='text-gray-500 italic'>No social links provided</p>
+                )}
               </div>
             </div>
 

@@ -48,7 +48,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const checkModes = checkEditModes('editProfileImage');
   return (
     <section className='relative mb-8 rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-md'>
-      <div className='relative h-48 rounded-t-xl bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 '></div>
+      <div className='relative h-48 rounded-t-xl bg-white border-b border-spacing-8 border-gray-100 '></div>
       <div className='mr-4 mt-4 flex justify-end'>
         {!editModes.editHeader ? (
           <EditButton
