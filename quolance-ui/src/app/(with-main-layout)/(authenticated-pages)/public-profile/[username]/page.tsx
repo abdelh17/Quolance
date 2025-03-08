@@ -97,8 +97,8 @@ export default function FreelancerPage() {
                   </h4>
                 </div>
                 <div className='w-full pt-6 sm:px-12'>
-                  <Link
-                    href='/chat'
+                  <a
+                    href={`mailto:${freelancer.contactEmail || 'example@domain.com'}`}
                     className='bg-n700 hover:text-n900 relative block w-full overflow-hidden rounded-full px-6 py-3 text-sm font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
                   >
                     <div className='relative z-20 flex items-center justify-center gap-3'>
@@ -107,7 +107,7 @@ export default function FreelancerPage() {
                       </span>
                       <span>Get in touch</span>
                     </div>
-                  </Link>
+                  </a>
                 </div>
 
                 {/* View Portfolio */}
@@ -157,7 +157,6 @@ export default function FreelancerPage() {
                 </p>
               </div>
 
-
               {/* Social Media Links - Display only the 4 allowed platforms */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
                 <p className='text-sm font-medium'>LINKS</p>
@@ -199,9 +198,7 @@ export default function FreelancerPage() {
 
             <div className='border-n30 col-span-12 rounded-xl border p-4 sm:p-8 lg:col-span-8'>
               <h3 className='heading-3'>About me</h3>
-              <p className='text-bg-n300 pt-3 font-medium'>
-              {freelancer.bio}
-              </p>
+              <p className='text-bg-n300 pt-3 font-medium'>{freelancer.bio}</p>
 
               <div className='flex flex-col gap-4 pt-10'>
                 <ul className='border-n30 text-n100 flex items-center justify-start gap-5 border-b pb-5 max-md:flex-wrap'>
@@ -233,7 +230,9 @@ export default function FreelancerPage() {
                           <div className='flex items-center justify-start gap-3'>
                             <h5 className='heading-5'>John Doe</h5>
                           </div>
-                          <p className='text-n500 pt-2'>Project for frontend development</p>
+                          <p className='text-n500 pt-2'>
+                            Project for frontend development
+                          </p>
                         </div>
                       </div>
                       <p className='text-n300 pt-3 font-medium'>
