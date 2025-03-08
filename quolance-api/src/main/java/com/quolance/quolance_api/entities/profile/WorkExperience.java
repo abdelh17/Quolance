@@ -29,4 +29,5 @@ public class WorkExperience {
     private LocalDate startDate;
     private LocalDate endDate;
     private String description;
+    private String location;
 }
