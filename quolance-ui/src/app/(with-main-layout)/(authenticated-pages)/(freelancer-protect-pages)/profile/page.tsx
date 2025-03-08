@@ -23,6 +23,7 @@ import ContactSection from './components/ContactSection';
 import ProfileStatus from './components/ProfileStatus';
 import { UpdateProfileModal } from './components/UpdateProfileModal';
 import { SKILLS_OPTIONS } from '@/constants/types/form-types';
+import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
 
 const FreelancerProfile: React.FC = () => {
   const searchParams = useSearchParams();
@@ -42,6 +43,11 @@ const FreelancerProfile: React.FC = () => {
     editAvailability: false,
     editSkills: false,
     editContactInformation: false,
+    editEducation: false,
+    editWorkExperience: false,
+    editProjectExperience: false,
+    editLanguages: false,
+    editCertifications: false,
     editProfile: false,
   });
 
@@ -60,6 +66,7 @@ const FreelancerProfile: React.FC = () => {
     socialMediaLinks: [],
     skills: [],
     availability: '',
+    projectExperiences: [],
   });
 
   useEffect(() => {
@@ -261,6 +268,15 @@ const FreelancerProfile: React.FC = () => {
 
         {/* Experience Section */}
         <ExperienceSection
+          profile={profile}
+          handleInputChange={handleInputChange}
+          updateEditModes={updateEditModes}
+          editModes={editModes}
+          handleSave={handleSave}
+          checkEditModes={checkEditModes}
+        />
+
+        <ProjectExperienceSection
           profile={profile}
           handleInputChange={handleInputChange}
           updateEditModes={updateEditModes}
