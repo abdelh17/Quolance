@@ -92,46 +92,6 @@ class ProjectModerationServiceUnitTest {
         assertThat(result.getFlags()).contains("SYSTEM_ERROR");
         assertThat(result.isRequiresManualReview()).isTrue();
     }
-
-    // @Test
-    // void evaluateProject_ShouldLowConfidenceReject() throws Exception {
-    //     // Mock AI Response JSON
-    //     String lowConfidenceJsonResponse = """
-    //         {
-    //             "approved": false,
-    //             "confidenceScore": 0.65,
-    //             "reason": "Project seems legitimate but confidence is low",
-    //             "flags": ["LOW_CONFIDENCE"],
-    //             "requiresManualReview": false
-    //         }
-    //     """;
-    
-    //     // Expected Parsed Object
-    //     ProjectEvaluationResult lowConfidenceResult = ProjectEvaluationResult.builder()
-    //             .approved(false)
-    //             .confidenceScore(0.65)
-    //             .reason("Project seems legitimate but confidence is low")
-    //             .flags(List.of("LOW_CONFIDENCE")) 
-    //             .requiresManualReview(false)
-    //             .build();
-    
-    //     // Mock AI API Response
-    //     Map<String, Object> freshAiResponse = new HashMap<>();
-    //     freshAiResponse.put("text", lowConfidenceJsonResponse);
-    
-    //     when(aiService.callAiApi(anyString())).thenReturn(freshAiResponse);
-    //     when(aiService.cleanApiResponse(any(Map.class))).thenReturn(lowConfidenceJsonResponse);
-    //     when(objectMapper.readValue(eq(lowConfidenceJsonResponse), eq(ProjectEvaluationResult.class)))
-    //             .thenReturn(lowConfidenceResult);
-    
-
-    //     ProjectEvaluationResult result = projectModerationService.evaluateProject(project);
-    
-
-    //     assertThat(result).isNotNull();
-    //     assertThat(result.isApproved()).isFalse();
-    //     assertThat(result.getFlags()).isNotNull().contains("LOW_CONFIDENCE"); 
-    // }
     
     
 }
