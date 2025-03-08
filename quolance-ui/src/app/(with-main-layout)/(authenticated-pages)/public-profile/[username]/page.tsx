@@ -126,47 +126,7 @@ export default function FreelancerPage() {
                     <PiCaretRight />
                   </span>
                 </Link>
-                {/* ★ Recommended */}
-                <div className='border-n30 mt-5 flex w-full items-center justify-between rounded-xl border px-5 py-3'>
-                  <div className='flex items-center justify-start gap-2'>
-                    <span className='text-xl !leading-none'>
-                      <PiStarFill />
-                    </span>
-                    <p className='font-medium'>Recommended</p>
-                  </div>
-                  <div className='flex items-center justify-end gap-2'>
-                    <div className='flex items-center justify-start max-xl:hidden'>
-                      {/* Fixed placeholder images with width and height */}
-                      <Image
-                        src='/placeholder1.jpg'
-                        alt='User'
-                        width={28}
-                        height={28}
-                        className='bg-g75 relative -z-10 flex size-7 items-center justify-center overflow-hidden rounded-full'
-                      />
-                      <Image
-                        src='/placeholder2.jpg'
-                        alt='User'
-                        width={28}
-                        height={28}
-                        className='-z-9 bg-g75 relative -ml-2 flex size-7 items-center justify-center overflow-hidden rounded-full'
-                      />
-                      <Image
-                        src='/placeholder3.jpg'
-                        alt='User'
-                        width={28}
-                        height={28}
-                        className='-z-8 bg-g75 relative -ml-2 flex size-7 items-center justify-center overflow-hidden rounded-full'
-                      />
-                      <p className='-z-7 bg-g75 relative -ml-2 flex size-7 items-center justify-center rounded-full'>
-                        +8
-                      </p>
-                    </div>
-                    <span className='text-xl !leading-none'>
-                      <PiCaretRight />
-                    </span>
-                  </div>
-                </div>
+                
               </div>
 
               {/* Experience Level */}
@@ -178,7 +138,6 @@ export default function FreelancerPage() {
                     : 'Not Specified'}
                 </p>
               </div>
-
               {/* Skills */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
                 <p className='text-sm font-medium'>SKILLS</p>

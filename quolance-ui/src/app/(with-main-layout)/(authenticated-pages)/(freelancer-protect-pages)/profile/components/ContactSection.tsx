@@ -1,19 +1,10 @@
-import React, { useState } from "react";
-import { Mail, Users, Plus, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Mail, Users } from "lucide-react";
 import { FreelancerProfileType, EditModesType } from "@/constants/models/user/UserResponse";
 import EditButton from "./EditButton";
 import SaveButton from "./SaveButton";
-import { 
-  FaFacebook, 
-  FaTwitter, 
-  FaLinkedin, 
-  FaInstagram, 
-  FaYoutube, 
-  FaGithub, 
-  FaTiktok,
-  FaGlobe
-} from "react-icons/fa";
-import { BsTwitter, BsLinkedin, BsInstagram } from "react-icons/bs";
+import { FaFacebook } from "react-icons/fa";
+import { BsTwitter, BsLinkedin } from "react-icons/bs";
 
 interface ContactSectionProps {
   profile: {
@@ -32,16 +23,11 @@ interface ContactSectionProps {
   checkEditModes: (value: string) => boolean;
 }
 
-// Social media platform options
+// Only allow 3 platforms
 const SOCIAL_PLATFORMS = [
   { name: "Facebook", icon: <FaFacebook className="text-blue-600" />, prefix: "https://facebook.com/" },
-  { name: "Twitter/X", icon: <BsTwitter className="text-blue-400" />, prefix: "https://twitter.com/" },
-  { name: "LinkedIn", icon: <BsLinkedin className="text-blue-700" />, prefix: "https://linkedin.com/in/" },
-  { name: "Instagram", icon: <BsInstagram className="text-pink-600" />, prefix: "https://instagram.com/" },
-  { name: "YouTube", icon: <FaYoutube className="text-red-600" />, prefix: "https://youtube.com/" },
-  { name: "GitHub", icon: <FaGithub className="text-gray-800" />, prefix: "https://github.com/" },
-  { name: "TikTok", icon: <FaTiktok className="text-black" />, prefix: "https://tiktok.com/@" },
-  { name: "Website", icon: <FaGlobe className="text-blue-500" />, prefix: "https://" }
+  { name: "X", icon: <BsTwitter className="text-blue-400" />, prefix: "https://twitter.com/" },
+  { name: "LinkedIn", icon: <BsLinkedin className="text-blue-700" />, prefix: "https://linkedin.com/in/" }
 ];
 
 const ContactSection: React.FC<ContactSectionProps> = ({
@@ -55,86 +41,55 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   handleSave,
   checkEditModes
 }) => {
-  // State to manage social media links being edited
-  const [socialLinks, setSocialLinks] = useState<Array<{platform: string, username: string, fullUrl: string}>>(
-    // Parse existing links to extract platforms and usernames
-    profile.socialMediaLinks.map(link => {
-      const platform = SOCIAL_PLATFORMS.find(p => link.includes(p.prefix.replace("https://", "")));
-      return {
-        platform: platform ? platform.name : "Website",
-        username: platform ? link.replace(platform.prefix, "") : link,
-        fullUrl: link
-      };
-    })
-  );
-  
-  // Get available platforms that haven't been used yet
-  const getAvailablePlatforms = () => {
-    const usedPlatforms = socialLinks.map(link => link.platform);
-    return SOCIAL_PLATFORMS.filter(platform => !usedPlatforms.includes(platform.name));
+  // Simple state for each platform
+  const [facebookUsername, setFacebookUsername] = useState("");
+  const [twitterUsername, setTwitterUsername] = useState("");
+  const [linkedinUsername, setLinkedinUsername] = useState("");
+
+  // Parse existing links when entering edit mode
+  useEffect(() => {
+    if (editModes.editContactInformation) {
+      // Reset all usernames
+      setFacebookUsername("");
+      setTwitterUsername("");
+      setLinkedinUsername("");
+      
+      // Look for each platform in the existing links
+      profile.socialMediaLinks.forEach(link => {
+        if (link.includes("facebook.com")) {
+          setFacebookUsername(link.replace("https://facebook.com/", ""));
+        } else if (link.includes("twitter.com")) {
+          setTwitterUsername(link.replace("https://twitter.com/", ""));
+        } else if (link.includes("linkedin.com/in")) {
+          setLinkedinUsername(link.replace("https://linkedin.com/in/", ""));
+        }
+      });
+    }
+  }, [editModes.editContactInformation, profile.socialMediaLinks]);
+
+  // Handle save action
+  const handleSocialSave = () => {
+    const links = [];
+    
+    // Only add links with usernames
+    if (facebookUsername.trim()) {
+      links.push(`https://facebook.com/${facebookUsername.trim()}`);
+    }
+    
+    if (twitterUsername.trim()) {
+      links.push(`https://twitter.com/${twitterUsername.trim()}`);
+    }
+    
+    if (linkedinUsername.trim()) {
+      links.push(`https://linkedin.com/in/${linkedinUsername.trim()}`);
+    }
+    
+    // Update parent
+    handleSocialLinksChange(links.join(", "));
+    handleSave("editContactInformation");
   };
   
-  // Add a new social media platform input
-  const addSocialPlatform = () => {
-    const availablePlatforms = getAvailablePlatforms();
-    if (availablePlatforms.length === 0) return; // All platforms are used
-    
-    const newPlatform = availablePlatforms[0];
-    setSocialLinks([...socialLinks, {
-      platform: newPlatform.name, 
-      username: "", 
-      fullUrl: newPlatform.prefix
-    }]);
-  };
-  
-  // Remove a social media platform
-  const removeSocialPlatform = (index: number) => {
-    const updatedLinks = [...socialLinks];
-    updatedLinks.splice(index, 1);
-    setSocialLinks(updatedLinks);
-    
-    // Update the parent component with the new list of URLs
-    handleSocialLinksChange(updatedLinks.map(link => link.fullUrl).join(", "));
-  };
-  
-  // Handle social platform selection
-  const handlePlatformChange = (index: number, platformName: string) => {
-    const platform = SOCIAL_PLATFORMS.find(p => p.name === platformName);
-    if (!platform) return;
-    
-    const updatedLinks = [...socialLinks];
-    updatedLinks[index] = {
-      platform: platformName,
-      username: updatedLinks[index].username,
-      fullUrl: platform.prefix + updatedLinks[index].username
-    };
-    
-    setSocialLinks(updatedLinks);
-    handleSocialLinksChange(updatedLinks.map(link => link.fullUrl).join(", "));
-  };
-  
-  // Handle username input changes
-  const handleUsernameChange = (index: number, username: string) => {
-    const platform = SOCIAL_PLATFORMS.find(p => p.name === socialLinks[index].platform);
-    if (!platform) return;
-    
-    const updatedLinks = [...socialLinks];
-    updatedLinks[index] = {
-      platform: socialLinks[index].platform,
-      username: username,
-      fullUrl: platform.prefix + username
-    };
-    
-    setSocialLinks(updatedLinks);
-    handleSocialLinksChange(updatedLinks.map(link => link.fullUrl).join(", "));
-  };
-  
-  // Function to get proper social media icon based on URL
-  const getSocialMediaIcon = (url: string) => {
-    const platform = SOCIAL_PLATFORMS.find(p => url.includes(p.prefix.replace("https://", "")));
-    return platform ? platform.icon : <FaGlobe className="text-blue-500" />;
-  };
-  
+  // Email display logic
   let contactEmailDisplay;
   if (profile.contactEmail && profile.contactEmail.length > 0) {
     contactEmailDisplay = (
@@ -182,120 +137,119 @@ const ContactSection: React.FC<ContactSectionProps> = ({
         {/* Social Media Links */}
         <div>
           <h3 className="text-lg font-semibold mb-2 text-gray-800">Social Media</h3>
+          
+          {/* Edit Mode */}
           {editModes.editContactInformation ? (
             <div className="space-y-4">
-              {/* Existing Social Media Links */}
-              <div className="mb-2 text-gray-500 text-sm">Edit your social media profiles:</div>
-              {socialLinks.map((link, index) => (
-                <div key={index} className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-                  <select
-                    value={link.platform}
-                    onChange={(e) => handlePlatformChange(index, e.target.value)}
-                    className={`${inputClassName} w-1/3`}
-                  >
-                    {/* Current platform must always be available */}
-                    <option key={link.platform} value={link.platform}>
-                      {link.platform}
-                    </option>
-                    
-                    {/* Add other platforms not already in use */}
-                    {SOCIAL_PLATFORMS
-                      .filter(p => p.name !== link.platform && 
-                                  !socialLinks.some(l => l.platform === p.name && l !== link))
-                      .map(platform => (
-                        <option key={platform.name} value={platform.name}>
-                          {platform.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                  
-                  <div className="flex-1 flex items-center">
-                    <span className="text-gray-500 mr-2">
-                      {SOCIAL_PLATFORMS.find(p => p.name === link.platform)?.icon}
+              {/* Facebook */}
+              <div className="flex items-center gap-2">
+                <div className="flex-shrink-0 w-10 text-center text-xl">
+                  <FaFacebook className="text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center">
+                    <span className="bg-gray-200 text-gray-700 px-3 py-2 rounded-l-md border border-gray-300 text-sm">
+                      facebook.com/
                     </span>
                     <input
                       type="text"
-                      value={link.username}
-                      placeholder={`Enter your ${link.platform} username`}
-                      onChange={(e) => handleUsernameChange(index, e.target.value)}
-                      className={`${inputClassName} flex-1`}
+                      value={facebookUsername}
+                      placeholder="username"
+                      onChange={(e) => setFacebookUsername(e.target.value)}
+                      className={`${inputClassName} flex-1 rounded-l-none`}
                     />
                   </div>
-                  
-                  <button
-                    type="button"
-                    onClick={() => removeSocialPlatform(index)}
-                    className="p-2 text-red-500 hover:text-red-700 transition-colors rounded-full hover:bg-red-50"
-                    aria-label={`Remove ${link.platform}`}
-                    title={`Remove ${link.platform}`}
-                  >
-                    <X size={18} />
-                  </button>
                 </div>
-              ))}
+              </div>
               
-              {/* Add Platform Button - only show if there are available platforms */}
-              {getAvailablePlatforms().length > 0 ? (
-                <button
-                  type="button"
-                  onClick={addSocialPlatform}
-                  className="flex items-center gap-2 text-b300 hover:text-b500 transition-colors mt-3 px-4 py-2 border border-dashed border-gray-300 rounded-lg hover:bg-gray-50 w-full justify-center"
-                >
-                  <Plus size={16} />
-                  Add {getAvailablePlatforms()[0].name} Profile
-                </button>
-              ) : (
-                <div className="text-gray-500 text-sm mt-3 italic">
-                  All social media platforms have been added.
+              {/* X (Twitter) */}
+              <div className="flex items-center gap-2">
+                <div className="flex-shrink-0 w-10 text-center text-xl">
+                  <BsTwitter className="text-blue-400" />
                 </div>
-              )}
+                <div className="flex-1">
+                  <div className="flex items-center">
+                    <span className="bg-gray-200 text-gray-700 px-3 py-2 rounded-l-md border border-gray-300 text-sm">
+                      twitter.com/
+                    </span>
+                    <input
+                      type="text"
+                      value={twitterUsername}
+                      placeholder="username"
+                      onChange={(e) => setTwitterUsername(e.target.value)}
+                      className={`${inputClassName} flex-1 rounded-l-none`}
+                    />
+                  </div>
+                </div>
+              </div>
               
+              {/* LinkedIn */}
+              <div className="flex items-center gap-2">
+                <div className="flex-shrink-0 w-10 text-center text-xl">
+                  <BsLinkedin className="text-blue-700" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center">
+                    <span className="bg-gray-200 text-gray-700 px-3 py-2 rounded-l-md border border-gray-300 text-sm">
+                      linkedin.com/in/
+                    </span>
+                    <input
+                      type="text"
+                      value={linkedinUsername}
+                      placeholder="username"
+                      onChange={(e) => setLinkedinUsername(e.target.value)}
+                      className={`${inputClassName} flex-1 rounded-l-none`}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Save button */}
               <div className="mt-4">
-                <SaveButton editModeKey="editContactInformation" handleSave={handleSave} />
+                <SaveButton 
+                  editModeKey="editContactInformation" 
+                  handleSave={handleSocialSave} 
+                />
               </div>
             </div>
           ) : (
             <div>
-              {profile.socialMediaLinks.length > 0 && profile.socialMediaLinks.some((link) => link.trim() !== "") ? (
-                <div className="flex flex-col space-y-4">
-                  {/* Each social media link on its own line with icon */}
-                  {profile.socialMediaLinks.map((link) => (
-                    link.trim() !== "" && (
-                      <div key={link} className="flex items-center">
+              {/* Display Mode - Simple display with logo and username */}
+              {profile.socialMediaLinks.length > 0 && profile.socialMediaLinks.some(link => link.trim() !== "") ? (
+                <div className="flex flex-col space-y-3">
+                  {/* Show each link with its logo */}
+                  {profile.socialMediaLinks.map((link, index) => {
+                    // Find which platform this link belongs to
+                    const platform = SOCIAL_PLATFORMS.find(p => 
+                      link.includes(p.prefix.replace("https://", ""))
+                    );
+                    
+                    // Skip if we don't recognize the platform
+                    if (!platform || !link.trim()) return null;
+
+                    // Get the username from the link
+                    const username = link.replace(platform.prefix, "");
+                    
+                    return (
+                      <div key={index} className="flex items-center">
                         <a
                           href={link}
                           target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-full bg-gray-100 p-3 mr-3 font-medium hover:bg-gray-200 transition-colors duration-200"
+                          rel="noopener noreferrer" 
+                          className="rounded-full bg-gray-100 p-3 font-medium hover:bg-gray-200 transition-colors duration-200 mr-3"
                         >
-                          {getSocialMediaIcon(link)}
+                          {platform.icon}
                         </a>
-                        <a
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-b300 hover:text-b500 transition-colors duration-200 hover:underline"
-                        >
-                          {(() => {
-                            // Extract username or handle from the URL
-                            const platform = SOCIAL_PLATFORMS.find(p => 
-                              link.includes(p.prefix.replace("https://", ""))
-                            );
-                            if (platform) {
-                              const username = link.replace(platform.prefix, "");
-                              return platform.name + (username ? `: ${username}` : "");
-                            }
-                            return link;
-                          })()}
-                        </a>
+                        <span className="text-gray-700">
+                          {username}
+                        </span>
                       </div>
-                    )
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="flex items-center">
-                  <Users className="text-b300 mr-3" />
+                  <Users className="text-blue-500 mr-3" />
                   <span className="text-gray-700">Not Specified</span>
                 </div>
               )}
