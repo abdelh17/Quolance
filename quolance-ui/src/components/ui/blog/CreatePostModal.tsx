@@ -27,7 +27,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, childr
     return open ? (
         <dialog ref={dialogRef} className="dialog">
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto p-4 relative">
+                <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[100vh] overflow-auto p-4 relative">
                     {/* Close Button */}
                     <button
                         onClick={closeDialog}
@@ -37,7 +37,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose, childr
                     </button>
 
                     {/* Content Area */}
-                    <div className="overflow-y-auto max-h-[60vh]">
+                    <div className="overflow-y-auto max-h-[70vh]">
                         {children}
                     </div>
                 </div>

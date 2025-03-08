@@ -4,17 +4,18 @@ import React, { useState } from 'react';
 import { useAuthGuard } from '@/api/auth-api';
 import { Button } from '../button';
 
+const mockTags = ['Web-development', 'React', 'JavaScript', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'GraphQL', 'REST', 'API', 'Frontend', 'Backend', 'Fullstack', 'UI/UX', 'Design', 'Testing'];
+
 interface CreatePostFormProps {
-  // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
   onSubmit: (postData: { title: string; content: string; userId: string | undefined; files?: File[]  }) => void;
   onClose: () => void;
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) => {
-  const { user } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
+  const { user } = useAuthGuard({ middleware: 'auth' });
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  //const [tags, setTags] = useState<string>('');
+  const [tags, setTags] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [files, setFiles] = useState<File[]>([]);
 
@@ -39,6 +40,17 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
+  const handleTagSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    if (!tags.includes(selectedValue)) {
+      setTags((prevTags) => [...prevTags, selectedValue]);
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setTags((prevTags) => prevTags.filter((t) => t !== tag));
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -57,6 +69,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
     setTitle('');
     setContent('');
     setFiles([]);
+    setTags([]);
     setError('');
     onClose();
   };
@@ -87,6 +100,41 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
           className="w-full p-2 border rounded-md"
           rows={5}
         />
+      </div>
+
+      <div>
+        <label className="block text-gray-700 font-medium mb-1">Tags</label>
+        <select
+          id="tags"
+          title="Select tags"
+          onChange={handleTagSelection} 
+          className="w-full p-2 border rounded-md"
+        >
+          <option value="">Select a tag</option>
+          {mockTags.map((tag) => (
+            <option key={tag} value={tag}>
+              {tag}
+            </option>
+          ))}
+        </select>
+
+        <div className="mt-2 flex flex-wrap gap-2">
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {tags.map((tag) => (
+                <span key={tag} className="bg-gray-200 px-2 py-1 rounded-md flex items-center text-sm">
+                  {tag}
+                  <button
+                    onClick={() => handleRemoveTag(tag)}
+                    className="ml-2 text-red-500"
+                  >
+                    ✖
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* File Drop Area */}
