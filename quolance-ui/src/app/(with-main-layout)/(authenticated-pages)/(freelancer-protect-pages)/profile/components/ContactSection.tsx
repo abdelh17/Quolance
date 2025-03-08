@@ -3,7 +3,7 @@ import { Mail, Users } from "lucide-react";
 import { FreelancerProfileType, EditModesType } from "@/constants/models/user/UserResponse";
 import EditButton from "./EditButton";
 import SaveButton from "./SaveButton";
-import { FaFacebook } from "react-icons/fa";
+import { FaFacebook, FaGithub } from "react-icons/fa";
 import { BsTwitter, BsLinkedin } from "react-icons/bs";
 
 interface ContactSectionProps {
@@ -23,11 +23,12 @@ interface ContactSectionProps {
   checkEditModes: (value: string) => boolean;
 }
 
-// Only allow 3 platforms
+// Only allow 4 platforms
 const SOCIAL_PLATFORMS = [
   { name: "Facebook", icon: <FaFacebook className="text-blue-600" />, prefix: "https://facebook.com/" },
   { name: "X", icon: <BsTwitter className="text-blue-400" />, prefix: "https://twitter.com/" },
-  { name: "LinkedIn", icon: <BsLinkedin className="text-blue-700" />, prefix: "https://linkedin.com/in/" }
+  { name: "LinkedIn", icon: <BsLinkedin className="text-blue-700" />, prefix: "https://linkedin.com/in/" },
+  { name: "GitHub", icon: <FaGithub className="text-gray-800" />, prefix: "https://github.com/" }
 ];
 
 const ContactSection: React.FC<ContactSectionProps> = ({
@@ -45,6 +46,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   const [facebookUsername, setFacebookUsername] = useState("");
   const [twitterUsername, setTwitterUsername] = useState("");
   const [linkedinUsername, setLinkedinUsername] = useState("");
+  const [githubUsername, setGithubUsername] = useState("");
 
   // Parse existing links when entering edit mode
   useEffect(() => {
@@ -53,6 +55,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
       setFacebookUsername("");
       setTwitterUsername("");
       setLinkedinUsername("");
+      setGithubUsername("");
       
       // Look for each platform in the existing links
       profile.socialMediaLinks.forEach(link => {
@@ -62,6 +65,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           setTwitterUsername(link.replace("https://twitter.com/", ""));
         } else if (link.includes("linkedin.com/in")) {
           setLinkedinUsername(link.replace("https://linkedin.com/in/", ""));
+        } else if (link.includes("github.com")) {
+          setGithubUsername(link.replace("https://github.com/", ""));
         }
       });
     }
@@ -82,6 +87,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({
     
     if (linkedinUsername.trim()) {
       links.push(`https://linkedin.com/in/${linkedinUsername.trim()}`);
+    }
+    
+    if (githubUsername.trim()) {
+      links.push(`https://github.com/${githubUsername.trim()}`);
     }
     
     // Update parent
@@ -198,6 +207,27 @@ const ContactSection: React.FC<ContactSectionProps> = ({
                       value={linkedinUsername}
                       placeholder="username"
                       onChange={(e) => setLinkedinUsername(e.target.value)}
+                      className={`${inputClassName} flex-1 rounded-l-none`}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* GitHub */}
+              <div className="flex items-center gap-2">
+                <div className="flex-shrink-0 w-10 text-center text-xl">
+                  <FaGithub className="text-gray-800" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center">
+                    <span className="bg-gray-200 text-gray-700 px-3 py-2 rounded-l-md border border-gray-300 text-sm">
+                      github.com/
+                    </span>
+                    <input
+                      type="text"
+                      value={githubUsername}
+                      placeholder="username"
+                      onChange={(e) => setGithubUsername(e.target.value)}
                       className={`${inputClassName} flex-1 rounded-l-none`}
                     />
                   </div>

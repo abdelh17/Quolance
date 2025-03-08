@@ -12,9 +12,6 @@ import badge from '@/public/images/verify-badge.png';
 import { formatEnumString } from '@/util/stringUtils';
 import { 
   FaFacebook, 
-  FaTwitter, 
-  FaLinkedin, 
-  FaInstagram, 
   FaYoutube, 
   FaGithub, 
   FaTiktok,
@@ -22,7 +19,7 @@ import {
 } from 'react-icons/fa';
 import { BsTwitter, BsLinkedin, BsInstagram } from 'react-icons/bs';
 
-const tabButton = ['Services', 'Works', 'Jobs', 'Recommendations'];
+const tabButton = ['Services', 'Recommendations'];
 
 // Social media platform configurations
 const SOCIAL_PLATFORMS = [
@@ -223,17 +220,6 @@ export default function FreelancerPage() {
                   </div>
                 )}
 
-                {activeTab === 'Works' && (
-                  <div className='flex flex-col gap-4 pt-8'>
-                    {/* List of works */}
-                  </div>
-                )}
-
-                {activeTab === 'Jobs' && (
-                  <div className='flex flex-col gap-4 pt-8'>
-                    {/* List of jobs */}
-                  </div>
-                )}
 
                 {activeTab === 'Recommendations' && (
                   <div className='flex flex-col gap-4 pt-8'>
