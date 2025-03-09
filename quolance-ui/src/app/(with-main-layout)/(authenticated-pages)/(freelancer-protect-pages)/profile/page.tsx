@@ -183,7 +183,7 @@ const FreelancerProfile: React.FC = () => {
   };
 
   const inputClassName =
-    'w-full px-4 py-2 bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200';
+    'block w-full rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-b300 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200 ';
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -300,7 +300,10 @@ const FreelancerProfile: React.FC = () => {
           href={`http://localhost:3000/public-profile/${user?.username || ''}`}
           className='group flex items-center space-x-2 rounded-full bg-amber-400 px-5 py-2.5 text-amber-900 shadow-lg transition-all duration-200 hover:bg-amber-300 hover:shadow-xl'
         >
-          <span className='font-medium'><span className='font-bold'>Done editing?</span> <span className='underline'>See what others see</span></span>
+          <span className='font-medium'>
+            <span className='font-bold'>Done editing?</span>{' '}
+            <span className='underline'>See what others see</span>
+          </span>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             viewBox='0 0 20 20'

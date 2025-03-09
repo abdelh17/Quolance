@@ -74,7 +74,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                   onClick={() => handleSkillClick(skill.value)}
                   className={`rounded-lg px-4 py-2 text-xs transition-all duration-200 ${
                     profile.skills.includes(skill.value)
-                      ? 'py-3.5 px-7 rounded-full bg-orange-50 font-semibold text-base leading-7 text-gray-700'
+                      ? 'rounded-full bg-indigo-100 px-5 text-base font-semibold text-gray-700'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -95,7 +95,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
               return (
                 <span
                   key={skillValue}
-                  className='py-3.5 px-7 rounded-full bg-orange-50 font-semibold text-base leading-7 text-gray-700'
+                  className='rounded-full bg-orange-50 px-7 py-3.5 text-base font-semibold leading-7 text-gray-700'
                 >
                   {skill?.label || skillValue}
                 </span>
