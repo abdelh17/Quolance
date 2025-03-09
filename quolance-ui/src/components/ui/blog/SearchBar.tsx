@@ -4,7 +4,7 @@ import { Button } from '../button';
 function SearchBar() {
     return (
         <div className="flex justify-center mt-6 mb-6">
-            <div className="relative w-full max-w-md">
+            <div className="relative w-full md:max-w-xl">
                 <input
                     type="text"
                     placeholder="Search for blog posts..."
