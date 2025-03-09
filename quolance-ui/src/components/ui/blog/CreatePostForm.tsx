@@ -3,18 +3,39 @@
 import React, { useState } from 'react';
 import { useAuthGuard } from '@/api/auth-api';
 import { Button } from '../button';
+import { 
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+ } from '../dropdown-menu';
+
+ const blogTags = [
+  { label: 'Question', value: 'QUESTION' },
+  { label: 'Support', value: 'SUPPORT' },
+  { label: 'Freelancing', value: 'FREELANCING' },
+  { label: 'Skill Matching', value: 'SKILL_MATCHING' },
+  { label: 'Remote Work', value: 'REMOTE_WORK' },
+  { label: 'AI Suggestions', value: 'AI_SUGGESTIONS' },
+  { label: 'Security', value: 'SECURITY' },
+  { label: 'Talent Marketplace', value: 'TALENT_MARKETPLACE' },
+  { label: 'Global Opportunities', value: 'GLOBAL_OPPORTUNITIES' },
+  { label: 'Verified Profiles', value: 'VERIFIED_PROFILES' },
+  { label: 'Collaboration Tools', value: 'COLLABORATION_TOOLS' },
+  { label: 'Professional Network', value: 'PROFESSIONAL_NETWORK' },
+  { label: 'Billing', value: 'BILLING' },
+];
 
 interface CreatePostFormProps {
-  // onSubmit: (postData: { title: string; content: string; tags: string[] }) => void;
-  onSubmit: (postData: { title: string; content: string; userId: string | undefined; files?: File[]  }) => void;
+  onSubmit: (postData: { title: string; content: string; userId: string | undefined; tags: string[]; files?: File[]  }) => void;
   onClose: () => void;
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) => {
-  const { user } = useAuthGuard({ middleware: 'auth' }); // Get the authenticated user
+  const { user } = useAuthGuard({ middleware: 'auth' });
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  //const [tags, setTags] = useState<string>('');
+  const [tags, setTags] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [files, setFiles] = useState<File[]>([]);
 
@@ -39,6 +60,16 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
+  const handleTagSelection = (tag: string) => {
+    if (!tags.includes(tag)) {
+      setTags((prevTags) => [...prevTags, tag]);
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setTags((prevTags) => prevTags.filter((t) => t !== tag));
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -52,17 +83,19 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
       return;
     }
 
+    console.log({ title, content, tags });
 
-    onSubmit({ title, content, userId: user?.id, files });
+    onSubmit({ title, content, userId: user?.id, tags, files });
     setTitle('');
     setContent('');
     setFiles([]);
+    setTags([]);
     setError('');
     onClose();
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className="space-y-4">
+    <form onSubmit={handleFormSubmit} className="space-y-4 m-2">
       <h2 className="text-lg font-bold mb-4">Create a New Post</h2>
 
       {error && <p className="text-red-500">{error}</p>}
@@ -87,6 +120,47 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
           className="w-full p-2 border rounded-md"
           rows={5}
         />
+      </div>
+
+      <div>
+        <label className="block text-gray-700 font-medium mb-1">Tags</label>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-full p-2 border rounded-md bg-white text-left">
+              Select a tag
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-full bg-white">
+            {blogTags.map((tag) => (
+              <DropdownMenuItem
+                key={tag.value}
+                onSelect={() => handleTagSelection(tag.value)}
+                className={`p-2 cursor-pointer hover:bg-gray-200 ${
+                  tags.includes(tag.value) ? 'bg-gray-300' : ''
+                }`}
+              >
+                {tag.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {tags.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span key={tag} className="bg-gray-200 px-2 py-1 rounded-md flex items-center text-sm">
+                {blogTags.find((t) => t.value === tag)?.label || tag}
+                <button
+                  onClick={() => handleRemoveTag(tag)}
+                  className="ml-2 text-red-500"
+                >
+                  ✖
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* File Drop Area */}

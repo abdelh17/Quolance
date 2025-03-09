@@ -71,6 +71,7 @@ const BlogContainer: React.FC = () => {
         content: string;
         userId: string | undefined;
         files?: File[]
+        tags: string[];
     }) => {
         if (!postData.userId) {
             showToast("Error: User not logged in.", "error");
