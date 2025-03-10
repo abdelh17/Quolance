@@ -242,53 +242,66 @@ export default function FreelancerPage() {
                   ))}
                 </ul>
 
-                {/* Tab content containers */}
-                {activeTab === 'Services' && (
-                  <div className='flex flex-col gap-5'>
-                    {/* List of services */}
-                  </div>
-                )}
+                <div className={'mt-3'}>
+                  {/* Project Experiences */}
+                  {activeTab === 'Projects' &&
+                    (freelancer.projectExperiences &&
+                    freelancer.projectExperiences.length > 0 ? (
+                      freelancer.projectExperiences.map((project, idx) => (
+                        <ProjectExperienceCard key={idx} project={project} />
+                      ))
+                    ) : (
+                      <div className='rounded-xl border p-6 text-center'>
+                        <p className='text-gray-500'>
+                          No project experience to display.
+                        </p>
+                      </div>
+                    ))}
 
-                {/* Project Experiences */}
-                {activeTab === 'Projects' &&
-                  freelancer.projectExperiences.map((project, idx) => (
-                    <ProjectExperienceCard key={idx} project={project} />
-                  ))}
+                  {/* Work Experiences */}
+                  {activeTab === 'Experiences' &&
+                    (freelancer.workExperiences &&
+                    freelancer.workExperiences.length > 0 ? (
+                      freelancer.workExperiences.map((work, idx) => (
+                        <WorkExperienceCard key={idx} experience={work} />
+                      ))
+                    ) : (
+                      <div className='rounded-xl border p-6 text-center'>
+                        <p className='text-gray-500'>
+                          No work experience to display.
+                        </p>
+                      </div>
+                    ))}
 
-                {/* Work Experiences */}
-                {activeTab === 'Experiences' &&
-                  freelancer.workExperiences.map((work, idx) => (
-                    <WorkExperienceCard key={idx} experience={work} />
-                  ))}
-
-                {/* Recommendations */}
-                {activeTab === 'Recommendations' && (
-                  <>
-                    <div className='border-n30 rounded-2xl border p-8'>
-                      <div className='flex items-center justify-start gap-3 pb-2'>
-                        <div className=''>
-                          <div className='flex items-center justify-start gap-3'>
-                            <h5 className='heading-5'>John Doe</h5>
+                  {/* Recommendations */}
+                  {activeTab === 'Recommendations' && (
+                    <>
+                      <div className='border-n30 rounded-2xl border p-8'>
+                        <div className='flex items-center justify-start gap-3 pb-2'>
+                          <div className=''>
+                            <div className='flex items-center justify-start gap-3'>
+                              <h5 className='heading-5'>John Doe</h5>
+                            </div>
+                            <p className='text-n500 pt-2'>
+                              Project for frontend development
+                            </p>
                           </div>
-                          <p className='text-n500 pt-2'>
-                            Project for frontend development
-                          </p>
+                        </div>
+                        <p className='text-n300 pt-3 font-medium'>
+                          It was a pleasure working with Alice. She was super
+                          clear and detailed with the project requirements. I
+                          appreciate her wonderful communication, collaboration,
+                          and flexibility. Thanks, Alice!
+                        </p>
+
+                        {/* 5-Star Rating */}
+                        <div className='flex items-center justify-start gap-2 pt-5'>
+                          <StarRating rating={4.5} />
                         </div>
                       </div>
-                      <p className='text-n300 pt-3 font-medium'>
-                        It was a pleasure working with Alice. She was super
-                        clear and detailed with the project requirements. I
-                        appreciate her wonderful communication, collaboration,
-                        and flexibility. Thanks, Alice!
-                      </p>
-
-                      {/* 5-Star Rating */}
-                      <div className='flex items-center justify-start gap-2 pt-5'>
-                        <StarRating rating={4.5} />
-                      </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
