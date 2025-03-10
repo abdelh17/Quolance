@@ -28,7 +28,7 @@ export interface FreelancerProfileType {
   availability: string | null; // FULL_TIME, PART_TIME ...
   projectExperiences: ProjectExperience[];
   workExperiences: WorkExperience[];
-  languages: string[];
+  languagesSpoken: string[];
 }
 
 interface ConnectedAccount {
