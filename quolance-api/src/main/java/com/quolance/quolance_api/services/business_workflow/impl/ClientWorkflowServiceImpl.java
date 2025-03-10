@@ -93,6 +93,8 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         Specification<Project> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            predicates.add(criteriaBuilder.equal(root.get("client").get("id"), client.getId()));
+
             // Add search filters if provided
             if (filters != null) {
                 if (filters.getSearchTitle() != null && !filters.getSearchTitle().trim().isEmpty()) {
