@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Wrench } from 'lucide-react';
 import { EditModesType } from '@/constants/models/user/UserResponse';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
@@ -95,17 +94,14 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
               return (
                 <span
                   key={skillValue}
-                  className='rounded-full bg-orange-50 px-7 py-3.5 text-base font-semibold leading-7 text-gray-700'
+                  className='rounded-full bg-slate-100 px-4 py-2 text-sm font-medium leading-4 text-gray-700'
                 >
                   {skill?.label || skillValue}
                 </span>
               );
             })
           ) : (
-            <div className='flex items-center'>
-              <Wrench className=' mr-3' />
-              <span className='text-gray-700'>Not specified</span>
-            </div>
+            <p className='italic text-gray-500'>No skills added yet.</p>
           )}
         </div>
       )}
