@@ -4,18 +4,20 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PiCaretRight, PiPaperPlaneTilt } from 'react-icons/pi';
+import { PiPaperPlaneTilt } from 'react-icons/pi';
 import { useGetFreelancerProfile } from '@/api/freelancer-api';
 import Loading from '@/components/ui/loading/loading';
 import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 import badge from '@/public/images/verify-badge.png';
 import { formatEnumString } from '@/util/stringUtils';
 import { FaFacebook, FaGithub } from 'react-icons/fa';
-import { BsTwitter, BsLinkedin } from 'react-icons/bs';
-import { Users, MapPin } from 'lucide-react';
+import { BsLinkedin, BsTwitter } from 'react-icons/bs';
+import { MapPin, Users } from 'lucide-react';
 import StarRating from '@/components/ui/StarRating';
+import { ProjectExperienceCard } from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
+import { WorkExperienceCard } from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
 
-const tabButton = ['Services', 'Recommendations'];
+const tabButton = ['Experiences', 'Projects', 'Recommendations'];
 
 // Only allow 4 platforms to match ContactSection
 const SOCIAL_PLATFORMS = [
@@ -42,7 +44,7 @@ const SOCIAL_PLATFORMS = [
 ];
 
 export default function FreelancerPage() {
-  const [activeTab, setActiveTab] = useState('Services');
+  const [activeTab, setActiveTab] = useState('Experiences');
 
   const { username } = useParams();
   const { data: freelancer, isLoading } = useGetFreelancerProfile(
@@ -112,17 +114,6 @@ export default function FreelancerPage() {
                     </div>
                   </a>
                 </div>
-
-                {/* View Portfolio */}
-                {/* <Link
-                  href='/worker-portfolio'
-                  className='border-n30 mt-7 flex w-full items-center justify-between rounded-xl border px-5 py-4'
-                >
-                  <p className='font-semibold'>View My Portfolio</p>
-                  <span className='text-xl !leading-none'>
-                    <PiCaretRight />
-                  </span>
-                </Link> */}
               </div>
 
               {/* Location Section */}
@@ -140,9 +131,19 @@ export default function FreelancerPage() {
               {/* Experience Level */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
                 <p className='text-sm font-medium'>EXPERIENCE LEVEL</p>
-                <p className='bg-r50 text-r300 rounded-full px-3 py-1 text-[13px]'>
+                <p className='bg-r50 text-r300 rounded-full px-3 py-[6px] text-[13px]'>
                   {freelancer.experienceLevel
                     ? formatEnumString(freelancer.experienceLevel)
+                    : 'Not Specified'}
+                </p>
+              </div>
+
+              {/* Availability */}
+              <div className='flex flex-col items-start justify-start gap-3 pt-8'>
+                <p className='text-sm font-medium'>AVAILABILITY</p>
+                <p className='bg-v50 rounded-full px-3 py-[6px] text-[13px]'>
+                  {freelancer.availability
+                    ? formatEnumString(freelancer.availability)
                     : 'Not Specified'}
                 </p>
               </div>
@@ -154,22 +155,33 @@ export default function FreelancerPage() {
                   {freelancer.skills?.map((skill, idx) => (
                     <p
                       key={idx}
-                      className='bg-b50 rounded-xl px-3 py-2 font-medium'
+                      className='bg-b50 rounded-xl px-3 py-[6px] font-medium'
                     >
                       {skill}
                     </p>
                   ))}
+                  {freelancer.skills?.length === 0 && (
+                    <p className='text-gray-700'>Not Specified</p>
+                  )}
                 </div>
               </div>
 
-              {/* Availability */}
+              {/* Languages */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>AVAILABILITY</p>
-                <p className='bg-v50 rounded-full px-3 py-1 text-[13px]'>
-                  {freelancer.availability
-                    ? formatEnumString(freelancer.availability)
-                    : 'Not Specified'}
-                </p>
+                <p className='text-sm font-medium'>LANGUAGES</p>
+                <div className='flex flex-wrap gap-2'>
+                  {freelancer.languagesSpoken?.map((language, idx) => (
+                    <p
+                      key={idx}
+                      className='bg-g50 rounded-full px-3 py-[6px] font-medium'
+                    >
+                      {formatEnumString(language)}
+                    </p>
+                  ))}
+                  {freelancer.languagesSpoken?.length === 0 && (
+                    <p className='text-gray-700'>Not Specified</p>
+                  )}
+                </div>
               </div>
 
               {/* Social Media Links - Display only the 4 allowed platforms */}
@@ -237,9 +249,22 @@ export default function FreelancerPage() {
                   </div>
                 )}
 
+                {/* Project Experiences */}
+                {activeTab === 'Projects' &&
+                  freelancer.projectExperiences.map((project, idx) => (
+                    <ProjectExperienceCard key={idx} project={project} />
+                  ))}
+
+                {/* Work Experiences */}
+                {activeTab === 'Experiences' &&
+                  freelancer.workExperiences.map((work, idx) => (
+                    <WorkExperienceCard key={idx} experience={work} />
+                  ))}
+
+                {/* Recommendations */}
                 {activeTab === 'Recommendations' && (
                   <>
-                    <div className='border-n30 rounded-2xl border p-10'>
+                    <div className='border-n30 rounded-2xl border p-8'>
                       <div className='flex items-center justify-start gap-3 pb-2'>
                         <div className=''>
                           <div className='flex items-center justify-start gap-3'>
