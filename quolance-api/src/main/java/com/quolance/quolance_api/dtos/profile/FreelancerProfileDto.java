@@ -50,6 +50,7 @@ public class FreelancerProfileDto {
                 .userId(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .username(user.getUsername())
                 .profileImageUrl(user.getProfileImageUrl())
                 .bio(profile.getBio())
                 .contactEmail(profile.getContactEmail())
