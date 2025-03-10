@@ -27,6 +27,8 @@ export interface FreelancerProfileType {
   skills: string[];
   availability: string | null; // FULL_TIME, PART_TIME ...
   projectExperiences: ProjectExperience[];
+  workExperiences: WorkExperience[];
+  languages: string[];
 }
 
 interface ConnectedAccount {
@@ -48,6 +50,16 @@ export interface ProjectExperience {
   startDate?: Date;
   endDate?: Date;
   projectLink?: string;
+  isOngoing?: boolean;
+}
+
+export interface WorkExperience {
+  id: string;
+  companyName: string;
+  role: string;
+  description?: string;
+  startDate: Date;
+  endDate?: Date;
 }
 
 export type EditModesType = {
