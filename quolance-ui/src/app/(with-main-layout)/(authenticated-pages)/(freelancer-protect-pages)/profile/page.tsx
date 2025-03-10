@@ -23,6 +23,8 @@ import ProfileStatus from './components/ProfileStatus';
 import { UpdateProfileModal } from './components/UpdateProfileModal';
 import { SKILLS_OPTIONS } from '@/constants/types/form-types';
 import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
+import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
+import LanguageSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/LanguageSection';
 
 const FreelancerProfile: React.FC = () => {
   const { user, mutate } = useAuthGuard({ middleware: 'auth' });
@@ -63,6 +65,8 @@ const FreelancerProfile: React.FC = () => {
     skills: [],
     availability: '',
     projectExperiences: [],
+    workExperiences: [],
+    languagesSpoken: [],
   });
 
   useEffect(() => {
@@ -249,6 +253,15 @@ const FreelancerProfile: React.FC = () => {
           checkEditModes={checkEditModes}
         />
 
+        <WorkExperienceSection
+          profile={profile}
+          handleInputChange={handleInputChange}
+          updateEditModes={updateEditModes}
+          editModes={editModes}
+          handleSave={handleSave}
+          checkEditModes={checkEditModes}
+        />
+
         <ProjectExperienceSection
           profile={profile}
           handleInputChange={handleInputChange}
@@ -274,6 +287,16 @@ const FreelancerProfile: React.FC = () => {
           handleSkillsChange={handleSkillsChange}
           inputClassName={inputClassName}
           availableSkills={SKILLS_OPTIONS}
+          updateEditModes={updateEditModes}
+          editModes={editModes}
+          handleSave={handleSave}
+          checkEditModes={checkEditModes}
+        />
+
+        {/* Languages Section */}
+        <LanguageSection
+          profile={profile}
+          handleInputChange={handleInputChange}
           updateEditModes={updateEditModes}
           editModes={editModes}
           handleSave={handleSave}
