@@ -1,5 +1,5 @@
 import { Calendar } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CustomListbox, { ListboxItem } from '@/components/ui/ComboListBox';
 
@@ -79,28 +79,21 @@ const InputField: React.FC<InputFieldProps> = ({
   disabled = false,
   checkboxLabel,
 }) => {
-  const [month, setMonth] = React.useState<string | null>(null);
-  const [year, setYear] = React.useState<string | null>(null);
-  const [resetEndDate, setResetEndDate] = React.useState<boolean>(false);
+  const [month, setMonth] = useState<string | null>(null);
+  const [year, setYear] = useState<string | null>(null);
 
-  // Initialize month and year values for month-year type
+  // Initialize or reset month and year when value changes
   useEffect(() => {
-    if (type == 'month-year' && value) {
+    if (type === 'month-year' && value) {
       const date = new Date(value);
       setMonth((date.getMonth() + 1).toString());
       setYear(date.getFullYear().toString());
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log('here');
-    if (resetEndDate && name === 'endDate') {
-      console.log('resetting end date');
+    } else {
+      // Clear month and year when value is cleared/undefined
       setMonth(null);
       setYear(null);
-      setResetEndDate(false);
     }
-  }, [name, resetEndDate]);
+  }, [type, value]);
 
   // Checkbox type
   if (type === 'checkbox') {
@@ -111,7 +104,6 @@ const InputField: React.FC<InputFieldProps> = ({
           id={`checkbox-${name}`}
           checked={value || false}
           onChange={(e) => {
-            setResetEndDate(true);
             onChange(name, e.target.checked);
           }}
           disabled={!isEditing || disabled}
@@ -171,7 +163,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 );
               }}
               placeholder='Month'
-              disabled={disabled}
+              disabled={disabled || !isEditing}
             />
             <CustomListbox
               className='!mt-0'
@@ -186,7 +178,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 );
               }}
               placeholder='Year'
-              disabled={disabled}
+              disabled={disabled || !isEditing}
             />
           </div>
         </div>
@@ -209,7 +201,7 @@ const InputField: React.FC<InputFieldProps> = ({
           <textarea
             id={name}
             name={name}
-            value={value}
+            value={value || ''}
             onChange={(e) => onChange(name, e.target.value)}
             placeholder={placeholder}
             disabled={!isEditing || disabled}
@@ -221,7 +213,7 @@ const InputField: React.FC<InputFieldProps> = ({
             id={name}
             name={name}
             type={type}
-            value={value}
+            value={value || ''}
             onChange={(e) => onChange(name, e.target.value)}
             placeholder={placeholder}
             disabled={!isEditing || disabled}
