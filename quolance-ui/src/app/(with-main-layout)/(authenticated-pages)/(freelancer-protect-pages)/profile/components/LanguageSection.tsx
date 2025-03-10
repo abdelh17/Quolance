@@ -150,7 +150,7 @@ const LanguageSection: React.FC<LanguageSectionProps> = ({
                 {selectedLanguages.map((languageValue) => (
                   <div
                     key={languageValue}
-                    className='rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-700'
+                    className='rounded-full bg-slate-100 px-3 py-1.5 text-sm text-gray-700'
                   >
                     {getLanguageLabel(languageValue)}
                   </div>
