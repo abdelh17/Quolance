@@ -23,10 +23,7 @@ const FreelancerCatalogCard = ({
     .join(', ');
 
   return (
-    <Link
-      href={`/freelancers/${freelancer.username || freelancer.id}`}
-      className='group'
-    >
+    <Link href={`/public-profile/${freelancer.username}`} className='group'>
       <div
         className='shadow-animation relative flex h-full flex-col justify-between rounded-xl bg-white pb-6 shadow-md transition-all duration-300 ease-out hover:shadow-[0_6px_10px_-2px_rgb(0_0_0_/0.13),_0_3px_5px_-3px_rgb(0_0_0_/0.13)]'
         onMouseEnter={() => setIsHovered(true)}
