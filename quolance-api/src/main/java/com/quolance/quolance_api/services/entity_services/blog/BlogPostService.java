@@ -39,4 +39,12 @@ public interface BlogPostService {
     Page<BlogPostResponseDto> getFilteredPosts(BlogFilterRequestDto filterDto, Pageable pageable);
 
     BlogPostResponseDto reportPost(UUID postId, User user);
+
+    Page<BlogPostResponseDto> getReportedPosts(Pageable pageable);
+    Page<BlogPostResponseDto> getPreviouslyResolvedPosts(Pageable pageable);
+
+    void keepReportedPost(UUID postId);
+
+    void deleteReportedPost(UUID postId);
+
 }
