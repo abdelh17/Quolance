@@ -224,4 +224,17 @@ public class BlogPostServiceImpl implements BlogPostService {
         ).map(BlogPostResponseDto::fromEntity);
     }
 
+    @Override
+    public BlogPostResponseDto reportPost(UUID postId, User user) {
+        log.info("User {} is reporting post {}", user.getId(), postId);
+
+        BlogPost blogPost = getBlogPostEntity(postId);
+
+        blogPost.setReported(true);
+
+        BlogPost saved = blogPostRepository.save(blogPost);
+
+        log.info("Post {} reported successfully by User {}", postId, user.getId());
+        return BlogPostResponseDto.fromEntity(saved);
+    }
 }

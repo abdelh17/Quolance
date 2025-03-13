@@ -38,4 +38,5 @@ public interface BlogPostService {
 
     Page<BlogPostResponseDto> getFilteredPosts(BlogFilterRequestDto filterDto, Pageable pageable);
 
+    BlogPostResponseDto reportPost(UUID postId, User user);
 }
