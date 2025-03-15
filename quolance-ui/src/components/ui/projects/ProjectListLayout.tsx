@@ -73,7 +73,7 @@ const ProjectListLayout = ({
 
           {!isLoading && (!data || data.length === 0) && (
             <div className='flex h-64 items-center justify-center'>
-              <p className='text-center text-gray-500'>No projects found</p>
+              <p data-test="no-projects-found" className='text-center text-gray-500'>No projects found</p>
             </div>
           )}
         </div>

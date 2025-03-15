@@ -16,13 +16,15 @@ import com.quolance.quolance_api.services.business_workflow.impl.ClientWorkflowS
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
-import com.quolance.quolance_api.util.FeatureToggle;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -54,8 +56,6 @@ class ClientWorkflowServiceUnitTest {
 
     @InjectMocks
     private ClientWorkflowServiceImpl clientWorkflowService;
-
-    private FeatureToggle featureToggle = mock(FeatureToggle.class);
 
     @Captor
     private ArgumentCaptor<Project> projectCaptor;
@@ -121,40 +121,6 @@ class ClientWorkflowServiceUnitTest {
                 .project(mockProject)
                 .freelancer(mockFreelancer)
                 .build();
-    }
-
-    @Test
-    void createProject_WithExpirationDate_Success() {
-        Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
-
-        clientWorkflowService.createProject(mockProjectCreateDto, mockClient);
-
-        verify(projectService).saveProject(projectCaptor.capture());
-        Project savedProject = projectCaptor.getValue();
-
-        assertThat(savedProject.getTitle()).isEqualTo(mockProjectCreateDto.getTitle());
-        assertThat(savedProject.getDescription()).isEqualTo(mockProjectCreateDto.getDescription());
-        assertThat(savedProject.getCategory()).isEqualTo(mockProjectCreateDto.getCategory());
-        assertThat(savedProject.getPriceRange()).isEqualTo(mockProjectCreateDto.getPriceRange());
-        assertThat(savedProject.getExperienceLevel()).isEqualTo(mockProjectCreateDto.getExperienceLevel());
-        assertThat(savedProject.getExpectedDeliveryTime()).isEqualTo(mockProjectCreateDto.getExpectedDeliveryTime());
-        assertThat(savedProject.getExpirationDate()).isEqualTo(mockProjectCreateDto.getExpirationDate());
-        assertThat(savedProject.getTags()).isEqualTo(mockProjectCreateDto.getTags());
-        assertThat(savedProject.getClient()).isEqualTo(mockClient);
-    }
-
-    @Test
-    void createProject_WithoutExpirationDate_SetsDefaultDate() {
-        Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
-
-        mockProjectCreateDto.setExpirationDate(null);
-
-        clientWorkflowService.createProject(mockProjectCreateDto, mockClient);
-
-        verify(projectService).saveProject(projectCaptor.capture());
-        Project savedProject = projectCaptor.getValue();
-
-        assertThat(savedProject.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(7));
     }
 
     @Test

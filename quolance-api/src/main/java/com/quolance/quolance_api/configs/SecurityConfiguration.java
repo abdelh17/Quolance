@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -26,6 +27,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -56,39 +62,37 @@ public class SecurityConfiguration {
             "api/enums/**",
     };
 
-    private final ApplicationProperties applicationProperties;
     private final CustomUserDetailsService userDetailsService;
     private final OAuth2LoginSuccessHandlerImpl oauth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        AuthenticationManager authenticationManager = authenticationManager();
+        AuthenticationManager authenticationManager = authenticationManager(oauth2LoginAuthenticationProvider());
 
         http.authorizeHttpRequests(customizer ->
-                    customizer
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/ws/**")).permitAll() // Allow WebSocket handshake
-                            .requestMatchers(WHITE_LIST_URL).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/verify-email")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-password")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")
-                            .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.GET, "/api/public/**")).permitAll()
-                            .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
-                            .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
-                            .requestMatchers(antMatcher("api/pending/**")).hasRole("PENDING")
-                            .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
-                            .anyRequest().authenticated()
+                        customizer
+                                .requestMatchers(antMatcher(HttpMethod.GET, "/ws/**")).permitAll() // Allow WebSocket handshake
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/users")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/verify-email")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-password")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/csrf")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.GET, "/api/public/**")).permitAll()
+                                .requestMatchers(antMatcher("/api/client/**")).hasRole("CLIENT")
+                                .requestMatchers(antMatcher("/api/freelancer/**")).hasRole("FREELANCER")
+                                .requestMatchers(antMatcher("api/pending/**")).hasRole("PENDING")
+                                .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
+                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             String path = request.getRequestURI();
-
                             if (path.startsWith("/api/admin")) {
-                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "User is not a Admin");
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "User is not an Admin");
                             } else if (path.startsWith("/api/client")) {
                                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "User is not a Client");
                             } else if (path.startsWith("/api/freelancer")) {
@@ -97,14 +101,17 @@ public class SecurityConfiguration {
                                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Insufficient permissions");
                             }
                         })
-                        .authenticationEntryPoint(
-                                (request, response, authException) ->
-                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, please login")
-                                )
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, please login"))
                 );
 
         http.oauth2Login(customizer ->
-            customizer.successHandler(oauth2LoginSuccessHandler)
+                customizer.successHandler(oauth2LoginSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            System.out.println("OAuth2 authentication failure: " + exception.getMessage());
+                            exception.printStackTrace();
+                            response.sendRedirect("/login?error");
+                        })
         );
 
         http.userDetailsService(userDetailsService)
@@ -113,7 +120,7 @@ public class SecurityConfiguration {
         http.csrf(csrf -> csrf.disable());
 
         http.cors(customizer ->
-            customizer.configurationSource(corsConfigurationSource())
+                customizer.configurationSource(corsConfigurationSource())
         );
 
         return http.build();
@@ -142,12 +149,24 @@ public class SecurityConfiguration {
         return source;
     }
 
+    // Updated AuthenticationManager bean including OAuth2 provider
     @Bean
-    public AuthenticationManager authenticationManager() {
+    public AuthenticationManager authenticationManager(OAuth2LoginAuthenticationProvider oauth2LoginAuthenticationProvider) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(daoAuthenticationProvider);
+        return new ProviderManager(Arrays.asList(daoAuthenticationProvider, oauth2LoginAuthenticationProvider));
+    }
+
+    // Define the OAuth2LoginAuthenticationProvider bean
+    @Bean
+    public OAuth2LoginAuthenticationProvider oauth2LoginAuthenticationProvider() {
+        // Create the token response client (handles the code exchange)
+        DefaultAuthorizationCodeTokenResponseClient tokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
+        // Create the user service (fetches user details from the provider)
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService = new DefaultOAuth2UserService();
+        // Pass both to the OAuth2LoginAuthenticationProvider constructor
+        return new OAuth2LoginAuthenticationProvider(tokenResponseClient, oauth2UserService);
     }
 
     final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {

@@ -15,6 +15,14 @@ export const formatDate = (date: string) => {
   const year = dateObj.getFullYear();
   return `${month} ${day}, ${year}`;
 };
+
+export const formatDateObject = (date: Date) => {
+  const month = date.toLocaleString('default', { month: 'long' });
+  const day = date.getDate();
+  const year = date.getFullYear();
+  return `${month} ${day}, ${year}`;
+};
+
 export const formatPriceRange = (priceRange: string) => {
   switch (priceRange) {
     case 'LESS_500':

@@ -121,6 +121,7 @@ function FreelancerCard({
           {canSelect && (
             <label className='relative z-10 -mt-[2px] mr-1 inline-flex cursor-pointer items-center'>
               <input
+                data-test="reject-application-btn"
                 type='checkbox'
                 checked={selected}
                 onChange={(e) => onSelect(e.target.checked)}

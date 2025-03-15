@@ -35,12 +35,13 @@ interface PostCardProps {
   content: string;
   authorName: string;
   dateCreated: string;
+  tags?: string[];
   imageUrls?: string[];
   openUserSummaryPostId: string | null;
   setOpenUserSummaryPostId: (open: string | null) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, imageUrls = [], openUserSummaryPostId, setOpenUserSummaryPostId }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, tags, imageUrls = [], openUserSummaryPostId, setOpenUserSummaryPostId }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
@@ -283,7 +284,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                 left: userSummaryPosition.x
               }}
             >
-              <UserSummary user={authorProfile} />
+              {authorProfile && <UserSummary user={authorProfile} />}
             </div>
           )}
         </div>
@@ -471,6 +472,16 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           >
             {isExpanded ? "Read less" : "Read more"}
           </button>
+        )}
+
+        {tags && tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {tags.map((tag) => (
+              <span key={tag} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-semibold">
+                {tag.replace(/_/g, ' ')}
+              </span>
+            ))}
+          </div>
         )}
 
         {/* Reaction Buttons */}

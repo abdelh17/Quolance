@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectEvaluationResult {
+    private UUID projectId;
     private boolean approved = false;
     private double confidenceScore;
     private String reason;

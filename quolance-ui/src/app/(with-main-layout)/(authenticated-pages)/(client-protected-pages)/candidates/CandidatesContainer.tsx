@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import heroImage3 from '@/public/images/freelancer-hero-img-3.jpg';
-import FreelancerCatalogSubListSelect from '@/components/ui/freelancers/candidates/candidateFilter/FreelancerCatalogSubListSelect';
 import FreelancerListLayout from '@/components/ui/freelancers/candidates/FreelancerListLayout';
 import {
   CandidateFilterQuery,
@@ -52,10 +51,10 @@ function CandidatesContainer() {
         <Loading />
       ) : (
         <>
-          <FreelancerCatalogSubListSelect
-            currentSubList={currentListType}
-            setCurrentSubList={setCurrentListType}
-          />
+          {/*<FreelancerCatalogSubListSelect*/}
+          {/*  currentSubList={currentListType}*/}
+          {/*  setCurrentSubList={setCurrentListType}*/}
+          {/*/>*/}
           <FreelancerListLayout
             isLoading={isLoading}
             isSuccess={isSuccess}

@@ -12,7 +12,9 @@ import com.quolance.quolance_api.entities.enums.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Helper class to create entities for testing purposes
@@ -106,6 +108,16 @@ public class EntityCreationHelper {
         BlogPost blogPost = new BlogPost();
         blogPost.setContent("This is a test blog post.");
         blogPost.setUser(user);
+        return blogPost;
+    }
+
+    public static BlogPost createFullBlogPost(User user, String title, String content, List<BlogTags> tags, LocalDateTime creationDate) {
+        BlogPost blogPost = new BlogPost();
+        blogPost.setTitle(title);
+        blogPost.setContent(content);
+        blogPost.setUser(user);
+        blogPost.setTags(Set.copyOf(tags));
+        blogPost.setCreationDate(creationDate);
         return blogPost;
     }
 

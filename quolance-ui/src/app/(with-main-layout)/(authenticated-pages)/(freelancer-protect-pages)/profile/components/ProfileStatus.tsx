@@ -78,8 +78,8 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
   if (isHidden) return null;
 
   return (
-    <div className='mb-8 flex flex-wrap gap-8 rounded-lg bg-white p-4  py-4 shadow-md md:justify-between lg:flex-nowrap'>
-      <div className='flex items-center px-2 sm:px-8 '>
+    <div className='mb-8 flex flex-wrap gap-8 rounded-lg bg-white p-4 py-4 shadow-md md:justify-between lg:flex-nowrap'>
+      <div className='flex w-full flex-col sm:flex-row sm:items-center px-2 sm:px-8'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           width='56'
@@ -90,7 +90,7 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
           strokeWidth='2'
           strokeLinecap='round'
           strokeLinejoin='round'
-          className='lucide lucide-id-card mr-4 text-blue-500'
+          className='lucide lucide-id-card mr-4 mb-4 sm:mb-0 text-blue-500 self-start sm:self-auto'
           style={{ transform: 'rotate(-25deg)' }}
         >
           <path d='M16 10h2' />
@@ -99,17 +99,19 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
           <circle cx='9' cy='11' r='2' />
           <rect x='2' y='5' width='20' height='14' rx='2' />
         </svg>
-        <div className='w-full sm:max-w-max'>
+        <div className='w-full overflow-hidden'>
           <div className='text-lg font-bold'>
             Increase Your Profile Strength!
           </div>
-          <ProfileProgressBar percentage={profilePercentage} />
-          <div className='mb-4 text-sm'>
+          <div className='w-full max-w-full overflow-hidden'>
+            <ProfileProgressBar percentage={profilePercentage} />
+          </div>
+          <div className='mb-4 text-sm mt-4 break-words'>
             We recommend you complete the following:
           </div>
-          <ul className='list-decimal pl-6 text-sm'>
+          <ul className='list-decimal pl-6 text-sm overflow-hidden'>
             {missingFields.map((recommendation, index) => (
-              <li key={index}>
+              <li key={index} className="break-words">
                 <span dangerouslySetInnerHTML={{ __html: recommendation }} />
               </li>
             ))}
@@ -117,7 +119,7 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
         </div>
       </div>
 
-      <div className='flex  w-full  items-end  gap-2'>
+      <div className='flex w-full items-end gap-2 mt-4 sm:mt-0'>
         <div className='flex w-full justify-end gap-2'>
           <Button
             variant='default'

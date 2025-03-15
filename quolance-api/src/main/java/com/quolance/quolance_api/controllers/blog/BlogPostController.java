@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.controllers.blog;
 
+import com.quolance.quolance_api.dtos.blog.BlogFilterRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostRequestDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.blog.BlogPostUpdateDto;
@@ -95,4 +96,13 @@ public class BlogPostController {
         log.info("User {} has successfully updated tags for blog post {}", author.getId(), postId);
         return ResponseEntity.ok("Tags updated successfully");
     }
+
+    @GetMapping("/filter")
+    @Operation(summary = "Filter blog posts with pagination")
+    public ResponseEntity<Page<BlogPostResponseDto>> filterBlogPosts(@RequestBody BlogFilterRequestDto filterDto, Pageable pageable) {
+        System.out.println("Received filter request: " + filterDto);
+        Page<BlogPostResponseDto> responses = blogPostService.getFilteredPosts(filterDto, pageable);
+        return ResponseEntity.ok(responses);
+    }
+
 }

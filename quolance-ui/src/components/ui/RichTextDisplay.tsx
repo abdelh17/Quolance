@@ -81,6 +81,7 @@ const SanitizedHtmlDisplay: React.FC<SanitizedHtmlDisplayProps> = ({
   return (
     <div className={cn('relative', className)}>
       <div
+        data-test={`${sanitizedHtml}`}
         ref={contentRef}
         dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
         className={cn(

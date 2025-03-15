@@ -60,6 +60,7 @@ function FindAFreelancerPage() {
             alt='Freelancer working on a project'
             src='https://images.pexels.com/photos/1438081/pexels-photo-1438081.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
             className='size-full object-cover'
+            data-test="hero-image-freelancer"
           />
           <svg
             viewBox='0 0 926 676'
@@ -71,13 +72,13 @@ function FindAFreelancerPage() {
         </div>
         <div className='relative mx-auto max-w-7xl py-24 sm:py-32 lg:px-8 lg:py-20'>
           <div className='pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32'>
-            <h2 className='text-base/7 font-semibold text-b300'>
+            <h2 data-test="hero-title-freelancer" className='text-base/7 font-semibold text-b300'>
               Find Your Freelancer
             </h2>
-            <p className='mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl'>
+            <p data-test="hero-discover-freelancer" className='mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl'>
               Discover Top Talent for Your Projects
             </p>
-            <p className='mt-6 text-base/7 text-gray-300'>
+            <p data-test="hero-desc-freelancer" className='mt-6 text-base/7 text-gray-300'>
               Unlock a world of skilled professionals ready to bring your ideas to life. 
               Whether you need a developer, designer, marketer, or writer, our platform 
               connects you with the right talent to get the job done.
@@ -87,7 +88,7 @@ function FindAFreelancerPage() {
               href='/projects'
               className='bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
             >
-              <span className='relative z-10'>Browse Freelancers</span>
+              <span data-test="browse-freelancer-btn" className='relative z-10'>Browse Freelancers</span>
             </Link>
             </div>
           </div>
@@ -99,10 +100,10 @@ function FindAFreelancerPage() {
       <div className='bg-white py-18 sm:py-20'>
         <div className='mx-auto max-w-7xl px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl lg:mx-0'>
-            <h2 className='text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
+            <h2 data-test="how-it-works-title" className='text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
               How It Works
             </h2>
-            <p className='mt-6 text-lg/8 text-gray-600'>
+            <p data-test="follow-steps-subtitle" className='mt-6 text-lg/8 text-gray-600'>
               Follow these simple steps to find the perfect freelancer for your project.
             </p>
           </div>
@@ -110,7 +111,7 @@ function FindAFreelancerPage() {
             <dl className='grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3'>
               {features.map((feature) => (
                 <div key={feature.name} className='flex flex-col'>
-                  <dt className='text-base/7 font-semibold text-gray-900'>
+                  <dt data-test={`${feature.name}`} className='text-base/7 font-semibold text-gray-900'>
                     <div className='mb-6 flex size-10 items-center justify-center rounded-lg bg-b300'>
                       <feature.icon
                         aria-hidden='true'
@@ -120,7 +121,7 @@ function FindAFreelancerPage() {
                     {feature.name}
                   </dt>
                   <dd className='mt-1 flex flex-auto flex-col text-base/7 text-gray-600'>
-                    <p className='flex-auto'>{feature.description}</p>
+                    <p data-test={`${feature.description.split(' ')[0]}`}  className='flex-auto'>{feature.description}</p>
                     <p className='mt-6'>
                     </p>
                   </dd>
@@ -137,6 +138,7 @@ function FindAFreelancerPage() {
             <div className="-mt-8 w-full max-w-2xl xl:-mb-8 xl:w-96 xl:flex-none">
               <div className="relative aspect-[2/1] h-full md:-mx-8 xl:mx-0 xl:aspect-auto">
                 <img
+                  data-test="banner1-image"
                   alt="Successful freelancer"
                   src="https://images.pexels.com/photos/1181293/pexels-photo-1181293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                   className="absolute inset-0 size-full rounded-2xl bg-gray-800 object-cover shadow-2xl"
@@ -153,14 +155,14 @@ function FindAFreelancerPage() {
                   {/* SVG path details omitted for brevity */}
                 </svg>
                 <blockquote className="text-xl/8 font-semibold text-white sm:text-2xl/9">
-                  <p>
+                  <p data-test="banner1-desc">
                     "This platform helped me connect with an incredible graphic designer who transformed my brand's identity. 
                     The process was smooth, and the results were amazing!"
                   </p>
                 </blockquote>
                 <figcaption className="mt-8 text-base">
-                  <div className="font-semibold text-white">Alex Johnson</div>
-                  <div className="mt-1 text-gray-400">Business Owner</div>
+                  <div data-test="banner1-client" className="font-semibold text-white">Alex Johnson</div>
+                  <div data-test="banner1-title" className="mt-1 text-gray-400">Business Owner</div>
                 </figcaption>
               </figure>
             </div>
@@ -172,13 +174,13 @@ function FindAFreelancerPage() {
         <div className='mx-auto max-w-7xl px-6 lg:px-8'>
           <div className='mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-5'>
             <div className='col-span-2'>
-              <h2 className='text-base/7 font-semibold text-b300'>
+              <h2 data-test="banner2-title" className='text-base/7 font-semibold text-b300'>
                 Why Choose Us?
               </h2>
-              <p className='mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
+              <p data-test="banner2-slogan" className='mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
                 Your Success, Our Priority
               </p>
-              <p className='mt-6 text-base/7 text-gray-600'>
+              <p data-test="banner2-desc" className='mt-6 text-base/7 text-gray-600'>
                 We're committed to connecting you with the best freelance talent 
                 to help you achieve your project goals efficiently and effectively.
               </p>
@@ -186,14 +188,14 @@ function FindAFreelancerPage() {
             <dl className='col-span-3 grid grid-cols-1 gap-x-8 gap-y-10 text-base/7 text-gray-600 sm:grid-cols-2 lg:gap-y-16'>
               {features2.map((feature) => (
                 <div key={feature.name} className='relative pl-9'>
-                  <dt className='font-semibold text-gray-900'>
+                  <dt data-test={`${feature.name}`} className='font-semibold text-gray-900'>
                     <CheckIcon
                       aria-hidden='true'
                       className='absolute left-0 top-1 size-5 text-b300'
                     />
                     {feature.name}
                   </dt>
-                  <dd className='mt-2'>{feature.description}</dd>
+                  <dd data-test={`${feature.description.split(' ')[0]}`}  className='mt-2'>{feature.description}</dd>
                 </div>
               ))}
             </dl>
@@ -203,7 +205,7 @@ function FindAFreelancerPage() {
 
       <div className='bg-white'>
         <div className='mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:flex lg:items-center lg:justify-between lg:px-8'>
-          <h2 className='max-w-2xl text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
+          <h2 data-test="banner3-title" className='max-w-2xl text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl'>
             Ready to dive in? <br />
             Start your project today.
           </h2>
@@ -212,7 +214,7 @@ function FindAFreelancerPage() {
               href='/auth/register'
               className='bg-b300 hover:text-n900 relative mt-8 flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
             >
-              <span className='relative z-10'>Sign Up For Free</span>
+              <span data-test="banner3-sign-up-btn" className='relative z-10'>Sign Up For Free</span>
             </Link>
           </div>
         </div>

@@ -230,6 +230,10 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             profile.setSocialMediaLinks(updateFreelancerProfileDto.getSocialMediaLinks());
             profile.setSkills(updateFreelancerProfileDto.getSkills());
             profile.setAvailability(updateFreelancerProfileDto.getAvailability());
+            profile.setWorkExperiences(updateFreelancerProfileDto.getWorkExperiences());
+            profile.setCertifications(updateFreelancerProfileDto.getCertifications());
+            profile.setLanguagesSpoken(updateFreelancerProfileDto.getLanguagesSpoken());
+            profile.setProjectExperiences(updateFreelancerProfileDto.getProjectExperiences());
 
             UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                     .firstName(updateFreelancerProfileDto.getFirstName())
