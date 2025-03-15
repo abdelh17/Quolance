@@ -8,9 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
-/**
- * Service interface for chat functionality
- */
+
 public interface ChatService {
 
     /**
