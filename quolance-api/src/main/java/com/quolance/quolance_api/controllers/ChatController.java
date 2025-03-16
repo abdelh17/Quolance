@@ -2,11 +2,8 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.chat.MessageDto;
 import com.quolance.quolance_api.dtos.chat.SendMessageDto;
-import com.quolance.quolance_api.dtos.paging.PageResponseDto;
-import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.ChatService;
-import com.quolance.quolance_api.util.PaginationUtils;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -15,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,7 +22,6 @@ import java.util.UUID;
 public class ChatController {
 
     private final ChatService chatService;
-    private final PaginationUtils paginationUtils;
 
     @PostMapping("/send")
     @Operation(
@@ -43,14 +40,11 @@ public class ChatController {
             summary = "Get messages with user",
             description = "Get all messages between the current user and another user"
     )
-    public ResponseEntity<PageResponseDto<MessageDto>> getMessagesBetweenUsers(
-            @PathVariable UUID userId,
-            @Valid PageableRequestDto pageableRequest) {
+    public ResponseEntity<List<MessageDto>> getMessagesBetweenUsers(
+            @PathVariable UUID userId) {
         User currentUser = SecurityUtil.getAuthenticatedUser();
         log.info("User with ID {} getting messages with user ID {}", currentUser.getId(), userId);
-        PageResponseDto<MessageDto> messages = new PageResponseDto<>(
-                chatService.getMessagesBetweenUsers(userId, currentUser, paginationUtils.createPageable(pageableRequest))
-        );
+        List<MessageDto> messages = chatService.getMessagesBetweenUsers(userId, currentUser);
         return ResponseEntity.ok(messages);
     }
 }

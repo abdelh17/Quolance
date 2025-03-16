@@ -12,12 +12,12 @@ import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.FeatureToggle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,7 +55,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Page<MessageDto> getMessagesBetweenUsers(UUID otherUserId, User currentUser, Pageable pageable) {
+    public List<MessageDto> getMessagesBetweenUsers(UUID otherUserId, User currentUser) {
         if (!featureToggle.isEnabled("enableChatSystem")) {
             log.info("Chat system is currently disabled");
             throw new ApiException("Chat feature is currently disabled", 403, null);
@@ -67,11 +67,13 @@ public class ChatServiceImpl implements ChatService {
         // Check if roles match the constraint before allowing message retrieval
         validateRolesForMessaging(currentUser, otherUser);
 
-        Page<Message> messages = messageRepository.findMessagesBetweenUsers(currentUser, otherUser, pageable);
+        List<Message> messages = messageRepository.findMessagesBetweenUsers(currentUser, otherUser);
         log.info("Retrieved {} messages between users {} and {}",
-                messages.getTotalElements(), currentUser.getId(), otherUser.getId());
+                messages.size(), currentUser.getId(), otherUser.getId());
 
-        return messages.map(MessageDto::fromEntity);
+        return messages.stream()
+                .map(MessageDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /**
