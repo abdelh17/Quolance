@@ -27,15 +27,30 @@ import {
 ];
 
 interface CreatePostFormProps {
-  onSubmit: (postData: { title: string; content: string; userId: string | undefined; tags: string[]; files?: File[]  }) => void;
+  onSubmit: (postData: { 
+    id?: string; 
+    title: string; 
+    content: string; 
+    userId?: string; 
+    tags: string[]; 
+    files?: File[] 
+  }) => void;
   onClose: () => void;
+  initialData?: { 
+    id: string; 
+    title: string; 
+    content: string; 
+    tags?: string[]; 
+    imageUrls?: string[] 
+  };
+  isEditMode?: boolean;
 }
 
-const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) => {
+const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, initialData, isEditMode }) => {
   const { user } = useAuthGuard({ middleware: 'auth' });
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [title, setTitle] = useState<string>(initialData?.title || '');
+  const [content, setContent] = useState<string>(initialData?.content || '');
+  const [tags, setTags] = useState<string[]>(initialData?.tags || []);
   const [error, setError] = useState('');
   const [files, setFiles] = useState<File[]>([]);
 
@@ -83,14 +98,21 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose }) =>
       return;
     }
 
-    console.log({ title, content, tags });
+    const postData = { 
+      id: initialData?.id,
+      title, 
+      content, 
+      userId: 
+      user.id, 
+      tags, 
+      files 
+    };
 
-    onSubmit({ title, content, userId: user?.id, tags, files });
-    setTitle('');
-    setContent('');
-    setFiles([]);
-    setTags([]);
-    setError('');
+    if (!isEditMode && user?.id) {
+      onSubmit({ ...postData, userId: user.id });
+    } else {
+      onSubmit(postData);
+    }
     onClose();
   };
 

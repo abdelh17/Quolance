@@ -13,6 +13,8 @@ export interface BlogPostUpdateDto {
   postId: string;
   title: string;
   content: string;
+  // tags: string[];
+  // files?: File[];
 }
 
 export const useCreateBlogPost = (options?: {
@@ -67,19 +69,18 @@ export const useGetAllBlogPosts = () => {
   });
 };
 
-
-// export const useUpdateBlogPost = (options?: {
-//   onSuccess?: (data: BlogPostViewType) => void;
-//   onError?: (error: HttpErrorResponse) => void;
-// }) => {
-//   return useMutation<BlogPostViewType, HttpErrorResponse, BlogPostUpdateDto>({
-//     mutationFn: async (postData) => {
-//       const response = await httpClient.put('/api/blog-posts/update', postData);
-//       return response.data;
-//     },
-//     ...options,
-//   });
-// };
+export const useUpdateBlogPost = (options?: {
+  onSuccess?: (data: BlogPostViewType) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<BlogPostViewType, HttpErrorResponse, BlogPostUpdateDto>({
+    mutationFn: async (postData) => {
+      const response = await httpClient.put('/api/blog-posts/update', postData);
+      return response.data;
+    },
+    ...options,
+  });
+};
 
 export const useDeleteBlogPost = (options?: {
   onSuccess?: () => void;
