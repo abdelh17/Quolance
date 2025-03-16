@@ -1,40 +1,16 @@
 import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect, useRef } from 'react';
-import { PaginationParams, PaginationQueryDefault } from '@/constants/types/pagination-types';
+import { PaginationParams, PaginationQueryDefault, PageMetaData } from '@/constants/types/pagination-types';
 import { showToast } from '@/util/context/ToastProvider';
 import { queryToString } from '@/util/stringUtils';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { MessageDto, SendMessageDto, ChatPollingState } from '@/constants/types/chat-types';
 
-// Types
-export interface MessageDto {
-    id: string;
-    sender_id: string;
-    sender_name: string;
-    receiver_id: string;
-    content: string;
-    timestamp: string;
-}
-
-export interface SendMessageDto {
-    receiver_id: string;
-    content: string;
-}
-
-export interface PageResponseDto<T> {
+// Combined interface to replace PageResponseDto
+export interface PagedContent<T> extends PageMetaData {
     content: T[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-    first: boolean;
-    last: boolean;
     empty: boolean;
-}
-
-export interface ChatPollingState {
-    isPolling: boolean;
-    lastMessageTimestamp: string | null;
 }
 
 // API Functions
@@ -46,8 +22,8 @@ export const sendMessage = async (messageData: SendMessageDto): Promise<MessageD
 export const getMessagesBetweenUsers = async (
     userId: string,
     params: PaginationParams = PaginationQueryDefault
-): Promise<PageResponseDto<MessageDto>> => {
-    const { data } = await httpClient.get<PageResponseDto<MessageDto>>(
+): Promise<PagedContent<MessageDto>> => {
+    const { data } = await httpClient.get<PagedContent<MessageDto>>(
         `/api/chat/messages/${userId}?${queryToString(params)}`
     );
     return data;
@@ -61,18 +37,20 @@ export const useSendMessage = () => {
         mutationFn: (messageData: SendMessageDto) => sendMessage(messageData),
         onSuccess: (newMessage, variables) => {
             // Update the messages cache to include the new message
-            queryClient.setQueryData<PageResponseDto<MessageDto>>(
+            queryClient.setQueryData<PagedContent<MessageDto>>(
                 ['messages', variables.receiver_id],
                 (oldData) => {
                     if (!oldData) return {
                         content: [newMessage],
                         totalElements: 1,
                         totalPages: 1,
-                        size: 10,
-                        number: 0,
+                        pageSize: 10,
+                        pageNumber: 0,
                         first: true,
                         last: true,
-                        empty: false
+                        empty: false,
+                        sortBy: 'timestamp',
+                        sortDirection: 'DESC'
                     };
 
                     return {
@@ -91,7 +69,7 @@ export const useSendMessage = () => {
 };
 
 export const useMessages = (userId: string, params: PaginationParams = PaginationQueryDefault) => {
-    return useQuery<PageResponseDto<MessageDto>, HttpErrorResponse>({
+    return useQuery<PagedContent<MessageDto>, HttpErrorResponse>({
         queryKey: ['messages', userId, params],
         queryFn: () => getMessagesBetweenUsers(userId, params),
         enabled: !!userId,
@@ -165,18 +143,20 @@ export const useChatPolling = (
                 );
 
                 // Update cache
-                queryClient.setQueryData<PageResponseDto<MessageDto>>(
+                queryClient.setQueryData<PagedContent<MessageDto>>(
                     ['messages', userId],
                     (oldData) => {
                         if (!oldData) return {
                             content: newMessages,
                             totalElements: newMessages.length,
                             totalPages: 1,
-                            size: 10,
-                            number: 0,
+                            pageSize: 10,
+                            pageNumber: 0,
                             first: true,
                             last: true,
-                            empty: false
+                            empty: false,
+                            sortBy: 'timestamp',
+                            sortDirection: 'DESC'
                         };
 
                         // Create a map of existing message IDs for quick lookup
