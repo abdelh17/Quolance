@@ -1,14 +1,14 @@
 export interface MessageDto {
     id: string;
-    sender_id: string;
-    sender_name: string;
-    receiver_id: string;
+    senderId: string;
+    senderName: string;
+    receiverId: string;
     content: string;
     timestamp: string;
 }
 
 export interface SendMessageDto {
-    receiver_id: string;
+    receiverId: string;
     content: string;
 }
 

@@ -37,7 +37,7 @@ export const useSendMessage = () => {
         onSuccess: (newMessage, variables) => {
             // Update the messages cache to include the new message
             queryClient.setQueryData<PagedContent<MessageDto>>(
-                ['messages', variables.receiver_id],
+                ['messages', variables.receiverId],
                 (oldData) => {
                     if (!oldData) return {
                         content: [newMessage],
