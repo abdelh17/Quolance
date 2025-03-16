@@ -1,16 +1,9 @@
 import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect, useRef } from 'react';
-import { PaginationParams, PaginationQueryDefault, PageMetaData } from '@/constants/types/pagination-types';
 import { showToast } from '@/util/context/ToastProvider';
-import { queryToString } from '@/util/stringUtils';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { MessageDto, SendMessageDto, ChatPollingState } from '@/constants/types/chat-types';
-
-export interface PagedContent<T> extends PageMetaData {
-    content: T[];
-    empty: boolean;
-}
+import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 
 // API Functions
 export const sendMessage = async (messageData: SendMessageDto): Promise<MessageDto> => {
@@ -18,13 +11,8 @@ export const sendMessage = async (messageData: SendMessageDto): Promise<MessageD
     return data;
 };
 
-export const getMessagesBetweenUsers = async (
-    userId: string,
-    params: PaginationParams = PaginationQueryDefault
-): Promise<PagedContent<MessageDto>> => {
-    const { data } = await httpClient.get<PagedContent<MessageDto>>(
-        `/api/chat/messages/${userId}?${queryToString(params)}`
-    );
+export const getMessagesBetweenUsers = async (userId: string): Promise<MessageDto[]> => {
+    const { data } = await httpClient.get<MessageDto[]>(`/api/chat/messages/${userId}`);
     return data;
 };
 
@@ -36,27 +24,11 @@ export const useSendMessage = () => {
         mutationFn: (messageData: SendMessageDto) => sendMessage(messageData),
         onSuccess: (newMessage, variables) => {
             // Update the messages cache to include the new message
-            queryClient.setQueryData<PagedContent<MessageDto>>(
+            queryClient.setQueryData<MessageDto[]>(
                 ['messages', variables.receiverId],
                 (oldData) => {
-                    if (!oldData) return {
-                        content: [newMessage],
-                        totalElements: 1,
-                        totalPages: 1,
-                        pageSize: 10,
-                        pageNumber: 0,
-                        first: true,
-                        last: true,
-                        empty: false,
-                        sortBy: 'timestamp',
-                        sortDirection: 'DESC'
-                    };
-
-                    return {
-                        ...oldData,
-                        content: [...oldData.content, newMessage],
-                        totalElements: oldData.totalElements + 1
-                    };
+                    if (!oldData) return [newMessage];
+                    return [...oldData, newMessage];
                 }
             );
         },
@@ -67,10 +39,10 @@ export const useSendMessage = () => {
     });
 };
 
-export const useMessages = (userId: string, params: PaginationParams = PaginationQueryDefault) => {
-    return useQuery<PagedContent<MessageDto>, HttpErrorResponse>({
-        queryKey: ['messages', userId, params],
-        queryFn: () => getMessagesBetweenUsers(userId, params),
+export const useMessages = (userId: string) => {
+    return useQuery<MessageDto[], HttpErrorResponse>({
+        queryKey: ['messages', userId],
+        queryFn: () => getMessagesBetweenUsers(userId),
         enabled: !!userId,
     });
 };
@@ -102,22 +74,20 @@ export const useChatPolling = (
         if (!userId || !enabled) return;
 
         try {
-            const params: PaginationParams = {
-                ...PaginationQueryDefault,
-                sortBy: 'timestamp',
-                sortDirection: 'DESC'
-            };
-
-            const response = await getMessagesBetweenUsers(userId, params);
-            const messages = response.content;
+            const messages = await getMessagesBetweenUsers(userId);
 
             if (messages.length === 0) return;
+
+            // Sort messages by timestamp (newest first) to find the latest message
+            const sortedMessages = [...messages].sort((a, b) =>
+                new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+            );
 
             // On first fetch, just store timestamp
             if (!state.lastMessageTimestamp) {
                 setState(prev => ({
                     ...prev,
-                    lastMessageTimestamp: messages[0].timestamp
+                    lastMessageTimestamp: sortedMessages[0].timestamp
                 }));
                 return;
             }
@@ -130,10 +100,14 @@ export const useChatPolling = (
             });
 
             if (newMessages.length > 0) {
-                // Update the last timestamp
+                // Update the last timestamp (use the newest message's timestamp)
+                const newestMessage = newMessages.reduce((newest, msg) => {
+                    return new Date(msg.timestamp).getTime() > new Date(newest.timestamp).getTime() ? msg : newest;
+                }, newMessages[0]);
+
                 setState(prev => ({
                     ...prev,
-                    lastMessageTimestamp: newMessages[0].timestamp
+                    lastMessageTimestamp: newestMessage.timestamp
                 }));
 
                 // Sort by timestamp (oldest first)
@@ -142,33 +116,18 @@ export const useChatPolling = (
                 );
 
                 // Update cache
-                queryClient.setQueryData<PagedContent<MessageDto>>(
+                queryClient.setQueryData<MessageDto[]>(
                     ['messages', userId],
                     (oldData) => {
-                        if (!oldData) return {
-                            content: newMessages,
-                            totalElements: newMessages.length,
-                            totalPages: 1,
-                            pageSize: 10,
-                            pageNumber: 0,
-                            first: true,
-                            last: true,
-                            empty: false,
-                            sortBy: 'timestamp',
-                            sortDirection: 'DESC'
-                        };
+                        if (!oldData) return newMessages;
 
                         // Create a map of existing message IDs for quick lookup
-                        const existingIds = new Set(oldData.content.map(msg => msg.id));
+                        const existingIds = new Set(oldData.map(msg => msg.id));
 
                         // Only add messages that don't already exist in the cache
                         const uniqueNewMessages = newMessages.filter(msg => !existingIds.has(msg.id));
 
-                        return {
-                            ...oldData,
-                            content: [...oldData.content, ...uniqueNewMessages],
-                            totalElements: oldData.totalElements + uniqueNewMessages.length
-                        };
+                        return [...oldData, ...uniqueNewMessages];
                     }
                 );
 
