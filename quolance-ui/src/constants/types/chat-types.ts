@@ -12,17 +12,6 @@ export interface SendMessageDto {
     content: string;
 }
 
-export interface PageResponseDto<T> {
-    content: T[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-    first: boolean;
-    last: boolean;
-    empty: boolean;
-}
-
 export interface ChatPollingState {
     isPolling: boolean;
     lastMessageTimestamp: string | null;
