@@ -7,7 +7,6 @@ import { queryToString } from '@/util/stringUtils';
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { MessageDto, SendMessageDto, ChatPollingState } from '@/constants/types/chat-types';
 
-// Combined interface to replace PageResponseDto
 export interface PagedContent<T> extends PageMetaData {
     content: T[];
     empty: boolean;
