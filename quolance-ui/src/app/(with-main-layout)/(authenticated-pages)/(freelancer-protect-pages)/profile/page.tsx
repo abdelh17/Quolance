@@ -215,8 +215,6 @@ const FreelancerProfile: React.FC = () => {
           profile={profile}
           profilePercentage={profilePercentage}
           isHidden={profilePercentage === 100}
-          updateEditModes={updateEditModes}
-          checkEditModes={checkEditModes}
         />
 
         {/* About Section */}
