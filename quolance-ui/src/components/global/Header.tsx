@@ -188,7 +188,7 @@ function Header() {
                       className='bg-b300 hover:text-n900 max-xxl:size-11 max-xxl:!leading-none xxl:px-8 xxl:py-3 relative flex items-center justify-center overflow-hidden rounded-full text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
                     >
                       <span className='max-xxl:hidden relative z-10'>
-                        Browse All Procjets
+                        Browse All Projects
                       </span>
                       <PiPlusBold className='xxl:hidden relative z-10 text-xl' />
                     </Link>
