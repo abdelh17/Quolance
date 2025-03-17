@@ -20,7 +20,6 @@ import AvailabilitySection from './components/AvailabilitySection';
 import SkillsSection from './components/SkillsSection';
 import ContactSection from './components/ContactSection';
 import ProfileStatus from './components/ProfileStatus';
-import { UpdateProfileModal } from './components/UpdateProfileModal';
 import { SKILLS_OPTIONS } from '@/constants/types/form-types';
 import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
 import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
@@ -193,18 +192,6 @@ const FreelancerProfile: React.FC = () => {
     <div className='min-h-screen bg-gray-50'>
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
-        {editModes.editProfile && (
-          <UpdateProfileModal
-            profile={profile}
-            inputClassName={inputClassName}
-            availableSkills={SKILLS_OPTIONS}
-            saveEditModes={saveEditModes}
-            handleInputChange={handleInputChange}
-            handleSkillsChange={handleSkillsChange}
-            handleSocialLinksChange={handleSocialLinksChange}
-            handleSave={handleSave}
-          />
-        )}
 
         {/* Header */}
         <ProfileHeader
