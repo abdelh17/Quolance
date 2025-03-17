@@ -18,7 +18,8 @@ import { getUserRoleForAPI } from '@/util/utils';
 
 function ProjectPage() {
   const { id } = useParams();
-  const hasEdit = useSearchParams().has('edit');
+  const searchParams = useSearchParams();
+  const hasEdit = searchParams.has('edit');
   const { user, isLoading: isLoadingUser } = useAuthGuard({
     middleware: 'auth',
   });
@@ -79,6 +80,8 @@ function ProjectPage() {
   const handleUpdateProject = async () => {
     await updateProjectMutate(draftProject);
     setEditMode(false);
+    // Remove edit query param from URL
+    window.history.replaceState({}, '', window.location.pathname);
   };
 
   return (
