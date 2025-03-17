@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.impl;
+package com.quolance.quolance_api.services.chat.impl;
 
 import com.quolance.quolance_api.dtos.chat.MessageDto;
 import com.quolance.quolance_api.dtos.chat.SendMessageDto;
@@ -7,7 +7,7 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.repositories.MessageRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import com.quolance.quolance_api.services.ChatService;
+import com.quolance.quolance_api.services.chat.ChatService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import com.quolance.quolance_api.util.FeatureToggle;
 import lombok.RequiredArgsConstructor;
