@@ -10,12 +10,7 @@ public class ProfileCompletionCalculator {
         int totalWeight = 0;
         int completedWeight = 0;
 
-
         for (ProfileField field : ProfileField.values()) {
-
-            if (field == ProfileField.USERNAME) {
-                continue;
-            }
 
             totalWeight += field.getWeight();
             if (isFieldCompleted(profile, field)) {
@@ -32,8 +27,6 @@ public class ProfileCompletionCalculator {
                 return profile.getFirstName() != null && !profile.getFirstName().isEmpty();
             case LAST_NAME:
                 return profile.getLastName() != null && !profile.getLastName().isEmpty();
-            case USERNAME:
-                return profile.getUsername() != null && !profile.getUsername().isEmpty();
             case PROFILE_IMAGE:
                 return profile.getProfileImageUrl() != null && !profile.getProfileImageUrl().isEmpty();
             case BIO:
@@ -52,6 +45,12 @@ public class ProfileCompletionCalculator {
                 return profile.getSkills() != null && !profile.getSkills().isEmpty();
             case AVAILABILITY:
                 return profile.getAvailability() != null;
+            case LANGUAGES_SPOKEN:
+                return profile.getLanguagesSpoken() != null && !profile.getLanguagesSpoken().isEmpty();
+            case PROJECT_EXPERIENCES:
+                return profile.getProjectExperiences() != null && !profile.getProjectExperiences().isEmpty();
+            case WORK_EXPERIENCES:
+                return profile.getWorkExperiences() != null && !profile.getWorkExperiences().isEmpty();
             default:
                 return false;
         }
