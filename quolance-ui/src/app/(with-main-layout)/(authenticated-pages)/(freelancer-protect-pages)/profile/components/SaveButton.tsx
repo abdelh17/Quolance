@@ -8,7 +8,7 @@ interface SaveButtonProps {
 
 const SaveButton: React.FC<SaveButtonProps> = ({ editModeKey, handleSave }) => {
   const handleClick = () => {
-    handleSave(editModeKey); // Call the function to update the edit mode
+    handleSave(editModeKey);
   };
 
   return (
@@ -18,6 +18,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({ editModeKey, handleSave }) => {
         animation='default'
         size='sm'
         onClick={handleClick}
+        className='px-6'
       >
         Save
       </Button>
