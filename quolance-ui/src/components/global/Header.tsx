@@ -249,13 +249,14 @@ function Header() {
                     </Link>
                   )}
                   {user?.role === 'FREELANCER' && (
-                    <Link
-                      href="/projects"
-                      className="bg-b50 text-b300 hover:text-n900 relative overflow-hidden rounded-full px-8 py-3 duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)] max-xl:hidden"
+                      <Link
+                      href="/projcets"
+                      className="bg-b300 hover:text-n900 max-xxl:size-11 max-xxl:!leading-none xxl:px-8 xxl:py-3 relative flex items-center justify-center overflow-hidden rounded-full text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
                     >
-                      <span className="relative z-10">
-                        Browse All Projects
+                      <span className="max-xxl:hidden relative z-10">
+                        Browse All Procjets
                       </span>
+                      <PiPlusBold className="xxl:hidden relative z-10 text-xl" />
                     </Link>
                   )}
                 </div>
