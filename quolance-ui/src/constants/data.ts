@@ -21,6 +21,55 @@ export const expertiseNeeded = [
   'Digital Marketer',
 ];
 
+export const authenticatedHeaderMenu = [
+  {
+    id: uuidv4(),
+    name: 'How It Works',
+    isSubmenu: true,
+    submenu: [
+      {
+        id: uuidv4(),
+        name: 'Find A Freelancer',
+        link: '/how-it-works/find-a-freelancer',
+      },
+      {
+        id: uuidv4(),
+        name: 'Find Clients',
+        link: '/how-it-works/find-clients',
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: 'What\'s New',
+    isSubmenu: true,
+    submenu: [
+      {
+        id: uuidv4(),
+        name: 'Blog',
+        link: '/whats-new/blog',
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: 'Support',
+    isSubmenu: true,
+    submenu: [
+      {
+        id: uuidv4(),
+        name: 'FAQs',
+        link: '/support/faqs',
+      },
+      {
+        id: uuidv4(),
+        name: 'Contact Us',
+        link: '/support/contact-us',
+      },
+    ],
+  },
+];
+
 export const headerMenu = [
   {
     id: uuidv4(),
