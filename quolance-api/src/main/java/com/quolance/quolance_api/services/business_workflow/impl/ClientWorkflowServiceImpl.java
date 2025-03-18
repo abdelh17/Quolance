@@ -55,10 +55,18 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         projectToSave.setProjectStatus(ProjectStatus.PENDING);
         Project savedProject = projectService.saveProject(projectToSave);
 
+        // Notify client that the project has been created successfully.
+        String creationMessage = "Your project '" + savedProject.getTitle() + "' has been created successfully.";
+        notificationMessageService.sendNotificationToUser(client, client, creationMessage);
+
         if (featureToggle.isEnabled("useAiProjectEvaluation")) {
             log.info("Automated evaluation of project enabled. AI evaluation of project for approval....");
             ProjectEvaluationResult result = projectService.evaluateProjectForApproval(savedProject);
             result.setProjectId(savedProject.getId());
+
+            // Notify client about the AI evaluation result.
+            String evalMessage = "Your project '" + savedProject.getTitle() + "' has been evaluated by AI.";
+            notificationMessageService.sendNotificationToUser(client, client, evalMessage);
             return result;
         } else {
             log.info("Automated evaluation of project disabled.");
@@ -86,6 +94,10 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         }
 
         projectService.deleteProject(project);
+
+        // Notify client that the project has been deleted.
+        String deletionMessage = "Your project '" + project.getTitle() + "' has been deleted.";
+        notificationMessageService.sendNotificationToUser(client, client, deletionMessage);
     }
 
     @Override
@@ -119,8 +131,6 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                 if (filters.getProjectStatus() != null) {
                     predicates.add(criteriaBuilder.equal(root.get("projectStatus"), filters.getProjectStatus()));
                 }
-
-
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
@@ -129,7 +139,6 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         Page<Project> projectPage = projectService.findAllWithFilters(spec, pageable);
         return projectPage.map(ProjectDto::fromEntity);
     }
-
 
     @Override
     public List<ApplicationDto> getAllApplicationsToProject(UUID projectId, User client) {
@@ -142,7 +151,9 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                     .build();
         }
 
-        return applicationService.getAllApplicationsByProjectId(projectId).stream().map(ApplicationDto::fromEntity).toList();
+        return applicationService.getAllApplicationsByProjectId(projectId).stream()
+                .map(ApplicationDto::fromEntity)
+                .toList();
     }
 
     @Override
@@ -157,6 +168,10 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         }
 
         projectService.updateProject(existingProject, projectUpdateDto);
+
+        // Notify client that the project has been updated successfully.
+        String updateMessage = "Your project '" + existingProject.getTitle() + "' has been updated successfully.";
+        notificationMessageService.sendNotificationToUser(client, client, updateMessage);
 
         return ProjectDto.fromEntity(existingProject);
     }
@@ -188,7 +203,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                 }
 
                 if (filters.getSkills() != null && !filters.getSkills().isEmpty()) {
-                    for(Tag skill : filters.getSkills()) {
+                    for (Tag skill : filters.getSkills()) {
                         predicates.add(root.join("profile").join("skills").in(skill));
                     }
                 }
@@ -206,6 +221,3 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     }
 
 }
-
-
-

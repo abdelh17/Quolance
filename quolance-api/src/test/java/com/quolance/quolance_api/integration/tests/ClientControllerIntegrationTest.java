@@ -1,5 +1,7 @@
 package com.quolance.quolance_api.integration.tests;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectCreateDto;
@@ -8,9 +10,16 @@ import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
+import com.quolance.quolance_api.entities.enums.ExpectedDeliveryTime;
+import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
+import com.quolance.quolance_api.entities.enums.PriceRange;
+import com.quolance.quolance_api.entities.enums.ProjectCategory;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.integration.NoOpNotificationConfig;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
+import com.quolance.quolance_api.repositories.NotificationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.util.FeatureToggle;
@@ -23,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -35,6 +45,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
+@ContextConfiguration(classes = {NoOpNotificationConfig.class})
 class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
@@ -46,15 +57,24 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    private User client;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @MockBean
     private FeatureToggle featureToggle;
 
+    private User client;
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeEach
     void setUp() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
         projectRepository.deleteAll();
         userRepository.deleteAll();
+        notificationRepository.deleteAll();
+
+        userRepository.save(EntityCreationHelper.createAdmin());
         client = userRepository.save(EntityCreationHelper.createClient());
 
         session = sessionCreationHelper.getSession("client@test.com", "Password123!");
@@ -85,16 +105,15 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        Project project = projectRepository.findAll().getFirst();
+        Project project = projectRepository.findAll().get(0);
         assertThat(jsonResponse).containsEntry("reason", null); // always null when AI is disabled
         assertThat(projectRepository.findAll()).hasSize(1);
         assertThat(project.getTitle()).isEqualTo("title");
     }
 
-
     @Test
     void createProjectWithExpirationDateSetsExpirationDate() throws Exception {
-        //Arrange
+        // Arrange
         Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
 
         ProjectCreateDto projectDto = ProjectCreateDto.builder()
@@ -106,18 +125,22 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .expirationDate(LocalDate.now().plusDays(10))
                 .build();
-        //Act
-        mockMvc.perform(post("/api/client/create-project").session(session)
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+
+        // Act
+        mockMvc.perform(post("/api/client/create-project")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(projectDto)))
                 .andExpect(status().isOk());
-        //Assert
-        Project project = projectRepository.findAll().getFirst();
+
+        // Assert
+        Project project = projectRepository.findAll().get(0);
         assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(10));
     }
 
     @Test
     void createProjectWithNoExpirationDateSetsExpirationDateTo7DaysFromNow() throws Exception {
-        //Arrange
+        // Arrange
         Mockito.when(featureToggle.isEnabled("useAiProjectEvaluation")).thenReturn(false);
 
         ProjectCreateDto projectDto = ProjectCreateDto.builder()
@@ -129,18 +152,21 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .expectedDeliveryTime(ExpectedDeliveryTime.FLEXIBLE)
                 .build();
 
-        //Act
-        mockMvc.perform(post("/api/client/create-project").session(session).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(projectDto)))
+        // Act
+        mockMvc.perform(post("/api/client/create-project")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(projectDto)))
                 .andExpect(status().isOk());
 
-        //Assert
-        Project project = projectRepository.findAll().getFirst();
+        // Assert
+        Project project = projectRepository.findAll().get(0);
         assertThat(project.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(7));
     }
 
     @Test
     void getProjectByIdWhenNoneExistReturnsNotFound() throws Exception {
-        //Act
+        // Act
         UUID randomUUID = UUID.randomUUID();
         String response = mockMvc.perform(get("/api/client/projects/" + randomUUID).session(session))
                 .andExpect(status().isNotFound())
@@ -150,13 +176,13 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
 
-        //Assert
+        // Assert
         assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + randomUUID);
     }
 
     @Test
     void updatePendingProjectReturnsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
@@ -168,15 +194,16 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .expectedDeliveryTime(ExpectedDeliveryTime.IMMEDIATELY)
                 .build();
 
-        //Act
-        String response = mockMvc.perform(put("/api/client/projects/" + project.getId()).session(session)
+        // Act
+        String response = mockMvc.perform(put("/api/client/projects/" + project.getId())
+                        .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateProjectDto)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
         assertThat(projectResponse).containsEntry("title", "updated title")
                 .containsEntry("description", "new description")
@@ -189,7 +216,7 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
     @ParameterizedTest
     @ValueSource(strings = {"OPEN", "CLOSED", "REJECTED"})
     void updateNotPendingProjectDoesNotUpdateProject(String status) throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.valueOf(status), client));
 
         ProjectUpdateDto updateProjectDto = ProjectUpdateDto.builder()
@@ -201,8 +228,9 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .expectedDeliveryTime(ExpectedDeliveryTime.IMMEDIATELY)
                 .build();
 
-        //Act
-        String response = mockMvc.perform(put("/api/client/projects/" + project.getId()).session(session)
+        // Act
+        String response = mockMvc.perform(put("/api/client/projects/" + project.getId())
+                        .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateProjectDto)))
                 .andExpect(status().isForbidden())
@@ -210,23 +238,23 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "Project can only be updated when in PENDING state");
     }
 
     @Test
     void getProjectByIdReturnsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId()).session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
         assertThat(projectResponse).containsEntry("title", "title")
                 .containsEntry("description", "description")
@@ -238,22 +266,21 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getAllProjectsWhenNoneExistReturnsEmptyList() throws Exception {
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/client/projects/all").session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
         Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
-
         List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
         assertThat(content).isEmpty();
     }
 
     @Test
     void getAllProjectsWhenExistIsOk() throws Exception {
-        //Arrange
+        // Arrange
         projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
         Project project2 = new Project();
@@ -266,7 +293,7 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
         project2.setClient(client);
         projectRepository.save(project2);
 
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/client/projects/all")
                         .param("page", "0")
                         .param("size", "10")
@@ -276,22 +303,18 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .andReturn()
                 .getResponse().getContentAsString();
         Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
-
         List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
 
-        //Assert
+        // Assert
         assertThat(content).hasSize(2);
-
         Map<String, Object> projectResponse1 = content.get(0);
         Map<String, Object> projectResponse2 = content.get(1);
-
         assertThat(projectResponse1).containsEntry("title", "title")
                 .containsEntry("description", "description")
                 .containsEntry("category", "APP_DEVELOPMENT")
                 .containsEntry("priceRange", "LESS_500")
                 .containsEntry("experienceLevel", "JUNIOR")
                 .containsEntry("expectedDeliveryTime", "FLEXIBLE");
-
         assertThat(projectResponse2).containsEntry("title", "title2")
                 .containsEntry("description", "description2")
                 .containsEntry("category", "APP_DEVELOPMENT")
@@ -300,98 +323,90 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
                 .containsEntry("expectedDeliveryTime", "FLEXIBLE");
     }
 
-
     @Test
     void deleteProjectIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
-        //Act
+        // Act
         String response = mockMvc.perform(delete("/api/client/projects/" + project.getId()).session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
         assertThat(response).isEqualTo("Project deleted successfully");
         assertThat(projectRepository.findById(project.getId())).isEmpty();
     }
 
     @Test
     void deleteNonExistingProjectGivesError() throws Exception {
-        //Arrange
+        // Arrange
         UUID randomUUID = UUID.randomUUID();
-        //Act
+        // Act
         String response = mockMvc.perform(delete("/api/client/projects/" + randomUUID).session(session))
                 .andExpect(status().isNotFound())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + randomUUID);
     }
 
     @Test
     void getAllApplicationsToProjectGivesOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
-
         applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
 
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
-
         List<Object> responseList = objectMapper.readValue(response, List.class);
         Map<String, Object> applicationReturned = (Map<String, Object>) responseList.get(0);
 
-        //Assert
+        // Assert
         assertThat(applicationReturned)
                 .containsEntry("projectId", project.getId().toString())
                 .containsEntry("projectTitle", project.getTitle())
                 .containsEntry("freelancerId", freelancer.getId().toString());
-
     }
 
     @Test
     void getAllApplicationsToProjectWhenNoneExistReturnsEmptyList() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
 
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/client/projects/" + project.getId() + "/applications/all").session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
-
         List<Object> responseList = objectMapper.readValue(response, List.class);
 
-        //Assert
+        // Assert
         assertThat(responseList).isEmpty();
     }
 
-
     @Test
     void selectFreelancerChangesApplicationStatusAndProjectStatusIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
-
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
 
-        //Act
-        String response = mockMvc.perform(post("/api/client/applications/" + application.getId() + "/select-freelancer").session(session))
+        // Act
+        String response = mockMvc.perform(post("/api/client/applications/" + application.getId() + "/select-freelancer")
+                        .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
         assertThat(response).isEqualTo("Freelancer selected successfully");
         assertThat(applicationRepository.findById(application.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.ACCEPTED);
         assertThat(projectRepository.findById(project.getId()).get().getSelectedFreelancer().getEmail()).isEqualTo(freelancer.getEmail());
@@ -400,100 +415,91 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void selectFreelancerRejectsOtherFreelancersApplications() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-
         User freelancer1 = userRepository.save(EntityCreationHelper.createFreelancer(1));
-
         User freelancer2 = userRepository.save(EntityCreationHelper.createFreelancer(2));
-
         Application application1 = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer1));
-
         Application application2 = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer2));
 
-        //Act
+        // Act
         mockMvc.perform(post("/api/client/applications/" + application1.getId() + "/select-freelancer").session(session))
                 .andExpect(status().isOk());
 
+        // Assert
         assertThat(applicationRepository.findById(application2.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
     }
 
-
     @Test
     void rejectApplicationIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
-
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
 
-        //Act
-        String response = mockMvc.perform(post("/api/client/applications/" + application.getId() + "/reject-freelancer").session(session))
+        // Act
+        String response = mockMvc.perform(post("/api/client/applications/" + application.getId() + "/reject-freelancer")
+                        .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        //Assert
+        // Assert
         assertThat(response).isEqualTo("Freelancer rejected successfully");
         assertThat(applicationRepository.findById(application.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
     }
 
     @Test
     void rejectManyApplicationsIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-
         User freelancer1 = userRepository.save(EntityCreationHelper.createFreelancer(1));
-
         User freelancer2 = userRepository.save(EntityCreationHelper.createFreelancer(2));
-
         Application application1 = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer1));
-
         Application application2 = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer2));
 
-        //Act
+        // Act
         mockMvc.perform(post("/api/client/applications/bulk/reject-freelancer")
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(List.of(application1.getId(), application2.getId()))))
                 .andExpect(status().isPartialContent());
 
-        //Assert
+        // Assert
         assertThat(applicationRepository.findById(application1.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
         assertThat(applicationRepository.findById(application2.getId()).get().getApplicationStatus()).isEqualTo(ApplicationStatus.REJECTED);
     }
 
     @Test
     void getFreelancerProfileReturnsOk() throws Exception {
-        //Arrange
+        // Arrange
         User freelancer = userRepository.save(EntityCreationHelper.createFreelancer(1));
 
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/public/freelancer/profile/" + freelancer.getUsername()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        //Assert
+        // Assert
         Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
         assertThat(profileResponse).containsEntry("userId", freelancer.getId().toString());
     }
 
     @Test
     void getFreelancerProfileWhenNotExistReturnsNotFound() throws Exception {
-        //Arrange
+        // Arrange
         String nonExistantUsername = "IDoNotExist";
 
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/public/freelancer/profile/" + nonExistantUsername))
                 .andExpect(status().is4xxClientError())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "Freelancer not found");
     }

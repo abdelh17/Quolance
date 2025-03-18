@@ -3,7 +3,7 @@ package com.quolance.quolance_api.controllers;
 import com.quolance.quolance_api.dtos.chat.MessageDto;
 import com.quolance.quolance_api.dtos.chat.SendMessageDto;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.services.ChatService;
+import com.quolance.quolance_api.services.chat.ChatService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

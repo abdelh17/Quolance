@@ -6,7 +6,9 @@ import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.integration.NoOpNotificationConfig;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
+import com.quolance.quolance_api.repositories.NotificationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.repositories.blog.BlogPostRepository;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
+@ContextConfiguration(classes = {NoOpNotificationConfig.class})
 class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
@@ -35,10 +39,15 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private User client;
 
     @BeforeEach
     void setUp() throws Exception {
+        // Clear notifications first to avoid FK constraint issues
+        notificationRepository.deleteAll();
         projectRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -47,7 +56,6 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
         session = sessionCreationHelper.getSession("admin@test.com", "Password123!");
     }
-
 
     @Test
     void getAllPendingProjectIsOk() throws Exception {
@@ -69,9 +77,7 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
         // Assert
         assertThat(content).hasSize(1);
-
-        Map<String, Object> projectResponse = content.getFirst();
-
+        Map<String, Object> projectResponse = content.get(0);
         assertThat(projectResponse)
                 .containsEntry("id", pendingProject.getId().toString())
                 .containsEntry("projectStatus", "PENDING");
@@ -92,7 +98,6 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
         // Assert
         assertThat(response).isEqualTo("Project approved successfully");
-
         Project approvedProject = projectRepository.findById(pendingProject.getId()).get();
         assertThat(approvedProject.getProjectStatus()).isEqualTo(ProjectStatus.OPEN);
     }
@@ -138,7 +143,6 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
     void rejectPendingProjectIsOkBecomesRejected() throws Exception {
         // Arrange
         Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-
         ProjectRejectionDto rejectionDto = new ProjectRejectionDto("This project does not respect platform rules.");
 
         // Act
@@ -153,11 +157,9 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
         // Assert
         assertThat(response).isEqualTo("Project rejected successfully");
-
         Project rejectedProject = projectRepository.findById(pendingProject.getId()).get();
         assertThat(rejectedProject.getProjectStatus()).isEqualTo(ProjectStatus.REJECTED);
         assertThat(rejectedProject.getRejectionReason()).isEqualTo("This project does not respect platform rules.");
-
     }
 
     @Test

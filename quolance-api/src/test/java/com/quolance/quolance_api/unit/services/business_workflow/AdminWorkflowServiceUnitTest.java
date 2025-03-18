@@ -7,6 +7,7 @@ import com.quolance.quolance_api.entities.enums.ProjectCategory;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.impl.AdminWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +36,10 @@ class AdminWorkflowServiceUnitTest {
 
     @Mock
     private ProjectService projectService;
+
+    // NEW: Inject NotificationMessageService as a mock
+    @Mock
+    private NotificationMessageService notificationMessageService;
 
     @InjectMocks
     private AdminWorkflowServiceImpl adminWorkflowService;

@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services;
+package com.quolance.quolance_api.services.chat;
 
 import com.quolance.quolance_api.dtos.chat.MessageDto;
 import com.quolance.quolance_api.dtos.chat.SendMessageDto;
