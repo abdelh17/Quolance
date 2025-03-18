@@ -12,10 +12,18 @@ import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
+import com.quolance.quolance_api.entities.enums.Availability;
+import com.quolance.quolance_api.entities.enums.ExpectedDeliveryTime;
+import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
+import com.quolance.quolance_api.entities.enums.PriceRange;
+import com.quolance.quolance_api.entities.enums.ProjectCategory;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.entities.enums.Tag;
 import com.quolance.quolance_api.services.business_workflow.impl.ClientWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +48,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +62,10 @@ class ClientWorkflowServiceUnitTest {
 
     @Mock
     private UserService userService;
+
+    // NEW: Provide a mock for NotificationMessageService so it isn't null.
+    @Mock
+    private NotificationMessageService notificationMessageService;
 
     @InjectMocks
     private ClientWorkflowServiceImpl clientWorkflowService;
@@ -76,7 +89,7 @@ class ClientWorkflowServiceUnitTest {
 
         mockFreelancer = User.builder()
                 .id(UUID.randomUUID())
-                .role(Role.FREELANCER)
+                .role(null)
                 .firstName("John")
                 .lastName("Doe")
                 .email("freelancer@test.com")
@@ -134,7 +147,6 @@ class ClientWorkflowServiceUnitTest {
 
         verify(projectService).saveProject(any(Project.class));
     }
-
 
     @Test
     void getProject_Success() {
@@ -207,7 +219,8 @@ class ClientWorkflowServiceUnitTest {
 
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
-        verify(projectService).findAllWithFilters(any(Specification.class), any(Pageable.class));}
+        verify(projectService).findAllWithFilters(any(Specification.class), any(Pageable.class));
+    }
 
     @Test
     void getAllApplicationsToProject_WhenOwner_Success() {
@@ -270,7 +283,6 @@ class ClientWorkflowServiceUnitTest {
 
     @Test
     void getAllAvailableFreelancers_WithSearchNameFilter_ReturnsFilteredFreelancers() {
-
         List<User> mockFreelancers = List.of(mockFreelancer);
         Page<User> mockPage = new PageImpl<>(mockFreelancers);
         Pageable pageable = PageRequest.of(0, 10);
@@ -336,6 +348,4 @@ class ClientWorkflowServiceUnitTest {
         assertThat(result.getContent().get(0).getSkills()).containsExactlyInAnyOrder(Tag.JAVA, Tag.JAVASCRIPT);
         verify(userService).findAllWithFilters(any(Specification.class), any(Pageable.class));
     }
-
-
 }
