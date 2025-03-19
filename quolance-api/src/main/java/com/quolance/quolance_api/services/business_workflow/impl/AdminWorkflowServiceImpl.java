@@ -1,9 +1,12 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
 import com.quolance.quolance_api.dtos.project.ProjectDto;
+import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AdminWorkflowServiceImpl implements AdminWorkflowService {
     private final ProjectService projectService;
+    private final NotificationMessageService notificationMessageService;
 
     @Override
     public Page<ProjectDto> getAllPendingProjects(Pageable pageable) {
@@ -25,12 +29,28 @@ public class AdminWorkflowServiceImpl implements AdminWorkflowService {
 
     @Override
     public void approveProject(UUID projectId) {
-        projectService.updateProjectStatus(projectService.getProjectById(projectId), ProjectStatus.OPEN);
+        Project project = projectService.getProjectById(projectId);
+        projectService.updateProjectStatus(project, ProjectStatus.OPEN);
+
+        // Notify the project client that their project has been approved.
+        User client = project.getClient();
+        if (client != null) {
+            String approvalMessage = "Your project '" + project.getTitle() + "' has been approved and is now open.";
+            notificationMessageService.sendNotificationToUser(client, client, approvalMessage);
+        }
     }
 
     @Override
     public void rejectProject(UUID projectId, String rejectionReason) {
-        projectService.updateProjectStatus(projectService.getProjectById(projectId), ProjectStatus.REJECTED);
-        projectService.setProjectRejectionReason(projectService.getProjectById(projectId), rejectionReason);
+        Project project = projectService.getProjectById(projectId);
+        projectService.updateProjectStatus(project, ProjectStatus.REJECTED);
+        projectService.setProjectRejectionReason(project, rejectionReason);
+
+        // Notify the project client that their project has been rejected.
+        User client = project.getClient();
+        if (client != null) {
+            String rejectionMessage = "Your project '" + project.getTitle() + "' has been rejected. Reason: " + rejectionReason;
+            notificationMessageService.sendNotificationToUser(client, client, rejectionMessage);
+        }
     }
 }

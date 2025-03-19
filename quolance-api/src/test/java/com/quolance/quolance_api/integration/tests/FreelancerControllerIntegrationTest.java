@@ -6,7 +6,11 @@ import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
+import com.quolance.quolance_api.entities.enums.Availability;
+import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.integration.NoOpNotificationConfig;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
@@ -18,6 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -30,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
+@ContextConfiguration(classes = {NoOpNotificationConfig.class})
 class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     private User freelancer, client;
@@ -43,7 +49,6 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-
     @BeforeEach
     void setUp() throws Exception {
         projectRepository.deleteAll();
@@ -56,19 +61,18 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void applyToProjectIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         String message = "This is a test application message.";
-        //Act
+        // Act
         mockMvc.perform(post("/api/freelancer/submit-application")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId(), message)))
                         .session(session))
                 .andExpect(status().isOk());
 
-        //Assert
+        // Assert
         Application createdApplication = applicationRepository.findAll().get(0);
-
         assertThat(createdApplication.getFreelancer().getId()).isEqualTo(freelancer.getId());
         assertThat(createdApplication.getProject().getId()).isEqualTo(project.getId());
         assertThat(createdApplication.getApplicationStatus()).isEqualTo(ApplicationStatus.APPLIED);
@@ -76,12 +80,11 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void applyToProjectIfAlreadyAppliedDoesNotCreateApplication() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
         String message = "This is a test application message.";
-
-        //Act
+        // Act
         String response = mockMvc.perform(post("/api/freelancer/submit-application")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId(), message)))
@@ -90,22 +93,21 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "You have already applied to this project.");
         assertThat(applicationRepository.findAll()).hasSize(1);
-        Application createdApplication = applicationRepository.findAll().getFirst();
+        Application createdApplication = applicationRepository.findAll().get(0);
         assertThat(createdApplication.getCreationDate()).isEqualToIgnoringNanos(application.getCreationDate());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"PENDING", "REJECTED", "CLOSED"})
     void applyToNotOpenProjectDoesNotCreateApplication(String status) throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.valueOf(status), client));
         String message = "This is a test application message.";
-        //Act
+        // Act
         String response = mockMvc.perform(post("/api/freelancer/submit-application")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new ApplicationCreateDto(project.getId(), message)))
@@ -114,8 +116,7 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "You can't apply to this project.");
         assertThat(applicationRepository.findAll()).isEmpty();
@@ -123,23 +124,20 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getApplicationByIdIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
-
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/freelancer/applications/" + application.getId())
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
-
-        assertThat(projectResponse).containsEntry("id", application.getId().toString())
-                .containsEntry("status", "APPLIED")
+        assertThat(projectResponse)
+                .containsEntry("id", application.getId().toString())
                 .containsEntry("status", application.getApplicationStatus().name())
                 .containsEntry("projectId", project.getId().toString())
                 .containsEntry("projectTitle", project.getTitle())
@@ -148,40 +146,36 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void cancelApplicationIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
-
-        //Act
+        // Act
         String response = mockMvc.perform(delete("/api/freelancer/applications/" + application.getId())
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         assertThat(response).isEqualTo("Application deleted successfully.");
         assertThat(applicationRepository.findAll()).isEmpty();
     }
 
     @Test
     void cancelAcceptedApplicationDoesNotDelete() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
         application.setApplicationStatus(ApplicationStatus.ACCEPTED);
         applicationRepository.save(application);
-
-        //Act
+        // Act
         String response = mockMvc.perform(delete("/api/freelancer/applications/" + application.getId())
                         .session(session))
                 .andExpect(status().isConflict())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "You cannot cancel an application that has been accepted");
         assertThat(applicationRepository.findAll()).hasSize(1);
@@ -189,14 +183,12 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getAllFreelancerApplicationsIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
         Application application1 = applicationRepository.save(EntityCreationHelper.createApplication(project1, freelancer));
         Application application2 = applicationRepository.save(EntityCreationHelper.createApplication(project2, freelancer));
-
-
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/freelancer/applications/all")
                         .param("sortDirection", "asc")
                         .session(session))
@@ -204,28 +196,20 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
         Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
-
         List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
-
-        //Assert
+        // Assert
         assertThat(content).hasSize(2);
-
         Map<String, Object> applicationResponse1 = content.get(0);
         Map<String, Object> applicationResponse2 = content.get(1);
-
         assertThat(applicationResponse1)
                 .containsEntry("id", application1.getId().toString())
-                .containsEntry("status", "APPLIED")
                 .containsEntry("status", application1.getApplicationStatus().name())
                 .containsEntry("projectId", project1.getId().toString())
                 .containsEntry("projectTitle", project1.getTitle())
                 .containsEntry("freelancerId", freelancer.getId().toString());
-
         assertThat(applicationResponse2)
                 .containsEntry("id", application2.getId().toString())
-                .containsEntry("status", "APPLIED")
                 .containsEntry("status", application2.getApplicationStatus().name())
                 .containsEntry("projectId", project2.getId().toString())
                 .containsEntry("projectTitle", project2.getTitle())
@@ -234,19 +218,13 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getAllProjectsReturnsVisibleProjects() throws Exception {
-        //Arrange
+        // Arrange
         Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
-
         Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
-
         Project project3 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, LocalDate.now().plusDays(7), client));
-
         Project project4 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, LocalDate.now().plusDays(7), client));
-
         Project project5 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().minusDays(7), client));
-
-
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/freelancer/projects/all")
                         .param("page", "0")
                         .param("size", "10")
@@ -256,111 +234,92 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
         Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
         List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
-
-        //Assert
+        // Assert
+        // Expecting only projects that are visible: OPEN projects and CLOSED projects with non‑expired visibility.
         assertThat(content).hasSize(3);
-
         Map<String, Object> projectResponse1 = content.get(0);
         Map<String, Object> projectResponse2 = content.get(1);
         Map<String, Object> projectResponse3 = content.get(2);
-
         assertThat(projectResponse1).containsEntry("id", project1.getId().toString())
-                .containsEntry("projectStatus", "OPEN")
                 .containsEntry("projectStatus", project1.getProjectStatus().name());
-
         assertThat(projectResponse2).containsEntry("id", project2.getId().toString())
-                .containsEntry("projectStatus", "CLOSED")
                 .containsEntry("projectStatus", project2.getProjectStatus().name());
-
         assertThat(projectResponse3).containsEntry("id", project4.getId().toString())
-                .containsEntry("projectStatus", "OPEN")
                 .containsEntry("projectStatus", project4.getProjectStatus().name());
-
     }
 
     @Test
     void getProjectByIdIsOk() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
-
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
         assertThat(projectResponse).containsEntry("id", project.getId().toString())
-                .containsEntry("projectStatus", "OPEN")
                 .containsEntry("projectStatus", project.getProjectStatus().name());
     }
 
     @Test
     void getProjectByIdIsOkWhenClosedAndVisibilityNotExpired() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().plusDays(2), client));
-
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> projectResponse = objectMapper.readValue(response, LinkedHashMap.class);
         assertThat(projectResponse)
                 .containsEntry("id", project.getId().toString())
-                .containsEntry("projectStatus", "CLOSED")
                 .containsEntry("projectStatus", project.getProjectStatus().name());
     }
 
     @Test
     void getProjectByIdConflictWhenClosedAndVisibilityExpired() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, LocalDate.now().minusDays(2), client));
-
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
                         .session(session))
                 .andExpect(status().isConflict())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "Project visibility has expired.");
     }
 
     @Test
     void getProjectByIdConflictWhenPending() throws Exception {
-        //Arrange
+        // Arrange
         Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
-
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/freelancer/projects/" + project.getId())
                         .session(session))
                 .andExpect(status().isConflict())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
         assertThat(jsonResponse).containsEntry("message", "Project is not yet approved.");
     }
 
     @Test
     void updateFreelancerProfileFullUpdateIsOk() throws Exception {
-        //Arrange
+        // Arrange
         UpdateFreelancerProfileDto updateDto = UpdateFreelancerProfileDto.builder()
                 .firstName("John")
                 .lastName("Updated")
@@ -374,16 +333,15 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
                         "https://github.com/johnupdated"
                 ))
                 .skills(Set.of(
-                        Tag.JAVA,
-                        Tag.JAVASCRIPT,
-                        Tag.PYTHON,
-                        Tag.HTML,
-                        Tag.CSS
+                        com.quolance.quolance_api.entities.enums.Tag.JAVA,
+                        com.quolance.quolance_api.entities.enums.Tag.JAVASCRIPT,
+                        com.quolance.quolance_api.entities.enums.Tag.PYTHON,
+                        com.quolance.quolance_api.entities.enums.Tag.HTML,
+                        com.quolance.quolance_api.entities.enums.Tag.CSS
                 ))
                 .availability(Availability.FULL_TIME)
                 .build();
-
-        //Act
+        // Act
         String response = mockMvc.perform(put("/api/freelancer/profile")
                         .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -392,11 +350,8 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         assertThat(response).isEqualTo("Profile updated successfully");
-
-        // Verify the changes in database
         User updatedUser = userRepository.findById(freelancer.getId()).get();
         assertThat(updatedUser.getFirstName()).isEqualTo("John");
         assertThat(updatedUser.getLastName()).isEqualTo("Updated");
@@ -410,14 +365,13 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void updateFreelancerProfileUnauthorizedReturnsError() throws Exception {
-        //Arrange
+        // Arrange
         UpdateFreelancerProfileDto updateDto = UpdateFreelancerProfileDto.builder()
                 .firstName("John")
                 .lastName("Updated")
-                .skills(Set.of(Tag.JAVA, Tag.PYTHON))
+                .skills(Set.of(com.quolance.quolance_api.entities.enums.Tag.JAVA, com.quolance.quolance_api.entities.enums.Tag.PYTHON))
                 .build();
-
-        //Act & Assert
+        // Act & Assert
         mockMvc.perform(put("/api/freelancer/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
@@ -426,17 +380,15 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getFreelancerProfileIsOk() throws Exception {
-        //Act
+        // Act
         String response = mockMvc.perform(get("/api/public/freelancer/profile/" + freelancer.getUsername())
                         .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        //Assert
+        // Assert
         Map<String, Object> profileResponse = objectMapper.readValue(response, LinkedHashMap.class);
-
         assertThat(profileResponse)
                 .containsEntry("firstName", freelancer.getFirstName())
                 .containsEntry("lastName", freelancer.getLastName())
@@ -445,9 +397,8 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void getFreelancerProfileUnauthorizedReturnsError() throws Exception {
-        //Act & Assert
+        // Act & Assert
         mockMvc.perform(get("/api/freelancer/profile"))
                 .andExpect(status().isUnauthorized());
     }
-
 }

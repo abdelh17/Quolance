@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
 import { Mail, Users } from "lucide-react";
-import { FreelancerProfileType, EditModesType } from "@/constants/models/user/UserResponse";
+import React, { useEffect,useState } from "react";
+import { BsLinkedin,BsTwitter } from "react-icons/bs";
+import { FaFacebook, FaGithub } from "react-icons/fa";
+
+import { EditModesType,FreelancerProfileType } from "@/constants/models/user/UserResponse";
+
 import EditButton from "./EditButton";
 import SaveButton from "./SaveButton";
-import { FaFacebook, FaGithub } from "react-icons/fa";
-import { BsTwitter, BsLinkedin } from "react-icons/bs";
 
 interface ContactSectionProps {
   profile: {

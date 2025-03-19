@@ -1,11 +1,12 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
 import Link from 'next/link';
 import { UseFormRegister } from 'react-hook-form';
+import { FaGithub, FaGoogle } from 'react-icons/fa';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export const getProviderLoginUrl = (
   provider: 'google' | 'facebook' | 'github' | 'okta'
@@ -54,7 +55,7 @@ export const FormInput = ({
 export const SocialAuthLogins = ({ isLoading }: { isLoading: boolean }) => (
   <>
     <div className='flex flex-col gap-4 sm:flex-row'>
-      <Link href={getProviderLoginUrl('github')} className='w-full'>
+      {/* <Link href={getProviderLoginUrl('github')} className='w-full'>
         <Button
           variant='outline'
           type='button'
@@ -64,7 +65,7 @@ export const SocialAuthLogins = ({ isLoading }: { isLoading: boolean }) => (
           <FaGithub className='mr-2 h-4 w-4' />
           GitHub
         </Button>
-      </Link>
+      </Link> */}
 
       <Link href={getProviderLoginUrl('google')} className='w-full'>
         <Button

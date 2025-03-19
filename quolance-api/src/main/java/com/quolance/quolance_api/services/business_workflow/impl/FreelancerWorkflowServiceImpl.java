@@ -17,6 +17,7 @@ import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.FileService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
@@ -44,6 +45,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final ApplicationService applicationService;
     private final UserService userService;
     private final FileService fileService;
+    private final NotificationMessageService notificationMessageService;
 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
@@ -71,6 +73,17 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             application.setProject(project);
             application.setMessage(applicationCreateDto.getMessage());
             applicationService.saveApplication(application);
+
+            // Notify freelancer that the application was submitted successfully.
+            String freelancerNotification = "Your application for project '" + project.getTitle() + "' has been submitted successfully.";
+            notificationMessageService.sendNotificationToUser(freelancer, freelancer, freelancerNotification);
+
+            // Optionally, notify the project owner that a new application has been received.
+            User client = project.getClient();
+            if (client != null) {
+                String clientNotification = "A new application has been submitted to your project '" + project.getTitle() + "'.";
+                notificationMessageService.sendNotificationToUser(client, client, clientNotification);
+            }
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
         }
@@ -99,6 +112,10 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .build();
         }
         applicationService.deleteApplication(application);
+
+        // Notify freelancer that the application has been deleted.
+        String deletionNotification = "Your application for project '" + application.getProject().getTitle() + "' has been deleted.";
+        notificationMessageService.sendNotificationToUser(freelancer, freelancer, deletionNotification);
     }
 
     @Override
@@ -152,11 +169,11 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                 }
 
                 if (filters.getApplied() != null) {
-                    User freelancer = SecurityUtil.getAuthenticatedUser();
+                    User freelancerUser = SecurityUtil.getAuthenticatedUser();
                     Subquery<UUID> subquery = query.subquery(UUID.class);
                     Root<Application> applicationRoot = subquery.from(Application.class);
                     subquery.select(applicationRoot.get("project").get("id"))
-                            .where(criteriaBuilder.equal(applicationRoot.get("freelancer").get("id"), freelancer.getId()));
+                            .where(criteriaBuilder.equal(applicationRoot.get("freelancer").get("id"), freelancerUser.getId()));
 
                     if (filters.getApplied()) {
                         predicates.add(root.get("id").in(subquery));
@@ -164,8 +181,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                         predicates.add(criteriaBuilder.not(root.get("id").in(subquery)));
                     }
                 }
-
-
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
@@ -242,6 +257,10 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
             userService.updateUser(updateUserRequestDto, freelancer);
 
+            // Notify freelancer that their profile has been updated.
+            String profileUpdateNotification = "Your profile has been updated successfully.";
+            notificationMessageService.sendNotificationToUser(freelancer, freelancer, profileUpdateNotification);
+
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
         } catch (Exception e) {
@@ -261,6 +280,9 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
 
             userService.updateProfilePicture(freelancer, photoUrl);
 
+            // Notify freelancer that their profile picture has been updated.
+            String pictureUpdateNotification = "Your profile picture has been updated successfully.";
+            notificationMessageService.sendNotificationToUser(freelancer, freelancer, pictureUpdateNotification);
 
         } catch (Exception e) {
             throw ApiException.builder()
@@ -269,16 +291,14 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .errors(Map.of("uploadError", e.getMessage()))
                     .build();
         }
-
     }
 
     // Helper method to handle optimistic lock exception
     private void handleOptimisticLockException(Exception e) {
         throw ApiException.builder()
                 .status(HttpServletResponse.SC_CONFLICT)
-                .message("The ressource was modified by another user. Please refresh the page and try again.")
+                .message("The resource was modified by another user. Please refresh the page and try again.")
                 .errors(Map.of("optimisticLock", e.getMessage()))
                 .build();
     }
-
 }

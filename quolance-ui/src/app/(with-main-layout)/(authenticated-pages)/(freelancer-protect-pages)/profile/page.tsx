@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { Github, Link, Linkedin } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
 import { useAuthGuard } from '@/api/auth-api';
 import {
   useEditProfile,
@@ -9,21 +10,24 @@ import {
   useGetProfileCompletion,
   useUploadProfileImage,
 } from '@/api/freelancer-api';
+import LanguageSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/LanguageSection';
+import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
+import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
 import {
   EditModesType,
   FreelancerProfileType,
 } from '@/constants/models/user/UserResponse';
-import ProfileHeader from './components/ProfileHeader';
-import AboutSection from './components/AboutSection';
-import ExperienceSection from './components/ExperienceSection';
-import AvailabilitySection from './components/AvailabilitySection';
-import SkillsSection from './components/SkillsSection';
-import ContactSection from './components/ContactSection';
-import ProfileStatus from './components/ProfileStatus';
 import { SKILLS_OPTIONS } from '@/constants/types/form-types';
-import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
-import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
-import LanguageSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/LanguageSection';
+
+import AboutSection from './components/AboutSection';
+import AvailabilitySection from './components/AvailabilitySection';
+import ContactSection from './components/ContactSection';
+import ExperienceSection from './components/ExperienceSection';
+import ProfileHeader from './components/ProfileHeader';
+import ProfileStatus from './components/ProfileStatus';
+
+import SkillsSection from './components/SkillsSection';
+
 
 const FreelancerProfile: React.FC = () => {
   const { user, mutate } = useAuthGuard({ middleware: 'auth' });
