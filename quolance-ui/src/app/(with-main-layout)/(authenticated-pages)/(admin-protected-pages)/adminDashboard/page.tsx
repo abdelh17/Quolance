@@ -22,6 +22,18 @@ export default function adminDashboard (){
                    <div className="text-lg ">Pending Projects</div>
                </div>
                </Link>
+               <Link data-test="reported-posts-card" href="adminDashboard/adminReportedBlogPosts">
+                    <div className="rounded-2xl border-2 w-64 h-32 flex justify-center items-center hover:border-blue-500 gap-2">
+                        <FaRegFileAlt className="text-2xl" />
+                        <div className="text-lg">Reported Blog Posts</div>
+                    </div>
+                </Link>
+                <Link href="adminDashboard/adminResolvedBlogPosts">
+                    <div className="rounded-2xl border-2 w-64 h-32 flex justify-center items-center hover:border-blue-500 gap-2">
+                        <FaRegFileAlt className="text-2xl" />
+                        <div className="text-lg">Resolved Blog Posts</div>
+                    </div>
+                </Link>
            </div>
        </>
    )

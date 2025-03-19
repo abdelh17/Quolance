@@ -28,6 +28,8 @@ public class BlogPostResponseDto {
     private Set<String> tags;
     private UUID userId;
     private List<String> imageUrls;
+    private boolean isReported;
+    private boolean isResolved;
 
     public static BlogPostResponseDto fromEntity(BlogPost blogPost) {
         BlogPostResponseDto response = new BlogPostResponseDto();
@@ -47,6 +49,8 @@ public class BlogPostResponseDto {
                 .map(BlogImage::getImagePath)
                 .toList();
         response.setImageUrls(imageUrls);
+        response.setReported(blogPost.isReported());
+        response.setResolved(blogPost.isResolved());
         return response;
     }
 

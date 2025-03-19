@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.dtos.project.ProjectRejectionDto;
@@ -65,5 +66,51 @@ public class AdminController {
         adminWorkflowService.rejectProject(projectId, rejectionDto.getRejectionReason());
         log.info("Admin with ID {} successfully rejected pending project {}", admin.getId(), projectId);
         return ResponseEntity.ok("Project rejected successfully");
+    }
+
+    @Operation(summary = "Get all currently reported (and not resolved) blog posts")
+    @GetMapping("blog-posts/reported")
+    public ResponseEntity<Page<BlogPostResponseDto>> getAllReportedBlogPosts(
+            @Valid PageableRequestDto pageableRequest
+    ) {
+        User admin = SecurityUtil.getAuthenticatedUser();
+        log.info("Admin {} retrieving all reported, unresolved blog posts", admin.getId());
+
+        Page<BlogPostResponseDto> posts =
+                adminWorkflowService.getAllReportedBlogPosts(paginationUtils.createPageable(pageableRequest));
+        return ResponseEntity.ok(posts);
+    }
+
+    @Operation(summary = "Get all previously resolved blog posts that were reported")
+    @GetMapping("blog-posts/resolved")
+    public ResponseEntity<Page<BlogPostResponseDto>> getAllPreviouslyResolvedBlogPosts(
+            @Valid PageableRequestDto pageableRequest
+    ) {
+        User admin = SecurityUtil.getAuthenticatedUser();
+        log.info("Admin {} retrieving all previously resolved (and reported) blog posts", admin.getId());
+
+        Page<BlogPostResponseDto> posts =
+                adminWorkflowService.getAllPreviouslyResolvedBlogPosts(paginationUtils.createPageable(pageableRequest));
+        return ResponseEntity.ok(posts);
+    }
+
+    @Operation(summary = "Keep (resolve) a reported blog post without deleting")
+    @PostMapping("blog-posts/reported/{postId}/keep")
+    public ResponseEntity<String> keepReportedBlogPost(@PathVariable UUID postId) {
+        User admin = SecurityUtil.getAuthenticatedUser();
+        log.info("Admin {} keeping reported blog post {}", admin.getId(), postId);
+
+        adminWorkflowService.keepReportedBlogPost(postId);
+        return ResponseEntity.ok("Post marked as resolved (kept).");
+    }
+
+    @Operation(summary = "Delete a reported blog post")
+    @DeleteMapping("blog-posts/reported/{postId}")
+    public ResponseEntity<String> deleteReportedBlogPost(@PathVariable UUID postId) {
+        User admin = SecurityUtil.getAuthenticatedUser();
+        log.info("Admin {} deleting reported blog post {}", admin.getId(), postId);
+
+        adminWorkflowService.deleteReportedBlogPost(postId);
+        return ResponseEntity.ok("Post deleted successfully.");
     }
 }

@@ -105,4 +105,14 @@ public class BlogPostController {
         return ResponseEntity.ok(responses);
     }
 
+    @PutMapping("/report/{postId}")
+    @Operation(summary = "Report a blog post")
+    public ResponseEntity<BlogPostResponseDto> reportPost(@PathVariable UUID postId) {
+        User currentUser = SecurityUtil.getAuthenticatedUser();
+        log.info("User {} is reporting blog post {}", currentUser.getId(), postId);
+
+        BlogPostResponseDto updatedPost = blogPostService.reportPost(postId, currentUser);
+        return ResponseEntity.ok(updatedPost);
+    }
+
 }

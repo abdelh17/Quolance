@@ -33,12 +33,17 @@ public class BlogPost extends AbstractEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(nullable = false)
+    private boolean isReported;
+
+    @Column(nullable = false)
+    private boolean isResolved;
+
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogComment> blogComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reaction> reactions = new ArrayList<>();
-
 
     @ElementCollection(targetClass = BlogTags.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
