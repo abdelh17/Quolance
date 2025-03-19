@@ -16,7 +16,8 @@ import {
   useGetCommentsByPostId,
   useGetReactionsByPostId,
   useReactToPost,
-  useRemoveReaction
+  useRemoveReaction,
+  useReportBlogPost
 } from "@/api/blog-api";
 import {showToast} from "@/util/context/ToastProvider";
 import { PaginationParams } from "@/constants/types/pagination-types";
@@ -198,6 +199,17 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     setReactions(updatedReactions);
   };
 
+  const { mutate: reportBlogPost } = useReportBlogPost({
+    onSuccess: () => {
+      showToast("Post reported successfully!", "success");
+      queryClient.invalidateQueries({ queryKey: ["all-blog-posts"] });
+    },
+    onError: (error) => {
+      showToast("Error reporting post", "error");
+      console.error(error);
+    },
+  });
+
   const handleAddComment = () => {
     if (!newComment.trim() || !user) return;
     addComment({ content: newComment });
@@ -225,7 +237,11 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   };
 
   const handleEdit = () => {console.log("Edit post")};
-  const handleReport = () => {console.log("Report post")};
+
+  function handleReport() {
+    if (!confirm("Are you sure you want to report this post?")) return;
+    reportBlogPost(id);
+  }
 
   const handleLoadMoreComments = () => {
     if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
@@ -350,7 +366,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               </div>
             )}
 
-            {/* 2 images */}
             {imageUrls.length === 2 && (
               imageUrls.map((url, index) => (
                 <div

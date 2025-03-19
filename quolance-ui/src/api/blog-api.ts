@@ -68,19 +68,6 @@ export const useGetAllBlogPosts = () => {
 };
 
 
-// export const useUpdateBlogPost = (options?: {
-//   onSuccess?: (data: BlogPostViewType) => void;
-//   onError?: (error: HttpErrorResponse) => void;
-// }) => {
-//   return useMutation<BlogPostViewType, HttpErrorResponse, BlogPostUpdateDto>({
-//     mutationFn: async (postData) => {
-//       const response = await httpClient.put('/api/blog-posts/update', postData);
-//       return response.data;
-//     },
-//     ...options,
-//   });
-// };
-
 export const useDeleteBlogPost = (options?: {
   onSuccess?: () => void;
   onError?: (error: HttpErrorResponse) => void;
@@ -197,6 +184,19 @@ export const useRemoveReaction = (options?: {
   return useMutation<void, HttpErrorResponse, string>({
     mutationFn: async (reactionId) => {
       await httpClient.delete(`/api/blog-posts/reactions/${reactionId}`);
+    },
+    ...options,
+  });
+};
+
+export const useReportBlogPost = (options?: {
+  onSuccess?: (data: BlogPostUpdateDto) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<BlogPostUpdateDto, HttpErrorResponse, string>({
+    mutationFn: async (postId: string) => {
+      const response = await httpClient.put(`/api/blog-posts/report/${postId}`);
+      return response.data;
     },
     ...options,
   });
