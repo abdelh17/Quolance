@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.controllers;
 
+import com.quolance.quolance_api.dtos.chat.ContactDto;
 import com.quolance.quolance_api.dtos.chat.MessageDto;
 import com.quolance.quolance_api.dtos.chat.SendMessageDto;
 import com.quolance.quolance_api.entities.User;
@@ -46,5 +47,17 @@ public class ChatController {
         log.info("User with ID {} getting messages with user ID {}", currentUser.getId(), userId);
         List<MessageDto> messages = chatService.getMessagesBetweenUsers(userId, currentUser);
         return ResponseEntity.ok(messages);
+    }
+
+    @GetMapping("/contacts")
+    @Operation(
+            summary = "Get user contacts",
+            description = "Get array of all contacts with name, profile picture, user ID, and last message, sorted by most recent message"
+    )
+    public ResponseEntity<List<ContactDto>> getContacts() {
+        User currentUser = SecurityUtil.getAuthenticatedUser();
+        log.info("User with ID {} getting contacts", currentUser.getId());
+        List<ContactDto> contacts = chatService.getContacts(currentUser);
+        return ResponseEntity.ok(contacts);
     }
 }

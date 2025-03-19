@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.impl;
 
+import com.quolance.quolance_api.dtos.chat.ContactDto;
 import com.quolance.quolance_api.dtos.chat.MessageDto;
 import com.quolance.quolance_api.dtos.chat.SendMessageDto;
 import com.quolance.quolance_api.entities.Message;
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -73,6 +76,41 @@ public class ChatServiceImpl implements ChatService {
 
         return messages.stream()
                 .map(MessageDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ContactDto> getContacts(User currentUser) {
+        if (!featureToggle.isEnabled("enableChatSystem")) {
+            log.info("Chat system is currently disabled");
+            throw new ApiException("Chat feature is currently disabled", 403, null);
+        }
+
+        // Get all contact IDs for the current user
+        List<UUID> contactIds = messageRepository.findContactIdsByUserId(currentUser.getId());
+        log.info("Retrieved {} contact IDs for user {}", contactIds.size(), currentUser.getId());
+
+        List<ContactDto> contactDtos = new ArrayList<>();
+
+        // For each contact ID, find the user and their last message
+        for (UUID contactId : contactIds) {
+            User contact = userRepository.findById(contactId)
+                    .orElseThrow(() -> new ApiException("Contact user not found: " + contactId, 404, null));
+
+            // Get all messages between the current user and this contact
+            List<Message> messages = messageRepository.findMessagesBetweenUsers(currentUser, contact);
+
+            // The latest message is the first one due to DESC ordering
+            Message latestMessage = messages.isEmpty() ? null : messages.get(0);
+
+            ContactDto contactDto = ContactDto.fromUserAndMessage(contact, latestMessage);
+            contactDtos.add(contactDto);
+        }
+
+        // Sort by most recent message timestamp
+        return contactDtos.stream()
+                .sorted(Comparator.comparing(ContactDto::getLastMessageTimestamp,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
                 .collect(Collectors.toList());
     }
 
