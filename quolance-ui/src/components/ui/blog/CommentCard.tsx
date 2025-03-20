@@ -4,13 +4,14 @@ import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import {showToast} from "@/util/context/ToastProvider";
-import {useDeleteComment} from "@/api/blog-api";
+import {useDeleteComment, useUpdateComment} from "@/api/blog-api";
 import {useAuthGuard} from "@/api/auth-api";
 import { useQueryClient } from "@tanstack/react-query";
 
 
 interface CommentCardProps {
   commentId: string;
+  blogPostId: string;
   authorName: string;
   content: string;
   dateCreated: string;
@@ -18,11 +19,15 @@ interface CommentCardProps {
 
 const CommentCard: React.FC<CommentCardProps> = ({
   commentId,
+  blogPostId,
   authorName,
   content,
   dateCreated,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
+  const [currentContent, setCurrentContent] = useState(content);
 
   const { data: authorProfile } = useGetFreelancerProfile(authorName);
   const { user } = useAuthGuard({ middleware: "auth" });
@@ -37,6 +42,32 @@ const CommentCard: React.FC<CommentCardProps> = ({
       showToast("Error deleting comment.", "error");
     },
   });
+
+  const { mutateAsync: updateComment } = useUpdateComment({
+    onSuccess: (_, updatedComment) => {
+      queryClient.invalidateQueries({ queryKey: ["comments", updatedComment.blogPostId] });
+  
+      setIsEditing(false);
+    },
+  });
+
+  const handleSave = async () => {
+    if (editedContent.trim() === content) {
+      setIsEditing(false);
+      return;
+    }
+
+    try {
+      await updateComment({ commentId, content: editedContent, blogPostId });
+
+      setCurrentContent(editedContent);
+    
+      showToast("Comment updated successfully!", "success");
+      setIsEditing(false);
+    } catch (error) {
+      showToast("Error updating comment.", "error");
+    }
+  };
   
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
@@ -70,24 +101,44 @@ const CommentCard: React.FC<CommentCardProps> = ({
             }).format(new Date(dateCreated))}
           </span>
         </div>
-
+        
+        
         {/* Comment Content */}
         <div className="flex justify-between mt-2 gap-2">
-          <p className="text-sm text-gray-700 mt-1 break-all overflow-hidden w-full">
-            {content.length > 150 && !isExpanded
-              ? `${content.substring(0, 150)}...`
-              : content}
-            {content.length > 150 && (
-              <button
-                onClick={toggleExpand}
-                className="text-blue-500 text-xs ml-1 hover:underline"
-              >
-                {isExpanded ? "Show less" : "Show more"}
-              </button>
-            )}
+          {isEditing ? (
+            <textarea
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              className="w-full p-2 border rounded-md mt-2 text-sm"
+            />
+          ):(
+            <p className="text-sm text-gray-700 mt-1 break-all overflow-hidden w-full">
+              {currentContent.length > 150 && !isExpanded
+                ? `${currentContent.substring(0, 150)}...`
+                : currentContent}
+              {currentContent.length > 150 && (
+                <button
+                  onClick={toggleExpand}
+                  className="text-blue-500 text-xs ml-1 hover:underline"
+                >
+                  {isExpanded ? "Show less" : "Show more"}
+                </button>
+              )}
           </p>
+          )}
+          
           {user?.username === authorName && (
-            <span className="text-xs text-red-500 cursor-pointer mt-2" onClick={() => handleDeleteComment(commentId)}> Delete </span>
+            <>
+              <span className="text-xs text-blue-500 cursor-pointer mt-2" onClick={() => setIsEditing(!isEditing)}>
+                {isEditing ? "Cancel" : "Edit"}
+              </span>
+              {isEditing ? (
+                <span className="text-xs text-blue-500 cursor-pointer mt-2" onClick={handleSave}> Save </span>
+              ):(
+                <span className="text-xs text-red-500 cursor-pointer mt-2" onClick={() => handleDeleteComment(commentId)}> Delete </span>
+              )}
+              
+            </>
           )} 
         </div>
       </div>

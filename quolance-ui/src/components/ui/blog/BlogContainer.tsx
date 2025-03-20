@@ -2,7 +2,7 @@
 
 import {useCallback, useRef, useState} from "react";
 import PostCard from "./PostCard";
-import {useCreateBlogPost, useGetAllBlogPosts} from "@/api/blog-api";
+import {useCreateBlogPost, useGetAllBlogPosts, useUpdateBlogPost} from "@/api/blog-api";
 import CreatePostModal from "./CreatePostModal";
 import CreatePostForm from "./CreatePostForm";
 import SearchBar from "./SearchBar";
@@ -65,20 +65,46 @@ const BlogContainer: React.FC = () => {
         }
     })
 
+    const { mutateAsync: updateBlogPost } = useUpdateBlogPost({
+        onSuccess: () => {
+          showToast("Post updated successfully!", "success");
+          queryClient.invalidateQueries({queryKey: ["all-blog-posts"]});
+        },
+        onError: (error) => {
+          showToast("Error updating post", "error");
+        }
+      });
 
     const handleFormSubmit = async (postData: {
+        id?: string;
         title: string;
         content: string;
-        userId: string | undefined;
+        userId?: string;
         files?: File[]
         tags: string[];
     }) => {
-        if (!postData.userId) {
+        if (!user?.id) {
             showToast("Error: User not logged in.", "error");
             return;
         }
         try {
-            await mutateBlogPosts(postData);
+            if (postData.id) {
+                await updateBlogPost({
+                    postId: postData.id, 
+                    title: postData.title, 
+                    content: postData.content
+                    // tags: postData.tags,
+                    // files: postData.files
+                });
+            } else {
+                await mutateBlogPosts({
+                    title: postData.title, 
+                    content: postData.content, 
+                    userId: postData.userId, 
+                    tags: postData.tags, 
+                    files: postData.files
+                });
+            }
         } catch (err) {
             console.error(err);
         }
@@ -103,7 +129,7 @@ const BlogContainer: React.FC = () => {
                                     animation="default"
                                 >
                                     Sign In
-                                </Button    >
+                                </Button>
                             </div>
                         </div>
                     ) : (
@@ -114,7 +140,7 @@ const BlogContainer: React.FC = () => {
                                     <Loading />
                                 ) : user ? (
                                     <CreatePostForm
-                                        onSubmit={handleFormSubmit}
+                                        onSubmit={({ userId, ...postData }) => handleFormSubmit(postData)}
                                         onClose={() => setIsModalOpen(false)}
                                     />
                                 ) : (
@@ -167,6 +193,7 @@ const BlogContainer: React.FC = () => {
                                                             {...post}
                                                             openUserSummaryPostId={openUserSummaryPostId}
                                                             setOpenUserSummaryPostId={setOpenUserSummaryPostId}
+                                                            onSubmit={(postData) => handleFormSubmit(postData)}
                                                         />
                                                     </div>
                                                 );
