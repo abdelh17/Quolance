@@ -549,6 +549,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               {allLoadedComments.map((comment) => (
                 <CommentCard
                   key={comment.commentId}
+                  blogPostId={id}
                   commentId={comment.commentId}
                   authorName={comment.username}
                   content={comment.content}

@@ -106,7 +106,6 @@ export interface CommentRequestDto {
   content: string;
 }
 
-
 export const useGetCommentsByPostId = (postId: string, pagination: PaginationParams, options?: {
     onSuccess?: (data: PagedResponse<CommentResponseDto>) => void;
     onError?: (error: HttpErrorResponse) => void;
@@ -148,6 +147,20 @@ export const useDeleteComment = (options?: {
   });
 };
 
+export const useUpdateComment = (options?: {
+  onSuccess?: (
+    data: void, 
+    variables: { commentId: string; content: string; blogPostId: string }
+  ) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<void, HttpErrorResponse, { commentId: string; content: string; blogPostId: string }>({
+    mutationFn: async (commentData) => {
+      await httpClient.put(`/api/blog-comments/${commentData.commentId}`, { content: commentData.content });
+    },
+    ...options,
+  });
+};
 
 /* ---------- Blog Reactions ---------- */
 export interface ReactionResponseDto {
