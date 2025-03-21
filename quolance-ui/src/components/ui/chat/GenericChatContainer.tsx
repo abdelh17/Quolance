@@ -16,15 +16,17 @@ function GenericChatContainer({
   height,
   children,
 }: GenericChatContainerProps) {
-  height = isMinimized ? 0 : height;
   return (
     <div
       className='bg-slate-100 drop-shadow-md transition-all duration-200'
-      style={{ height, width }}
+      style={{
+        height: isMinimized ? 0 : height,
+        width,
+        overflow: 'hidden',
+      }}
     >
-      {!isMinimized && children}
+      {children}{' '}
     </div>
   );
 }
-
 export default GenericChatContainer;

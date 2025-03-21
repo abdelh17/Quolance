@@ -2,6 +2,7 @@ import React from 'react';
 import { MessageDto } from '@/constants/types/chat-types';
 import Message from './Message';
 import { useAuthGuard } from '@/api/auth-api';
+import MessageTimestampSeparator from '@/components/ui/chat/MessageTimestampSeperator';
 
 interface MessageGroupProps {
   messages: MessageDto[];
@@ -13,10 +14,18 @@ function MessageGroup({ messages }: MessageGroupProps) {
   if (!messages.length || !user) return null;
   const isOwn = messages[0].sender_id === user.id;
 
+  const firstMessageTimestamp = messages[0].timestamp;
+
   return (
     <div
-      className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} mb-4`}
+      className={`flex flex-col ${
+        isOwn ? 'items-end' : 'items-start'
+      } mb-4 last:mb-0`}
     >
+      <MessageTimestampSeparator
+        timestamp={firstMessageTimestamp}
+        separatorColor={'bg-transparent'}
+      />
       {messages.map((message, index) => {
         // Determine message position
         let position: 'first' | 'middle' | 'last' | 'single';

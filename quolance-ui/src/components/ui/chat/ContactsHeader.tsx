@@ -24,7 +24,6 @@ function ContactsHeader({
   width,
   isMinimized,
   onMinimize,
-  onNewChat,
 }: ConversationHeaderProps) {
   return (
     <GenericChatHeader
