@@ -11,11 +11,16 @@ import { FiArrowDown } from 'react-icons/fi';
 import { groupMessages } from '@/util/chatUtils';
 
 interface MessageListProps {
+  chatUserCard?: React.ReactNode;
   messages: MessageDto[];
   isMinimized: boolean;
 }
 
-function MessageList({ messages, isMinimized }: MessageListProps) {
+function MessageList({
+  messages,
+  isMinimized,
+  chatUserCard,
+}: MessageListProps) {
   const [showScrollDown, setShowScrollDown] = useState(false);
   const messageListRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +42,6 @@ function MessageList({ messages, isMinimized }: MessageListProps) {
 
   useEffect(() => {
     if (!isMinimized) {
-      // Wait for the container transition duration (1000ms)
       const timeout = setTimeout(() => {
         scrollToBottom();
         handleScroll();
@@ -70,6 +74,7 @@ function MessageList({ messages, isMinimized }: MessageListProps) {
         ref={messageListRef}
         className='h-full overflow-y-auto p-4 last:mb-0'
       >
+        {chatUserCard}
         {groupedMessages.map((group, index) => (
           <MessageGroup key={index} messages={group} />
         ))}

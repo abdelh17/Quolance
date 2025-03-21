@@ -4,13 +4,18 @@
 
 import React, { useEffect } from 'react';
 import { useAuthGuard } from '@/api/auth-api';
-import { ChatContactProps, MessageDto } from '@/constants/types/chat-types';
+import {
+  ChatContactProps,
+  ContactDto,
+  MessageDto,
+} from '@/constants/types/chat-types';
 import ChatHeader from '@/components/ui/chat/ChatHeader';
 import GenericChatContainer from '@/components/ui/chat/GenericChatContainer';
-import { useGetMessages, useSendMessage } from '@/api/chat-api';
+import { useGetMessages } from '@/api/chat-api';
 import ChatInput from '@/components/ui/chat/ChatInput';
 import MessageList from '@/components/ui/chat/MessageList';
 import { useChat } from '@/components/ui/chat/ChatProvider';
+import ChatUserCard from '@/components/ui/chat/ChatUserCard';
 
 const ChatContainer: React.FC<ChatContactProps> = ({
   contact,
@@ -73,7 +78,7 @@ const ChatContainer: React.FC<ChatContactProps> = ({
         height={height}
       >
         <ChatContent
-          receiverId={receiverId}
+          contact={contact}
           messages={messages || []}
           isMinimized={isMinimized}
         />
@@ -83,24 +88,36 @@ const ChatContainer: React.FC<ChatContactProps> = ({
 };
 
 const ChatContent: React.FC<{
-  receiverId: string;
+  contact: ContactDto;
   messages: MessageDto[];
   isMinimized: boolean;
-}> = ({ receiverId, messages, isMinimized }) => {
-  const { mutate: sendMessage } = useSendMessage();
+}> = ({ contact, messages, isMinimized }) => {
+  const { user_id: receiverId, profile_picture, name } = contact;
+  const { sendMessage } = useChat();
   const [inputValue, setInputValue] = React.useState('');
   const [chatInputExpanded, setChatInputExpanded] = React.useState(false);
+  const isDraft = name.startsWith('Draft: ');
 
   const handleSendMessage = () => {
     if (!inputValue) return;
-    sendMessage({ content: inputValue, receiver_id: receiverId });
+    sendMessage(receiverId, inputValue, isDraft);
     setInputValue('');
   };
 
   return (
     <div className='flex h-full flex-col'>
       <div className='flex-1 overflow-y-auto'>
-        <MessageList messages={messages} isMinimized={isMinimized} />
+        <MessageList
+          messages={messages}
+          isMinimized={isMinimized}
+          chatUserCard={
+            <ChatUserCard
+              name={isDraft ? name.slice(7) : name}
+              profile_picture={profile_picture}
+              description={isDraft ? 'Draft' : ''}
+            />
+          }
+        />
       </div>
       <ChatInput
         onSubmit={handleSendMessage}
