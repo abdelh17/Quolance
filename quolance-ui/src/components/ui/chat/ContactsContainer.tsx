@@ -10,6 +10,10 @@ import { useAuthGuard } from '@/api/auth-api';
 import GenericChatContainer from '@/components/ui/chat/GenericChatContainer';
 import { ContactDto } from '@/constants/types/chat-types';
 import ChatContact from '@/components/ui/chat/ChatContact';
+import conversation_illustration from '@/public/images/conversation_illustration.png';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Role } from '@/constants/models/user/UserResponse';
 
 interface ContactsContainerProps {
   contacts: ContactDto[];
@@ -25,8 +29,8 @@ function ContactsContainer({ contacts, onOpenChat }: ContactsContainerProps) {
   return (
     <div className={`mt-auto w-min w-[${width}]`}>
       <ContactsHeader
-        avatar={''} // TODO: Change this to the actual avatar
-        title={'John Doe'} // TODO: Change this to the actual name
+        avatar={user?.profileImageUrl || ''}
+        title={'Messaging'}
         width={width}
         isMinimized={isMinimized}
         onMinimize={() => setIsMinimized((prevState) => !prevState)}
@@ -34,7 +38,6 @@ function ContactsContainer({ contacts, onOpenChat }: ContactsContainerProps) {
       />
       <GenericChatContainer
         isMinimized={isMinimized}
-        minWidth={width}
         width={width}
         height={height}
       >
@@ -51,34 +54,41 @@ function ContactsContent({
   contacts: ContactDto[];
   onOpenChat: (contact: ContactDto) => void;
 }) {
+  const { user } = useAuthGuard({ middleware: 'auth' });
   return (
     <div className={'h-full w-full'}>
-      <div className={'bg-white'}>
+      <div className={'border-b border-slate-200 bg-white'}>
         {contacts.length == 0 ? (
-          <div></div>
+          <div className={'pt-10'}>
+            <Image src={conversation_illustration} alt={'conversation image'} />
+            <div className={'flex flex-col gap-3 p-3 pb-16 text-center'}>
+              <h2 className={'text-lg font-semibold text-slate-800'}>
+                No conversations yet
+              </h2>
+              <p className={'text-center text-gray-600'}>
+                You will see all your conversations here.
+              </p>
+              {user?.role && (
+                <Link
+                  className={
+                    'mx-2 mt-4 rounded-full border-2 p-2 hover:bg-gray-100'
+                  }
+                  href={user.role === Role.CLIENT ? '/candidates' : '/profile'}
+                >
+                  {user.role === Role.CLIENT
+                    ? 'Browse candidates'
+                    : 'Build Profile'}
+                </Link>
+              )}
+            </div>
+          </div>
         ) : (
           <div className={'flex w-full flex-col divide-y divide-slate-200'}>
             {contacts.map((contact, index) => (
-              <>
-                <ChatContact
-                  contact={contact}
-                  onClick={onOpenChat}
-                  key={index}
-                />
-              </>
+              <ChatContact contact={contact} onClick={onOpenChat} key={index} />
             ))}
           </div>
         )}
-
-        {/*<Button*/}
-        {/*  onClick={onNewChat}*/}
-        {/*  className={*/}
-        {/*    'w-full rounded-none bg-slate-50 text-slate-900 drop-shadow-sm hover:bg-slate-100'*/}
-        {/*  }*/}
-        {/*  icon={<TbEdit />}*/}
-        {/*>*/}
-        {/*  Start New Chat*/}
-        {/*</Button>*/}
       </div>
     </div>
   );
