@@ -16,7 +16,14 @@ function Avatar({ className, src, size }: AvatarProps) {
     lg: 'w-16 h-16',
   };
 
-  const imageSrc = src === 'chatbot' ? chatbotIcon : FreelancerDefaultAvatar;
+  const dimensions = {
+    sm: 36,
+    md: 48,
+    lg: 64,
+  };
+
+  const imageSrc =
+    src === 'chatbot' ? chatbotIcon : src || FreelancerDefaultAvatar;
 
   return (
     <Image
@@ -25,6 +32,8 @@ function Avatar({ className, src, size }: AvatarProps) {
       className={`rounded-full ${sizeClasses[size] || sizeClasses.lg} ${
         className || ''
       }`}
+      width={dimensions[size] || dimensions.lg}
+      height={dimensions[size] || dimensions.lg}
     />
   );
 }
