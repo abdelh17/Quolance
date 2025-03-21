@@ -32,9 +32,14 @@ function GenericChatHeader({
       }
       style={{ width }}
     >
-      <button
-        className={'flex h-full w-full items-center'}
+      <div
+        className={'flex h-full w-full cursor-pointer items-center'}
         onClick={onMinimize}
+        role='button'
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') onMinimize?.();
+        }}
       >
         <Avatar src={avatar} size={'sm'} />
         <h1 className={'ml-2 max-w-[calc(100%-80px)] truncate'} title={title}>
@@ -50,12 +55,18 @@ function GenericChatHeader({
                 event.stopPropagation();
                 button.onClick();
               }}
+              onKeyDown={(e) => {
+                e.stopPropagation();
+                if (e.key === 'Enter' || e.key === ' ') {
+                  button.onClick();
+                }
+              }}
             >
               {button.icon}
             </button>
           ))}
         </div>
-      </button>
+      </div>
     </div>
   );
 }
