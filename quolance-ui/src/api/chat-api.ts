@@ -67,6 +67,11 @@ export const useGetMessages = (userId: string) => {
     queryKey: ['messages', userId],
     queryFn: () => getMessagesBetweenUsers(userId),
     enabled: !!userId,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
   });
 };
 
