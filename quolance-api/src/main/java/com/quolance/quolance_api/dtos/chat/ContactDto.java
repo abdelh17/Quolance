@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.dtos.chat;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.quolance.quolance_api.entities.Message;
 import com.quolance.quolance_api.entities.User;
 import lombok.AllArgsConstructor;
@@ -15,10 +16,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContactDto {
+    @JsonProperty("user_id")
     private UUID userId;
+
+    @JsonProperty("name")
     private String name;
+
+    @JsonProperty("profile_picture")
     private String profilePicture;
+
+    @JsonProperty("last_message")
     private String lastMessage;
+
+    @JsonProperty("last_message_timestamp")
     private LocalDateTime lastMessageTimestamp;
 
     public static ContactDto fromUserAndMessage(User user, Message lastMessage) {
