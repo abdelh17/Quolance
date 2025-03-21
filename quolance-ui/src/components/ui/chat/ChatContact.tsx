@@ -10,7 +10,8 @@
 import React from 'react';
 import Avatar from '@/components/ui/chat/Avatar';
 import { ContactDto } from '@/constants/types/chat-types';
-import { formatTimeForChat, getFirstName } from '@/util/stringUtils';
+import { getFirstName } from '@/util/stringUtils';
+import { formatTimeForChat } from '@/util/chatUtils';
 
 interface ContactProps {
   contact: ContactDto;

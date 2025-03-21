@@ -2,63 +2,119 @@
 // Show the list of Messages in the conversation.
 // Messages will be shown as a list of MessageGroup components.
 // A MessageGroup can contain 1 or more messages.
+'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MessageDto } from '@/constants/types/chat-types';
 import MessageGroup from '@/components/ui/chat/MessageGroup';
-
-const GROUPING_THRESHOLD = 300000; // 5 minutes
-
-function groupMessages(messages: MessageDto[]): MessageDto[][] {
-  const sortedMessages = [...messages].sort(
-    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-  );
-
-  const groups: MessageDto[][] = [];
-  let currentGroup: MessageDto[] = [];
-
-  for (const message of sortedMessages) {
-    if (currentGroup.length === 0) {
-      currentGroup.push(message);
-    } else {
-      const lastMessage = currentGroup[currentGroup.length - 1];
-      // We check if sameSender by check previous message senderId with current message senderId
-      console.log('message last', lastMessage);
-      console.log('message current', message);
-      const sameSender = lastMessage.sender_id === message.sender_id;
-      console.log(sameSender);
-      const timeDifference =
-        new Date(message.timestamp).getTime() -
-        new Date(lastMessage.timestamp).getTime();
-
-      if (sameSender && timeDifference <= GROUPING_THRESHOLD) {
-        console.log('here', message);
-        currentGroup.push(message);
-      } else {
-        console.log('there', message);
-        groups.push(currentGroup);
-        currentGroup = [message];
-      }
-    }
-  }
-
-  if (currentGroup.length) groups.push(currentGroup);
-  return groups;
-}
+import { FiArrowDown } from 'react-icons/fi';
+import { groupMessages } from '@/util/chatUtils';
 
 interface MessageListProps {
   messages: MessageDto[];
+  isMinimized: boolean;
 }
 
-function MessageList({ messages }: MessageListProps) {
-  // We need an algorithm to group messages by sender and time
+function MessageList({ messages, isMinimized }: MessageListProps) {
+  const [showScrollDown, setShowScrollDown] = useState(false);
+  const messageListRef = useRef<HTMLDivElement>(null);
+
   const groupedMessages = groupMessages(messages);
 
+  const scrollToBottom = () => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
+  };
+
+  const handleScroll = () => {
+    if (messageListRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = messageListRef.current;
+      const isAtBottom = scrollTop >= scrollHeight - clientHeight - 10;
+      setShowScrollDown(!isAtBottom);
+    }
+  };
+
+  useEffect(() => {
+    if (!isMinimized) {
+      // Wait for the container transition duration (1000ms)
+      const timeout = setTimeout(() => {
+        scrollToBottom();
+        handleScroll();
+      }, 10);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isMinimized]);
+
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    scrollToBottom();
+
+    const messageList = messageListRef.current;
+    if (messageList) {
+      messageList.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (messageList) {
+        messageList.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [messages]);
+
   return (
-    <div className={'h-full overflow-y-auto p-4'}>
-      {groupedMessages.map((group, index) => (
-        <MessageGroup key={index} messages={group} />
-      ))}
+    <div className='relative h-full'>
+      <div
+        id='message-list'
+        ref={messageListRef}
+        className='h-full overflow-y-auto p-4 last:mb-0'
+      >
+        {groupedMessages.map((group, index) => (
+          <MessageGroup key={index} messages={group} />
+        ))}
+      </div>
+
+      <div
+        className={`absolute bottom-6 right-6 z-10 transition-all duration-300 ease-in-out ${
+          showScrollDown
+            ? 'opacity-100'
+            : 'pointer-events-none bottom-4 opacity-0'
+        }`}
+      >
+        <button
+          onClick={() => {
+            if (messageListRef.current) {
+              const scrollHeight = messageListRef.current.scrollHeight;
+              const start = messageListRef.current.scrollTop;
+              const change = scrollHeight - start;
+              const duration = 400;
+              let startTime: number;
+
+              const animateScroll = (timestamp: number) => {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+
+                if (elapsed < duration && messageListRef.current) {
+                  const t = elapsed / duration;
+                  const factor = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+                  messageListRef.current.scrollTop = start + change * factor;
+                  requestAnimationFrame(animateScroll);
+                } else if (messageListRef.current) {
+                  messageListRef.current.scrollTop = scrollHeight;
+                }
+              };
+
+              requestAnimationFrame(animateScroll);
+            }
+          }}
+          className='rounded-full bg-white p-2 shadow-md transition-all duration-200 hover:bg-gray-50'
+          aria-label='Scroll to bottom'
+        >
+          <FiArrowDown className='text-2xl text-blue-500' />
+        </button>
+      </div>
     </div>
   );
 }
