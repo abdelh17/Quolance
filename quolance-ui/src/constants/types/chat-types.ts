@@ -29,4 +29,6 @@ export interface ContactDto {
 export interface ChatContactProps {
   contact: ContactDto;
   onClose: () => void;
+  isMinimized: boolean;
+  isExpanded: boolean;
 }
