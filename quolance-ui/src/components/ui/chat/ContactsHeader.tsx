@@ -7,7 +7,6 @@
 
 import GenericChatHeader from '@/components/ui/chat/GenericChatHeader';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { PiChatCircleDotsBold } from 'react-icons/pi';
 import { ContactDto } from '@/constants/types/chat-types';
 
 interface ConversationHeaderProps {
@@ -18,15 +17,6 @@ interface ConversationHeaderProps {
   onMinimize: () => void;
   onNewChat: (contact: ContactDto) => void;
 }
-
-const newChatContact: ContactDto = {
-  user_id: 'new',
-  name: 'New Message',
-  profile_picture: 'new',
-  last_message: '',
-  last_message_timestamp: '',
-  unread_messages: 0,
-};
 
 function ContactsHeader({
   avatar,
@@ -43,11 +33,6 @@ function ContactsHeader({
       width={width}
       onMinimize={onMinimize}
       buttons={[
-        {
-          icon: <PiChatCircleDotsBold strokeWidth={4} />,
-          onClick: () => onNewChat(newChatContact),
-          isVisible: true,
-        },
         {
           icon: isMinimized ? <FaChevronUp /> : <FaChevronDown />,
           onClick: onMinimize,

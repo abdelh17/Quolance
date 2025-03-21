@@ -75,8 +75,6 @@ function ChatController() {
     return <></>;
   }
 
-  console.log('containers', containers);
-
   if (!user) {
     // We do not show conversations, instead we show only the chat container with a chatbot
     return (

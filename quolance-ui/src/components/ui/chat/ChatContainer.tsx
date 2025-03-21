@@ -59,11 +59,7 @@ const ChatContainer: React.FC<ChatContactProps> = ({ contact, onClose }) => {
         width={width}
         height={height}
       >
-        {receiverId === 'new' ? (
-          <NewChatContent onNewChat={onClose} />
-        ) : (
-          <ChatContent receiverId={receiverId} messages={messages || []} />
-        )}
+        <ChatContent receiverId={receiverId} messages={messages || []} />
       </GenericChatContainer>
     </div>
   );
@@ -79,7 +75,7 @@ const ChatContent: React.FC<{ receiverId: string; messages: MessageDto[] }> = ({
 
   const handleSendMessage = () => {
     if (!inputValue) return;
-    sendMessage({ content: inputValue, receiverId: receiverId });
+    sendMessage({ content: inputValue, receiver_id: receiverId });
     setInputValue('');
   };
 
