@@ -13,13 +13,13 @@ function Avatar({ className, src, size }: AvatarProps) {
   const sizeClasses = {
     sm: 'w-9 h-9',
     md: 'w-12 h-12',
-    lg: 'w-16 h-16',
+    lg: 'w-20 h-20',
   };
 
   const dimensions = {
     sm: 36,
     md: 48,
-    lg: 64,
+    lg: 80,
   };
 
   const imageSrc =
