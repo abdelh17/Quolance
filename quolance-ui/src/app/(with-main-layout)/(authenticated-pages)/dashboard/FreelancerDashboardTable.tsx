@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {useCancelApplication, useGetAllFreelancerApplications,} from '@/api/freelancer-api';
 import {useState} from 'react';
 import {ArrowDown, ArrowUp, ArrowUpDown, ChevronLeftIcon, ChevronRightIcon,} from 'lucide-react';
+import { formatDate } from '@/util/stringUtils';
 import ApplicationStatusBadge, {ApplicationStatus,} from '@/components/ui/applications/ApplicationStatusBadge';
 import Modal from '@/components/ui/Modal';
 import {PiX} from 'react-icons/pi';
@@ -15,6 +16,8 @@ interface Application {
   projectId: string;
   freelancerId: string;
   projectTitle: string;
+  creationDate: string;
+  message: string;
 }
 
 export default function FreelancerDashboardTable() {
@@ -34,6 +37,7 @@ export default function FreelancerDashboardTable() {
   });
 
   const applications = data?.content || [];
+  console.log('applications is', applications)
   const metadata = data?.metadata;
 
   const handleSort = (column: string) => {
@@ -56,6 +60,8 @@ export default function FreelancerDashboardTable() {
           <ArrowDown className='ml-1 inline-block h-4 w-4'/>
       );
   };
+
+  // Using the imported formatDate function from stringUtils
 
   const canWithdrawApplication = (status: ApplicationStatus) => {
     return status === 'APPLIED';
@@ -103,18 +109,18 @@ export default function FreelancerDashboardTable() {
               <th
                   scope='col'
                   className='hidden cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:table-cell sm:pl-0'
-                  onClick={() => handleSort('id')}
+                  onClick={() => handleSort('creationDate')}
               >
                 <div className='flex items-center'>
-                  Application ID
-                  {getSortIcon('id')}
+                  Submitted On
+                  {getSortIcon('creationDate')}
                 </div>
               </th>
               <th
                   scope='col'
                   className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
               >
-                Project ID
+                Application Message
               </th>
               <th
                   scope='col'
@@ -154,11 +160,13 @@ export default function FreelancerDashboardTable() {
                                 {application.projectTitle}
                             </Link>
                         </td>
-                        <td data-test={`${application.id}`} className='hidden w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:table-cell sm:w-auto sm:max-w-none sm:pl-0'>
-                            {application.id}
+                        <td data-test="submitted-date" className='hidden w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:table-cell sm:w-auto sm:max-w-none sm:pl-0'>
+                            {formatDate(application.creationDate)}
                         </td>
-                        <td data-test={`${application.projectId}`} className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                            {application.projectId}
+                        <td data-test="application-message" className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
+                            {application.message 
+                              ? application.message.substring(0, 45) + (application.message.length > 45 ? '...' : '')
+                              : "No message provided"}
                         </td>
                         <td className='px-3 py-4 text-sm'>
                             <ApplicationStatusBadge status={application.status}/>
