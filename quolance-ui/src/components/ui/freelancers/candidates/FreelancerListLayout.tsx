@@ -53,7 +53,11 @@ const FreelancerListLayout = ({
                   key={candidate.id}
                   freelancer={candidate}
                   onMessageClick={() => {
-                    onNewChat(candidate.userId);
+                    onNewChat(
+                      candidate.userId,
+                      candidate.firstName + ' ' + candidate.lastName,
+                      candidate.profileImageUrl
+                    );
                   }}
                 />
               ))}

@@ -18,7 +18,7 @@ function GenericChatContainer({
 }: GenericChatContainerProps) {
   return (
     <div
-      className='bg-slate-100 drop-shadow-md transition-all duration-200'
+      className='bg-slate-50 drop-shadow-md transition-all duration-200'
       style={{
         height: isMinimized ? 0 : height,
         width,

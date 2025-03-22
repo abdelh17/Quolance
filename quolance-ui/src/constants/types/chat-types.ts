@@ -12,11 +12,6 @@ export interface SendMessageDto {
   content: string;
 }
 
-export interface ChatPollingState {
-  isPolling: boolean;
-  lastMessageTimestamp: string | null;
-}
-
 export interface ContactDto {
   user_id: string;
   name: string;

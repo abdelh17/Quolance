@@ -7,7 +7,6 @@
 
 import GenericChatHeader from '@/components/ui/chat/GenericChatHeader';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { ContactDto } from '@/constants/types/chat-types';
 
 interface ConversationHeaderProps {
   avatar: string;
@@ -15,7 +14,6 @@ interface ConversationHeaderProps {
   width: number;
   isMinimized: boolean;
   onMinimize: () => void;
-  onNewChat: (contact: ContactDto) => void;
 }
 
 function ContactsHeader({
