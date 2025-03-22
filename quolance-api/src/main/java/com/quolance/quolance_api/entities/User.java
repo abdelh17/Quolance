@@ -89,6 +89,9 @@ public class User extends AbstractEntity implements UserDetails {
     @OneToMany(mappedBy = "receiver")
     private List<Message> receivedMessages = new ArrayList<>();
 
+    @Column
+    private boolean deleted = false;
+
     /**
      * Constructor to create a User from a CreateUserRequestDto.
      */

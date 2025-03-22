@@ -33,6 +33,8 @@ public class UserDto {
     @NotBlank(message = "The user role is required")
     private Role role;
 
+    @JsonProperty("deleted")
+    private boolean deleted;
 
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
@@ -41,6 +43,7 @@ public class UserDto {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .role(user.getRole())
+                .deleted(user.isDeleted())
                 .build();
     }
 }

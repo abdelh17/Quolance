@@ -38,4 +38,6 @@ public interface UserService {
 
     void updateNotificationSubscription(User user, boolean subscribed);
 
+    void deleteUser(User user);
+
 }
