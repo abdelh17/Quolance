@@ -59,3 +59,7 @@ export const queryToString = (
 
   return new URLSearchParams(filteredQuery).toString();
 };
+
+export const getFirstName = (fullName: string) => {
+  return fullName.split(' ')[0];
+};

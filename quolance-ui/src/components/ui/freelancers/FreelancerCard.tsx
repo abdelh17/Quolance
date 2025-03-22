@@ -13,6 +13,7 @@ import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStat
 
 import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { useChat } from '@/components/ui/chat/ChatProvider';
 
 interface FreelancerCardProps {
   freelancerProfile: FreelancerProfileType;
@@ -78,6 +79,7 @@ function FreelancerCard({
 }: FreelancerCardProps) {
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
   const statusConfig = getStatusConfig(status);
+  const { onNewChat } = useChat();
 
   const fullName = `${freelancerProfile.firstName} ${freelancerProfile.lastName}`;
   const location = freelancerProfile.state || '';
@@ -121,7 +123,7 @@ function FreelancerCard({
           {canSelect && (
             <label className='relative z-10 -mt-[2px] mr-1 inline-flex cursor-pointer items-center'>
               <input
-                data-test="reject-application-btn"
+                data-test='reject-application-btn'
                 type='checkbox'
                 checked={selected}
                 onChange={(e) => onSelect(e.target.checked)}
@@ -136,8 +138,11 @@ function FreelancerCard({
             </label>
           )}
         </div>
-        <Link href={''}>
-          <div className='mt-5 flex items-center justify-start gap-5 px-3 sm:px-6'>
+        <div className='mt-5 flex items-center justify-start gap-5 px-3 sm:px-6'>
+          <Link
+            href={`/public-profile/${freelancerProfile.username}`}
+            className='flex flex-grow items-center gap-5'
+          >
             <div className='relative'>
               <div className='relative aspect-square h-[88px] w-[88px] rounded-full'>
                 {/* Profile image */}
@@ -166,24 +171,38 @@ function FreelancerCard({
               </div>
               <p className='text-n500 pt-2'>{location}</p>
             </div>
-          </div>
+          </Link>
+        </div>
 
-          {/* Approve submission buttons */}
-          <div className='mt-6 flex items-center justify-start gap-2 px-6'>
-            {status === 'ACCEPTED' ? (
+        {/* Approve submission buttons */}
+        <div className='mt-6 flex items-center justify-start gap-2 px-6'>
+          {status === 'ACCEPTED' ? (
+            <button
+              disabled
+              className='wave-bg relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold text-white shadow-sm'
+            >
+              <div className='relative z-20 flex items-center justify-center gap-3'>
+                <PiCheckCircle className='text-2xl !leading-none text-white' />
+                <span>Submission Approved</span>
+              </div>
+            </button>
+          ) : (
+            <Link
+              href={`/public-profile/${freelancerProfile.username}`}
+              className='flex-grow'
+              onClick={(e) => {
+                // Allow the button's onClick to handle the action
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
               <button
-                disabled
-                className='wave-bg relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold text-white shadow-sm'
-              >
-                <div className='relative z-20 flex items-center justify-center gap-3'>
-                  <PiCheckCircle className='text-2xl !leading-none text-white' />
-                  <span>Submission Approved</span>
-                </div>
-              </button>
-            ) : (
-              <button
-                data-test="approve-submission-btn"
-                onClick={() => setIsApprovalModalOpen(true)}
+                data-test='approve-submission-btn'
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsApprovalModalOpen(true);
+                }}
                 disabled={!canSelect}
                 className={`relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:duration-700 hover:after:w-[calc(100%+2px)]
                 ${
@@ -201,14 +220,25 @@ function FreelancerCard({
                   </span>
                 </div>
               </button>
-            )}
-            {canSelect && (
-              <button className='hover:bg-n100/20 relative flex items-center justify-center rounded-full border p-3 text-xl !leading-none duration-[400ms]'>
-                <Send />
-              </button>
-            )}
-          </div>
-        </Link>
+            </Link>
+          )}
+          {canSelect && (
+            <button
+              className='hover:bg-n100/20 relative flex items-center justify-center rounded-full border p-3 text-xl !leading-none duration-[400ms]'
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onNewChat(
+                  freelancerProfile.userId,
+                  fullName,
+                  freelancerProfile.profileImageUrl || ''
+                );
+              }}
+            >
+              <Send />
+            </button>
+          )}
+        </div>
       </div>
 
       <ApprovalConfirmationModal

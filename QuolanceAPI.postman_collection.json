@@ -46,6 +46,24 @@
 					"response": []
 				},
 				{
+					"name": "forgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"user1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/api/users/forgot-password"
+					},
+					"response": []
+				},
+				{
 					"name": "resetPassword",
 					"request": {
 						"method": "PATCH",

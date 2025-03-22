@@ -5,6 +5,7 @@ import { CandidateResponse } from '@/constants/models/candidates/CandidateRespon
 import FreelancerCatalogCard from '@/components/ui/freelancers/candidates/FreelancerCatalogCard';
 import FreelancerCatalogFilter from '@/components/ui/freelancers/candidates/candidateFilter/FreelancerCatalogFilter';
 import SortControls from '@/components/ui/pagination/SortControls';
+import { useChat } from '@/components/ui/chat/ChatProvider';
 
 interface FreelancerListLayoutProps {
   isLoading: boolean;
@@ -25,6 +26,8 @@ const FreelancerListLayout = ({
   setQuery,
   pageMetaData,
 }: FreelancerListLayoutProps) => {
+  const { onNewChat } = useChat();
+
   return (
     <div className='medium-container mx-auto mt-8 pb-8'>
       <div className='flex flex-col gap-10 lg:flex-row'>
@@ -50,7 +53,11 @@ const FreelancerListLayout = ({
                   key={candidate.id}
                   freelancer={candidate}
                   onMessageClick={() => {
-                    console.log('Message clicked');
+                    onNewChat(
+                      candidate.userId,
+                      candidate.firstName + ' ' + candidate.lastName,
+                      candidate.profileImageUrl
+                    );
                   }}
                 />
               ))}
