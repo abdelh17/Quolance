@@ -1,4 +1,4 @@
-import { MessageDto } from '@/constants/types/chat-types';
+import { ContactDto, MessageDto } from '@/constants/types/chat-types';
 import { format, isThisYear, isToday, isYesterday } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -90,4 +90,46 @@ export const formatTimestampString = (timestamp: string) => {
   }
 
   return formattedDate;
+};
+
+const LAST_READ_KEY = 'chatLastReadTimestamps';
+
+export const updateLastRead = (receiverId: string, timestamp: string) => {
+  console.log('updateLastRead', receiverId, timestamp);
+  const timestamps = getLastReadTimestamps();
+  timestamps[receiverId] = timestamp;
+  localStorage.setItem(LAST_READ_KEY, JSON.stringify(timestamps));
+};
+
+export const getLastReadTimestamps = (): Record<string, string> => {
+  return JSON.parse(localStorage.getItem(LAST_READ_KEY) || '{}');
+};
+
+export const isMessageUnread = (contact: ContactDto): boolean => {
+  if (contact.user_id == 'chatbot' || contact.name.startsWith('Draft: '))
+    return false;
+
+  const lastRead = getLastReadTimestamps()[contact.user_id];
+  if (!lastRead) return true;
+
+  console.log('here');
+
+  console.log('lastRead', lastRead);
+  console.log('lastMessage', contact.last_message_timestamp);
+  const lastReadDate = new Date(lastRead);
+  const lastMessageDate = new Date(contact.last_message_timestamp);
+
+  // Check if dates are valid
+  if (isNaN(lastReadDate.getTime()) || isNaN(lastMessageDate.getTime())) {
+    console.log('invalid dates');
+    return true;
+  }
+
+  const lastReadSeconds = Math.floor(lastReadDate.getTime() / 1000);
+  const lastMessageSeconds = Math.floor(lastMessageDate.getTime() / 1000);
+
+  console.log('lastReadSeconds', lastReadSeconds);
+  console.log('lastMessageSeconds', lastMessageSeconds);
+
+  return lastMessageSeconds > lastReadSeconds;
 };

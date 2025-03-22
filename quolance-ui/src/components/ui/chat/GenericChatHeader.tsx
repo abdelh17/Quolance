@@ -16,6 +16,7 @@ interface GenericChatHeaderProps {
     isVisible: boolean;
   }[];
   onMinimize?: () => void;
+  isUnread?: boolean;
 }
 
 function GenericChatHeader({
@@ -24,6 +25,7 @@ function GenericChatHeader({
   width,
   buttons,
   onMinimize,
+  isUnread,
 }: GenericChatHeaderProps) {
   return (
     <div
@@ -45,6 +47,7 @@ function GenericChatHeader({
         <h1 className={'ml-2 max-w-[calc(100%-80px)] truncate'} title={title}>
           {title}
         </h1>
+        <div className={'ml-2 h-2 w-2 rounded-full bg-red-600'}></div>
         <div className={'ml-auto flex'}>
           {buttons.map((button, index) => (
             <button

@@ -5,12 +5,13 @@
 // This component, although his name sounds a bit misleading, is a component that will be contained in the ConversationContainer,
 // On click, it will open the conversation between the two users, updating the ChatContainer with the onClicked conversation.
 // optionally we can send the last activity time to the right of the conversation
-// optionally we can send the number of unread messages to the right of the conversation as a red notification badge
+
 import React, { useEffect, useRef, useState } from 'react';
 import Avatar from '@/components/ui/chat/Avatar';
 import { ContactDto } from '@/constants/types/chat-types';
 import { getFirstName } from '@/util/stringUtils';
-import { formatTimeForChat } from '@/util/chatUtils';
+import { formatTimeForChat, isMessageUnread } from '@/util/chatUtils';
+import { useChat } from '@/components/ui/chat/ChatProvider';
 
 interface ContactProps {
   contact: ContactDto;
@@ -18,15 +19,12 @@ interface ContactProps {
 }
 
 function ChatContact({ contact, onClick }: ContactProps) {
-  const {
-    name,
-    profile_picture,
-    last_message,
-    last_message_timestamp,
-    unread_messages,
-  } = contact;
+  const { name, profile_picture, last_message, last_message_timestamp } =
+    contact;
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const [hasTwoLines, setHasTwoLines] = useState(false);
+  const [isUnread, setIsUnread] = useState(false);
+  const { lastReadUpdate } = useChat();
 
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -36,6 +34,10 @@ function ChatContact({ contact, onClick }: ContactProps) {
       setHasTwoLines(lines > 1);
     }
   }, [last_message]);
+
+  useEffect(() => {
+    setIsUnread(isMessageUnread(contact));
+  }, [contact, lastReadUpdate]);
 
   return (
     <div
@@ -60,10 +62,8 @@ function ChatContact({ contact, onClick }: ContactProps) {
         <div className='line-clamp-1 whitespace-nowrap text-sm text-gray-500'>
           {formatTimeForChat(last_message_timestamp)}
         </div>
-        {unread_messages > 0 && (
-          <div className='bg-b400 mb-1 ml-auto mr-1 flex h-4 w-4 items-center justify-center rounded-full text-[11px] text-white'>
-            {unread_messages}
-          </div>
+        {isUnread && (
+          <div className='bg-b400 mb-1 ml-auto mr-1 flex h-[10px] w-[10px] items-center justify-center rounded-full' />
         )}
       </div>
     </div>

@@ -24,17 +24,16 @@ function ContactsContainer({ contacts, onOpenChat }: ContactsContainerProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
   const [isMinimized, setIsMinimized] = React.useState(true);
   const width = 288;
-  const height = 867;
+  const height = 696;
 
   return (
-    <div className={`mt-auto w-min w-[${width}]`}>
+    <div className='mt-auto w-72'>
       <ContactsHeader
         avatar={user?.profileImageUrl || ''}
         title={'Messaging'}
         width={width}
         isMinimized={isMinimized}
         onMinimize={() => setIsMinimized((prevState) => !prevState)}
-        onNewChat={onOpenChat}
       />
       <GenericChatContainer
         isMinimized={isMinimized}
@@ -56,23 +55,31 @@ function ContactsContent({
 }) {
   const { user } = useAuthGuard({ middleware: 'auth' });
   return (
-    <div className={'h-full w-full'}>
-      <div className={'border-b border-slate-200 bg-white'}>
-        {contacts.length == 0 ? (
-          <div className={'pt-10'}>
+    <div className='flex h-full w-full flex-col'>
+      <div className='flex-1 overflow-hidden'>
+        <div className='h-fit divide-y divide-slate-200 overflow-y-auto bg-white'>
+          {contacts.map((contact, index) => (
+            <ChatContact
+              contact={contact}
+              onClick={onOpenChat}
+              key={`contact-${index}`}
+            />
+          ))}
+        </div>
+
+        {contacts.length == 1 && (
+          <div className='border-t border-t-slate-200 pt-10'>
             <Image src={conversation_illustration} alt={'conversation image'} />
-            <div className={'flex flex-col gap-3 p-3 pb-16 text-center'}>
-              <h2 className={'text-lg font-semibold text-slate-800'}>
+            <div className='flex flex-col gap-3 p-3 pb-16 text-center'>
+              <h2 className='text-lg font-semibold text-slate-800'>
                 No conversations yet
               </h2>
-              <p className={'text-center text-gray-600'}>
+              <p className='text-center text-gray-600'>
                 You will see all your conversations here.
               </p>
               {user?.role && (
                 <Link
-                  className={
-                    'mx-2 mt-4 rounded-full border-2 p-2 hover:bg-gray-100'
-                  }
+                  className='mx-2 mt-4 rounded-full border-2 p-2 hover:bg-gray-100'
                   href={user.role === Role.CLIENT ? '/candidates' : '/profile'}
                 >
                   {user.role === Role.CLIENT
@@ -81,12 +88,6 @@ function ContactsContent({
                 </Link>
               )}
             </div>
-          </div>
-        ) : (
-          <div className={'flex w-full flex-col divide-y divide-slate-200'}>
-            {contacts.map((contact, index) => (
-              <ChatContact contact={contact} onClick={onOpenChat} key={index} />
-            ))}
           </div>
         )}
       </div>
