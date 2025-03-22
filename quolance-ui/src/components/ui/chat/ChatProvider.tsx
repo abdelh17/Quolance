@@ -247,14 +247,18 @@ export function ChatInterface() {
 
   return (
     <div className='fixed bottom-0 right-4 z-[999] px-10'>
-      <div className='flex flex-row gap-4'>
-        {containers.map((container) => (
-          <ChatContainer key={container.contact.user_id} {...container} />
-        ))}
-        <ContactsContainer
-          contacts={[chatbotContact, ...contacts]}
-          onOpenChat={onOpenChat}
-        />
+      <div className='relative'>
+        <div className={'relative right-[304px] flex flex-row gap-4'}>
+          {containers.map((container) => (
+            <ChatContainer key={container.contact.user_id} {...container} />
+          ))}
+        </div>
+        <div className='absolute bottom-0 right-0'>
+          <ContactsContainer
+            contacts={[chatbotContact, ...contacts]}
+            onOpenChat={onOpenChat}
+          />
+        </div>
       </div>
     </div>
   );

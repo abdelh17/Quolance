@@ -47,7 +47,7 @@ function ChatContact({ contact, onClick }: ContactProps) {
           ref={lastMessageRef}
           className='line-clamp-2 overflow-ellipsis text-xs font-[100] text-slate-500'
         >
-          {getFirstName(name)}:{last_message}
+          {getFirstName(name)}: {last_message}
         </div>
       </div>
       <div className='ml-auto flex flex-col justify-between'>

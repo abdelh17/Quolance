@@ -21,7 +21,7 @@ function ContactsContainer({ contacts, onOpenChat }: ContactsContainerProps) {
   const height = 696;
 
   return (
-    <div className='mt-auto w-72'>
+    <div className='mt-auto w-72 '>
       <ContactsHeader
         avatar={user?.profileImageUrl || ''}
         title={'Messaging'}
