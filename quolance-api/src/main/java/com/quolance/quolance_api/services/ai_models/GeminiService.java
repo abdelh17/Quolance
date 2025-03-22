@@ -3,9 +3,11 @@ package com.quolance.quolance_api.services.ai_models;
 import com.quolance.quolance_api.configs.GeminiConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +29,23 @@ public class GeminiService implements AiService {
                     .bodyToMono(Map.class)
                     .block();
         } catch (Exception e) {
-            log.error("Error calling Gemini API: {}", e.getMessage());
+            log.error("Error calling Gemini API for string input: {}", e.getMessage());
             throw new RuntimeException("Failed to call moderation API", e);
+        }
+    }
+
+    @Override
+    public Map<String, Object> callAiApi(JSONObject jsonObject) {
+        try {
+            return geminiWebClient.post()
+                    .uri(geminiConfig.getBaseUrl() + "?key=" + geminiConfig.getKey())
+                    .bodyValue(buildGeminiRequestFromJson(jsonObject))
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("Error calling Gemini API for json input: {}", e.getMessage());
+            throw new RuntimeException("Failed to call chatbot API", e);
         }
     }
 
@@ -98,6 +115,32 @@ public class GeminiService implements AiService {
                 )
         );
     }
+
+    private Map<String, Object> buildGeminiRequestFromJson(JSONObject jsonObject) {
+        List<Map<String, Object>> contents = new ArrayList<>();
+
+        for (int i = 0; i < jsonObject.getJSONArray("contents").length(); i++) {
+            JSONObject contentItem = jsonObject.getJSONArray("contents").getJSONObject(i);
+            String role = contentItem.getString("role");
+
+            List<Map<String, Object>> parts = new ArrayList<>();
+            JSONObject partsItem = contentItem.getJSONArray("parts").getJSONObject(0);  // Assuming each "parts" array has one item
+            parts.add(Map.of("text", partsItem.getString("text")));
+
+            contents.add(Map.of("role", role, "parts", parts));
+        }
+
+        return Map.of(
+                "contents", contents,
+                "safetySettings", List.of(
+                        Map.of(
+                                "category", "HARM_CATEGORY_DANGEROUS_CONTENT",
+                                "threshold", "BLOCK_MEDIUM_AND_ABOVE"
+                        )
+                )
+        );
+    }
+
 
 
 }
