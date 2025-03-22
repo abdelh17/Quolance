@@ -67,7 +67,7 @@ public class User extends AbstractEntity implements UserDetails {
     @JoinColumn(name = "profileId")
     private Profile profile;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects;
 
     @Setter
