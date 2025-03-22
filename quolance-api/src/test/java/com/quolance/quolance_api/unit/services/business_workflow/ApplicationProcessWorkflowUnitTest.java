@@ -8,6 +8,7 @@ import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.impl.ApplicationProcessWorkflowImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,9 @@ class ApplicationProcessWorkflowUnitTest {
 
     @Mock
     private ProjectService projectService;
+
+    @Mock
+    private NotificationMessageService notificationMessageService;
 
     @InjectMocks
     private ApplicationProcessWorkflowImpl applicationProcessWorkflow;

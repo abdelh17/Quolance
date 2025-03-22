@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { Github, Link, Linkedin } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
 import { useAuthGuard } from '@/api/auth-api';
 import {
   useEditProfile,
@@ -9,20 +10,24 @@ import {
   useGetProfileCompletion,
   useUploadProfileImage,
 } from '@/api/freelancer-api';
+import LanguageSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/LanguageSection';
+import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
+import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
 import {
   EditModesType,
   FreelancerProfileType,
 } from '@/constants/models/user/UserResponse';
-import ProfileHeader from './components/ProfileHeader';
-import AboutSection from './components/AboutSection';
-import ExperienceSection from './components/ExperienceSection';
-import AvailabilitySection from './components/AvailabilitySection';
-import SkillsSection from './components/SkillsSection';
-import ContactSection from './components/ContactSection';
-import ProfileStatus from './components/ProfileStatus';
-import { UpdateProfileModal } from './components/UpdateProfileModal';
 import { SKILLS_OPTIONS } from '@/constants/types/form-types';
-import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
+
+import AboutSection from './components/AboutSection';
+import AvailabilitySection from './components/AvailabilitySection';
+import ContactSection from './components/ContactSection';
+import ExperienceSection from './components/ExperienceSection';
+import ProfileHeader from './components/ProfileHeader';
+import ProfileStatus from './components/ProfileStatus';
+
+import SkillsSection from './components/SkillsSection';
+
 
 const FreelancerProfile: React.FC = () => {
   const { user, mutate } = useAuthGuard({ middleware: 'auth' });
@@ -63,6 +68,8 @@ const FreelancerProfile: React.FC = () => {
     skills: [],
     availability: '',
     projectExperiences: [],
+    workExperiences: [],
+    languagesSpoken: [],
   });
 
   useEffect(() => {
@@ -183,24 +190,12 @@ const FreelancerProfile: React.FC = () => {
   };
 
   const inputClassName =
-    'w-full px-4 py-2 bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200';
+    'block w-full rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-b300 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200 ';
 
   return (
     <div className='min-h-screen bg-gray-50'>
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
-        {editModes.editProfile && (
-          <UpdateProfileModal
-            profile={profile}
-            inputClassName={inputClassName}
-            availableSkills={SKILLS_OPTIONS}
-            saveEditModes={saveEditModes}
-            handleInputChange={handleInputChange}
-            handleSkillsChange={handleSkillsChange}
-            handleSocialLinksChange={handleSocialLinksChange}
-            handleSave={handleSave}
-          />
-        )}
 
         {/* Header */}
         <ProfileHeader
@@ -224,8 +219,6 @@ const FreelancerProfile: React.FC = () => {
           profile={profile}
           profilePercentage={profilePercentage}
           isHidden={profilePercentage === 100}
-          updateEditModes={updateEditModes}
-          checkEditModes={checkEditModes}
         />
 
         {/* About Section */}
@@ -241,6 +234,15 @@ const FreelancerProfile: React.FC = () => {
 
         {/* Experience Section */}
         <ExperienceSection
+          profile={profile}
+          handleInputChange={handleInputChange}
+          updateEditModes={updateEditModes}
+          editModes={editModes}
+          handleSave={handleSave}
+          checkEditModes={checkEditModes}
+        />
+
+        <WorkExperienceSection
           profile={profile}
           handleInputChange={handleInputChange}
           updateEditModes={updateEditModes}
@@ -280,6 +282,16 @@ const FreelancerProfile: React.FC = () => {
           checkEditModes={checkEditModes}
         />
 
+        {/* Languages Section */}
+        <LanguageSection
+          profile={profile}
+          handleInputChange={handleInputChange}
+          updateEditModes={updateEditModes}
+          editModes={editModes}
+          handleSave={handleSave}
+          checkEditModes={checkEditModes}
+        />
+
         {/* Contact Section */}
         <ContactSection
           profile={profile}
@@ -300,7 +312,10 @@ const FreelancerProfile: React.FC = () => {
           href={`http://localhost:3000/public-profile/${user?.username || ''}`}
           className='group flex items-center space-x-2 rounded-full bg-amber-400 px-5 py-2.5 text-amber-900 shadow-lg transition-all duration-200 hover:bg-amber-300 hover:shadow-xl'
         >
-          <span className='font-medium'><span className='font-bold'>Done editing?</span> <span className='underline'>See what others see</span></span>
+          <span className='font-medium'>
+            <span className='font-bold'>Done editing?</span>{' '}
+            <span className='underline'>See what others see</span>
+          </span>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             viewBox='0 0 20 20'

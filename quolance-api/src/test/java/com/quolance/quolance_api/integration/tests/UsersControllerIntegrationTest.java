@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.integration.tests;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.users.CreateAdminRequestDto;
 import com.quolance.quolance_api.dtos.users.CreateUserRequestDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserPasswordRequestDto;
@@ -7,6 +8,7 @@ import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
+import com.quolance.quolance_api.helpers.integration.NoOpNotificationConfig;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,19 +17,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
+@ContextConfiguration(classes = {NoOpNotificationConfig.class})
 class UsersControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -56,7 +65,8 @@ class UsersControllerIntegrationTest extends BaseIntegrationTest {
 
         Map<String, Object> userResponse = objectMapper.readValue(response, LinkedHashMap.class);
 
-        assertThat(userResponse).containsEntry("email", "test@test.com")
+        assertThat(userResponse)
+                .containsEntry("email", "test@test.com")
                 .containsEntry("username", "MyClient123")
                 .containsEntry("firstName", "Test")
                 .containsEntry("lastName", "Test")
@@ -170,7 +180,6 @@ class UsersControllerIntegrationTest extends BaseIntegrationTest {
         User updatedUser = userRepository.findByEmail("client@test.com").get();
         assertThat(updatedUser.getFirstName()).isEqualTo("NEW");
         assertThat(updatedUser.getLastName()).isEqualTo("NEW");
-
     }
 
     @Test
@@ -218,5 +227,4 @@ class UsersControllerIntegrationTest extends BaseIntegrationTest {
         User updatedUser = userRepository.findByEmail("client@test.com").get();
         assertThat(updatedUser.getPassword()).isEqualTo(createdClient.getPassword());
     }
-
 }

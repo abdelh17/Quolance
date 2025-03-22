@@ -64,8 +64,13 @@ public class NotificationMessageService implements NotificationService {
             return;
         }
 
-        NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
-        messagingTemplate.convertAndSendToUser(recipient.getUsername(), "/topic/notifications", responseDto);
+        // Check if messagingTemplate is available before attempting to send a WebSocket message.
+        if (messagingTemplate == null) {
+            log.warn("SimpMessagingTemplate is not configured; skipping WebSocket delivery.");
+        } else {
+            NotificationResponseDto responseDto = NotificationResponseDto.fromEntity(notification);
+            messagingTemplate.convertAndSendToUser(recipient.getUsername(), "/topic/notifications", responseDto);
+        }
     }
 
     /**

@@ -17,6 +17,10 @@ export const formatDate = (date: string) => {
 };
 
 export const formatDateObject = (date: Date) => {
+  // Check if date is date object
+  if (Object.prototype.toString.call(date) !== '[object Date]') {
+    return '';
+  }
   const month = date.toLocaleString('default', { month: 'long' });
   const day = date.getDate();
   const year = date.getFullYear();
