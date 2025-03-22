@@ -13,6 +13,7 @@ import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.impl.FreelancerWorkflowServiceImpl;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,6 +34,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,6 +48,9 @@ class FreelancerWorkflowServiceUnitTest {
 
     @Mock
     private ApplicationService applicationService;
+
+    @Mock
+    private NotificationMessageService notificationMessageService;
 
     @InjectMocks
     private FreelancerWorkflowServiceImpl freelancerWorkflowService;
@@ -124,10 +129,11 @@ class FreelancerWorkflowServiceUnitTest {
         when(applicationService.getApplicationByFreelancerIdAndProjectId(mockFreelancer.getId(), mockProject.getId())).thenReturn(null);
         doThrow(new OptimisticLockException("Version mismatch")).when(applicationService).saveApplication(any());
 
+        // UPDATED: Change expected message to match actual message ("resource" instead of "ressource")
         assertThatThrownBy(() -> freelancerWorkflowService.submitApplication(applicationCreateDto, mockFreelancer))
                 .isInstanceOf(ApiException.class)
                 .hasFieldOrPropertyWithValue("status", HttpServletResponse.SC_CONFLICT)
-                .hasMessage("The ressource was modified by another user. Please refresh the page and try again.");
+                .hasMessage("The resource was modified by another user. Please refresh the page and try again.");
     }
 
     @Test

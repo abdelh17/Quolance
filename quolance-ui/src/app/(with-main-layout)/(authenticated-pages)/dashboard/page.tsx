@@ -1,19 +1,65 @@
 'use client';
 import Image from 'next/image';
-
+import React, { useEffect, useState } from 'react';
 import ClientDashboardTable from './ClientDashboardTable';
 import FreelancerDashboardTable from './FreelancerDashboardTable';
 import { useAuthGuard } from '@/api/auth-api';
 import ClientDashboardActionButtons from './ClientDashboardActionButtons';
 import FreelancerDashboardActionButtons from './FreelancerDashboardActionButtons';
+import Chatbot from "./Chatbot";
+import {
+ useGetFreelancerProfile,
+ useGetProfileCompletion,
+} from '@/api/freelancer-api';
+import {
+ FreelancerProfileType,
+} from '@/constants/models/user/UserResponse';
+import ProfileStatus from '../(freelancer-protect-pages)/profile/components/ProfileStatus'
 
 export default function Dashboard() {
-  const { user } = useAuthGuard({ middleware: 'auth' });
+ const { user } = useAuthGuard({ middleware: 'auth' });
+ const { data } = useGetFreelancerProfile(user?.username);
+ const [profilePercentage, setProfilePercentage] = useState<number>(0);
+ const { data: fetchedPercentage, refetch } = useGetProfileCompletion();
+
+ const [profile, setProfile] = useState<FreelancerProfileType>({
+    id: '0',
+    userId: '0',
+    username: '',
+    firstName: '',
+    lastName: '',
+    profileImageUrl: '',
+    bio: '',
+    contactEmail: '',
+    city: '',
+    state: '',
+    experienceLevel: '',
+    socialMediaLinks: [],
+    skills: [],
+    availability: '',
+    projectExperiences: [],
+    workExperiences: [],
+    languagesSpoken: [],
+  });
+
+
+ useEffect(() => {
+     if (fetchedPercentage !== undefined) {
+       setProfilePercentage(fetchedPercentage);
+     }
+   }, [fetchedPercentage]);
+
+   useEffect(() => {
+       if (data) {
+         setProfile(data);
+       }
+     }, [data]);
 
   return (
     <>
       <div className='min-h-full'>
-        <div className='relative h-[300px] overflow-hidden'>
+          <Chatbot />
+          <div className='relative h-[300px] overflow-hidden'>
           {' '}
           {/* Fixed height for Image component */}
           {/* Background wrapper */}
@@ -53,24 +99,31 @@ export default function Dashboard() {
           </header>
         </div>
 
-        <main>
-          <div className='mx-auto px-4 py-8 sm:px-6 lg:px-8'>
-            {user?.role === 'CLIENT' && (
-              <div>
-                <ClientDashboardActionButtons />
-                <ClientDashboardTable />
-              </div>
-            )}
 
-            {user?.role === 'FREELANCER' && (
-              <div>
-                <FreelancerDashboardActionButtons />
-                <FreelancerDashboardTable />
-              </div>
-            )}
-          </div>
-        </main>
-      </div>
-    </>
-  );
+       <main>
+         <div className='mx-auto px-4 py-8 sm:px-6 lg:px-8'>
+           {user?.role === 'CLIENT' && (
+             <div>
+               <ClientDashboardActionButtons />
+               <ClientDashboardTable />
+             </div>
+           )}
+
+
+           {user?.role === 'FREELANCER' && (
+             <div>
+                <ProfileStatus
+                 profile={profile}
+                 profilePercentage={profilePercentage}
+                 isHidden={profilePercentage === 100}
+               />
+               <FreelancerDashboardActionButtons />
+               <FreelancerDashboardTable />
+             </div>
+           )}
+         </div>
+       </main>
+     </div>
+   </>
+ );
 }

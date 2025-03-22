@@ -10,13 +10,31 @@
 			"name": "Users",
 			"item": [
 				{
-					"name": "Create user (CLIENT/FL)",
+					"name": "Create user (CLIENT)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"username\": \"MyUsernameClient123\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"Nermin\",\r\n    \"lastName\": \"Karapandzic\",\r\n    \"role\":\"CLIENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/api/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user (FREELANCER)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"freelancer@freelancer.com\",\r\n    \"username\": \"MyUsernameFreelancer456\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Smith\",\r\n    \"role\":\"FREELANCER\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1169,6 +1187,28 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contacts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/chat/contacts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"chat",
+								"contacts"
+							]
+						},
+						"description": "Get all contacts with their last messages, sorted by most recent conversation"
 					},
 					"response": []
 				}

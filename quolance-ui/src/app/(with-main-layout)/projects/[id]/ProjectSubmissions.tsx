@@ -86,10 +86,7 @@ export default function ProjectSubmissions({
           'REJECTED',
           'CANCELLED',
         ];
-        return (
-          statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)// ||
-          // a.id - b.id
-        );
+        return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
       }
     );
     return applySubmissionFilters(submissions, activeFilters);
@@ -151,7 +148,7 @@ export default function ProjectSubmissions({
 
         {/** Refuse/Clear selections Modal **/}
         <div
-          className={`fixed bottom-8 right-8 z-50 flex items-center gap-3 transition-all duration-300 ease-in-out
+          className={`fixed bottom-16 right-8 z-50 flex items-center gap-3 transition-all duration-300 ease-in-out
           ${
             selectedSubmissions.length === 0
               ? 'translate-y-20 scale-90 opacity-0'
@@ -169,7 +166,7 @@ export default function ProjectSubmissions({
           </button>
 
           <button
-            data-test="reject-selected-btn"
+            data-test='reject-selected-btn'
             onClick={() => setIsRefuseModalOpen(true)}
             className='hover:text-n900 relative overflow-hidden rounded-full bg-red-600 px-6 py-3 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
           >

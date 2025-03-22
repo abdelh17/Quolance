@@ -1,5 +1,6 @@
-package com.quolance.quolance_api.services;
+package com.quolance.quolance_api.services.chat;
 
+import com.quolance.quolance_api.dtos.chat.ContactDto;
 import com.quolance.quolance_api.dtos.chat.MessageDto;
 import com.quolance.quolance_api.dtos.chat.SendMessageDto;
 import com.quolance.quolance_api.entities.User;
@@ -27,4 +28,12 @@ public interface ChatService {
      * @return List of message DTOs
      */
     List<MessageDto> getMessagesBetweenUsers(UUID otherUserId, User currentUser);
+
+    /**
+     * Get all contacts for the current user with their last message
+     *
+     * @param currentUser The current authenticated user
+     * @return List of contact DTOs with user info and last message, sorted by most recent
+     */
+    List<ContactDto> getContacts(User currentUser);
 }

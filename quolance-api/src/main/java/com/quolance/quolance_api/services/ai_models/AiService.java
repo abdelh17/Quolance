@@ -1,5 +1,7 @@
 package com.quolance.quolance_api.services.ai_models;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 public interface AiService {
@@ -13,5 +15,7 @@ public interface AiService {
     String cleanApiResponse(Object response);
 
     void validateApiConfig();
+
+    Map<String, Object> callAiApi(JSONObject jsonObject);
 
 }

@@ -8,6 +8,7 @@ import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,13 +21,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
 public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflow {
 
     private final ApplicationService applicationService;
     private final ProjectService projectService;
+    private final NotificationMessageService notificationMessageService;
 
     @Override
     @Transactional
@@ -40,16 +41,28 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
             validateProjectForFreelancerSelection(project);
             validateProjectForConfirmation(project);
 
+            // Accept the chosen application
             applicationService.updateApplicationStatus(application, ApplicationStatus.ACCEPTED);
+            // Update project to closed and assign selected freelancer
             projectService.updateProjectStatus(project, ProjectStatus.CLOSED);
             projectService.updateSelectedFreelancer(project, application.getFreelancer());
 
-            // Reject all other applications
+            // Notify the accepted freelancer
+            String acceptNotification = "Congratulations! Your application for project '" + project.getTitle() + "' has been accepted.";
+            notificationMessageService.sendNotificationToUser(application.getFreelancer(), application.getFreelancer(), acceptNotification);
+
+            // Reject all other applications and notify them
             applicationService.getAllApplicationsByProjectId(project.getId()).forEach(app -> {
                 if (!app.getId().equals(applicationId)) {
                     applicationService.updateApplicationStatus(app, ApplicationStatus.REJECTED);
+                    String rejectNotification = "We regret to inform you that your application for project '" + project.getTitle() + "' has been rejected.";
+                    notificationMessageService.sendNotificationToUser(app.getFreelancer(), app.getFreelancer(), rejectNotification);
                 }
             });
+
+            // Optionally, notify the client about the successful selection
+            String clientNotification = "You have successfully selected a freelancer for your project '" + project.getTitle() + "'.";
+            notificationMessageService.sendNotificationToUser(client, client, clientNotification);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
@@ -68,6 +81,14 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
             validateProjectForConfirmation(project);
 
             applicationService.updateApplicationStatus(application, ApplicationStatus.REJECTED);
+
+            // Notify freelancer that their application has been rejected.
+            String rejectNotification = "Your application for project '" + project.getTitle() + "' has been rejected.";
+            notificationMessageService.sendNotificationToUser(application.getFreelancer(), application.getFreelancer(), rejectNotification);
+
+            // Optionally, notify the client as well.
+            String clientNotification = "You have rejected an application for your project '" + project.getTitle() + "'.";
+            notificationMessageService.sendNotificationToUser(client, client, clientNotification);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
@@ -111,6 +132,10 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
                         .build();
             }
             applicationService.deleteApplication(application);
+
+            // Notify freelancer that the application cancellation was successful.
+            String cancelNotification = "Your application for project '" + application.getProject().getTitle() + "' has been cancelled successfully.";
+            notificationMessageService.sendNotificationToUser(freelancer, freelancer, cancelNotification);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);

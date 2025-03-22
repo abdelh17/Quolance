@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { Github, Link, Linkedin } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
 import { useAuthGuard } from '@/api/auth-api';
 import {
   useEditProfile,
@@ -9,22 +10,23 @@ import {
   useGetProfileCompletion,
   useUploadProfileImage,
 } from '@/api/freelancer-api';
+import LanguageSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/LanguageSection';
+import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
+import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
 import {
   EditModesType,
   FreelancerProfileType,
 } from '@/constants/models/user/UserResponse';
-import ProfileHeader from './components/ProfileHeader';
-import AboutSection from './components/AboutSection';
-import ExperienceSection from './components/ExperienceSection';
-import AvailabilitySection from './components/AvailabilitySection';
-import SkillsSection from './components/SkillsSection';
-import ContactSection from './components/ContactSection';
-import ProfileStatus from './components/ProfileStatus';
-import { UpdateProfileModal } from './components/UpdateProfileModal';
 import { SKILLS_OPTIONS } from '@/constants/types/form-types';
-import ProjectExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
-import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
-import LanguageSection from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/LanguageSection';
+
+import AboutSection from './components/AboutSection';
+import AvailabilitySection from './components/AvailabilitySection';
+import ContactSection from './components/ContactSection';
+import ExperienceSection from './components/ExperienceSection';
+import ProfileHeader from './components/ProfileHeader';
+import ProfileStatus from './components/ProfileStatus';
+
+import SkillsSection from './components/SkillsSection';
 
 const FreelancerProfile: React.FC = () => {
   const { user, mutate } = useAuthGuard({ middleware: 'auth' });
@@ -193,19 +195,6 @@ const FreelancerProfile: React.FC = () => {
     <div className='min-h-screen bg-gray-50'>
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
-        {editModes.editProfile && (
-          <UpdateProfileModal
-            profile={profile}
-            inputClassName={inputClassName}
-            availableSkills={SKILLS_OPTIONS}
-            saveEditModes={saveEditModes}
-            handleInputChange={handleInputChange}
-            handleSkillsChange={handleSkillsChange}
-            handleSocialLinksChange={handleSocialLinksChange}
-            handleSave={handleSave}
-          />
-        )}
-
         {/* Header */}
         <ProfileHeader
           user={user}
@@ -228,8 +217,6 @@ const FreelancerProfile: React.FC = () => {
           profile={profile}
           profilePercentage={profilePercentage}
           isHidden={profilePercentage === 100}
-          updateEditModes={updateEditModes}
-          checkEditModes={checkEditModes}
         />
 
         {/* About Section */}
@@ -318,9 +305,9 @@ const FreelancerProfile: React.FC = () => {
       </main>
 
       {/* View as Guest Button */}
-      <div className='fixed bottom-8 right-8 z-10'>
+      <div className='fixed bottom-16 right-8 z-10'>
         <a
-          href={`http://localhost:3000/public-profile/${user?.username || ''}`}
+          href={`/public-profile/${user?.username || ''}`}
           className='group flex items-center space-x-2 rounded-full bg-amber-400 px-5 py-2.5 text-amber-900 shadow-lg transition-all duration-200 hover:bg-amber-300 hover:shadow-xl'
         >
           <span className='font-medium'>

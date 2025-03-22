@@ -1,24 +1,27 @@
+'use client';
+import { usePathname, useRouter } from 'next/navigation';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProfileProgressBar from './ProfileProgressBar';
 import { Button } from '@/components/ui/button';
+import DOMPurify from 'dompurify';
+import { PiCaretDown } from 'react-icons/pi';
 
 interface ProfileStatusProps {
   profile: FreelancerProfileType;
   profilePercentage: number;
   isHidden: boolean;
-  updateEditModes: (value: string) => void;
-  checkEditModes: (value: string) => boolean;
 }
 
 const ProfileProgress: React.FC<ProfileStatusProps> = ({
   profile,
   profilePercentage,
   isHidden,
-  updateEditModes,
-  checkEditModes,
 }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [missingFields, setMissingFields] = useState<string[]>([]);
+  const [showMore, setShowMore] = useState(false);
 
   const filterMissingFields = () => {
     const missing = Object.entries(profile)
@@ -60,26 +63,26 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
         return "Filling out the <strong>'Experience' </strong> section ";
       case 'availability':
         return "Filling out the <strong>'Availability' </strong> section ";
+      case 'workExperiences':
+        return "Filling out the <strong>'Work Experience' </strong> section ";
+      case 'languagesSpoken':
+        return "Filling out the <strong>'Languages' </strong> section ";
+      case 'projectExperiences':
+        return "Filling out the <strong>'Project Experience' </strong> section ";
       default:
         return null;
     }
-  };
-
-  const handleClick = () => {
-    updateEditModes('editProfile');
   };
 
   useEffect(() => {
     filterMissingFields();
   }, [profile]);
 
-  const checkModes = checkEditModes('editProfile');
-
   if (isHidden) return null;
 
   return (
     <div className='mb-8 flex flex-wrap gap-8 rounded-lg bg-white p-4 py-4 shadow-md md:justify-between lg:flex-nowrap'>
-      <div className='flex w-full flex-col sm:flex-row sm:items-center px-2 sm:px-8'>
+      <div className='flex w-full flex-col px-2 sm:flex-row sm:items-center sm:px-8'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           width='56'
@@ -90,7 +93,7 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
           strokeWidth='2'
           strokeLinecap='round'
           strokeLinejoin='round'
-          className='lucide lucide-id-card mr-4 mb-4 sm:mb-0 text-blue-500 self-start sm:self-auto'
+          className='lucide lucide-id-card mb-4 mr-4 self-start text-blue-500 sm:mb-0 sm:self-auto'
           style={{ transform: 'rotate(-25deg)' }}
         >
           <path d='M16 10h2' />
@@ -106,30 +109,52 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
           <div className='w-full max-w-full overflow-hidden'>
             <ProfileProgressBar percentage={profilePercentage} />
           </div>
-          <div className='mb-4 text-sm mt-4 break-words'>
+          <div className='mb-4 mt-4 break-words text-sm'>
             We recommend you complete the following:
           </div>
-          <ul className='list-decimal pl-6 text-sm overflow-hidden'>
-            {missingFields.map((recommendation, index) => (
-              <li key={index} className="break-words">
-                <span dangerouslySetInnerHTML={{ __html: recommendation }} />
-              </li>
-            ))}
+          <ul className='list-decimal overflow-hidden pl-6 text-sm'>
+            {missingFields
+              .slice(0, showMore ? missingFields.length : 1)
+              .map((recommendation, index) => (
+                <li key={index} className='break-words'>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(recommendation),
+                    }}
+                  />
+                </li>
+              ))}
           </ul>
+          {missingFields.length > 1 && (
+            <button
+              className='flex items-center gap-1 p-2 text-blue-600'
+              onClick={() => setShowMore(!showMore)}
+            >
+              <span className='text-xs'>
+                {showMore ? 'Show Less' : 'Show More'}
+              </span>
+              <PiCaretDown
+                className={`relative top-[0.5px] h-3 w-3 ${
+                  showMore ? 'top-[1.5px] rotate-180' : ''
+                }`}
+              />
+            </button>
+          )}
         </div>
       </div>
 
-      <div className='flex w-full items-end gap-2 mt-4 sm:mt-0'>
+      <div className='mt-4 flex w-full items-end gap-2 sm:mt-0'>
         <div className='flex w-full justify-end gap-2'>
-          <Button
-            variant='default'
-            animation='default'
-            size='sm'
-            disabled={checkModes}
-            onClick={handleClick}
-          >
-            Update profile
-          </Button>
+          {pathname !== '/profile' && (
+            <Button
+              variant='default'
+              animation='default'
+              size='sm'
+              onClick={() => router.push('/profile')}
+            >
+              Update profile
+            </Button>
+          )}
         </div>
       </div>
     </div>
