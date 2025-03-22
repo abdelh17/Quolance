@@ -23,7 +23,6 @@ export interface ContactDto {
   profile_picture: string;
   last_message: string;
   last_message_timestamp: string;
-  unread_messages: number;
 }
 
 export interface ChatContactProps {
