@@ -1,13 +1,3 @@
-// ChatHeader
-// The header displayed in the chatcontainer
-// Has the avatar and name of the outgoing user
-// Contains the close button
-// Contains the minimize button
-// Contains an enlarge button
-// If visible, Clicking on the component will minimize the chat container
-// If minimized, clicking on the component will show the chat container
-// Like linkedin, the chat container will be minimized by default
-
 import React from 'react';
 import GenericChatHeader from '@/components/ui/chat/GenericChatHeader';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';

@@ -1,6 +1,4 @@
 'use client';
-// Chat container component
-// will contain the conversation header, chat messages and chat input
 
 import React, { useEffect } from 'react';
 import { useAuthGuard } from '@/api/auth-api';

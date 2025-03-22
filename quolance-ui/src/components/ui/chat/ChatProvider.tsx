@@ -1,9 +1,4 @@
 'use client';
-// Chat controller component
-// Will contain the chat container, conversation container and new chat container
-// Controls which container is displayed at the left of conversation container
-// Will also control the visibility of the chat container
-// Will also control the visibility of the new chat container
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuthGuard } from '@/api/auth-api';
@@ -114,7 +109,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const onOpenChat = (contact: ContactDto) => {
     // If chat is already present in container just un-minimize it
     const existing = containers.find(
-      (c) => c.contact.user_id === contact.user_id
+      (c) =>
+        c.contact.user_id === contact.user_id &&
+        !c.contact.name.startsWith('Draft')
     );
     if (existing) {
       setMinimize(contact.user_id, false);
@@ -143,11 +140,13 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         // Then open the chat with the new contact
         if (isDraft) {
           removeContainer(receiverId);
+          // Wait for the contacts query to refetch and complete
           queryClient
             .invalidateQueries({
               queryKey: ['contacts'],
               refetchType: 'active',
             })
+            .then(() => queryClient.refetchQueries({ queryKey: ['contacts'] }))
             .then(() => {
               const updatedContacts =
                 queryClient.getQueryData<ContactDto[]>(['contacts']) || [];
@@ -240,14 +239,14 @@ export function ChatInterface() {
   if (!user) {
     // If user is not logged in, show chatbot only
     return (
-      <div className='fixed bottom-0 right-0 z-[999] px-10'>
+      <div className='fixed bottom-0 right-4 z-[999] px-10'>
         {containers.length > 0 && <ChatContainer {...containers[0]} />}
       </div>
     );
   }
 
   return (
-    <div className='fixed bottom-0 right-0 z-[999] px-10'>
+    <div className='fixed bottom-0 right-4 z-[999] px-10'>
       <div className='flex flex-row gap-4'>
         {containers.map((container) => (
           <ChatContainer key={container.contact.user_id} {...container} />

@@ -1,8 +1,3 @@
-// GenericChatHeader
-
-// Will be used to standardize the styling of chat header
-// Can be passed a title, avatar, and a list of buttons: {icon: ReactIcon, onClick: () => void}
-
 import React from 'react';
 import Avatar from '@/components/ui/chat/Avatar';
 

@@ -1,11 +1,3 @@
-// Conversation
-// A conversation is a component that shows prior messages between two users.
-// It displays the outgoing name
-// It simply displays the last message either from the user or the other user.
-// This component, although his name sounds a bit misleading, is a component that will be contained in the ConversationContainer,
-// On click, it will open the conversation between the two users, updating the ChatContainer with the onClicked conversation.
-// optionally we can send the last activity time to the right of the conversation
-
 import React, { useEffect, useRef, useState } from 'react';
 import Avatar from '@/components/ui/chat/Avatar';
 import { ContactDto } from '@/constants/types/chat-types';

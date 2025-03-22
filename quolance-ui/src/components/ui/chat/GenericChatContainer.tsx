@@ -1,6 +1,3 @@
-// GenericChatContainer
-// This component is a generic chat container that can be used by ChatContainer, ConversationContainer, and NewChatContainer.
-
 import React from 'react';
 
 interface GenericChatContainerProps {

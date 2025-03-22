@@ -1,9 +1,3 @@
-// ConversationContainer
-
-// Contains a list of conversations of the user.
-// It will show up when the user clicks the chat icon on the bottom right of the screen.
-// Must be hidden by default.
-
 import React from 'react';
 import ContactsHeader from '@/components/ui/chat/ContactsHeader';
 import { useAuthGuard } from '@/api/auth-api';
@@ -23,7 +17,7 @@ interface ContactsContainerProps {
 function ContactsContainer({ contacts, onOpenChat }: ContactsContainerProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
   const [isMinimized, setIsMinimized] = React.useState(true);
-  const width = 288;
+  const width = 320;
   const height = 696;
 
   return (
@@ -57,6 +51,16 @@ function ContactsContent({
   return (
     <div className='flex h-full w-full flex-col'>
       <div className='flex-1 overflow-hidden'>
+        {contacts.length > 1 && user?.role === Role.CLIENT && (
+          <div className={'flex h-fit w-full py-3'}>
+            <Link
+              className='mx-12 w-full flex-1 rounded-full border-2 p-2 text-center hover:bg-gray-100'
+              href={'/candidates'}
+            >
+              Browse candidates
+            </Link>
+          </div>
+        )}
         <div className='h-fit divide-y divide-slate-200 overflow-y-auto bg-white'>
           {contacts.map((contact, index) => (
             <ChatContact

@@ -1,7 +1,3 @@
-// MessageList
-// Show the list of Messages in the conversation.
-// Messages will be shown as a list of MessageGroup components.
-// A MessageGroup can contain 1 or more messages.
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
