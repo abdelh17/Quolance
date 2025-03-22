@@ -48,7 +48,7 @@ export const ProfileImageModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <dialog
-      className='relative z-10'
+      className='relative z-[9999]'
       aria-labelledby='modal-title'
       open
       aria-modal='true'

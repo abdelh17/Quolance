@@ -25,8 +25,9 @@ import ContactSection from './components/ContactSection';
 import ExperienceSection from './components/ExperienceSection';
 import ProfileHeader from './components/ProfileHeader';
 import ProfileStatus from './components/ProfileStatus';
+
 import SkillsSection from './components/SkillsSection';
-import { UpdateProfileModal } from './components/UpdateProfileModal';
+
 
 const FreelancerProfile: React.FC = () => {
   const { user, mutate } = useAuthGuard({ middleware: 'auth' });
@@ -195,18 +196,6 @@ const FreelancerProfile: React.FC = () => {
     <div className='min-h-screen bg-gray-50'>
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
-        {editModes.editProfile && (
-          <UpdateProfileModal
-            profile={profile}
-            inputClassName={inputClassName}
-            availableSkills={SKILLS_OPTIONS}
-            saveEditModes={saveEditModes}
-            handleInputChange={handleInputChange}
-            handleSkillsChange={handleSkillsChange}
-            handleSocialLinksChange={handleSocialLinksChange}
-            handleSave={handleSave}
-          />
-        )}
 
         {/* Header */}
         <ProfileHeader
@@ -230,8 +219,6 @@ const FreelancerProfile: React.FC = () => {
           profile={profile}
           profilePercentage={profilePercentage}
           isHidden={profilePercentage === 100}
-          updateEditModes={updateEditModes}
-          checkEditModes={checkEditModes}
         />
 
         {/* About Section */}
