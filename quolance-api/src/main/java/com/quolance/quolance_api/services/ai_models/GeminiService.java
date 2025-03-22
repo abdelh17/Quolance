@@ -124,7 +124,7 @@ public class GeminiService implements AiService {
             String role = contentItem.getString("role");
 
             List<Map<String, Object>> parts = new ArrayList<>();
-            JSONObject partsItem = contentItem.getJSONArray("parts").getJSONObject(0);  // Assuming each "parts" array has one item
+            JSONObject partsItem = contentItem.getJSONArray("parts").getJSONObject(0);
             parts.add(Map.of("text", partsItem.getString("text")));
 
             contents.add(Map.of("role", role, "parts", parts));
