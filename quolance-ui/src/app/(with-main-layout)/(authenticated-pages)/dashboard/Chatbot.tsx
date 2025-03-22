@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useSendMessage} from '@/api/chat-api';
+import {useSendMessage} from '@/api/chatbot-api';
 import {MessageCircle, Send, X} from 'lucide-react';
 
 interface ChatMessage {
