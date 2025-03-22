@@ -67,7 +67,7 @@ public class User extends AbstractEntity implements UserDetails {
     @JoinColumn(name = "profileId")
     private Profile profile;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects;
 
     @Setter
@@ -88,6 +88,9 @@ public class User extends AbstractEntity implements UserDetails {
 
     @OneToMany(mappedBy = "receiver")
     private List<Message> receivedMessages = new ArrayList<>();
+
+    @Column
+    private boolean deleted = false;
 
     /**
      * Constructor to create a User from a CreateUserRequestDto.

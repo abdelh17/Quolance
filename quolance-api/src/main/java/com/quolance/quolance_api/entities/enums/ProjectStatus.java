@@ -4,5 +4,6 @@ public enum ProjectStatus {
     PENDING,
     REJECTED,
     OPEN,
-    CLOSED
+    CLOSED,
+    EXPIRED
 }
