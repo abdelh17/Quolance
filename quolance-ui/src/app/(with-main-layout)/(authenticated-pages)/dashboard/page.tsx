@@ -3,16 +3,17 @@ import Image from 'next/image';
 
 import ClientDashboardTable from './ClientDashboardTable';
 import FreelancerDashboardTable from './FreelancerDashboardTable';
-import { useAuthGuard } from '@/api/auth-api';
+import {useAuthGuard} from '@/api/auth-api';
 import ClientDashboardActionButtons from './ClientDashboardActionButtons';
 import FreelancerDashboardActionButtons from './FreelancerDashboardActionButtons';
+import Chatbot from "./Chatbot";
 
 export default function Dashboard() {
   const { user } = useAuthGuard({ middleware: 'auth' });
 
   return (
-    <>
       <div className='min-h-full'>
+        <Chatbot />
         <div className='relative h-[300px] overflow-hidden'>
           {' '}
           {/* Fixed height for Image component */}
@@ -71,6 +72,5 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
-    </>
   );
 }
