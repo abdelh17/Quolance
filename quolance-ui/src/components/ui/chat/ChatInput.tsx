@@ -30,7 +30,7 @@ function ChatInput({
     <div className='relative p-3'>
       <div className='absolute left-0 right-0 top-0 w-full border-t border-gray-200'></div>
       <div
-        className={`absolute left-0 top-0 border-t-2 border-blue-500 transition-all duration-300 ease-out`}
+        className={`absolute left-0 top-0 border-t-2 border-blue-600 transition-all duration-300 ease-out`}
         style={{
           width: onFocus ? '100%' : '0%',
         }}

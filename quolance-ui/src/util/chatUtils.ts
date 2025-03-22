@@ -47,8 +47,8 @@ export const formatTimeForChat = (date: string) => {
   const diffMs = now.getTime() - timestamp.getTime();
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
-  // Less than 5 minutes, show "Just now"
-  if (diffMinutes < 5) {
+  // Less than 2 minutes, show "Just now"
+  if (diffMinutes < 2) {
     return 'Just now';
   }
 

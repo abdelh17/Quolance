@@ -30,7 +30,7 @@ function Message({ message, isOwn, position }: MessageProps) {
     isOwn ? 'justify-end' : 'justify-start'
   } mb-[2px] w-full`;
 
-  let messageClasses = `max-w-[70%] min-w-fit px-3 py-2 rounded-3xl ${
+  let messageClasses = `max-w-[70%] px-3 py-2 rounded-3xl ${
     isOwn ? 'bg-b200 text-white' : 'bg-gray-200 text-gray-800'
   } flex flex-col`;
 
