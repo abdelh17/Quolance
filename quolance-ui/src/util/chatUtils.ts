@@ -112,24 +112,16 @@ export const isMessageUnread = (contact: ContactDto): boolean => {
   const lastRead = getLastReadTimestamps()[contact.user_id];
   if (!lastRead) return true;
 
-  console.log('here');
-
-  console.log('lastRead', lastRead);
-  console.log('lastMessage', contact.last_message_timestamp);
   const lastReadDate = new Date(lastRead);
   const lastMessageDate = new Date(contact.last_message_timestamp);
 
   // Check if dates are valid
   if (isNaN(lastReadDate.getTime()) || isNaN(lastMessageDate.getTime())) {
-    console.log('invalid dates');
     return true;
   }
 
   const lastReadSeconds = Math.floor(lastReadDate.getTime() / 1000);
   const lastMessageSeconds = Math.floor(lastMessageDate.getTime() / 1000);
-
-  console.log('lastReadSeconds', lastReadSeconds);
-  console.log('lastMessageSeconds', lastMessageSeconds);
 
   return lastMessageSeconds > lastReadSeconds;
 };

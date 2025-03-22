@@ -13,10 +13,10 @@ import GenericChatHeader from '@/components/ui/chat/GenericChatHeader';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { useAuthGuard } from '@/api/auth-api';
 import { CgClose } from 'react-icons/cg';
+import { ContactDto } from '@/constants/types/chat-types';
 
 interface ChatHeaderProps {
-  avatar: string;
-  title: string;
+  contact: ContactDto;
   width: number;
   isMinimized: boolean;
   isExpanded: boolean;
@@ -26,8 +26,7 @@ interface ChatHeaderProps {
 }
 
 function ChatHeader({
-  avatar,
-  title,
+  contact,
   width,
   isMinimized,
   isExpanded,
@@ -36,10 +35,12 @@ function ChatHeader({
   onClose,
 }: ChatHeaderProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
+  const { name, profile_picture } = contact;
+
   return (
     <GenericChatHeader
-      avatar={avatar}
-      title={title}
+      avatar={profile_picture}
+      title={name}
       width={width}
       buttons={[
         {
@@ -50,7 +51,7 @@ function ChatHeader({
         {
           icon: <CgClose strokeWidth={2} strokeLinecap={'round'} />,
           onClick: onClose,
-          isVisible: !(title === 'Chatbot' && !user), // We don't want to show the close button for the chatbot
+          isVisible: !(name === 'Chatbot' && !user), // We don't want to show the close button for the chatbot
         },
       ]}
       onMinimize={onMinimize}

@@ -24,7 +24,7 @@ const ChatContainer: React.FC<ChatContactProps> = ({
   isExpanded,
 }) => {
   const { user } = useAuthGuard({ middleware: 'auth' });
-  const { user_id: receiverId, profile_picture, name } = contact;
+  const { user_id: receiverId } = contact;
   const { data: messages } = useGetMessages(receiverId, !isMinimized);
   const { setMinimize, setExpanded } = useChat();
   const [isClosing, setIsClosing] = React.useState(false);
@@ -58,9 +58,8 @@ const ChatContainer: React.FC<ChatContactProps> = ({
       }`}
     >
       <ChatHeader
-        avatar={profile_picture}
+        contact={contact}
         width={width}
-        title={name}
         isMinimized={isMinimized}
         isExpanded={isExpanded}
         onMinimize={() => setIsMinimized(!isMinimized)}

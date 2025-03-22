@@ -112,7 +112,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   };
 
   const onOpenChat = (contact: ContactDto) => {
-    // If chat is already present in container just unminimize it
+    // If chat is already present in container just un-minimize it
     const existing = containers.find(
       (c) => c.contact.user_id === contact.user_id
     );
