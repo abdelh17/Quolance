@@ -57,7 +57,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
             src={authorProfile?.profileImageUrl || icon}
             width={24}
             height={24}
-            className="rounded-full object-cover"
+            className="w-8 h-8 rounded-full object-cover"
           />
           <p className="text-sm font-semibold text-gray-800 font-sans">{authorName}</p>
           <span className="text-xs text-gray-500">
