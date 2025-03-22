@@ -28,7 +28,6 @@ import ProfileStatus from './components/ProfileStatus';
 
 import SkillsSection from './components/SkillsSection';
 
-
 const FreelancerProfile: React.FC = () => {
   const { user, mutate } = useAuthGuard({ middleware: 'auth' });
   const [isImageError, setIsImageError] = useState(false);
@@ -196,7 +195,6 @@ const FreelancerProfile: React.FC = () => {
     <div className='min-h-screen bg-gray-50'>
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
-
         {/* Header */}
         <ProfileHeader
           user={user}
@@ -307,9 +305,9 @@ const FreelancerProfile: React.FC = () => {
       </main>
 
       {/* View as Guest Button */}
-      <div className='fixed bottom-8 right-8 z-10'>
+      <div className='fixed bottom-16 right-8 z-10'>
         <a
-          href={`http://localhost:3000/public-profile/${user?.username || ''}`}
+          href={`/public-profile/${user?.username || ''}`}
           className='group flex items-center space-x-2 rounded-full bg-amber-400 px-5 py-2.5 text-amber-900 shadow-lg transition-all duration-200 hover:bg-amber-300 hover:shadow-xl'
         >
           <span className='font-medium'>
