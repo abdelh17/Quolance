@@ -1,9 +1,7 @@
 import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
 import { showToast } from '@/util/context/ToastProvider';
 import {
-  ChatPollingState,
   ContactDto,
   MessageDto,
   SendMessageDto,
@@ -62,16 +60,11 @@ export const useSendMessage = () => {
   });
 };
 
-export const useGetMessages = (userId: string) => {
+export const useGetMessages = (userId: string, enabled = true) => {
   return useQuery<MessageDto[], HttpErrorResponse>({
     queryKey: ['messages', userId],
     queryFn: () => getMessagesBetweenUsers(userId),
-    enabled: !!userId,
-    refetchInterval: 3000,
-    refetchIntervalInBackground: true,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
+    enabled: !!userId && userId !== 'chatbot' && enabled,
   });
 };
 
@@ -80,143 +73,10 @@ export const useGetContacts = (user: UserResponse | undefined) => {
     queryKey: ['contacts'],
     enabled: !!user,
     queryFn: getContacts,
+    refetchInterval: 3000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
   });
-};
-
-// Polling Hook
-export const useChatPolling = (
-  userId: string,
-  options: {
-    enabled?: boolean;
-    interval?: number;
-    onNewMessages?: (messages: MessageDto[]) => void;
-  } = {}
-) => {
-  const { enabled = true, interval = 5000, onNewMessages } = options;
-
-  const queryClient = useQueryClient();
-  const [state, setState] = useState<ChatPollingState>({
-    isPolling: false,
-    lastMessageTimestamp: null,
-  });
-
-  const intervalRef = useRef<number | null>(null);
-
-  const fetchMessages = async () => {
-    if (!userId || !enabled) return;
-
-    try {
-      const messages = await getMessagesBetweenUsers(userId);
-
-      if (messages.length === 0) return;
-
-      // Sort messages by timestamp (newest first) to find the latest message
-      const sortedMessages = [...messages].sort(
-        (a, b) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      );
-
-      // On first fetch, just store timestamp
-      if (!state.lastMessageTimestamp) {
-        setState((prev) => ({
-          ...prev,
-          lastMessageTimestamp: sortedMessages[0].timestamp,
-        }));
-        return;
-      }
-
-      // Find new messages
-      const newMessages = messages.filter((msg) => {
-        const msgTime = new Date(msg.timestamp).getTime();
-        const lastTime = new Date(state.lastMessageTimestamp!).getTime();
-        return msgTime > lastTime;
-      });
-
-      if (newMessages.length > 0) {
-        // Update the last timestamp (use the newest message's timestamp)
-        const newestMessage = newMessages.reduce((newest, msg) => {
-          return new Date(msg.timestamp).getTime() >
-            new Date(newest.timestamp).getTime()
-            ? msg
-            : newest;
-        }, newMessages[0]);
-
-        setState((prev) => ({
-          ...prev,
-          lastMessageTimestamp: newestMessage.timestamp,
-        }));
-
-        // Sort by timestamp (oldest first)
-        newMessages.sort(
-          (a, b) =>
-            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-        );
-
-        // Update cache
-        queryClient.setQueryData<MessageDto[]>(
-          ['messages', userId],
-          (oldData) => {
-            if (!oldData) return newMessages;
-
-            // Create a map of existing message IDs for quick lookup
-            const existingIds = new Set(oldData.map((msg) => msg.id));
-
-            // Only add messages that don't already exist in the cache
-            const uniqueNewMessages = newMessages.filter(
-              (msg) => !existingIds.has(msg.id)
-            );
-
-            return [...oldData, ...uniqueNewMessages];
-          }
-        );
-
-        // Call the callback if provided
-        if (onNewMessages) {
-          onNewMessages(newMessages);
-        }
-      }
-    } catch (error) {
-      console.error('Error polling for messages:', error);
-    }
-  };
-
-  const startPolling = () => {
-    if (intervalRef.current) {
-      stopPolling();
-    }
-
-    // Initial fetch
-    fetchMessages();
-
-    // Start interval
-    intervalRef.current = window.setInterval(fetchMessages, interval);
-    setState((prev) => ({ ...prev, isPolling: true }));
-  };
-
-  const stopPolling = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-      setState((prev) => ({ ...prev, isPolling: false }));
-    }
-  };
-
-  // Start/stop polling based on enabled prop
-  useEffect(() => {
-    if (enabled && userId) {
-      startPolling();
-    } else {
-      stopPolling();
-    }
-
-    return () => {
-      stopPolling();
-    };
-  }, [userId, enabled, interval]);
-
-  return {
-    isPolling: state.isPolling,
-    startPolling,
-    stopPolling,
-  };
 };
