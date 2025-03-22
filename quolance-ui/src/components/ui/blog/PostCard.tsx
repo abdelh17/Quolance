@@ -265,7 +265,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             src={authorProfile?.profileImageUrl || icon}
             width={56}
             height={56}
-            className="rounded-full object-cover cursor-pointer"
+            className="w-14 h-14 rounded-full object-cover cursor-pointer"
             onClick={handleShowUserSummary}
           />
           <button
