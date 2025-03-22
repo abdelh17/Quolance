@@ -29,9 +29,9 @@ function Avatar({ className, src, size }: AvatarProps) {
     <Image
       src={imageSrc}
       alt='avatar'
-      className={`rounded-full ${sizeClasses[size] || sizeClasses.lg} ${
-        className || ''
-      }`}
+      className={`rounded-full object-cover ${
+        sizeClasses[size] || sizeClasses.lg
+      } ${className || ''}`}
       width={dimensions[size] || dimensions.lg}
       height={dimensions[size] || dimensions.lg}
     />
