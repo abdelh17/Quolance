@@ -1,21 +1,26 @@
 "use-client";
 
 import React from "react";
-import { 
-    BiHeart, BiSolidHeart, 
-    BiHappyHeartEyes, BiSolidHappyHeartEyes, 
-    BiAngry, BiSolidAngry, 
-    BiLike, BiSolidLike, 
-    BiLaugh, BiSolidLaugh,
-    BiSad, BiSolidSad,
-    BiShocked, BiSolidShocked,
+import {
+    BiAngry,
+    BiHeart,
+    BiLaugh,
+    BiLike,
+    BiSad,
+    BiShocked,
+    BiSolidAngry,
+    BiSolidHeart,
+    BiSolidLaugh,
+    BiSolidLike,
+    BiSolidSad,
+    BiSolidShocked,
 } from "react-icons/bi";
 
 interface PostReactionProps {
     reaction: string;
     reactionCount: number;
     userReaction: boolean; // If the user has reacted to the post (will determine if the icon is filled or not)
-    onReactionClick: () => void;
+    onReactionClick?: () => void;
 }
 
 const PostReaction: React.FC<PostReactionProps> = ({ 

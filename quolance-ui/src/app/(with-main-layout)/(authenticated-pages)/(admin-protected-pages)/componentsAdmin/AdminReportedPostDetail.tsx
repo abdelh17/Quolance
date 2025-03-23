@@ -1,24 +1,21 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import icon from "@/public/images/freelancer_default_icon.png";
 import PostReaction from "@/components/ui/blog/PostReaction";
 import CommentCard from "@/components/ui/CommentCard";
 import UserSummary from "@/components/ui/blog/UserSummary";
-import { useAuthGuard } from "@/api/auth-api";
-import { useGetFreelancerProfile } from "@/api/freelancer-api";
-import {
-  useGetCommentsByPostId,
-  useGetReactionsByPostId,
-} from "@/api/blog-api";
-import { showToast } from "@/util/context/ToastProvider";
-import { useQueryClient } from "@tanstack/react-query";
+import {useAuthGuard} from "@/api/auth-api";
+import {useGetFreelancerProfile} from "@/api/freelancer-api";
+import {useGetCommentsByPostId, useGetReactionsByPostId,} from "@/api/blog-api";
+import {showToast} from "@/util/context/ToastProvider";
+import {useQueryClient} from "@tanstack/react-query";
 
-import { MdExpandMore, MdExpandLess } from "react-icons/md";
-import { Button } from "@/components/ui/button";
+import {MdExpandLess, MdExpandMore} from "react-icons/md";
+import {Button} from "@/components/ui/button";
 import httpClient from "@/lib/httpClient"; // for admin "keep" or "delete" calls
-import { PaginationParams } from "@/constants/types/pagination-types";
+import {PaginationParams} from "@/constants/types/pagination-types";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -449,8 +446,6 @@ const AdminReportedPostDetail: React.FC<AdminReportedPostDetailProps> = ({
                   reaction={reaction}
                   reactionCount={reactions[reaction].count}
                   userReaction={reactions[reaction].userReacted}
-                  onReactionClick={() => {
-                  }}
                 />
               );
             })}
