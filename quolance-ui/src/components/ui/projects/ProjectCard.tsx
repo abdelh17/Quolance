@@ -37,7 +37,7 @@ const ProjectCard = ({
   hasApplied,
 }: ProjectCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   // Calculate days remaining until expiration
   const getDaysRemaining = () => {
     if (!expirationDate) return null;
@@ -49,146 +49,145 @@ const ProjectCard = ({
   };
 
   const daysRemaining = getDaysRemaining();
-  
-  // Format the creation date
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
 
   return (
-    <Link href={`/projects/${id}`} className="block w-full">
-      <div 
-        className="relative p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-all duration-300"
+    <Link href={`/projects/${id}`} className='block w-full'>
+      <div
+        className='relative rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:bg-gray-50'
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Top row with applied badge and date */}
-        <div className="flex justify-between items-center mb-3">
+        <div className='mb-3 flex items-center justify-between'>
           {hasApplied && (
-            <span className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">
-              <CheckCircle className="h-3 w-3" />
+            <span className='inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700'>
+              <CheckCircle className='h-3 w-3' />
               Applied
             </span>
           )}
-          {creationDate && (
-            <span className="text-xs text-gray-500 flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              Posted {formatDate(creationDate)}
-            </span>
-          )}
         </div>
-        
+
         {/* Title */}
-        <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 line-clamp-1" data-test={`${title}`}>
+        <h5
+          className='mb-2 line-clamp-1 text-xl font-bold tracking-tight text-gray-900'
+          data-test={`${title}`}
+        >
           {title}
         </h5>
-        
+
         {/* Description */}
-        <div className="mb-4 text-sm text-gray-700">
+        <div className='mb-4 text-sm text-gray-700'>
           <RichTextDisplay htmlContent={description} maxHeight={60} />
         </div>
-        
+
+        {/* Expires soon warning */}
+        {daysRemaining !== null && daysRemaining <= 5 && (
+          <span className='flex items-center gap-1 text-xs font-medium text-amber-600'>
+            <Clock className='h-3 w-3' />
+            {daysRemaining === 0
+              ? 'Expires today'
+              : `Expires in ${daysRemaining} days`}
+          </span>
+        )}
+
         {/* Tags */}
         {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          <div className='mb-4 flex flex-wrap gap-1.5'>
             {tags.slice(0, 3).map((tag, index) => (
               <span
                 key={index}
-                className="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full flex items-center"
+                className='flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600'
               >
                 {tag}
               </span>
             ))}
             {tags.length > 3 && (
-              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+              <span className='rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500'>
                 +{tags.length - 3}
               </span>
             )}
           </div>
         )}
-        
+
         {/* Divider */}
-        <div className="h-px bg-gray-200 my-4"></div>
-        
+        <div className='my-4 h-px bg-gray-200'></div>
+
         {/* Project details grid */}
-        <div className="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
-          <div className="flex items-center gap-2" data-test={`${priceRange}`}>
-            <DollarSign className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-700">
+        <div className='mb-4 grid grid-cols-2 gap-x-4 gap-y-3'>
+          <div className='flex items-center gap-2' data-test={`${priceRange}`}>
+            <DollarSign className='h-4 w-4 text-gray-400' />
+            <span className='text-sm font-medium text-gray-700'>
               {formatPriceRangeNoDollar(priceRange)}
             </span>
           </div>
-          
-          <div className="flex items-center gap-2" data-test={`${category}`}>
-            <Award className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-700">
+
+          <div className='flex items-center gap-2' data-test={`${category}`}>
+            <Award className='h-4 w-4 text-gray-400' />
+            <span className='text-sm font-medium text-gray-700'>
               {formatEnumString(category)}
             </span>
           </div>
-          
-          <div className="flex items-center gap-2" data-test={`${expectedDeliveryTime}`}>
-            <Clock className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-700">
+
+          <div
+            className='flex items-center gap-2'
+            data-test={`${expectedDeliveryTime}`}
+          >
+            <Clock className='h-4 w-4 text-gray-400' />
+            <span className='text-sm font-medium text-gray-700'>
               {EXPECTED_DELIVERY_OPTIONS.find(
                 (option) => option.value === expectedDeliveryTime
               )?.label ?? ''}
             </span>
           </div>
-          
+
           {experienceLevel && (
-            <div className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">
+            <div className='flex items-center gap-2'>
+              <Star className='h-4 w-4 text-gray-400' />
+              <span className='text-sm font-medium text-gray-700'>
                 {formatEnumString(experienceLevel)}
               </span>
             </div>
           )}
-          
+
           {location && !experienceLevel && (
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">{location}</span>
+            <div className='flex items-center gap-2'>
+              <MapPin className='h-4 w-4 text-gray-400' />
+              <span className='text-sm font-medium text-gray-700'>
+                {location}
+              </span>
             </div>
           )}
         </div>
-        
+
         {/* Location (if experienceLevel exists and pushed location out of grid) */}
         {location && experienceLevel && (
-          <div className="flex items-center gap-2 mb-4">
-            <MapPin className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-700">{location}</span>
+          <div className='mb-4 flex items-center gap-2'>
+            <MapPin className='h-4 w-4 text-gray-400' />
+            <span className='text-sm font-medium text-gray-700'>
+              {location}
+            </span>
           </div>
         )}
-        
+
         {/* Bottom row with status and expiration */}
-        <div className="flex justify-between items-center">
+        <div className='flex items-center justify-between'>
           {/* Status badge */}
           {projectStatus && (
-            <span 
-              className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full ${
-                projectStatus === 'OPEN' 
-                  ? 'bg-green-100 text-green-700' 
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
+                projectStatus === 'OPEN'
+                  ? 'bg-green-100 text-green-700'
                   : 'bg-red-100 text-red-700'
               }`}
             >
-              <Briefcase className="h-3 w-3 mr-1" />
+              <Briefcase className='mr-1 h-3 w-3' />
               {projectStatus === 'OPEN' ? 'Open for proposals' : 'Closed'}
             </span>
           )}
-          
-          {/* Expires soon warning */}
-          {daysRemaining !== null && daysRemaining <= 3 && (
-            <span className="text-xs font-medium text-amber-600 flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              {daysRemaining === 0 ? 'Expires today' : `Expires in ${daysRemaining} days`}
-            </span>
-          )}
-          
+
           {/* View details arrow */}
-          <ArrowRight 
-            className="h-5 w-5 text-gray-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-600 ml-auto"
+          <ArrowRight
+            className='ml-auto h-5 w-5 text-gray-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-600'
             strokeWidth={isHovered ? 2 : 1.5}
           />
         </div>
