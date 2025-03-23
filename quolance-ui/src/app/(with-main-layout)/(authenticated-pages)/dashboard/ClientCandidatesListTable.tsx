@@ -125,7 +125,7 @@ export default function ClientCandidatesListTable() {
                 <tr key={candidate.id}>
                   <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
                     <Link
-                      href={`/candidates/${candidate.id}`}
+                      href={`/public-profile/${candidate.username}`}
                       className='text-b300'
                     >
                       {candidate.username}
@@ -146,7 +146,7 @@ export default function ClientCandidatesListTable() {
                   <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                     <div className='flex space-x-4'>
                       <Link
-                        href={`/candidates/${candidate.id}`}
+                        href={`/public-profile/${candidate.username}`}
                         className='text-b300 hover:text-indigo-900'
                         data-test='view-candidate-btn'
                       >
