@@ -24,6 +24,8 @@ import { Button } from "../button";
 import { IoSendSharp } from 'react-icons/io5'
 import { MdExpandMore, MdExpandLess } from 'react-icons/md'
 import { useQueryClient } from "@tanstack/react-query";
+import CreatePostModal from "./CreatePostModal";
+import CreatePostForm from "./CreatePostForm";
 
 interface ReactionState {
   [key: string]: { count: number; userReacted: boolean };
@@ -39,9 +41,16 @@ interface PostCardProps {
   imageUrls?: string[];
   openUserSummaryPostId: string | null;
   setOpenUserSummaryPostId: (open: string | null) => void;
+  onSubmit: (postData: { 
+    id?: string; 
+    title: string; 
+    content: string; 
+    tags: string[]; 
+    files?: File[] 
+  }) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, tags, imageUrls = [], openUserSummaryPostId, setOpenUserSummaryPostId }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dateCreated, tags, imageUrls = [], openUserSummaryPostId, setOpenUserSummaryPostId, onSubmit }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
@@ -49,6 +58,8 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const [showFullScreen, setShowFullScreen] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [allLoadedComments, setAllLoadedComments] = useState<CommentResponseDto[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editingPost, setEditingPost] = useState<PostCardProps | null>(null);
 
   const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
   const [pagination, setPagination] = useState<PaginationParams>({page: 0, size: 5});
@@ -224,7 +235,21 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     }
   };
 
-  const handleEdit = () => {console.log("Edit post")};
+  const handleEdit = () => {
+    setEditingPost({
+      id,
+      title,
+      content,
+      tags,
+      imageUrls,
+      authorName,
+      dateCreated,
+      openUserSummaryPostId,
+      setOpenUserSummaryPostId,
+      onSubmit,
+    });
+    setIsEditing(true);
+  };
   const handleReport = () => {console.log("Report post")};
 
   const handleLoadMoreComments = () => {
@@ -265,7 +290,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             src={authorProfile?.profileImageUrl || icon}
             width={56}
             height={56}
-            className="rounded-full object-cover cursor-pointer"
+            className="w-14 h-14 rounded-full object-cover cursor-pointer"
             onClick={handleShowUserSummary}
           />
           <button
@@ -330,6 +355,19 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
                 )
               }
               </div>
+            )}
+            {isEditing && editingPost && (
+              <CreatePostModal open={isEditing} onClose={() => setIsEditing(false)}>
+                <CreatePostForm
+                  initialData={editingPost}
+                  isEditMode={true}
+                  onSubmit={(postData) => {
+                    onSubmit(postData);
+                    setIsEditing(false);
+                  }}
+                  onClose={() => setIsEditing(false)}
+                />
+              </CreatePostModal>
             )}
           </div>
           
@@ -511,6 +549,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               {allLoadedComments.map((comment) => (
                 <CommentCard
                   key={comment.commentId}
+                  blogPostId={id}
                   commentId={comment.commentId}
                   authorName={comment.username}
                   content={comment.content}

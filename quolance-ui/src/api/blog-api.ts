@@ -13,6 +13,8 @@ export interface BlogPostUpdateDto {
   postId: string;
   title: string;
   content: string;
+  // tags: string[];
+  // files?: File[];
 }
 
 export const useCreateBlogPost = (options?: {
@@ -67,19 +69,18 @@ export const useGetAllBlogPosts = () => {
   });
 };
 
-
-// export const useUpdateBlogPost = (options?: {
-//   onSuccess?: (data: BlogPostViewType) => void;
-//   onError?: (error: HttpErrorResponse) => void;
-// }) => {
-//   return useMutation<BlogPostViewType, HttpErrorResponse, BlogPostUpdateDto>({
-//     mutationFn: async (postData) => {
-//       const response = await httpClient.put('/api/blog-posts/update', postData);
-//       return response.data;
-//     },
-//     ...options,
-//   });
-// };
+export const useUpdateBlogPost = (options?: {
+  onSuccess?: (data: BlogPostViewType) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<BlogPostViewType, HttpErrorResponse, BlogPostUpdateDto>({
+    mutationFn: async (postData) => {
+      const response = await httpClient.put('/api/blog-posts/update', postData);
+      return response.data;
+    },
+    ...options,
+  });
+};
 
 export const useDeleteBlogPost = (options?: {
   onSuccess?: () => void;
@@ -104,7 +105,6 @@ export interface CommentResponseDto {
 export interface CommentRequestDto {
   content: string;
 }
-
 
 export const useGetCommentsByPostId = (postId: string, pagination: PaginationParams, options?: {
     onSuccess?: (data: PagedResponse<CommentResponseDto>) => void;
@@ -147,6 +147,20 @@ export const useDeleteComment = (options?: {
   });
 };
 
+export const useUpdateComment = (options?: {
+  onSuccess?: (
+    data: void, 
+    variables: { commentId: string; content: string; blogPostId: string }
+  ) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<void, HttpErrorResponse, { commentId: string; content: string; blogPostId: string }>({
+    mutationFn: async (commentData) => {
+      await httpClient.put(`/api/blog-comments/${commentData.commentId}`, { content: commentData.content });
+    },
+    ...options,
+  });
+};
 
 /* ---------- Blog Reactions ---------- */
 export interface ReactionResponseDto {

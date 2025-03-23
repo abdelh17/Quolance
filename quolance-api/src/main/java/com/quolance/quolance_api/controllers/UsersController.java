@@ -125,4 +125,11 @@ public class UsersController {
         return ResponseEntity.ok(dto);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> delete() {
+        User user = SecurityUtil.getAuthenticatedUser();
+        userService.deleteUser(user);
+        return ResponseEntity.ok().build();
+    }
+
 }

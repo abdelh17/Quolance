@@ -22,7 +22,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.quolance.quolance_api.entities.*;
+import com.quolance.quolance_api.entities.enums.ApplicationStatus;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.entities.enums.Role;
+import com.quolance.quolance_api.repositories.*;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,6 +45,13 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationCodeService verificationCodeService;
+    private final ProjectRepository projectRepository;
+    private final ApplicationRepository applicationRepository;
+    private NotificationMessageService notificationMessageService;
+
+
+
+
 
     @Override
     @Transactional
@@ -275,4 +292,72 @@ public class UserServiceImpl implements UserService {
         user.setNotificationsSubscribed(subscribed);
         userRepository.save(user);
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(User user) {
+        LocalDateTime timeInterval = LocalDateTime.now().minus(1, ChronoUnit.MONTHS);
+
+        Role role = user.getRole();
+
+        if (role == Role.ADMIN) {
+        }
+        else if (role == Role.CLIENT){
+            List<Project> projects = projectRepository.findProjectsByClientId(user.getId());
+            for(Project project : projects){
+
+
+                if(project.getSelectedFreelancer() != null){
+                    if(project.getLastModifiedDate().isAfter(timeInterval)){
+
+                        User selectedFreelancer = project.getSelectedFreelancer();
+
+                        String notifMessage = "A project that you were selected for was rescinded by the client." +
+                                              "This can be due to reasons such as the project being cancelled or the client's account being deleted." +
+                                              "Please verify the status of your application if still in progress." +
+                                              "Project Name: " + project.getTitle();
+
+                        notificationMessageService.sendNotificationToUser(selectedFreelancer,selectedFreelancer, notifMessage);
+
+                    }
+
+                }
+                project.setProjectStatus(ProjectStatus.EXPIRED);
+                projectRepository.save(project);
+            }
+
+        }
+        else if (role == Role.FREELANCER){
+            List<Application> applications = applicationRepository.findApplicationsByFreelancerId(user.getId());
+            for(Application application : applications){
+
+                Project appliedToProject = application.getProject();
+
+                if(appliedToProject.getSelectedFreelancer() != null && appliedToProject.getSelectedFreelancer().getId().equals(user.getId())){
+
+                        if(appliedToProject.getLastModifiedDate().isAfter(timeInterval)){
+
+                            String notifMessage = "A freelancer you selected for the project: " + appliedToProject.getTitle() + " is no longer available." +
+                                    "As a result, they may be unable to proceed with the project." +
+                                    "Please verify the status of your project if still in progress.";
+
+                            User affectedClient = appliedToProject.getClient();
+                            notificationMessageService.sendNotificationToUser(affectedClient,affectedClient, notifMessage);
+
+                        }
+                }
+                application.setApplicationStatus(ApplicationStatus.CANCELLED);
+                applicationRepository.save(application);
+            }
+        }
+
+        user.setDeleted(true);
+        userRepository.save(user);
+    }
+
+    @Autowired
+    public void setNotificationMessageService(@Lazy NotificationMessageService notificationMessageService) {
+        this.notificationMessageService = notificationMessageService;
+    }
+
 }

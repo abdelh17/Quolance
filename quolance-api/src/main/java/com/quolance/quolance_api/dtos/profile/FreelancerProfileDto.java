@@ -44,6 +44,7 @@ public class FreelancerProfileDto {
     private Set<String> certifications;
     private Set<String> languagesSpoken;
     private List<ProjectExperience> projectExperiences;
+    private boolean deleted;
 
     private List<ReviewDto> reviews;
 
@@ -68,6 +69,7 @@ public class FreelancerProfileDto {
                 .certifications(profile.getCertifications())
                 .languagesSpoken(profile.getLanguagesSpoken())
                 .projectExperiences(profile.getProjectExperiences())
+                .deleted(user.isDeleted())
                 .build();
     }
 }
