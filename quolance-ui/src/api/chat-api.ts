@@ -60,6 +60,37 @@ export const useSendMessage = () => {
   });
 };
 
+interface ChatbotResponse {
+  message: string;
+}
+
+export const useSendChatbotMessage = () => {
+  return useMutation({
+    mutationFn: async (userMessage: string): Promise<ChatbotResponse> => {
+      const response = await httpClient.post<string>('/api/chat', {
+        message: userMessage,
+      });
+
+      console.log('response', response);
+
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
+
+      const responseText = response.data;
+
+      return {
+        message: responseText,
+      };
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Unknown error';
+      showToast(`Error: ${errorMessage}`, 'error');
+    },
+  });
+};
+
 export const useGetMessages = (userId: string, enabled = true) => {
   return useQuery<MessageDto[], HttpErrorResponse>({
     queryKey: ['messages', userId],

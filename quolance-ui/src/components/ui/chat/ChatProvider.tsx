@@ -237,11 +237,12 @@ export function ChatInterface() {
   if (isLoading) return <></>;
 
   if (!user) {
-    // If user is not logged in, show chatbot only
+    // If user is not logged in, show chatbot only. For now, we don't support
     return (
-      <div className='fixed bottom-0 right-4 z-[999] px-10'>
-        {containers.length > 0 && <ChatContainer {...containers[0]} />}
-      </div>
+      // <div className='fixed bottom-0 right-4 z-[999] px-10'>
+      //   {containers.length > 0 && <ChatContainer {...containers[0]} />}
+      // </div>
+      <></>
     );
   }
 
