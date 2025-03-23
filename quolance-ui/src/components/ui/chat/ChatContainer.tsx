@@ -111,7 +111,7 @@ const ChatContent: React.FC<{
 
   const createMessage = (name: string, content: string, isOwn: boolean) => {
     return {
-      id: `message-${messages.length}`,
+      id: `message-${(Math.random() * 1000000).toFixed(0)}`,
       sender_id: isOwn ? user?.id || '' : 'chatbot',
       sender_name: name,
       receiver_name: isOwn ? name : 'Chatbot',
