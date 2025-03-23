@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetAllClientProjects } from '@/api/client-api';
+import { useGetAllCandidates, useGetAllClientProjects } from '@/api/client-api';
 import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
 import {
   ArrowDown,
@@ -34,6 +34,7 @@ export default function ClientDashboardTable() {
   });
 
   const projects = data?.data.content || [];
+  console.log(projects);
   const metadata = data?.data.metadata;
 
   const router = useRouter();
@@ -100,6 +101,16 @@ export default function ClientDashboardTable() {
               <th
                 scope='col'
                 className='hidden cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:table-cell'
+                onClick={() => handleSort('creationDate')}
+              >
+                <div className='flex items-center'>
+                  Creation Date
+                  {getSortIcon('creationDate')}
+                </div>
+              </th>
+              <th
+                scope='col'
+                className='hidden cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:table-cell'
                 onClick={() => handleSort('expirationDate')}
               >
                 <div className='flex items-center'>
@@ -133,7 +144,7 @@ export default function ClientDashboardTable() {
           <tbody className='divide-y divide-gray-200 bg-white'>
             {projects.length === 0 ? (
               <tr>
-                <td colSpan={7} className='py-12 text-center'>
+                <td colSpan={8} className='py-12 text-center'>
                   <div className='flex flex-col items-center'>
                     <p className='mb-4 text-center text-gray-600'>
                       You haven't created any projects yet. Get started by
@@ -161,6 +172,9 @@ export default function ClientDashboardTable() {
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
                     {formatPriceRange(project.priceRange)}
+                  </td>
+                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
+                    {formatDate(project.creationDate)}
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
                     {formatDate(project.expirationDate)}
