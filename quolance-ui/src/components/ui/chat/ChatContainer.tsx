@@ -9,7 +9,7 @@ import {
 } from '@/constants/types/chat-types';
 import ChatHeader from '@/components/ui/chat/ChatHeader';
 import GenericChatContainer from '@/components/ui/chat/GenericChatContainer';
-import { useGetMessages } from '@/api/chat-api';
+import { useGetMessages, useSendChatbotMessage } from '@/api/chat-api';
 import ChatInput from '@/components/ui/chat/ChatInput';
 import MessageList from '@/components/ui/chat/MessageList';
 import { useChat } from '@/components/ui/chat/ChatProvider';
@@ -88,29 +88,67 @@ const ChatContent: React.FC<{
   messages: MessageDto[];
   isMinimized: boolean;
 }> = ({ contact, messages, isMinimized }) => {
+  const { user } = useAuthGuard({ middleware: 'auth' });
   const { user_id: receiverId, profile_picture, name } = contact;
   const { sendMessage } = useChat();
   const [inputValue, setInputValue] = React.useState('');
+  const { mutateAsync: sendChatbotMessage } = useSendChatbotMessage();
   const [chatInputExpanded, setChatInputExpanded] = React.useState(false);
   const isDraft = name.startsWith('Draft: ');
+  const isChatbot = name === 'Chatbot';
+  const [botMessages, setBotMessages] = React.useState<MessageDto[]>([]);
 
   const handleSendMessage = () => {
     if (!inputValue) return;
+    if (isChatbot) {
+      handleChatbotMessage();
+      setInputValue('');
+      return;
+    }
     sendMessage(receiverId, inputValue, isDraft);
     setInputValue('');
+  };
+
+  const createMessage = (name: string, content: string, isOwn: boolean) => {
+    return {
+      id: `message-${(Math.random() * 1000000).toFixed(0)}`,
+      sender_id: isOwn ? user?.id || '' : 'chatbot',
+      sender_name: name,
+      receiver_name: isOwn ? name : 'Chatbot',
+      content: content,
+      timestamp: new Date().toISOString(),
+    };
+  };
+
+  const handleChatbotMessage = () => {
+    // Add the user message to the chat
+    setBotMessages((prev) => [...prev, createMessage(name, inputValue, true)]);
+    // Add the chatbot response to the chat
+    sendChatbotMessage(inputValue).then(({ message }) => {
+      setBotMessages((prev) => [
+        ...prev,
+        createMessage('Chatbot', message, false),
+      ]);
+    });
   };
 
   return (
     <div className='flex h-full flex-col'>
       <div className='flex-1 overflow-y-auto'>
         <MessageList
-          messages={messages}
+          messages={isChatbot ? botMessages : messages}
           isMinimized={isMinimized}
           chatUserCard={
             <ChatUserCard
               name={isDraft ? name.slice(7) : name}
               profile_picture={profile_picture}
-              description={isDraft ? 'Draft' : ''}
+              description={
+                isDraft
+                  ? 'Draft'
+                  : isChatbot
+                  ? 'Hello! I am Chatbot, your virtual assistant. Ask me anything!'
+                  : ''
+              }
             />
           }
         />

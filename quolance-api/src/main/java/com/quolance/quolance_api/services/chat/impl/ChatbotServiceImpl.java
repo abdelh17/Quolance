@@ -24,7 +24,13 @@ import java.util.stream.Collectors;
 public class ChatbotServiceImpl implements ChatbotService {
     private final AiService aiService;
     private List<MessagePart> conversationHistory = new ArrayList<>();
-    private static final String INSTRUCTIONS = "You are a chatbot to help users so keep a light and fun tone. Please respond with the most relevant information from the FAQ. Keep your answer short. If you don't know the answer, you must ask the user to contact the support team. Do not mention that you are getting the information from an FAQ. Refuse to answer questions that are irrelevant to the context and platform. Do not prepend you in your response.";
+    private static final String INSTRUCTIONS = """
+            You are a chatbot to help users so keep a light and fun tone. 
+            Please respond with the most relevant information from the FAQ. Keep your answer short. 
+            If you don't know the answer, you must ask the user to contact the support team. 
+            Do not mention that you are getting the information from an FAQ. Refuse to answer questions that are
+            irrelevant to the context and platform. Do not prepend you in your response.
+            """;
     private final String faqContext;
 
     public ChatbotServiceImpl(GeminiService aiService) {
