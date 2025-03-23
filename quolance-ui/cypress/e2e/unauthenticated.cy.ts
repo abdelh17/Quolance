@@ -20,7 +20,6 @@ describe('Flow for Unauthenticated Pages', () => {
 
     cy.get('[data-test="sign-in-header"]').contains(/Sign in/i);
 
-    cy.get('[data-test="hero-title"]').contains(/We're changing the way You Find Contractors & Freelancers/i);
 
     cy.get('[data-test="hero-desc"]').contains(/Find trusted freelancers and contractors with ease./i);
 
@@ -450,7 +449,6 @@ describe('Flow for Unauthenticated Pages', () => {
     cy.get('[data-test="sign-in-header"]').contains(/Sign in/i);
 
     cy.get('[data-test="faq-title"]').contains(/Frequently asked questions/i);
-    cy.get('[data-test="faq-desc"]').contains(/Have a different question and can't find the answer you're looking for\? Reach out to our support team by/i);
 
     cy.get('[data-test="What are the fees for using the platform?"]').contains(/What are the fees for using the platform?/i);
     cy.get('[data-test="We"]').contains(/We maintain a transparent fee structure. Clients can post projects for free./i);

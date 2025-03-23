@@ -2,7 +2,7 @@
 export type ProjectType = {
   tags: string[]; // List of tag names as strings
   id: string; // Unique identifier for the project
-  createdAt: string; // ISO date format (e.g., "2024-11-09")
+  creationDate: string; // ISO date format (e.g., "2024-11-09")
   category:
     | 'WEB_DEVELOPMENT'
     | 'GRAPHIC_DESIGN'
