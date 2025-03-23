@@ -12,7 +12,6 @@ import {
 } from '@/api/freelancer-api';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 import ProfileStatus from '../(freelancer-protect-pages)/profile/components/ProfileStatus';
-import ClientCandidatesListTable from './ClientCandidatesListTable';
 
 export default function Dashboard() {
   const { user } = useAuthGuard({ middleware: 'auth' });
@@ -101,7 +100,6 @@ export default function Dashboard() {
               <div>
                 <ClientDashboardActionButtons />
                 <ClientProjectsListTable />
-                <ClientCandidatesListTable />
               </div>
             )}
 
