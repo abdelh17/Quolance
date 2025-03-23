@@ -27,7 +27,7 @@ export default function FreelancerApplicationsListTable() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedApplication, setSelectedApplication] =
         useState<Application | null>(null);
-  const pageSize = 2;
+  const pageSize = 5;
 
   const { data, isLoading } = useGetAllFreelancerApplications({
     page,
