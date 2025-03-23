@@ -1,7 +1,6 @@
 'use client';
 
-import { useGetAllClientProjects } from '@/api/client-api';
-import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
+import { useGetAllCandidates } from '@/api/client-api';
 import {
   ArrowDown,
   ArrowUp,
@@ -9,34 +8,25 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from 'lucide-react';
-import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
 import LoadingSpinner1 from '@/components/ui/loading/loadingSpinner1';
 import Link from 'next/link';
-import {
-  formatDate,
-  formatEnumString,
-  formatPriceRange,
-} from '@/util/stringUtils';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function ClientDashboardTable() {
+export default function ClientCandidatesListTable() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
   const pageSize = 2;
 
-  const { data, isLoading } = useGetAllClientProjects({
+  const { data, isLoading } = useGetAllCandidates({
     page,
     size: pageSize,
     sortBy,
     sortDirection,
   });
 
-  const projects = data?.data.content || [];
-  const metadata = data?.data.metadata;
-
-  const router = useRouter();
+  const candidates = data?.data?.content || [];
+  const metadata = data?.data?.metadata;
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
@@ -59,15 +49,6 @@ export default function ClientDashboardTable() {
     );
   };
 
-  const scrollToApplicants = (projectId: string) => {
-    router.push(`/projects/${projectId}#applicants-section`);
-    setTimeout(() => {
-      document.getElementById('applicants-section')?.scrollIntoView({
-        behavior: 'smooth',
-      });
-    }, 100);
-  };
-
   if (isLoading) {
     return <LoadingSpinner1 />;
   }
@@ -75,7 +56,7 @@ export default function ClientDashboardTable() {
   return (
     <div className='px-4 sm:px-6 lg:px-8'>
       <div className='sm:flex sm:items-center'>
-        <h2 className='mt-2 text-xl font-bold text-gray-700'>My projects</h2>
+        <h2 className='mt-2 text-xl font-bold text-gray-700'>All Candidates</h2>
       </div>
       <div className='-mx-4 mt-8 sm:-mx-0'>
         <table className='min-w-full divide-y divide-gray-300'>
@@ -84,34 +65,38 @@ export default function ClientDashboardTable() {
               <th
                 scope='col'
                 className='cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:pl-0'
-                onClick={() => handleSort('title')}
+                onClick={() => handleSort('username')}
               >
                 <div className='flex items-center'>
-                  Title
-                  {getSortIcon('title')}
+                  Username
+                  {getSortIcon('username')}
                 </div>
               </th>
               <th
                 scope='col'
-                className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
+                className='cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700'
+                onClick={() => handleSort('firstName')}
               >
-                Budget
+                <div className='flex items-center'>
+                  First Name
+                  {getSortIcon('firstName')}
+                </div>
               </th>
               <th
                 scope='col'
-                className='hidden cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:table-cell'
-                onClick={() => handleSort('expirationDate')}
+                className='cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700'
+                onClick={() => handleSort('lastName')}
               >
                 <div className='flex items-center'>
-                  Expiration Date
-                  {getSortIcon('expirationDate')}
+                  Last Name
+                  {getSortIcon('lastName')}
                 </div>
               </th>
               <th
                 scope='col'
                 className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
               >
-                Category
+                Contact Email
               </th>
               <th
                 scope='col'
@@ -119,79 +104,53 @@ export default function ClientDashboardTable() {
               >
                 Experience Level
               </th>
-              <th
-                scope='col'
-                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
-              >
-                Status
-              </th>
               <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
                 <span className='sr-only'>Actions</span>
               </th>
             </tr>
           </thead>
           <tbody className='divide-y divide-gray-200 bg-white'>
-            {projects.length === 0 ? (
+            {candidates.length === 0 ? (
               <tr>
-                <td colSpan={7} className='py-12 text-center'>
+                <td colSpan={6} className='py-12 text-center'>
                   <div className='flex flex-col items-center'>
                     <p className='mb-4 text-center text-gray-600'>
-                      You haven't created any projects yet. Get started by
-                      creating your first project!
+                      No candidates found.
                     </p>
-                    <Link
-                      href='/post-project'
-                      className='text-sm/6 font-semibold text-gray-900'
-                    >
-                      Create First Project<span aria-hidden='true'>→</span>
-                    </Link>
                   </div>
                 </td>
               </tr>
             ) : (
-              projects.map((project: ProjectType) => (
-                <tr key={project.id}>
+              candidates.map((candidate: { id: string; username: string; firstName: string; lastName: string; contactEmail: string; experienceLevel?: string }) => (
+                <tr key={candidate.id}>
                   <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
                     <Link
-                      href={`/projects/${project.id}`}
+                      href={`/candidates/${candidate.id}`}
                       className='text-b300'
                     >
-                      {project.title}
+                      {candidate.username}
                     </Link>
                   </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                    {formatPriceRange(project.priceRange)}
+                  <td className='px-3 py-4 text-sm text-gray-500'>
+                    {candidate.firstName}
+                  </td>
+                  <td className='px-3 py-4 text-sm text-gray-500'>
+                    {candidate.lastName}
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                    {formatDate(project.expirationDate)}
-                  </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                    {formatEnumString(project.category)}
+                    {candidate.contactEmail}
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                    {project.experienceLevel}
-                  </td>
-                  <td className='px-3 py-4 text-sm'>
-                    <ProjectStatusBadge
-                      status={project.projectStatus as ProjectStatus}
-                    />
+                    {candidate.experienceLevel || 'Not specified'}
                   </td>
                   <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                     <div className='flex space-x-4'>
                       <Link
-                        href={`/projects/${project.id}?edit`}
+                        href={`/candidates/${candidate.id}`}
                         className='text-b300 hover:text-indigo-900'
-                        data-test='edit-project-btn'
+                        data-test='view-candidate-btn'
                       >
-                        Edit Project
-                      </Link>
-                      <Link
-                        href={`/projects/${project.id}/#applicants-section`}
-                        onClick={() => scrollToApplicants(project.id)}
-                        className='text-b300 hover:text-indigo-900'
-                        data-test='view-applicants-btn'
-                      >
-                        View Applicants
+                        View Profile
                       </Link>
                     </div>
                   </td>
