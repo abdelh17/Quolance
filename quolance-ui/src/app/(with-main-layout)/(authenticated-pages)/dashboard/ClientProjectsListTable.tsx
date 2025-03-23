@@ -166,7 +166,7 @@ export default function ClientProjectsListTable() {
                       href={`/projects/${project.id}`}
                       className='text-b300'
                     >
-                      {project.title}
+                      {project.title.substring(0, 30) + (project.title.length > 30 ? '...' : '')}
                     </Link>
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
