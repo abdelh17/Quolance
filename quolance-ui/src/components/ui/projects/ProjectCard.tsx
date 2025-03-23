@@ -81,12 +81,12 @@ const ProjectCard = ({
         </div>
 
         {/* Expires soon warning */}
-        {daysRemaining !== null && daysRemaining <= 5 && (
+        {daysRemaining !== null && daysRemaining <= 3 && (
           <span className='flex items-center gap-1 text-xs font-medium text-amber-600'>
             <Clock className='h-3 w-3' />
             {daysRemaining === 0
               ? 'Expires today'
-              : `Expires in ${daysRemaining} days`}
+              : `Expires in  ${daysRemaining} day${daysRemaining > 1 ? 's' : ''}`}
           </span>
         )}
 
