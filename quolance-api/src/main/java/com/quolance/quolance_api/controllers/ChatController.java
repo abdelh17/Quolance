@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,7 +60,7 @@ public class ChatController {
 
         Long previous = lastLogTime.get(key);
         if (previous == null || (now - previous) > LOG_INTERVAL) {
-            log.info("User {} fetching contacts", currentUser.getId());
+//            log.info("User {} fetching contacts", currentUser.getId());
             lastLogTime.put(key, now);
         }
 
