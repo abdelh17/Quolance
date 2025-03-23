@@ -16,7 +16,7 @@ function ChatUserCard({
     <div className={'flex w-full flex-col items-center gap-2 py-6'}>
       <Avatar size={'lg'} src={profile_picture} />
       <h1 className={'mt-2 text-lg font-semibold text-slate-800'}>{name}</h1>
-      <p className={'text-slate-500'}>{description}</p>
+      <p className={'text-center text-slate-500'}>{description}</p>
     </div>
   );
 }
