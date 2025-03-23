@@ -6,6 +6,8 @@ import PermissionGuard from '@/components/permission-guard';
 import RoleGuard from '@/components/role-guard';
 import { Role } from '@/constants/models/user/UserResponse';
 import { ProjectProvider } from './AdminContext/ProjectContext'
+import { ReportedBlogProvider } from './AdminContext/ReportedBlogContext';
+import { ResolvedBlogProvider } from './AdminContext/ResolvedBlogContext';
 
 
 export default function DashboardLayout({
@@ -20,8 +22,14 @@ export default function DashboardLayout({
   return (
     <>
       <ProjectProvider>
-      <PermissionGuard rolesAllowed={[Role.ADMIN]}></PermissionGuard>
-      <RoleGuard rolesAllowed={[Role.ADMIN]}>{children} </RoleGuard>
+        <ReportedBlogProvider>
+          <ResolvedBlogProvider>
+            <PermissionGuard rolesAllowed={[Role.ADMIN]} />
+            <RoleGuard rolesAllowed={[Role.ADMIN]}>
+              {children}
+            </RoleGuard>
+          </ResolvedBlogProvider>
+        </ReportedBlogProvider>
       </ProjectProvider>
     </>
   );

@@ -16,7 +16,8 @@ import {
   useGetCommentsByPostId,
   useGetReactionsByPostId,
   useReactToPost,
-  useRemoveReaction
+  useRemoveReaction,
+  useReportBlogPost
 } from "@/api/blog-api";
 import {showToast} from "@/util/context/ToastProvider";
 import { PaginationParams } from "@/constants/types/pagination-types";
@@ -41,12 +42,12 @@ interface PostCardProps {
   imageUrls?: string[];
   openUserSummaryPostId: string | null;
   setOpenUserSummaryPostId: (open: string | null) => void;
-  onSubmit: (postData: { 
-    id?: string; 
-    title: string; 
-    content: string; 
-    tags: string[]; 
-    files?: File[] 
+  onSubmit: (postData: {
+    id?: string;
+    title: string;
+    content: string;
+    tags: string[];
+    files?: File[]
   }) => void;
 }
 
@@ -209,6 +210,17 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     setReactions(updatedReactions);
   };
 
+  const { mutate: reportBlogPost } = useReportBlogPost({
+    onSuccess: () => {
+      showToast("Post reported successfully!", "success");
+      queryClient.invalidateQueries({ queryKey: ["all-blog-posts"] });
+    },
+    onError: (error) => {
+      showToast("Error reporting post", "error");
+      console.error(error);
+    },
+  });
+
   const handleAddComment = () => {
     if (!newComment.trim() || !user) return;
     addComment({ content: newComment });
@@ -250,7 +262,11 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     });
     setIsEditing(true);
   };
-  const handleReport = () => {console.log("Report post")};
+
+  function handleReport() {
+    if (!confirm("Are you sure you want to report this post?")) return;
+    reportBlogPost(id);
+  }
 
   const handleLoadMoreComments = () => {
     if (!pagedComments || pagedComments.number >= (pagedComments.totalPages ?? 1) - 1) return;
@@ -388,7 +404,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
               </div>
             )}
 
-            {/* 2 images */}
             {imageUrls.length === 2 && (
               imageUrls.map((url, index) => (
                 <div

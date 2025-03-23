@@ -224,4 +224,55 @@ public class BlogPostServiceImpl implements BlogPostService {
         ).map(BlogPostResponseDto::fromEntity);
     }
 
+    public BlogPostResponseDto reportPost(UUID postId, User user) {
+        log.info("User {} is reporting post {}", user.getId(), postId);
+
+        BlogPost blogPost = getBlogPostEntity(postId);
+        blogPost.setReported(true);
+
+        BlogPost saved = blogPostRepository.save(blogPost);
+
+        log.info("Post {} reported successfully by User {}", postId, user.getId());
+        return BlogPostResponseDto.fromEntity(saved);
+    }
+
+        @Override
+    public Page<BlogPostResponseDto> getReportedPosts(Pageable pageable) {
+        Page<BlogPost> reportedPosts = blogPostRepository.findReportedPosts(pageable);
+        return reportedPosts.map(BlogPostResponseDto::fromEntity);
+    }
+
+    @Override
+    public Page<BlogPostResponseDto> getPreviouslyResolvedPosts(Pageable pageable) {
+        Page<BlogPost> resolvedPosts = blogPostRepository.findPreviouslyResolvedPosts(pageable);
+        return resolvedPosts.map(BlogPostResponseDto::fromEntity);
+    }
+
+    @Override
+    public void keepReportedPost(UUID postId) {
+        log.info("Admin is keeping (resolving) reported post: {}", postId);
+        BlogPost post = getBlogPostEntity(postId);
+
+        if (!post.isReported() || post.isResolved()) {
+            throw new ApiException("Post is not in a reported & unresolved state.");
+        }
+        // Mark as resolved
+        post.setResolved(true);
+        blogPostRepository.save(post);
+
+        log.info("Post {} is now resolved (kept) by admin.", postId);
+    }
+
+    @Override
+    public void deleteReportedPost(UUID postId) {
+        log.info("Admin is deleting reported post: {}", postId);
+        BlogPost post = getBlogPostEntity(postId);
+
+        if (!post.isReported() || post.isResolved()) {
+            log.info("Post is not in a reported & unresolved state.");
+        }
+        // Hard-delete from DB
+        blogPostRepository.delete(post);
+        log.info("Post {} was deleted by admin.", postId);
+    }
 }

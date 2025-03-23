@@ -149,7 +149,7 @@ export const useDeleteComment = (options?: {
 
 export const useUpdateComment = (options?: {
   onSuccess?: (
-    data: void, 
+    data: void,
     variables: { commentId: string; content: string; blogPostId: string }
   ) => void;
   onError?: (error: HttpErrorResponse) => void;
@@ -211,6 +211,19 @@ export const useRemoveReaction = (options?: {
   return useMutation<void, HttpErrorResponse, string>({
     mutationFn: async (reactionId) => {
       await httpClient.delete(`/api/blog-posts/reactions/${reactionId}`);
+    },
+    ...options,
+  });
+};
+
+export const useReportBlogPost = (options?: {
+  onSuccess?: (data: BlogPostUpdateDto) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<BlogPostUpdateDto, HttpErrorResponse, string>({
+    mutationFn: async (postId: string) => {
+      const response = await httpClient.put(`/api/blog-posts/report/${postId}`);
+      return response.data;
     },
     ...options,
   });

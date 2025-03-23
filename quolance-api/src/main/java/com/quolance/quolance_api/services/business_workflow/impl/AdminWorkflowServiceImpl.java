@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.services.business_workflow.impl;
 
+import com.quolance.quolance_api.dtos.blog.BlogPostResponseDto;
 import com.quolance.quolance_api.dtos.project.ProjectDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
@@ -7,6 +8,7 @@ import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.AdminWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
+import com.quolance.quolance_api.services.entity_services.blog.BlogPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class AdminWorkflowServiceImpl implements AdminWorkflowService {
     private final ProjectService projectService;
     private final NotificationMessageService notificationMessageService;
+    private final BlogPostService blogPostService;
 
     @Override
     public Page<ProjectDto> getAllPendingProjects(Pageable pageable) {
@@ -52,5 +55,25 @@ public class AdminWorkflowServiceImpl implements AdminWorkflowService {
             String rejectionMessage = "Your project '" + project.getTitle() + "' has been rejected. Reason: " + rejectionReason;
             notificationMessageService.sendNotificationToUser(client, client, rejectionMessage);
         }
+    }
+
+    @Override
+    public Page<BlogPostResponseDto> getAllReportedBlogPosts(Pageable pageable) {
+        return blogPostService.getReportedPosts(pageable);
+    }
+
+    @Override
+    public Page<BlogPostResponseDto> getAllPreviouslyResolvedBlogPosts(Pageable pageable) {
+        return blogPostService.getPreviouslyResolvedPosts(pageable);
+    }
+
+    @Override
+    public void keepReportedBlogPost(UUID postId) {
+        blogPostService.keepReportedPost(postId);
+    }
+
+    @Override
+    public void deleteReportedBlogPost(UUID postId) {
+        blogPostService.deleteReportedPost(postId);
     }
 }

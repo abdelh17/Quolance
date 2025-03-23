@@ -17,6 +17,7 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
     List<BlogPost> findByUserId(UUID userId);
 
     Page<BlogPost> findAll(Pageable pageable);
+
     @Query("SELECT b FROM BlogPost b " +
             "JOIN b.tags t " +
             "WHERE (:title IS NULL OR LOWER(CAST(b.title AS string)) LIKE LOWER(CONCAT('%', CAST(:title AS string), '%'))) " +
@@ -34,7 +35,10 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
             Pageable pageable
     );
 
+    @Query("SELECT b FROM BlogPost b WHERE b.isReported = true AND b.isResolved = false")
+    Page<BlogPost> findReportedPosts(Pageable pageable);
 
-
+    @Query("SELECT b FROM BlogPost b WHERE b.isReported = true AND b.isResolved = true")
+    Page<BlogPost> findPreviouslyResolvedPosts(Pageable pageable);
 
 }
