@@ -469,3 +469,19 @@ input[type='number'] {
   background-size: 10px 100%;
 }
 
+
+/* Typewriter effect */
+.blinking-cursor {
+  font-weight: 100;
+  font-size: 1em;
+  color: #0065ff;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
