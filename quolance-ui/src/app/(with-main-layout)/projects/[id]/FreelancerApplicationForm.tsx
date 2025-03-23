@@ -133,14 +133,20 @@ export default function FreelancerApplicationForm({
               <div className='space-y-7 px-6 py-6'>
                 <div>
                   <h3 data-test="application-submitted-title" className='text-n700 mb-2 text-sm font-medium'>
-                    Your Application
+                    Your Application Message
                   </h3>
-                  <p data-test="application-submitted-message" className='text-n300 text-base'>{application.message}</p>
+                  <textarea
+                    data-test="application-submitted-message"
+                    className='bg-n10 w-full resize-none rounded-lg border-gray-200 px-4 py-3 text-base text-n300'
+                    value={application.message}
+                    rows={6}
+                    disabled
+                    readOnly
+                  />
                 </div>
 
                 {/* Metadata */}
                 <div className='text-n300 text-sm'>
-                  <p data-test="application-submitted-id" >Application ID: #{application.id}</p>
                   <p>
                     Submitted on:{' '}
                     {new Date(application.creationDate).toLocaleString()}

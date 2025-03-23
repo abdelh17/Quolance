@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import ClientDashboardTable from './ClientDashboardTable';
+import ClientProjectsListTable from './ClientProjectsListTable';
 import FreelancerDashboardTable from './FreelancerDashboardTable';
 import { useAuthGuard } from '@/api/auth-api';
 import ClientDashboardActionButtons from './ClientDashboardActionButtons';
@@ -15,6 +15,7 @@ import {
  FreelancerProfileType,
 } from '@/constants/models/user/UserResponse';
 import ProfileStatus from '../(freelancer-protect-pages)/profile/components/ProfileStatus'
+import ClientCandidatesListTable from './ClientCandidatesListTable';
 
 export default function Dashboard() {
  const { user } = useAuthGuard({ middleware: 'auth' });
@@ -105,7 +106,8 @@ export default function Dashboard() {
            {user?.role === 'CLIENT' && (
              <div>
                <ClientDashboardActionButtons />
-               <ClientDashboardTable />
+               <ClientProjectsListTable/>
+               <ClientCandidatesListTable />
              </div>
            )}
 
