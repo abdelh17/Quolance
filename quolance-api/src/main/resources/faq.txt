@@ -1,0 +1,76 @@
+**Quolance - Frequently Asked Questions (FAQ)**
+
+### General Questions **
+Q. What is Quolance?
+Quolance is a freelancing platform that connects clients with freelancers specializing in tech services. It allows clients to post projects, receive proposals, and hire professionals, while freelancers can compete to get contracts, showcase their skills, and collaborate with clients. **
+
+Q. Who can use Quolance?
+Anyone looking to hire tech talent or offer freelance tech services can use Quolance. The platform is open to individuals and businesses across Canada and beyond. **
+
+Q. I am not a tech related freelancer/client, can I still use Quolance?
+The platform is open to everyone, but is heavily focused on tech-related projects. It will be difficult for you to find the right fit here given we do not suit your needs. If you are looking for tech services or have tech skills to offer, you can use Quolance.
+Q. How do I sign up?
+To sign up, simply visit our website (https://quolance.com) and create an account. You can register as a freelancer or a client using an email address or an OAuth2-supported provider like Google. **
+
+Q. Is Quolance free to use?
+Yes! Creating an account and browsing projects is free. Some AI features may require a premium subscription or incur service fees. **
+
+Q. How do I post a project?
+You need a client account to post a project. Once logged in as a client, go to the Post a Project section, fill in the required details such as title, description, budget, and deadline, then publish it. Your project will be reviewed and approved before going live.
+
+Q. How long before my project is approved?
+Most projects are approved instantaneously, but it may take up to 24 hours for our team to review and approve your project if it was flagged as sensitive. **
+
+Q. What kinds of projects can I post?
+You can post a wide range of tech-related projects, including web development, mobile app development, data analysis, cybersecurity, and more. Simply make sure your post is not an ad, a full time job offer, spam, unprofessional or inappropriate.
+
+Q. How do I select a freelancer?
+You can review proposals submitted by freelancers, check their profiles, and communicate with them via the platform before making a selection. Once you choose a freelancer, you can proceed with the contract. **
+
+Q. Can I modify a project after posting it?
+No, once a project is posted and approved, you cannot modify it. However, you can close it or post an updated version. **
+
+Q. What happens when my project expires?
+** Projects expire one week after posting by default. Once expired, they remain publicly visible for three additional days before being archived.
+
+Q. Is there a limit on the number of projects I can post?
+No! You can post as many projects as you want.
+
+Q. I have difficulty getting contracts. What should I do?
+Make sure your profile is complete and showcases your skills effectively. You can also improve your proposals by customizing them to each project and highlighting your relevant experience. You can use the chat feature to directly reach out to the client.
+If still you have no contracts, try to navigate to the blog page and see what other members are saying, maybe something will be useful there.
+
+Q. Does Quolance help with setting up a contract?
+No, Quolance does not provide legal services or contract templates. It is up to the client and freelancer to agree on the terms of the contract. We are not responsible for any disputes or issues that may arise during the contract period. Our only role is to provide a platform for connecting clients and freelancers.
+
+### For Freelancers **
+Q. How do I find projects?
+Freelancers can browse the \"Available Projects\" section and filter listings based on their skills and preferences. **
+
+Q. How do I submit a proposal?
+Go to the project page you are interested in and click \"Submit Proposal.\" Enter a message explaining why you're the best fit for the contract. **
+
+Q. Can I update my proposal after submission?
+No, once submitted, a proposal cannot be modified. If necessary, you can delete your application and submit a new one. **
+
+Q. Can I communicate with clients before getting selected?
+Yes, freelancers can send messages to clients to discuss project details before selection. ### Payments & Fees **
+
+### Trust & Security **
+
+Q. How does Quolance ensure quality and security?
+Quolance uses AI-powered models to evaluate freelancer profiles, assess proposal quality, and enforce platform rules. Additionally, our verification system ensures transparency and professionalism. **
+
+
+### Technical Support **
+
+Q. How do I reset my password?
+Go to the login page and click \"Forgot Password?\" Follow the instructions to reset your password via email. **
+
+Q. How do I contact support?
+For further assistance, visit our support page or email [support@quolance.com](mailto:support@quolance.com).
+
+Q. How do I delete my account?
+To delete your account, go to your profile settings and select the \"Delete Account\" option. Follow the instructions to confirm the deletion. **
+
+For any questions not covered in this FAQ, feel free to reach out to our support team. We're here to help! **

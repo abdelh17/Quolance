@@ -18,7 +18,7 @@ type ProjectCardProps = ProjectType;
 const ProjectCard = ({
   tags,
   id,
-  createdAt,
+  creationDate,
   category,
   title,
   description,

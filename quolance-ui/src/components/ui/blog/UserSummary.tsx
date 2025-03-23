@@ -25,7 +25,7 @@ const UserSummary: React.FC<{user: FreelancerProfileType}> = ({ user }) => {
                     src={user.profileImageUrl || FreelancerDefaultIcon}
                     width={100}
                     height={100}
-                    className="rounded-full object-cover"
+                    className="w-32 h-32 rounded-full object-cover"
                 />
             </div>
             <div className="mt-3 text-sm text-gray-800">

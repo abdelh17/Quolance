@@ -1,6 +1,8 @@
 package com.quolance.quolance_api.dtos.profile;
 
+import com.quolance.quolance_api.dtos.review.ReviewDto;
 import com.quolance.quolance_api.entities.Profile;
+import com.quolance.quolance_api.entities.Review;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
@@ -42,6 +44,9 @@ public class FreelancerProfileDto {
     private Set<String> certifications;
     private Set<String> languagesSpoken;
     private List<ProjectExperience> projectExperiences;
+    private boolean deleted;
+
+    private List<ReviewDto> reviews;
 
     public static FreelancerProfileDto fromEntity(User user) {
         Profile profile = user.getProfile();
@@ -64,6 +69,7 @@ public class FreelancerProfileDto {
                 .certifications(profile.getCertifications())
                 .languagesSpoken(profile.getLanguagesSpoken())
                 .projectExperiences(profile.getProjectExperiences())
+                .deleted(user.isDeleted())
                 .build();
     }
 }
