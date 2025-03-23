@@ -71,8 +71,6 @@ export const useSendChatbotMessage = () => {
         message: userMessage,
       });
 
-      console.log('response', response);
-
       if (!response.data) {
         throw new Error('No data received from server');
       }

@@ -95,7 +95,6 @@ export const formatTimestampString = (timestamp: string) => {
 const LAST_READ_KEY = 'chatLastReadTimestamps';
 
 export const updateLastRead = (receiverId: string, timestamp: string) => {
-  console.log('updateLastRead', receiverId, timestamp);
   const timestamps = getLastReadTimestamps();
   timestamps[receiverId] = timestamp;
   localStorage.setItem(LAST_READ_KEY, JSON.stringify(timestamps));
