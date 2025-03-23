@@ -20,7 +20,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function ClientDashboardTable() {
+export default function ClientProjectsListTable() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');

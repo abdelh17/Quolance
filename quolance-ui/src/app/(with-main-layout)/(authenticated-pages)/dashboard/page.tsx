@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import ClientProjectsListTable from './ClientProjectsListTable';
-import FreelancerDashboardTable from './FreelancerDashboardTable';
+import FreelancerApplicationsListTable from './FreelancerApplicationsListTable';
 import { useAuthGuard } from '@/api/auth-api';
 import ClientDashboardActionButtons from './ClientDashboardActionButtons';
 import FreelancerDashboardActionButtons from './FreelancerDashboardActionButtons';
@@ -111,7 +111,7 @@ export default function Dashboard() {
                   isHidden={profilePercentage === 100}
                 />
                 <FreelancerDashboardActionButtons />
-                <FreelancerDashboardTable />
+                <FreelancerApplicationsListTable />
               </div>
             )}
           </div>

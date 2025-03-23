@@ -20,7 +20,7 @@ interface Application {
   message: string;
 }
 
-export default function FreelancerDashboardTable() {
+export default function FreelancerApplicationsListTable() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
