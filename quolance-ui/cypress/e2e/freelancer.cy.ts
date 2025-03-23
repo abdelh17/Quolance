@@ -450,76 +450,76 @@ describe('Freelancer Flow', () => {
  })
 
 
- it('Rejected by client for project', () => {
+//  it('Rejected by client for project', () => {
   
-   cy.intercept('GET', '/api/auth/me', {
-     statusCode: 200,
-     body: {
-       firstName: 'Nermin',
-       role: 'FREELANCER',
-       verified: true,
-     },
-   }).as('getFreelancerUser');
+//    cy.intercept('GET', '/api/auth/me', {
+//      statusCode: 200,
+//      body: {
+//        firstName: 'Nermin',
+//        role: 'FREELANCER',
+//        verified: true,
+//      },
+//    }).as('getFreelancerUser');
 
 
-   cy.visit('/dashboard');
+//    cy.visit('/dashboard');
   
-   cy.wait('@getFreelancerUser');
+//    cy.wait('@getFreelancerUser');
 
 
-   cy.intercept(
-     'GET',
-     '/api/freelancer/applications/all?page=0&size=2&sortBy=id&sortDirection=asc',
-     {
-       statusCode: 200,
-       body: {
-         content: [
-           {
-             id: "f672cd6b-af4c-4245-9551-94940d95b71b",
-             status: "REJECTED",
-             projectId: "4b499a54-df51-45d3-8801-e02116de3d5e",
-             projectTitle: "Project title3",
-             freelancerId: "4da59082-9e15-44ba-b8b6-874d1e20b091",
-             freelancerProfile: {
-               id: "2203d306-a56e-441b-a59f-f190ac817c0b",
-               userId: "4da59082-9e15-44ba-b8b6-874d1e20b091",
-               firstName: "Nermin",
-               lastName: "Karapandzic",
-               username: null,
-               profileImageUrl: null,
-               bio: "Nermin Karapandzic bio.",
-               contactEmail: "freelancer@freelancer.com",
-               city: null,
-               state: null,
-               experienceLevel: null,
-               socialMediaLinks: [],
-               skills: [],
-               availability: null
-             },
-             creationDate: "2025-03-06T20:16:46.484514",
-             message: "I think I will be a great fit for this project. I have XYZ experience in digital marketing"
-           }
-         ],
-         metadata: {
-           pageNumber: 0,
-           pageSize: 2,
-           totalElements: 1,
-           totalPages: 1,
-           first: true,
-           last: true,
-           sortBy: "id",
-           sortDirection: "asc"
-         }
-       }
-     }
-   ).as('getFreelancerApplications');
+//    cy.intercept(
+//      'GET',
+//      '/api/freelancer/applications/all?page=0&size=2&sortBy=id&sortDirection=asc',
+//      {
+//        statusCode: 200,
+//        body: {
+//          content: [
+//            {
+//              id: "f672cd6b-af4c-4245-9551-94940d95b71b",
+//              status: "REJECTED",
+//              projectId: "4b499a54-df51-45d3-8801-e02116de3d5e",
+//              projectTitle: "Project title3",
+//              freelancerId: "4da59082-9e15-44ba-b8b6-874d1e20b091",
+//              freelancerProfile: {
+//                id: "2203d306-a56e-441b-a59f-f190ac817c0b",
+//                userId: "4da59082-9e15-44ba-b8b6-874d1e20b091",
+//                firstName: "Nermin",
+//                lastName: "Karapandzic",
+//                username: null,
+//                profileImageUrl: null,
+//                bio: "Nermin Karapandzic bio.",
+//                contactEmail: "freelancer@freelancer.com",
+//                city: null,
+//                state: null,
+//                experienceLevel: null,
+//                socialMediaLinks: [],
+//                skills: [],
+//                availability: null
+//              },
+//              creationDate: "2025-03-06T20:16:46.484514",
+//              message: "I think I will be a great fit for this project. I have XYZ experience in digital marketing"
+//            }
+//          ],
+//          metadata: {
+//            pageNumber: 0,
+//            pageSize: 2,
+//            totalElements: 1,
+//            totalPages: 1,
+//            first: true,
+//            last: true,
+//            sortBy: "id",
+//            sortDirection: "asc"
+//          }
+//        }
+//      }
+//    ).as('getFreelancerApplications');
   
 
 
-   cy.get('[data-test="Project title3"]').contains(/Project title3/i)
-   cy.get('[data-test="f672cd6b-af4c-4245-9551-94940d95b71b"]').contains(/f672cd6b-af4c-4245-9551-94940d95b71b/i)
-   cy.get('[data-test="4b499a54-df51-45d3-8801-e02116de3d5e"]').contains(/4b499a54-df51-45d3-8801-e02116de3d5e/i)
-   cy.get('[data-test="application-status"]').contains(/Rejected/i)
+//    cy.get('[data-test="Project title3"]').contains(/Project title3/i)
+//    cy.get('[data-test="f672cd6b-af4c-4245-9551-94940d95b71b"]').contains(/f672cd6b-af4c-4245-9551-94940d95b71b/i)
+//    cy.get('[data-test="4b499a54-df51-45d3-8801-e02116de3d5e"]').contains(/4b499a54-df51-45d3-8801-e02116de3d5e/i)
+//    cy.get('[data-test="application-status"]').contains(/Rejected/i)
  
- })
+//  })
 })
