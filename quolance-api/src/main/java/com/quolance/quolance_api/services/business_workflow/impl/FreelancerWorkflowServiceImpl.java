@@ -6,17 +6,12 @@ import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.dtos.project.ProjectFilterDto;
 import com.quolance.quolance_api.dtos.project.ProjectPublicDto;
+import com.quolance.quolance_api.dtos.review.ReviewDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
-import com.quolance.quolance_api.entities.Application;
-import com.quolance.quolance_api.entities.Profile;
-import com.quolance.quolance_api.entities.Project;
-import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.*;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
-import com.quolance.quolance_api.services.entity_services.ApplicationService;
-import com.quolance.quolance_api.services.entity_services.FileService;
-import com.quolance.quolance_api.services.entity_services.ProjectService;
-import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.entity_services.*;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.SecurityUtil;
 import com.quolance.quolance_api.util.exceptions.ApiException;
@@ -35,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,6 +41,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final ApplicationService applicationService;
     private final UserService userService;
     private final FileService fileService;
+    private final ReviewService reviewService;
     private final NotificationMessageService notificationMessageService;
 
     @Override
@@ -217,7 +214,15 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
         Optional<User> freelancer = userService.findByUsername(username);
 
         if (freelancer.isPresent()) {
-            return FreelancerProfileDto.fromEntity(freelancer.get());
+            // iterate through all reviews and convert to dto
+            List<Review> reviews = reviewService.getAllReviewsByFreelancerId(freelancer.get().getId());
+            List<ReviewDto> reviewDtos = reviews.stream()
+                    .map(ReviewDto::fromEntity)
+                    .collect(Collectors.toList());
+
+            FreelancerProfileDto freelancerProfileDto = FreelancerProfileDto.fromEntity(freelancer.get());
+            freelancerProfileDto.setReviews(reviewDtos);
+            return freelancerProfileDto;
         } else {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_NOT_FOUND)

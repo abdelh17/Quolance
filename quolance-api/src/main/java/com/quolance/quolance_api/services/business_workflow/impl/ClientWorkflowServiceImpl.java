@@ -4,13 +4,17 @@ import com.quolance.quolance_api.dtos.application.ApplicationDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.*;
+import com.quolance.quolance_api.dtos.review.ReviewCreateDto;
+import com.quolance.quolance_api.dtos.review.ReviewDto;
 import com.quolance.quolance_api.entities.Project;
+import com.quolance.quolance_api.entities.Review;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Tag;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
 import com.quolance.quolance_api.services.entity_services.ApplicationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
+import com.quolance.quolance_api.services.entity_services.ReviewService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.FeatureToggle;
@@ -40,6 +44,7 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
     private final ProjectService projectService;
     private final ApplicationService applicationService;
     private final UserService userService;
+    private final ReviewService reviewService;
     private final NotificationMessageService notificationMessageService;
     private final FeatureToggle featureToggle;
 
@@ -218,6 +223,50 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                 .toList();
 
         return new PageImpl<>(freelancerDtos, pageable, userPage.getTotalElements());
+    }
+
+    @Override
+    public void reviewFreelancer(ReviewCreateDto reviewCreateDto, User client) {
+        UUID projectId = reviewCreateDto.getProjectId();
+        log.debug("Reviewing freelancer for project: {}", projectId);
+        log.debug("Fetching project with ID: {}", projectId);
+        Project project = projectService.getProjectById(projectId);
+        User freelancer = project.getSelectedFreelancer();
+
+        if (!project.isOwnedBy(client.getId())) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_FORBIDDEN)
+                    .message("You are not authorized to review this freelancer for that project")
+                    .build();
+        }
+
+        // Check that the project is OPEN or CLOSED and it has a freelancer assigned
+        if (project.getProjectStatus() != ProjectStatus.OPEN && project.getProjectStatus() != ProjectStatus.CLOSED) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_CONFLICT)
+                    .message("You cannot review a freelancer for a project that is not open or closed")
+                    .build();
+        }
+
+        if (freelancer == null) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_CONFLICT)
+                    .message("You cannot review a freelancer for a project that has no freelancer assigned")
+                    .build();
+        }
+
+        // Check that the project has not been reviewed already
+        Review existingReview = reviewService.getReviewByProjectId(projectId);
+        if (existingReview != null) {
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_CONFLICT)
+                    .message("You have already reviewed the freelancer for this project")
+                    .build();
+        }
+
+        Review review = ReviewCreateDto.toEntity(reviewCreateDto, project, freelancer);
+        reviewService.saveReview(review);
+        log.debug("Review saved successfully for freelancer: {}", freelancer.getId());
     }
 
 }

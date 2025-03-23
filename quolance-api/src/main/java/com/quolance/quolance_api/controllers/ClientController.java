@@ -6,6 +6,7 @@ import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.project.*;
+import com.quolance.quolance_api.dtos.review.ReviewCreateDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.business_workflow.ApplicationProcessWorkflow;
 import com.quolance.quolance_api.services.business_workflow.ClientWorkflowService;
@@ -173,6 +174,19 @@ public class ClientController {
         );
         log.info("Client with ID {} successfully got all available freelancers from repository", client.getId());
         return ResponseEntity.ok(new PageResponseDto<>(freelancersPage));
+    }
+
+    @PostMapping("/project/review")
+    @Operation(
+            summary = "Review a freelancer",
+            description = "Review a freelancer by passing the review details"
+    )
+    public ResponseEntity<String> reviewFreelancer(@RequestBody ReviewCreateDto reviewCreateDto) {
+        User client = SecurityUtil.getAuthenticatedUser();
+        log.info("Client with ID {} attempting to review", client.getId());
+        clientWorkflowService.reviewFreelancer(reviewCreateDto, client);
+        log.info("Client with ID {} successfully reviewed freelancer", client.getId());
+        return ResponseEntity.ok("Freelancer reviewed successfully");
     }
 
 }
