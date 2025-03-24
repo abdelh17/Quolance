@@ -9,7 +9,7 @@ const Input = React.forwardRef<
   return (
     <input
       className={cn(
-        'h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50',
+        'h-10 w-full rounded-md border border-n40 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50',
         className
       )}
       ref={ref}
