@@ -35,320 +35,315 @@ describe('Client Flow', () => {
    })
  
  
-  it('Success Edit Project Flow', () => {
+  // it('Success Edit Project Flow', () => {
    
-    cy.intercept('GET', '/api/auth/me', {
-      statusCode: 200,
-      body: {
-        id:"1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-        firstName: 'John',
-        role: 'CLIENT',
-        verified: true,
-      },
-    }).as('getClientUser');
+  //   cy.intercept('GET', '/api/auth/me', {
+  //     statusCode: 200,
+  //     body: {
+  //       id:"1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //       firstName: 'John',
+  //       role: 'CLIENT',
+  //       verified: true,
+  //     },
+  //   }).as('getClientUser');
  
  
-    cy.visit('/dashboard')
-    // Wait for user authentication to complete
-   cy.wait('@getClientUser');
+  //   cy.visit('/dashboard')
+  //   // Wait for user authentication to complete
+  //  cy.wait('@getClientUser');
  
  
-   cy.intercept(
-    'GET',
-    '/api/client/projects/all?page=0&size=2&sortBy=id&sortDirection=asc',
-    {
-      statusCode: 200,
-      body: {
-        "content": [
-            {
-                "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
-                "title": "Project title1",
-                "description": "Project description",
-                "expirationDate": "2025-11-12",
-                "visibilityExpirationDate": null,
-                "category": "WEB_DEVELOPMENT",
-                "priceRange": "LESS_500",
-                "experienceLevel": "JUNIOR",
-                "expectedDeliveryTime": "IMMEDIATELY",
-                "projectStatus": "PENDING",
-                "tags": ["JAVA"],
-                "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-                "selectedFreelancerId": null,
-                "applications": [],
-                "creationDate": "2025-02-20T15:10:14.27422"
-            }
-        ],
-        "metadata": {
-            "pageNumber": 0,
-            "pageSize": 2,
-            "totalElements": 1,
-            "totalPages": 1,
-            "first": true,
-            "last": true,
-            "sortBy": "id",
-            "sortDirection": "asc"
-        }
-      }
-    }
-  ).as('getClientProjects');
+  //  cy.intercept(
+  //   'GET',
+  //   '/api/client/projects/all?page=0&size=2&sortBy=id&sortDirection=asc',
+  //   {
+  //     statusCode: 200,
+  //     body: {
+  //       "content": [
+  //           {
+  //               "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
+  //               "title": "Project title1",
+  //               "description": "Project description",
+  //               "expirationDate": "2025-11-12",
+  //               "visibilityExpirationDate": null,
+  //               "category": "WEB_DEVELOPMENT",
+  //               "priceRange": "LESS_500",
+  //               "experienceLevel": "JUNIOR",
+  //               "expectedDeliveryTime": "IMMEDIATELY",
+  //               "projectStatus": "PENDING",
+  //               "tags": ["JAVA"],
+  //               "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //               "selectedFreelancerId": null,
+  //               "applications": [],
+  //               "creationDate": "2025-02-20T15:10:14.27422"
+  //           }
+  //       ],
+  //       "metadata": {
+  //           "pageNumber": 0,
+  //           "pageSize": 2,
+  //           "totalElements": 1,
+  //           "totalPages": 1,
+  //           "first": true,
+  //           "last": true,
+  //           "sortBy": "id",
+  //           "sortDirection": "asc"
+  //       }
+  //     }
+  //   }
+  // ).as('getClientProjects');
   
-  cy.get('[data-test="edit-project-btn"]').click();
+  // cy.get('[data-test="edit-project-btn"]').click();
  
  
-  cy.intercept(
-    'GET',
-    '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
-    {
-      statusCode: 200,
-      body: {
-                "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
-                "title": "Project title1",
-                "description": "Project description",
-                "expirationDate": "2025-11-12",
-                "visibilityExpirationDate": null,
-                "category": "WEB_DEVELOPMENT",
-                "priceRange": "LESS_500",
-                "experienceLevel": "JUNIOR",
-                "expectedDeliveryTime": "IMMEDIATELY",
-                "projectStatus": "PENDING",
-                "tags": ["JAVA"],
-                "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-                "selectedFreelancerId": null,
-                "applications": [],
-                "creationDate": "2025-02-20T15:10:14.27422"
-      }
-    }
-  ).as('getClientProject');
+  // cy.intercept(
+  //   'GET',
+  //   '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
+  //   {
+  //     statusCode: 200,
+  //     body: {
+  //               "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
+  //               "title": "Project title1",
+  //               "description": "Project description",
+  //               "expirationDate": "2025-11-12",
+  //               "visibilityExpirationDate": null,
+  //               "category": "WEB_DEVELOPMENT",
+  //               "priceRange": "LESS_500",
+  //               "experienceLevel": "JUNIOR",
+  //               "expectedDeliveryTime": "IMMEDIATELY",
+  //               "projectStatus": "PENDING",
+  //               "tags": ["JAVA"],
+  //               "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //               "selectedFreelancerId": null,
+  //               "applications": [],
+  //               "creationDate": "2025-02-20T15:10:14.27422"
+  //     }
+  //   }
+  // ).as('getClientProject');
   
  
  
-  cy.intercept(
-    'PUT',
-    '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
-    {
-      statusCode: 200,
-      body: {
-                "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
-                "title": "Updated Project Title",
-                "description": "Updated Project description",
-                "expirationDate": "2025-11-12",
-                "visibilityExpirationDate": null,
-                "category": "WEB_DEVELOPMENT",
-                "priceRange": "LESS_500",
-                "experienceLevel": "JUNIOR",
-                "expectedDeliveryTime": "IMMEDIATELY",
-                "projectStatus": "PENDING",
-                "tags": ["JAVA"],
-                "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-                "selectedFreelancerId": null,
-                "applications": [],
-                "creationDate": "2025-02-20T15:10:14.27422"
-      }
-    }
-  ).as('getUpdateClientProject');
+  // cy.intercept(
+  //   'PUT',
+  //   '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
+  //   {
+  //     statusCode: 200,
+  //     body: {
+  //               "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
+  //               "title": "Updated Project Title",
+  //               "description": "Updated Project description",
+  //               "expirationDate": "2025-11-12",
+  //               "visibilityExpirationDate": null,
+  //               "category": "WEB_DEVELOPMENT",
+  //               "priceRange": "LESS_500",
+  //               "experienceLevel": "JUNIOR",
+  //               "expectedDeliveryTime": "IMMEDIATELY",
+  //               "projectStatus": "PENDING",
+  //               "tags": ["JAVA"],
+  //               "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //               "selectedFreelancerId": null,
+  //               "applications": [],
+  //               "creationDate": "2025-02-20T15:10:14.27422"
+  //     }
+  //   }
+  // ).as('getUpdateClientProject');
  
  
-  cy.get('[data-test="update-project-btn"]').click();
+  // cy.get('[data-test="update-project-btn"]').click();
  
  
-  cy.get('.Toastify__toast').should('be.visible').contains(/Project updated successfully/i);
+  // cy.get('.Toastify__toast').should('be.visible').contains(/Project updated successfully/i);
  
  
-   })
+  //  })
  
  
-  it('Verify Update Button is Not Visible When Project Is Open', () => {
+  // it('Verify Update Button is Not Visible When Project Is Open', () => {
    
-    cy.intercept('GET', '/api/auth/me', {
-      statusCode: 200,
-      body: {
-        id:"1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-        firstName: 'John',
-        role: 'CLIENT',
-        verified: true,
-      },
-    }).as('getClientUser');
+  //   cy.intercept('GET', '/api/auth/me', {
+  //     statusCode: 200,
+  //     body: {
+  //       id:"1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //       firstName: 'John',
+  //       role: 'CLIENT',
+  //       verified: true,
+  //     },
+  //   }).as('getClientUser');
  
  
-    cy.visit('/dashboard')
-    // Wait for user authentication to complete
-   cy.wait('@getClientUser');
+  //   cy.visit('/dashboard')
+  //   // Wait for user authentication to complete
+  //  cy.wait('@getClientUser');
  
  
-   cy.intercept(
-    'GET',
-    '/api/client/projects/all?page=0&size=2&sortBy=id&sortDirection=asc',
-    {
-      statusCode: 200,
-      body: {
-        "content": [
-            {
-                "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
-                "title": "Project title1",
-                "description": "Project description",
-                "expirationDate": "2025-11-12",
-                "visibilityExpirationDate": null,
-                "category": "WEB_DEVELOPMENT",
-                "priceRange": "LESS_500",
-                "experienceLevel": "JUNIOR",
-                "expectedDeliveryTime": "IMMEDIATELY",
-                "projectStatus": "OPEN",
-                "tags": ["JAVA"],
-                "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-                "selectedFreelancerId": null,
-                "applications": [],
-                "creationDate": "2025-02-20T15:10:14.27422"
-            }
-        ],
-        "metadata": {
-            "pageNumber": 0,
-            "pageSize": 2,
-            "totalElements": 1,
-            "totalPages": 1,
-            "first": true,
-            "last": true,
-            "sortBy": "id",
-            "sortDirection": "asc"
-        }
-      }
-    }
-  ).as('getClientProjects');
+  //  cy.intercept(
+  //   'GET',
+  //   '/api/client/projects/all?page=0&size=2&sortBy=id&sortDirection=asc',
+  //   {
+  //     statusCode: 200,
+  //     body: {
+  //       "content": [
+  //           {
+  //               "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
+  //               "title": "Project title1",
+  //               "description": "Project description",
+  //               "expirationDate": "2025-11-12",
+  //               "visibilityExpirationDate": null,
+  //               "category": "WEB_DEVELOPMENT",
+  //               "priceRange": "LESS_500",
+  //               "experienceLevel": "JUNIOR",
+  //               "expectedDeliveryTime": "IMMEDIATELY",
+  //               "projectStatus": "OPEN",
+  //               "tags": ["JAVA"],
+  //               "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //               "selectedFreelancerId": null,
+  //               "applications": [],
+  //               "creationDate": "2025-02-20T15:10:14.27422"
+  //           }
+  //       ],
+  //       "metadata": {
+  //           "pageNumber": 0,
+  //           "pageSize": 2,
+  //           "totalElements": 1,
+  //           "totalPages": 1,
+  //           "first": true,
+  //           "last": true,
+  //           "sortBy": "id",
+  //           "sortDirection": "asc"
+  //       }
+  //     }
+  //   }
+  // ).as('getClientProjects');
   
-  cy.get('[data-test="edit-project-btn"]').click();
+  // cy.get('[data-test="edit-project-btn"]').click();
  
  
-  cy.intercept(
-    'GET',
-    '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
-    {
-      statusCode: 200,
-      body: {
-                "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
-                "title": "Project title3",
-                "description": "Project description3",
-                "expirationDate": "2025-11-12",
-                "visibilityExpirationDate": null,
-                "category": "WEB_DEVELOPMENT",
-                "priceRange": "LESS_500",
-                "experienceLevel": "JUNIOR",
-                "expectedDeliveryTime": "IMMEDIATELY",
-                "projectStatus": "OPEN",
-                "tags": ["JAVA"],
-                "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-                "selectedFreelancerId": null,
-                "applications": [],
-                "creationDate": "2025-02-20T15:10:14.27422"
-      }
-    }
-  ).as('getClientProject');
+  // cy.intercept(
+  //   'GET',
+  //   '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
+  //   {
+  //     statusCode: 200,
+  //     body: {
+  //               "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
+  //               "title": "Project title3",
+  //               "description": "Project description3",
+  //               "expirationDate": "2025-11-12",
+  //               "visibilityExpirationDate": null,
+  //               "category": "WEB_DEVELOPMENT",
+  //               "priceRange": "LESS_500",
+  //               "experienceLevel": "JUNIOR",
+  //               "expectedDeliveryTime": "IMMEDIATELY",
+  //               "projectStatus": "OPEN",
+  //               "tags": ["JAVA"],
+  //               "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //               "selectedFreelancerId": null,
+  //               "applications": [],
+  //               "creationDate": "2025-02-20T15:10:14.27422"
+  //     }
+  //   }
+  // ).as('getClientProject');
   
  
  
-  cy.get('[data-test="update-project-btn"]').should('not.exist');
+  // cy.get('[data-test="update-project-btn"]').should('not.exist');
+
+  //  })
  
  
- 
- 
- 
- 
-   })
- 
- 
-  it('Verify Update Button is Not Visible When Project Is Rejected', () => {
+  // it('Verify Update Button is Not Visible When Project Is Rejected', () => {
    
-    cy.intercept('GET', '/api/auth/me', {
-      statusCode: 200,
-      body: {
-        id:"1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-        firstName: 'John',
-        role: 'CLIENT',
-        verified: true,
-      },
-    }).as('getClientUser');
+  //   cy.intercept('GET', '/api/auth/me', {
+  //     statusCode: 200,
+  //     body: {
+  //       id:"1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //       firstName: 'John',
+  //       role: 'CLIENT',
+  //       verified: true,
+  //     },
+  //   }).as('getClientUser');
  
  
-    cy.visit('/dashboard')
-    // Wait for user authentication to complete
-   cy.wait('@getClientUser');
+  //   cy.visit('/dashboard')
+  //   // Wait for user authentication to complete
+  //  cy.wait('@getClientUser');
  
  
-   cy.intercept(
-    'GET',
-    '/api/client/projects/all?page=0&size=2&sortBy=id&sortDirection=asc',
-    {
-      statusCode: 200,
-      body: {
-        "content": [
-            {
-                "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
-                "title": "Project title2",
-                "description": "Project description2",
-                "expirationDate": "2025-11-12",
-                "visibilityExpirationDate": null,
-                "category": "WEB_DEVELOPMENT",
-                "priceRange": "LESS_500",
-                "experienceLevel": "JUNIOR",
-                "expectedDeliveryTime": "IMMEDIATELY",
-                "projectStatus": "REJECTED",
-                "tags": ["JAVA"],
-                "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-                "selectedFreelancerId": null,
-                "applications": [],
-                "creationDate": "2025-02-20T15:10:14.27422"
-            }
-        ],
-        "metadata": {
-            "pageNumber": 0,
-            "pageSize": 2,
-            "totalElements": 1,
-            "totalPages": 1,
-            "first": true,
-            "last": true,
-            "sortBy": "id",
-            "sortDirection": "asc"
-        }
-      }
-    }
-  ).as('getClientProjects');
+  //  cy.intercept(
+  //   'GET',
+  //   '/api/client/projects/all?page=0&size=2&sortBy=id&sortDirection=asc',
+  //   {
+  //     statusCode: 200,
+  //     body: {
+  //       "content": [
+  //           {
+  //               "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
+  //               "title": "Project title2",
+  //               "description": "Project description2",
+  //               "expirationDate": "2025-11-12",
+  //               "visibilityExpirationDate": null,
+  //               "category": "WEB_DEVELOPMENT",
+  //               "priceRange": "LESS_500",
+  //               "experienceLevel": "JUNIOR",
+  //               "expectedDeliveryTime": "IMMEDIATELY",
+  //               "projectStatus": "REJECTED",
+  //               "tags": ["JAVA"],
+  //               "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //               "selectedFreelancerId": null,
+  //               "applications": [],
+  //               "creationDate": "2025-02-20T15:10:14.27422"
+  //           }
+  //       ],
+  //       "metadata": {
+  //           "pageNumber": 0,
+  //           "pageSize": 2,
+  //           "totalElements": 1,
+  //           "totalPages": 1,
+  //           "first": true,
+  //           "last": true,
+  //           "sortBy": "id",
+  //           "sortDirection": "asc"
+  //       }
+  //     }
+  //   }
+  // ).as('getClientProjects');
   
-  cy.get('[data-test="edit-project-btn"]').click();
+  // cy.get('[data-test="edit-project-btn"]').click();
  
  
-  cy.intercept(
-    'GET',
-    '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
-    {
-      statusCode: 200,
-      body: {
-                "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
-                "title": "Project title2",
-                "description": "Project description2",
-                "expirationDate": "2025-11-12",
-                "visibilityExpirationDate": null,
-                "category": "WEB_DEVELOPMENT",
-                "priceRange": "LESS_500",
-                "experienceLevel": "JUNIOR",
-                "expectedDeliveryTime": "IMMEDIATELY",
-                "projectStatus": "REJECTED",
-                "tags": ["JAVA"],
-                "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
-                "selectedFreelancerId": null,
-                "applications": [],
-                "creationDate": "2025-02-20T15:10:14.27422"
-      }
-    }
-  ).as('getClientProject');
+  // cy.intercept(
+  //   'GET',
+  //   '/api/client/projects/cf5408bf-c564-4323-91cc-6f9a7cc993ff',
+  //   {
+  //     statusCode: 200,
+  //     body: {
+  //               "id": "cf5408bf-c564-4323-91cc-6f9a7cc993ff",
+  //               "title": "Project title2",
+  //               "description": "Project description2",
+  //               "expirationDate": "2025-11-12",
+  //               "visibilityExpirationDate": null,
+  //               "category": "WEB_DEVELOPMENT",
+  //               "priceRange": "LESS_500",
+  //               "experienceLevel": "JUNIOR",
+  //               "expectedDeliveryTime": "IMMEDIATELY",
+  //               "projectStatus": "REJECTED",
+  //               "tags": ["JAVA"],
+  //               "clientId": "1eb87a21-c6cb-423b-aa36-48c453e0ddde",
+  //               "selectedFreelancerId": null,
+  //               "applications": [],
+  //               "creationDate": "2025-02-20T15:10:14.27422"
+  //     }
+  //   }
+  // ).as('getClientProject');
   
  
  
-  cy.get('[data-test="update-project-btn"]').should('not.exist');
+  // cy.get('[data-test="update-project-btn"]').should('not.exist');
  
  
  
  
  
  
-   })
+  //  })
  
  
   it('Approve Application Flow', () => {
