@@ -109,7 +109,7 @@ export default function FreelancerApplicationsListTable() {
       <div className='sm:flex sm:items-center'>
         <h2 className='mt-2 text-xl font-bold text-gray-700'>My submissions</h2>
       </div>
-      <div className='-mx-4 mt-8 sm:-mx-0 bg-white border-n40 border p-4 rounded-xl'>
+      <div className='border-n40 -mx-4 mt-8 rounded-xl border bg-white p-4 sm:-mx-0'>
         <table className='min-w-full divide-y divide-gray-300'>
           <thead>
             <tr>
@@ -177,8 +177,8 @@ export default function FreelancerApplicationsListTable() {
                       href={`/projects/${application.projectId}`}
                       className='text-b300'
                     >
-                      {application.projectTitle.substring(0, 30) +
-                        (application.projectTitle.length > 30 ? '...' : '')}
+                      {application.projectTitle.substring(0, 10) +
+                        (application.projectTitle.length > 10 ? '...' : '')}
                     </Link>
                   </td>
                   <td

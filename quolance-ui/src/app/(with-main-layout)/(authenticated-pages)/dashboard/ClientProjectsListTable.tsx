@@ -77,7 +77,7 @@ export default function ClientProjectsListTable() {
       <div className='sm:flex sm:items-center'>
         <h2 className='mt-2 text-xl font-bold text-gray-700'>My projects</h2>
       </div>
-      <div className='-mx-4 mt-8 sm:-mx-0 bg-white rounded-lg border p-4 border-n40 '>
+      <div className='border-n40 -mx-4 mt-8 rounded-lg border bg-white p-4 sm:-mx-0 '>
         <table className='min-w-full divide-y divide-gray-300'>
           <thead>
             <tr>
@@ -166,7 +166,8 @@ export default function ClientProjectsListTable() {
                       href={`/projects/${project.id}`}
                       className='text-b300'
                     >
-                      {project.title.substring(0, 30) + (project.title.length > 30 ? '...' : '')}
+                      {project.title.substring(0, 10) +
+                        (project.title.length > 10 ? '...' : '')}
                     </Link>
                   </td>
                   <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
@@ -216,88 +217,95 @@ export default function ClientProjectsListTable() {
 
         {/* Pagination Controls */}
         {metadata && metadata.totalElements > 0 && (
-  <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-    <div className="flex flex-1 justify-between sm:hidden">
-      <button
-        onClick={() => setPage(page - 1)}
-        disabled={metadata.first}
-        className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-      >
-        Previous
-      </button>
-      <button
-        onClick={() => setPage(page + 1)}
-        disabled={metadata.last}
-        className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-      >
-        Next
-      </button>
-    </div>
-    <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-      <div>
-        {metadata.totalElements > 0 ? (
-          <p className="text-sm text-gray-700">
-            Showing page <span className="font-medium">{metadata.pageNumber + 1}</span> of{' '}
-            <span className="font-medium">{metadata.totalPages}</span>
-          </p>
-        ) : (
-          <p className="text-sm text-gray-700">No results found</p>
-        )}
-      </div>
-      <div>
-        <nav
-          className="isolate inline-flex -space-x-px rounded-md "
-          aria-label="Pagination"
-        >
-          <button
-            onClick={() => setPage(page - 1)}
-            disabled={metadata.first}
-            className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
-          >
-            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-          </button>
-          
-          {/* Page Numbers */}
-          {Array.from({ length: Math.min(5, metadata.totalPages) }, (_, i) => {
-            // Show pages around current page
-            let pageNum;
-            if (metadata.totalPages <= 5) {
-              pageNum = i;
-            } else if (page < 2) {
-              pageNum = i;
-            } else if (page > metadata.totalPages - 3) {
-              pageNum = metadata.totalPages - 5 + i;
-            } else {
-              pageNum = page - 2 + i;
-            }
-            
-            return (
+          <div className='flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6'>
+            <div className='flex flex-1 justify-between sm:hidden'>
               <button
-                key={pageNum}
-                onClick={() => setPage(pageNum)}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
-                  page === pageNum
-                    ? 'bg-b200 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                    : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
-                }`}
+                onClick={() => setPage(page - 1)}
+                disabled={metadata.first}
+                className='relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50'
               >
-                {pageNum + 1}
+                Previous
               </button>
-            );
-          })}
-          
-          <button
-            onClick={() => setPage(page + 1)}
-            disabled={metadata.last}
-            className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
-          >
-            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-          </button>
-        </nav>
-      </div>
-    </div>
-  </div>
-)}
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={metadata.last}
+                className='relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50'
+              >
+                Next
+              </button>
+            </div>
+            <div className='hidden sm:flex sm:flex-1 sm:items-center sm:justify-between'>
+              <div>
+                {metadata.totalElements > 0 ? (
+                  <p className='text-sm text-gray-700'>
+                    Showing page{' '}
+                    <span className='font-medium'>
+                      {metadata.pageNumber + 1}
+                    </span>{' '}
+                    of{' '}
+                    <span className='font-medium'>{metadata.totalPages}</span>
+                  </p>
+                ) : (
+                  <p className='text-sm text-gray-700'>No results found</p>
+                )}
+              </div>
+              <div>
+                <nav
+                  className='isolate inline-flex -space-x-px rounded-md '
+                  aria-label='Pagination'
+                >
+                  <button
+                    onClick={() => setPage(page - 1)}
+                    disabled={metadata.first}
+                    className='relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50'
+                  >
+                    <ChevronLeftIcon className='h-5 w-5' aria-hidden='true' />
+                  </button>
+
+                  {/* Page Numbers */}
+                  {Array.from(
+                    { length: Math.min(5, metadata.totalPages) },
+                    (_, i) => {
+                      // Show pages around current page
+                      let pageNum;
+                      if (metadata.totalPages <= 5) {
+                        pageNum = i;
+                      } else if (page < 2) {
+                        pageNum = i;
+                      } else if (page > metadata.totalPages - 3) {
+                        pageNum = metadata.totalPages - 5 + i;
+                      } else {
+                        pageNum = page - 2 + i;
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setPage(pageNum)}
+                          className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                            page === pageNum
+                              ? 'bg-b200 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                              : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
+                          }`}
+                        >
+                          {pageNum + 1}
+                        </button>
+                      );
+                    }
+                  )}
+
+                  <button
+                    onClick={() => setPage(page + 1)}
+                    disabled={metadata.last}
+                    className='relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50'
+                  >
+                    <ChevronRightIcon className='h-5 w-5' aria-hidden='true' />
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
