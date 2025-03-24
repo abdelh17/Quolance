@@ -16,4 +16,19 @@ export interface CandidateResponse {
   projectExperiences: any[];
   workExperiences: any[];
   languagesSpoken: string[];
+  reviews:Reviews[];
 }
+
+type Reviews = {
+  title: string;
+  communicationRating: number;
+  qualityOfWorkRating: number;
+  qualityOfDeliveryRating: number;
+  overallRating: number;
+  comment: string;
+  clientFirstName: string;
+  clientLastName: string;
+  clientUsername: string;
+  projectId: string;
+  reviewedFreelancerId: string;
+ };
