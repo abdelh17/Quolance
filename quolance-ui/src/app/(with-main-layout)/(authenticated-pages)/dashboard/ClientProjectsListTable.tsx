@@ -73,11 +73,11 @@ export default function ClientProjectsListTable() {
   }
 
   return (
-    <div className='px-4 sm:px-6 lg:px-8'>
+    <div>
       <div className='sm:flex sm:items-center'>
         <h2 className='mt-2 text-xl font-bold text-gray-700'>My projects</h2>
       </div>
-      <div className='-mx-4 mt-8 sm:-mx-0'>
+      <div className='-mx-4 mt-8 sm:-mx-0 bg-white rounded-lg border p-4 border-n40 '>
         <table className='min-w-full divide-y divide-gray-300'>
           <thead>
             <tr>
