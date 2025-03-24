@@ -70,7 +70,7 @@ export default function FreelancerPage() {
       <section className='sbp-30 stp-30 bg-stone-100' >
         <div className='container'>
           <div className='grid grid-cols-12 gap-6'>
-            <div className='border-n40 col-span-12 rounded-xl border px-6 py-14 lg:col-span-4 bg-white'>
+            <div className='border-n40 border col-span-12 rounded-xl border px-6 py-14 lg:col-span-4 bg-white'>
               <div className='flex flex-col items-center justify-center'>
                 <div className='relative max-w-[180px] max-md:overflow-hidden'>
                   <Image
@@ -223,12 +223,12 @@ export default function FreelancerPage() {
               </div>
             </div>
 
-            <div className='border-n40 col-span-12 rounded-xl border p-4 sm:p-8 lg:col-span-8 bg-white'>
+            <div className='border-n40  col-span-12 rounded-xl border p-4 sm:p-8 lg:col-span-8 bg-white'>
               <h3 className='heading-3'>About me</h3>
               <p className='text-bg-n300 pt-3 font-medium'>{freelancer.bio}</p>
 
               <div className='flex flex-col gap-4 pt-10'>
-                <ul className='border-n40 text-n100 flex items-center justify-start gap-5 border-b pb-5 max-md:flex-wrap'>
+                <ul className='border-n40 border  text-n100 flex items-center justify-start gap-5 border-b pb-5 max-md:flex-wrap'>
                   {tabButton.map((item, idx) => (
                     <li
                       onClick={() => setActiveTab(item)}

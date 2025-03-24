@@ -54,7 +54,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className='min-h-full'>
+      <div className='min-h-full bg-stone-100'>
         <div className='relative h-[300px] overflow-hidden'>
           {' '}
           {/* Fixed height for Image component */}

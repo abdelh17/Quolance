@@ -212,7 +212,7 @@ export const ProjectClosedCannotApply = () => (
         <span className='text-n700'>Submit Application</span>
       </h2>
     </div>
-    <div className='border-n40 rounded-2xl border-2 border-dashed bg-white shadow-sm'>
+    <div className='border-n40 rounded-2xl border border-dashed bg-white shadow-sm'>
       <div className='flex flex-col items-center justify-center px-4 py-16'>
         <div className='bg-r50 mb-6 rounded-full p-6'>
           <IoMdLock className='h-12 w-12 text-red-600' />

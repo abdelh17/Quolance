@@ -105,11 +105,11 @@ export default function FreelancerApplicationsListTable() {
   }
 
   return (
-    <div className='px-4 sm:px-6 lg:px-8'>
+    <div>
       <div className='sm:flex sm:items-center'>
         <h2 className='mt-2 text-xl font-bold text-gray-700'>My submissions</h2>
       </div>
-      <div className='-mx-4 mt-8 sm:-mx-0'>
+      <div className='-mx-4 mt-8 sm:-mx-0 bg-white border-n40 border p-4 rounded-xl'>
         <table className='min-w-full divide-y divide-gray-300'>
           <thead>
             <tr>
@@ -262,7 +262,7 @@ export default function FreelancerApplicationsListTable() {
               </div>
               <div>
                 <nav
-                  className='isolate inline-flex -space-x-px rounded-md shadow-sm'
+                  className='isolate inline-flex -space-x-px rounded-md'
                   aria-label='Pagination'
                 >
                   <button
