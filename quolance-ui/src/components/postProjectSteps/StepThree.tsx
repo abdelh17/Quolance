@@ -3,7 +3,6 @@
 import ExpectedDeliveryRadioGroup from '@/components/ui/client/ExpectedDeliveryRadioGroup';
 import { useSteps } from '@/util/context/StepsContext';
 
-
 function StepThree({
   handleNext,
   handleBack,
@@ -22,9 +21,9 @@ function StepThree({
 
   return (
     <div className=''>
-      <h4 className='heading-4'>Timeline & Delivery Preferences</h4>
+      <h4 className='heading-4'>Timeline & Project Deadline</h4>
       <p className='text-n300 pb-4 pt-6 font-medium lg:pt-10'>
-        Expected Delivery <span className='text-red-500'>* </span>
+        Preferred Timeline <span className='text-red-500'>* </span>
       </p>
       <ExpectedDeliveryRadioGroup
         name='expectedDeliveryTime'
@@ -32,7 +31,31 @@ function StepThree({
         onChange={handleChange}
       />
       <p className='pb-4 pt-6 lg:pt-10'>
-        Delivery Date <span className='text-red-500'>* </span>
+        Expected Deadline (Final Delivery Date){' '}
+        <span className='text-red-500'>* </span>
+        <div className='mb-4 mt-2 flex rounded border-l-4 border-blue-500 bg-blue-50 p-4'>
+          <div className='mr-3 flex-shrink-0'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-5 w-5 text-blue-500'
+              viewBox='0 0 20 20'
+              fill='currentColor'
+            >
+              <path
+                fillRule='evenodd'
+                d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z'
+                clipRule='evenodd'
+              />
+            </svg>
+          </div>
+          <div>
+            <p className='text-n300 text-sm'>
+              What is the latest date by which you'd like the full project to be
+              completed and delivered? This can be the same or later than your
+              preferred timeline.
+            </p>
+          </div>
+        </div>
       </p>
       <input
         type='date'
