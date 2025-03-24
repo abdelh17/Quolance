@@ -104,3 +104,8 @@ google:
   api:
     key: ${GOOGLE_API_KEY}
     model: ${MODEL_NAME}
+
+ai:
+  base-prompts:
+    about: "Write a compelling About Me section for a freelancer. Here is some additional context: "
+    project: "Create a creative project description. Include key details and benefits. Additional info: "
