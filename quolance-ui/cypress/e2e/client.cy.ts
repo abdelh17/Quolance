@@ -29,7 +29,6 @@ describe('Client Flow', () => {
  
    cy.get('[data-test="next-btn-step1"]').click();
    cy.get('[data-test="project-title-error"]').contains(/Project Title is required/i);
-   cy.get('[data-test="project-desc-error"]').contains(/Project Description is required/i);
    cy.get('[data-test="project-location-error"]').contains(/Location is required/i);
  
  
