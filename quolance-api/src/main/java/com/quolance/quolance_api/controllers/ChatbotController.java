@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.controllers.chat;
+package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.services.ChatRequest;
 import com.quolance.quolance_api.services.chat.ChatbotService;
