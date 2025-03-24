@@ -204,6 +204,7 @@ export default function ProjectSubmissions({
                           (submission) => submission.status === 'ACCEPTED'
                         ) && submission.status === 'APPLIED'
                       }
+                      currentProjectId={projectId}
                     />
                   </div>
                 )

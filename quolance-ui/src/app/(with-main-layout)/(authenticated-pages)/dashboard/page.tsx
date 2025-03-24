@@ -37,6 +37,7 @@ export default function Dashboard() {
     projectExperiences: [],
     workExperiences: [],
     languagesSpoken: [],
+    reviews: [],
   });
 
   useEffect(() => {

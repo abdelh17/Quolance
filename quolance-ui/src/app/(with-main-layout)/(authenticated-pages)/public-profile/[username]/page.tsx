@@ -16,7 +16,7 @@ import { MapPin, Users } from 'lucide-react';
 import StarRating from '@/components/ui/StarRating';
 import { ProjectExperienceCard } from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
 import { WorkExperienceCard } from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
-
+import ReviewCard from '../../(freelancer-protect-pages)/profile/components/ReviewCard';
 const tabButton = ['Experiences', 'Projects', 'Recommendations'];
 
 // Only allow 4 platforms to match ContactSection
@@ -276,29 +276,27 @@ export default function FreelancerPage() {
                   {/* Recommendations */}
                   {activeTab === 'Recommendations' && (
                     <>
-                      <div className='border-n40 rounded-2xl border p-8'>
-                        <div className='flex items-center justify-start gap-3 pb-2'>
-                          <div className=''>
-                            <div className='flex items-center justify-start gap-3'>
-                              <h5 className='heading-5'>John Doe</h5>
-                            </div>
-                            <p className='text-n500 pt-2'>
-                              Project for frontend development
-                            </p>
-                          </div>
-                        </div>
-                        <p className='text-n300 pt-3 font-medium'>
-                          It was a pleasure working with Alice. She was super
-                          clear and detailed with the project requirements. I
-                          appreciate her wonderful communication, collaboration,
-                          and flexibility. Thanks, Alice!
-                        </p>
+                     {freelancer.reviews && freelancer.reviews.length > 0 ? (
+                     freelancer.reviews.map((review, idx) => (
+                       <ReviewCard
+                         key={idx}
+                         firstName={review.clientFirstName}
+                         lastName={review.clientLastName}
+                         username={review.clientUsername}
+                         title={review.title}
+                         comment={review.comment}
+                         overallRating={review.overallRating}
+                         communicationRating={review.communicationRating}
+                         qualityOfDeliveryRating={review.qualityOfDeliveryRating}
+                         qualityOfWorkRating={review.qualityOfWorkRating}
+                       />
+                     ))
+                   ) : (
+                     <div className='rounded-xl border p-6 text-center'>
+                       <p className='text-gray-500'>No reviews to display.</p>
+                     </div>
+                   )}
 
-                        {/* 5-Star Rating */}
-                        <div className='flex items-center justify-start gap-2 pt-5'>
-                          <StarRating rating={4.5} />
-                        </div>
-                      </div>
                     </>
                   )}
                 </div>
