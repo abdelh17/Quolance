@@ -193,7 +193,7 @@ const FreelancerProfile: React.FC = () => {
     'block w-full rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-b300 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200 ';
 
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen bg-stone-100'>
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
         {/* Header */}

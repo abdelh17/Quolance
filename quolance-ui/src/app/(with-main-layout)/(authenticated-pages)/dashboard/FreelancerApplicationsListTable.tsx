@@ -1,7 +1,12 @@
 'use client';
 
-import { useGetAllCandidates, useGetAllClientProjects } from '@/api/client-api';
-import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
+import LoadingSpinner1 from '@/components/ui/loading/loadingSpinner1';
+import Link from 'next/link';
+import {
+  useCancelApplication,
+  useGetAllFreelancerApplications,
+} from '@/api/freelancer-api';
+import { useState } from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -9,34 +14,42 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from 'lucide-react';
-import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
-import LoadingSpinner1 from '@/components/ui/loading/loadingSpinner1';
-import Link from 'next/link';
-import {
-  formatDate,
-  formatEnumString,
-  formatPriceRange,
-} from '@/util/stringUtils';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { formatDate } from '@/util/stringUtils';
+import ApplicationStatusBadge, {
+  ApplicationStatus,
+} from '@/components/ui/applications/ApplicationStatusBadge';
+import Modal from '@/components/ui/Modal';
+import { PiX } from 'react-icons/pi';
 
-export default function ClientProjectsListTable() {
+interface Application {
+  id: string;
+  status: ApplicationStatus;
+  projectId: string;
+  freelancerId: string;
+  projectTitle: string;
+  creationDate: string;
+  message: string;
+}
+
+export default function FreelancerApplicationsListTable() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
   const pageSize = 5;
 
-  const { data, isLoading } = useGetAllClientProjects({
+  const { data, isLoading } = useGetAllFreelancerApplications({
     page,
     size: pageSize,
     sortBy,
     sortDirection,
   });
 
-  const projects = data?.data.content || [];
-  const metadata = data?.data.metadata;
-
-  const router = useRouter();
+  const applications = data?.content || [];
+  console.log('applications is', applications);
+  const metadata = data?.metadata;
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
@@ -45,7 +58,7 @@ export default function ClientProjectsListTable() {
       setSortBy(column);
       setSortDirection('asc');
     }
-    setPage(0); // Reset to first page when sorting changes
+    setPage(0);
   };
 
   const getSortIcon = (column: string) => {
@@ -59,13 +72,32 @@ export default function ClientProjectsListTable() {
     );
   };
 
-  const scrollToApplicants = (projectId: string) => {
-    router.push(`/projects/${projectId}#applicants-section`);
-    setTimeout(() => {
-      document.getElementById('applicants-section')?.scrollIntoView({
-        behavior: 'smooth',
-      });
-    }, 100);
+  // Using the imported formatDate function from stringUtils
+
+  const canWithdrawApplication = (status: ApplicationStatus) => {
+    return status === 'APPLIED';
+  };
+
+  const handleWithdrawClick = (
+    application: Application,
+    e: React.MouseEvent
+  ) => {
+    e.preventDefault();
+    if (!canWithdrawApplication(application.status)) return;
+    setSelectedApplication(application);
+    setIsDeleteModalOpen(true);
+  };
+
+  const { mutate: cancelApplication } = useCancelApplication(
+    selectedApplication?.projectId || ''
+  );
+
+  const handleConfirmWithdraw = () => {
+    if (selectedApplication) {
+      cancelApplication(selectedApplication.id);
+      setIsDeleteModalOpen(false);
+      setSelectedApplication(null);
+    }
   };
 
   if (isLoading) {
@@ -75,65 +107,41 @@ export default function ClientProjectsListTable() {
   return (
     <div>
       <div className='sm:flex sm:items-center'>
-        <h2 className='mt-2 text-xl font-bold text-gray-700'>My projects</h2>
+        <h2 className='mt-2 text-xl font-bold text-gray-700'>My submissions</h2>
       </div>
-      <div className='border-n40 -mx-4 mt-8 rounded-lg border bg-white p-4 sm:-mx-0 '>
+      <div className='border-n40 -mx-4 mt-8 rounded-xl border bg-white p-4 sm:-mx-0'>
         <table className='min-w-full divide-y divide-gray-300'>
           <thead>
             <tr>
               <th
                 scope='col'
                 className='cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:pl-0'
-                onClick={() => handleSort('title')}
+                onClick={() => handleSort('id')}
               >
-                <div className='flex items-center'>
-                  Title
-                  {getSortIcon('title')}
-                </div>
+                <div className='flex items-center'>Project Title</div>
               </th>
               <th
                 scope='col'
-                className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
-              >
-                Budget
-              </th>
-              <th
-                scope='col'
-                className='hidden cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:table-cell'
+                className='hidden cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:table-cell sm:pl-0'
                 onClick={() => handleSort('creationDate')}
               >
                 <div className='flex items-center'>
-                  Creation Date
+                  Submitted On
                   {getSortIcon('creationDate')}
                 </div>
               </th>
               <th
                 scope='col'
-                className='hidden cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700 sm:table-cell'
-                onClick={() => handleSort('expirationDate')}
-              >
-                <div className='flex items-center'>
-                  Expiration Date
-                  {getSortIcon('expirationDate')}
-                </div>
-              </th>
-              <th
-                scope='col'
-                className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
-              >
-                Category
-              </th>
-              <th
-                scope='col'
                 className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
               >
-                Experience Level
+                Application Message
               </th>
               <th
                 scope='col'
-                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+                className='cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:text-gray-700'
+                onClick={() => handleSort('status')}
               >
-                Status
+                <div className='flex items-center'>Status</div>
               </th>
               <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
                 <span className='sr-only'>Actions</span>
@@ -141,71 +149,74 @@ export default function ClientProjectsListTable() {
             </tr>
           </thead>
           <tbody className='divide-y divide-gray-200 bg-white'>
-            {projects.length === 0 ? (
+            {applications.length === 0 ? (
               <tr>
-                <td colSpan={8} className='py-12 text-center'>
+                <td colSpan={4} className='py-12 text-center'>
                   <div className='flex flex-col items-center'>
                     <p className='mb-4 text-center text-gray-600'>
-                      You haven't created any projects yet. Get started by
-                      creating your first project!
+                      You haven't submitted your application to any project yet.
+                      Get started by applying to a project!
                     </p>
                     <Link
-                      href='/post-project'
+                      href='/applications'
                       className='text-sm/6 font-semibold text-gray-900'
                     >
-                      Create First Project<span aria-hidden='true'>→</span>
+                      Find new applications<span aria-hidden='true'>→</span>
                     </Link>
                   </div>
                 </td>
               </tr>
             ) : (
-              projects.map((project: ProjectType) => (
-                <tr key={project.id}>
-                  <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'>
+              applications.map((application: Application) => (
+                <tr key={application.id}>
+                  <td
+                    data-test={`${application.projectTitle}`}
+                    className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0'
+                  >
                     <Link
-                      href={`/projects/${project.id}`}
+                      href={`/projects/${application.projectId}`}
                       className='text-b300'
                     >
-                      {project.title.substring(0, 10) +
-                        (project.title.length > 10 ? '...' : '')}
+                      {application.projectTitle.substring(0, 10) +
+                        (application.projectTitle.length > 10 ? '...' : '')}
                     </Link>
                   </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                    {formatPriceRange(project.priceRange)}
+                  <td
+                    data-test='submitted-date'
+                    className='hidden w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:table-cell sm:w-auto sm:max-w-none sm:pl-0'
+                  >
+                    {formatDate(application.creationDate)}
                   </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                    {formatDate(project.creationDate)}
-                  </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                    {formatDate(project.expirationDate)}
-                  </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 sm:table-cell'>
-                    {formatEnumString(project.category)}
-                  </td>
-                  <td className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'>
-                    {project.experienceLevel}
+                  <td
+                    data-test='application-message'
+                    className='hidden px-3 py-4 text-sm text-gray-500 lg:table-cell'
+                  >
+                    {application.message
+                      ? application.message.substring(0, 45) +
+                        (application.message.length > 45 ? '...' : '')
+                      : 'No message provided'}
                   </td>
                   <td className='px-3 py-4 text-sm'>
-                    <ProjectStatusBadge
-                      status={project.projectStatus as ProjectStatus}
-                    />
+                    <ApplicationStatusBadge status={application.status} />
                   </td>
                   <td className='py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                    <div className='flex space-x-4'>
+                    <div className='flex justify-end space-x-4'>
                       <Link
-                        href={`/projects/${project.id}?edit`}
+                        href={`/projects/${application.projectId}`}
                         className='text-b300 hover:text-indigo-900'
-                        data-test='edit-project-btn'
                       >
-                        Edit Project
+                        View project
                       </Link>
                       <Link
-                        href={`/projects/${project.id}/#applicants-section`}
-                        onClick={() => scrollToApplicants(project.id)}
-                        className='text-b300 hover:text-indigo-900'
-                        data-test='view-applicants-btn'
+                        href='#'
+                        className={`${
+                          canWithdrawApplication(application.status)
+                            ? 'text-red-600 hover:text-red-800'
+                            : 'cursor-not-allowed text-gray-400'
+                        }`}
+                        onClick={(e) => handleWithdrawClick(application, e)}
                       >
-                        View Applicants
+                        Withdraw submission
                       </Link>
                     </div>
                   </td>
@@ -251,7 +262,7 @@ export default function ClientProjectsListTable() {
               </div>
               <div>
                 <nav
-                  className='isolate inline-flex -space-x-px rounded-md '
+                  className='isolate inline-flex -space-x-px rounded-md'
                   aria-label='Pagination'
                 >
                   <button
@@ -307,6 +318,26 @@ export default function ClientProjectsListTable() {
           </div>
         )}
       </div>
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        title='Withdraw Application'
+        icon={<PiX />}
+        iconColor='text-red-600'
+        confirmText='Withdraw Application'
+        confirmButtonColor='bg-red-600'
+        onConfirm={handleConfirmWithdraw}
+      >
+        <p className='text-n300 text-lg'>
+          Are you sure you want to withdraw your application? This action:
+        </p>
+        <ul className='text-n300 mt-4 list-disc pl-6'>
+          <li>Cannot be undone</li>
+          <li>Will remove your application from consideration</li>
+          <li>Will allow you to apply again if you change your mind</li>
+        </ul>
+      </Modal>
     </div>
   );
 }

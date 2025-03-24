@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import ClientProjectsListTable from './ClientProjectsListTable';
-import FreelancerDashboardTable from './FreelancerDashboardTable';
+import FreelancerApplicationsListTable from './FreelancerApplicationsListTable';
 import { useAuthGuard } from '@/api/auth-api';
 import ClientDashboardActionButtons from './ClientDashboardActionButtons';
 import FreelancerDashboardActionButtons from './FreelancerDashboardActionButtons';
@@ -12,7 +12,6 @@ import {
 } from '@/api/freelancer-api';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
 import ProfileStatus from '../(freelancer-protect-pages)/profile/components/ProfileStatus';
-import ClientCandidatesListTable from './ClientCandidatesListTable';
 
 export default function Dashboard() {
   const { user } = useAuthGuard({ middleware: 'auth' });
@@ -55,7 +54,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className='min-h-full'>
+      <div className='min-h-full bg-stone-100'>
         <div className='relative h-[300px] overflow-hidden'>
           {' '}
           {/* Fixed height for Image component */}
@@ -102,7 +101,6 @@ export default function Dashboard() {
               <div>
                 <ClientDashboardActionButtons />
                 <ClientProjectsListTable />
-                <ClientCandidatesListTable />
               </div>
             )}
 
@@ -114,7 +112,7 @@ export default function Dashboard() {
                   isHidden={profilePercentage === 100}
                 />
                 <FreelancerDashboardActionButtons />
-                <FreelancerDashboardTable />
+                <FreelancerApplicationsListTable />
               </div>
             )}
           </div>

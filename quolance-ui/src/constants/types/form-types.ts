@@ -38,8 +38,6 @@ export const BUSINESS_CATEGORY_OPTIONS: FormFieldOption[] = [
   { id: '10', value: 'VIRTUAL_ASSISTANT', label: 'Virtual Assistant' },
   { id: '11', value: 'E_COMMERCE', label: 'E-commerce' },
   { id: '12', value: 'MOBILE_DEVELOPMENT', label: 'Mobile Development' },
-  { id: '13', value: 'DATA_SCIENCE', label: 'Data Science' },
-  { id: '14', value: 'DESIGN', label: 'Design' },
 ];
 
 export const PROJECT_STATUS_OPTIONS: FormFieldOption[] = [

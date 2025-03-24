@@ -1,12 +1,47 @@
 'use client';
+import { useState, useEffect } from 'react';
 import heroImage1 from '@/public/images/freelancer-hero-img-1.jpg';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function HeroSection() {
+  const words = ['Freelancers', 'Contractors'];
+  const [text, setText] = useState('');
+  const [wordIndex, setWordIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const typingSpeed = 150;    // ms per character when typing
+  const deletingSpeed = 50;   // ms per character when deleting
+  const pauseDuration = 1000; // pause duration after a word is fully typed
+
+  useEffect(() => {
+    const currentWord = words[wordIndex];
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && text === currentWord) {
+      // Pause before starting to delete
+      timeoutId = setTimeout(() => {
+        setIsDeleting(true);
+      }, pauseDuration);
+    } else if (isDeleting && text === '') {
+      // Move to the next word when deletion is complete
+      setIsDeleting(false);
+      setWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+    } else {
+      timeoutId = setTimeout(() => {
+        setText((prevText) =>
+          isDeleting
+            ? currentWord.substring(0, prevText.length - 1)
+            : currentWord.substring(0, prevText.length + 1)
+        );
+      }, isDeleting ? deletingSpeed : typingSpeed);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [text, isDeleting, wordIndex]);
   return (
     <div className='bg-white'>
-      <div className='relative isolate overflow-hidden bg-gradient-to-b '>
+      <div className='relative isolate overflow-hidden bg-gradient-to-b'>
         <div
           aria-hidden='true'
           className='absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96'
@@ -14,14 +49,15 @@ export default function HeroSection() {
         <div className='mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8'>
           <div className='mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-16 lg:gap-y-8 xl:grid-cols-1 xl:grid-rows-1 xl:gap-x-8'>
             <h1 data-test="hero-title" className='max-w-2xl text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl lg:col-span-2 xl:col-auto'>
-              We’re changing the way You Find Contractors & Freelancers
+              We’re Changing The Way You Find{' '}
+              <span style={{ display: 'inline-block', minWidth: '11ch' }}>
+                {text}
+                <span className="blinking-cursor">|</span>
+              </span>
             </h1>
             <div className='mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1'>
               <p data-test="hero-desc" className='text-pretty text-lg font-medium text-gray-500 sm:text-xl/8'>
-                Find trusted freelancers and contractors with ease. Our
-                extensive network of skilled local experts—from programming and
-                design to writing and beyond—is here to help you succeed, no
-                matter the project.
+                Find trusted freelancers and contractors with ease. Our extensive network of skilled local experts—from programming and design to writing and beyond—is here to help you succeed, no matter the project.
               </p>
               <div className='mt-10 flex items-center gap-x-6'>
                 <Link
