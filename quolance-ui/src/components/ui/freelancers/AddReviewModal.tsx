@@ -99,7 +99,7 @@ function AddReviewModal({ isOpen, setIsOpen, freelancerName,ratings,setRatings,s
                   onClick={() => handleRatingChange('qualityOfDeliveryRating', option.value)}
                 >
                   <span className='text-2xl sm:text-lg'>{option.emoji}</span>
-                  <span className='text-lg sm:text-xs'>{option.label}</span>
+                  <span className='text-md sm:text-xs'>{option.label}</span>
                 </button>
               ))}
             </div>
@@ -125,7 +125,7 @@ function AddReviewModal({ isOpen, setIsOpen, freelancerName,ratings,setRatings,s
                   onClick={() => handleRatingChange('communicationRating', option.value)}
                 >
                   <span className='text-2xl sm:text-lg'>{option.emoji}</span>
-                  <span className='text-lg sm:text-xs'>{option.label}</span>
+                  <span className='text-md  sm:text-xs'>{option.label}</span>
                 </button>
               ))}
             </div>
@@ -151,7 +151,7 @@ function AddReviewModal({ isOpen, setIsOpen, freelancerName,ratings,setRatings,s
                   onClick={() => handleRatingChange('qualityOfWorkRating', option.value)}
                 >
                   <span className='text-2xl sm:text-lg'>{option.emoji}</span>
-                  <span className='text-lg sm:text-xs'>{option.label}</span>
+                  <span className='text-md  sm:text-xs'>{option.label}</span>
                 </button>
               ))}
             </div>
@@ -208,7 +208,7 @@ function AddReviewModal({ isOpen, setIsOpen, freelancerName,ratings,setRatings,s
 
 
         {/* Navigation Buttons */}
-        <div className={`flex items-end gap-4 mt-4 ${step === 1 ? 'justify-end' : 'justify-between'}`}>
+        <div className={`flex items-end gap-4 ${step === 1 ? 'justify-end' : 'justify-between'}`}>
           {step > 1 && (
             <button
               onClick={handlePrevious}
