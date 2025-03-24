@@ -10,7 +10,7 @@ export default function LoginPage() {
   return (
     <>
       <AuthHeader userRole={undefined} />
-      <div className='mx-auto mt-4 flex h-full min-w-52 max-w-screen-sm flex-col justify-center space-y-6 pt-24 md:mt-0'>
+      <div className='mx-auto mt-4 flex h-full min-w-52 max-w-screen-sm flex-col justify-center space-y-6 pt-24 md:mt-0 pb-6'>
         <div className='rounded-3xl border p-6'>
           <div className='my-6 flex flex-col space-y-2 text-center'>
             <h1 className='text-2xl font-semibold tracking-tight'>
