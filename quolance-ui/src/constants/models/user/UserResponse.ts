@@ -29,6 +29,7 @@ export interface FreelancerProfileType {
   projectExperiences: ProjectExperience[];
   workExperiences: WorkExperience[];
   languagesSpoken: string[];
+  reviews:GetReviewType[];
 }
 
 interface ConnectedAccount {
@@ -77,3 +78,29 @@ export type EditModesType = {
   editLanguages: boolean;
   editCertifications: boolean;
 };
+
+export type GetReviewType = {
+  title: string;
+  communicationRating: number;
+  qualityOfWorkRating: number;
+  qualityOfDeliveryRating: number;
+  overallRating: number;
+  comment: string;
+  clientFirstName: string;
+  clientLastName: string;
+  clientUsername: string;
+  projectId: string;
+  reviewedFreelancerId: string;
+ };
+ 
+ 
+ export type PostReviewType = {
+  title: string;
+  communicationRating: number;
+  qualityOfWorkRating: number;
+  qualityOfDeliveryRating: number;
+  comment: string;
+  projectId: string;
+  reviewedFreelancerId: string;
+ }
+ 
