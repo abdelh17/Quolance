@@ -81,7 +81,7 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
   if (isHidden) return null;
 
   return (
-    <div className='mb-8 flex flex-wrap gap-8 rounded-lg bg-white p-4 py-4 shadow-md md:justify-between lg:flex-nowrap'>
+    <div className='mb-8 flex flex-wrap gap-8 rounded-lg bg-white p-4 py-4 border-n40 border md:justify-between lg:flex-nowrap'>
       <div className='flex w-full flex-col px-2 sm:flex-row sm:items-center sm:px-8'>
         <svg
           xmlns='http://www.w3.org/2000/svg'

@@ -8,7 +8,7 @@ export default function ClientDashboardActionButtons() {
   return (
     <>
       <div className='mb-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
-        <div className='bg-white shadow-md sm:rounded-lg '>
+        <div className='bg-white sm:rounded-lg border-n40 border'>
           <div className='px-4 py-5 sm:p-6'>
             <h3 data-test="create-project-title" className='text-base font-semibold text-gray-900'>
               Create your project
@@ -35,7 +35,7 @@ export default function ClientDashboardActionButtons() {
             </div>
           </div>
         </div>
-        <div className='bg-white shadow-md sm:rounded-lg'>
+        <div className='bg-white sm:rounded-lg border-n40 border'>
           <div className='px-4 py-5 sm:p-6'>
             <h3 className='text-base font-semibold text-gray-900'>
               Browse candidates

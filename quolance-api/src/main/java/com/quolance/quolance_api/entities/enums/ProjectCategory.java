@@ -11,6 +11,7 @@ public enum ProjectCategory {
     UI_UX_DESIGN,
     DATA_ENTRY,
     VIRTUAL_ASSISTANT,
-    E_COMMERCE
+    E_COMMERCE,
+    MOBILE_DEVELOPMENT,
 
 }

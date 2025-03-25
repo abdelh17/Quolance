@@ -7,36 +7,56 @@ interface PaginationProps {
 }
 
 function Pagination({ metadata, onPageChange }: PaginationProps) {
-  if (!metadata) return null;
+  if (!metadata || metadata.totalElements === 0) return null;
   const { pageNumber, totalPages, first, last } = metadata;
+
+  // Convert 0-based pageNumber to 1-based for display
+  const currentPage = pageNumber + 1;
 
   const getPageNumbers = () => {
     const delta = 2;
     const range: (number | string)[] = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 || // First page
-        i === totalPages || // Last page
-        (i >= pageNumber - delta && i <= pageNumber + delta)
-      ) {
-        range.push(i);
-      } else if (i === 2 || i === totalPages - 1) {
-        range.push('...');
-      }
+    
+    // Handle case with few pages
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    // Remove duplicate ellipsis
-    return range.filter(
-      (item, index, array) => item !== '...' || array[index - 1] !== '...'
-    );
+    // Always include first page
+    range.push(1);
+    
+    // Calculate start and end of the current window
+    const startPage = Math.max(2, currentPage - delta);
+    const endPage = Math.min(totalPages - 1, currentPage + delta);
+    
+    // Add ellipsis after first page if needed
+    if (startPage > 2) {
+      range.push('...');
+    }
+    
+    // Add pages in the current window
+    for (let i = startPage; i <= endPage; i++) {
+      range.push(i);
+    }
+    
+    // Add ellipsis before last page if needed
+    if (endPage < totalPages - 1) {
+      range.push('...');
+    }
+    
+    // Always include last page
+    if (totalPages > 1) {
+      range.push(totalPages);
+    }
+    
+    return range;
   };
 
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className='flex flex-col items-center gap-4'>
-      <ul className='flex items-center justify-center gap-2 font-medium text-white sm:gap-3'>
+    <div className="flex flex-col items-center gap-4">
+      <ul className="flex items-center justify-center gap-2 font-medium text-white sm:gap-3">
         {/* Left arrow */}
         <li
           className={`bg-n900 hover:bg-b300 flex cursor-pointer items-center justify-center rounded-full p-3 text-xl duration-500 ${
@@ -44,10 +64,10 @@ function Pagination({ metadata, onPageChange }: PaginationProps) {
           }`}
           onClick={() => !first && onPageChange(pageNumber - 1)}
           aria-disabled={first}
-          role='button'
-          aria-label='Previous page'
+          role="button"
+          aria-label="Previous page"
         >
-          <PiCaretLeft className='h-5 w-5' />
+          <PiCaretLeft className="h-5 w-5" />
         </li>
 
         {/* Page numbers */}
@@ -55,12 +75,14 @@ function Pagination({ metadata, onPageChange }: PaginationProps) {
           <li
             key={`${number}-${index}`}
             className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full 
-              ${number === pageNumber ? 'bg-b300' : 'bg-n900'}
+              ${number === currentPage ? 'bg-b300' : 'bg-n900'}
               ${number === '...' ? 'cursor-default' : 'hover:bg-b300'}
               duration-500`}
-            onClick={() => typeof number === 'number' && onPageChange(number)}
+            onClick={() => 
+              typeof number === 'number' && onPageChange(number - 1) // Convert 1-based UI to 0-based index
+            }
             role={typeof number === 'number' ? 'button' : 'presentation'}
-            aria-current={number === pageNumber ? 'page' : undefined}
+            aria-current={number === currentPage ? 'page' : undefined}
           >
             {number}
           </li>
@@ -73,10 +95,10 @@ function Pagination({ metadata, onPageChange }: PaginationProps) {
           }`}
           onClick={() => !last && onPageChange(pageNumber + 1)}
           aria-disabled={last}
-          role='button'
-          aria-label='Next page'
+          role="button"
+          aria-label="Next page"
         >
-          <PiCaretRight className='h-5 w-5' />
+          <PiCaretRight className="h-5 w-5" />
         </li>
       </ul>
 
@@ -89,18 +111,18 @@ function Pagination({ metadata, onPageChange }: PaginationProps) {
 export const PageInfoResults = ({ metadata }: { metadata: PageMetaData }) => {
   if (!metadata) return null;
   const { pageNumber, totalElements, pageSize } = metadata;
+  
+  const startItem = totalElements > 0 ? pageNumber * pageSize + 1 : 0;
+  const endItem = Math.min((pageNumber + 1) * pageSize, totalElements);
 
   return (
-    <p data-test="pagination" className='text-sm text-gray-700'>
+    <p data-test="pagination" className="text-sm text-gray-700">
       Showing{' '}
-      <span className='font-medium'>
-        {totalElements > 0 ? pageNumber * pageSize + 1 : 0}
-      </span>{' '}
-      to{' '}
-      <span className='font-medium'>
-        {Math.min((pageNumber + 1) * pageSize, totalElements)}
-      </span>{' '}
-      of <span className='font-medium'>{totalElements}</span> results
+      <span className="font-medium">{startItem}</span>
+      {' '}to{' '}
+      <span className="font-medium">{endItem}</span>
+      {' '}of{' '}
+      <span className="font-medium">{totalElements}</span> results
     </p>
   );
 };

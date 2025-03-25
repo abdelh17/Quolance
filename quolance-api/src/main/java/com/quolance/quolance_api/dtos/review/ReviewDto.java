@@ -43,6 +43,9 @@ public class ReviewDto {
     @JsonProperty("clientUsername")
     private String clientUsername;
 
+    @JsonProperty("projectId")
+    private UUID projectId;
+
     // Static method to convert from entity to DTO
     public static ReviewDto fromEntity(Review review) {
         return ReviewDto.builder()
@@ -55,6 +58,7 @@ public class ReviewDto {
                 .clientFirstName(review.getClientFirstName())
                 .clientLastName(review.getClientLastName())
                 .clientUsername(review.getClientUsername())
+                .projectId(review.getProject().getId())
                 .build();
     }
 }

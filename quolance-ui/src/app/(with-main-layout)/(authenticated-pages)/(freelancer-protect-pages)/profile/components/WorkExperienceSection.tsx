@@ -332,7 +332,7 @@ export const WorkExperienceCard = ({
 
   return (
     <div
-      className={`rounded-2xl border border-gray-200 p-8 transition-shadow hover:shadow-sm`}
+      className={`rounded-2xl border border-gray-200 p-8 transition-shadow hover:shadow-sm mb-4`}
     >
       {/* Work Experience Header */}
       <div className='flex items-start justify-between'>

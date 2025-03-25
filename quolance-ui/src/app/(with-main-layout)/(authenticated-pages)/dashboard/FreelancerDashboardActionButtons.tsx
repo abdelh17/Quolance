@@ -7,7 +7,7 @@ export default function FreelancerDashboardActionButtons() {
   return (
     <>
       <div className='mb-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
-        <div className='bg-white shadow-md sm:rounded-lg '>
+        <div className='border-n40 border bg-white sm:rounded-lg '>
           <div className='px-4 py-5 sm:p-6'>
             <h3 className='text-base font-semibold text-gray-900'>
               View available projects
@@ -25,7 +25,7 @@ export default function FreelancerDashboardActionButtons() {
                   variant='default'
                   animation='default'
                   size='sm'
-                  data-test="see-all-projects-btn"
+                  data-test='see-all-projects-btn'
                 >
                   See all projects
                 </Button>
@@ -33,7 +33,7 @@ export default function FreelancerDashboardActionButtons() {
             </div>
           </div>
         </div>
-        <div className='bg-white shadow-md sm:rounded-lg'>
+        <div className='border-n40 border bg-white sm:rounded-lg'>
           <div className='px-4 py-5 sm:p-6'>
             <h3 className='text-base font-semibold text-gray-900'>
               Build my profile
@@ -52,7 +52,7 @@ export default function FreelancerDashboardActionButtons() {
                   variant='default'
                   animation='default'
                   size='sm'
-                   data-test="build-profile-btn"
+                  data-test='build-profile-btn'
                 >
                   Build profile
                 </Button>

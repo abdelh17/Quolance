@@ -8,6 +8,7 @@ import {
 } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
 import { ProjectType } from '@/constants/types/project-types';
+import {PostReviewType} from '@/constants/models/user/UserResponse';
 
 /*--- Filters ---*/
 export interface CandidateFilterQuery extends PaginationParams {
@@ -106,6 +107,8 @@ export const useGetAllClientProjects = (
   });
 };
 
+/** Gets all the candidates in the website. Called for the repository of candidates. TO-DO should be renamed */
+
 export const useGetAllCandidates = (query: CandidateFilterQuery) => {
   return useQuery({
     queryKey: ['all-candidates', query],
@@ -113,3 +116,17 @@ export const useGetAllCandidates = (query: CandidateFilterQuery) => {
       httpClient.get(`/api/client/freelancers/all?${queryToString(query)}`),
   });
 };
+
+export const usePostReview = () => {
+  return useMutation({
+    mutationFn: (review: PostReviewType) =>
+      httpClient.post('/api/client/project/review', review),
+    onSuccess: () => {
+      showToast('Review submitted successfully', 'success');
+    },
+    onError: (error) => {
+      const ErrorResponse = error.response?.data as HttpErrorResponse;
+      showToast(`Error: ${ErrorResponse.message}`, 'error');
+    },
+  });
+ };

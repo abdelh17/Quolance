@@ -16,7 +16,7 @@ import { MapPin, Users } from 'lucide-react';
 import StarRating from '@/components/ui/StarRating';
 import { ProjectExperienceCard } from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/ProjectExperienceSection';
 import { WorkExperienceCard } from '@/app/(with-main-layout)/(authenticated-pages)/(freelancer-protect-pages)/profile/components/WorkExperienceSection';
-
+import ReviewCard from '../../(freelancer-protect-pages)/profile/components/ReviewCard';
 const tabButton = ['Experiences', 'Projects', 'Recommendations'];
 
 // Only allow 4 platforms to match ContactSection
@@ -67,10 +67,10 @@ export default function FreelancerPage() {
 
   return (
     <>
-      <section className='sbp-30 stp-30'>
+      <section className='sbp-30 stp-30 bg-stone-100' >
         <div className='container'>
           <div className='grid grid-cols-12 gap-6'>
-            <div className='border-n30 col-span-12 rounded-xl border px-6 py-14 lg:col-span-4'>
+            <div className='border-n40 border col-span-12 rounded-xl border px-6 py-14 lg:col-span-4 bg-white'>
               <div className='flex flex-col items-center justify-center'>
                 <div className='relative max-w-[180px] max-md:overflow-hidden'>
                   <Image
@@ -118,7 +118,7 @@ export default function FreelancerPage() {
 
               {/* Location Section */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>LOCATION</p>
+                <p className='text-sm font-medium'>Location</p>
                 <div className='flex items-center'>
                   <MapPin className='mr-2 text-blue-500' size={18} />
                   <p className='text-gray-700'>
@@ -130,7 +130,7 @@ export default function FreelancerPage() {
 
               {/* Experience Level */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>EXPERIENCE LEVEL</p>
+                <p className='text-sm font-medium'>Experience level</p>
                 <p className='bg-r50 text-r300 rounded-full px-3 py-[6px] text-[13px]'>
                   {freelancer.experienceLevel
                     ? formatEnumString(freelancer.experienceLevel)
@@ -140,7 +140,7 @@ export default function FreelancerPage() {
 
               {/* Availability */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>AVAILABILITY</p>
+                <p className='text-sm font-medium'>Availability</p>
                 <p className='bg-v50 rounded-full px-3 py-[6px] text-[13px]'>
                   {freelancer.availability
                     ? formatEnumString(freelancer.availability)
@@ -150,7 +150,7 @@ export default function FreelancerPage() {
 
               {/* Skills */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>SKILLS</p>
+                <p className='text-sm font-medium'>Skills</p>
                 <div className='flex flex-wrap gap-2'>
                   {freelancer.skills?.map((skill, idx) => (
                     <p
@@ -161,14 +161,14 @@ export default function FreelancerPage() {
                     </p>
                   ))}
                   {freelancer.skills?.length === 0 && (
-                    <p className='text-gray-700'>Not Specified</p>
+                    <p className='text-gray-700 text-sm'>Not Specified</p>
                   )}
                 </div>
               </div>
 
               {/* Languages */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>LANGUAGES</p>
+                <p className='text-sm font-medium'>Languages</p>
                 <div className='flex flex-wrap gap-2'>
                   {freelancer.languagesSpoken?.map((language, idx) => (
                     <p
@@ -179,14 +179,14 @@ export default function FreelancerPage() {
                     </p>
                   ))}
                   {freelancer.languagesSpoken?.length === 0 && (
-                    <p className='text-gray-700'>Not Specified</p>
+                    <p className='text-gray-700 text-sm'>Not Specified</p>
                   )}
                 </div>
               </div>
 
               {/* Social Media Links - Display only the 4 allowed platforms */}
               <div className='flex flex-col items-start justify-start gap-3 pt-8'>
-                <p className='text-sm font-medium'>LINKS</p>
+                <p className='text-sm font-medium'>Social links</p>
                 {hasSocialLinks ? (
                   <div className='flex flex-wrap gap-2'>
                     {/* Filter links to only show supported platforms */}
@@ -217,18 +217,18 @@ export default function FreelancerPage() {
                 ) : (
                   <div className='flex items-center'>
                     <Users className='mr-3 text-blue-500' />
-                    <span className='text-gray-700'>Not Specified</span>
+                    <span className='text-gray-700 text-sm'>Not Specified</span>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className='border-n30 col-span-12 rounded-xl border p-4 sm:p-8 lg:col-span-8'>
+            <div className='border-n40  col-span-12 rounded-xl border p-4 sm:p-8 lg:col-span-8 bg-white'>
               <h3 className='heading-3'>About me</h3>
               <p className='text-bg-n300 pt-3 font-medium'>{freelancer.bio}</p>
 
               <div className='flex flex-col gap-4 pt-10'>
-                <ul className='border-n30 text-n100 flex items-center justify-start gap-5 border-b pb-5 max-md:flex-wrap'>
+                <ul className='border-n40 border  text-n100 flex items-center justify-start gap-5 border-b pb-5 max-md:flex-wrap'>
                   {tabButton.map((item, idx) => (
                     <li
                       onClick={() => setActiveTab(item)}
@@ -276,29 +276,27 @@ export default function FreelancerPage() {
                   {/* Recommendations */}
                   {activeTab === 'Recommendations' && (
                     <>
-                      <div className='border-n30 rounded-2xl border p-8'>
-                        <div className='flex items-center justify-start gap-3 pb-2'>
-                          <div className=''>
-                            <div className='flex items-center justify-start gap-3'>
-                              <h5 className='heading-5'>John Doe</h5>
-                            </div>
-                            <p className='text-n500 pt-2'>
-                              Project for frontend development
-                            </p>
-                          </div>
-                        </div>
-                        <p className='text-n300 pt-3 font-medium'>
-                          It was a pleasure working with Alice. She was super
-                          clear and detailed with the project requirements. I
-                          appreciate her wonderful communication, collaboration,
-                          and flexibility. Thanks, Alice!
-                        </p>
+                     {freelancer.reviews && freelancer.reviews.length > 0 ? (
+                     freelancer.reviews.map((review, idx) => (
+                       <ReviewCard
+                         key={idx}
+                         firstName={review.clientFirstName}
+                         lastName={review.clientLastName}
+                         username={review.clientUsername}
+                         title={review.title}
+                         comment={review.comment}
+                         overallRating={review.overallRating}
+                         communicationRating={review.communicationRating}
+                         qualityOfDeliveryRating={review.qualityOfDeliveryRating}
+                         qualityOfWorkRating={review.qualityOfWorkRating}
+                       />
+                     ))
+                   ) : (
+                     <div className='rounded-xl border p-6 text-center'>
+                       <p className='text-gray-500'>No reviews to display.</p>
+                     </div>
+                   )}
 
-                        {/* 5-Star Rating */}
-                        <div className='flex items-center justify-start gap-2 pt-5'>
-                          <StarRating rating={4.5} />
-                        </div>
-                      </div>
                     </>
                   )}
                 </div>
