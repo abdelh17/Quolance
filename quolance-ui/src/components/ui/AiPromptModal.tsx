@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import LargeModal from "./LargeModal";
 import { useGenerateAbout } from "@/api/textGeneration-api";
 import Typewriter from "typewriter-effect";
+import { TailSpin } from "react-loading-icons";
 
 interface AiPromptModalProps {
   isOpen: boolean;
@@ -88,10 +89,15 @@ export default function AiPromptModal({
       footerExtra={footerButton}
     >
       <div className="p-4 flex flex-col gap-4">
-        {/* Loading Spinner */}
+        {/* Loading State: Show a larger container so modal size is stable */}
         {isLoading && !aiResponse && (
-          <div className="flex justify-center items-center py-4">
-            <div className="w-6 h-6 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mr-2"></div>
+          <div className="flex flex-col items-center justify-center py-8 min-h-[250px] gap-4">
+            <TailSpin 
+              stroke="#3b82f6"
+              speed={0.75}
+              width="60"
+              height="60"
+            />
             <p className="text-blue-600">Generating AI response...</p>
           </div>
         )}
@@ -102,18 +108,15 @@ export default function AiPromptModal({
             <p className="font-semibold mb-2">AI Response:</p>
             <Typewriter
               onInit={(typewriter) => {
-                // Replace newlines with <br/> so line breaks are preserved
+                // Replace newlines with <br/> for multi-line
                 const typedString = aiResponse.replace(/\n/g, "<br/>");
-                typewriter
-                  .typeString(typedString)
-                  .start();
+                typewriter.typeString(typedString).start();
               }}
               options={{
                 cursor: "|",
                 delay: 10, // typing speed (ms per character)
                 loop: false,
-                // If line breaks still don't appear, try enabling HTML parsing:
-                // html: true,
+                // html: true, // Uncomment if needed for line breaks
               }}
             />
           </div>
