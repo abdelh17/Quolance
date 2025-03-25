@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import LargeModal from "./LargeModal";
 import { useGenerateAbout } from "@/api/textGeneration-api";
+import Typewriter from "typewriter-effect";
 
 interface AiPromptModalProps {
   isOpen: boolean;
@@ -16,11 +17,12 @@ export default function AiPromptModal({
   const [prompt, setPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState<string | null>(null);
 
-  // We no longer rely on 'data' from React Query; we store the response in local state.
   const { mutate: generateAbout, isLoading } = useGenerateAbout();
 
-  // Generate AI text, storing the result in local state
+  // Generate AI text
   const handleGenerate = () => {
+    setAiResponse(null);
+
     generateAbout(prompt, {
       onSuccess: (response) => {
         setAiResponse(response);
@@ -28,12 +30,12 @@ export default function AiPromptModal({
     });
   };
 
-  // Revert back to prompt input
+  // Retry: revert to prompt input
   const handleRetry = () => {
     setAiResponse(null);
   };
 
-  // Apply the AI-generated text to the parent and reset the modal state
+  // Apply the AI text to the parent and reset
   const handleApply = () => {
     if (aiResponse) {
       onApply(aiResponse);
@@ -43,7 +45,7 @@ export default function AiPromptModal({
     setPrompt("");
   };
 
-  // Decide which footer button to display: Generate, Retry, or a loading state
+  // Decide which button to show in the footer (Generate, Retry, or loading)
   let footerButton;
   if (isLoading) {
     footerButton = (
@@ -65,7 +67,6 @@ export default function AiPromptModal({
       </button>
     );
   } else {
-    // No response yet, not loading -> show Generate
     footerButton = (
       <button
         onClick={handleGenerate}
@@ -87,13 +88,7 @@ export default function AiPromptModal({
       footerExtra={footerButton}
     >
       <div className="p-4 flex flex-col gap-4">
-        {/* 
-          1) If we're loading, show a spinner or loading message
-          2) If we have an AI response, show it
-          3) Otherwise, show the prompt input 
-        */}
-
-        {/* Loading State */}
+        {/* Loading Spinner */}
         {isLoading && !aiResponse && (
           <div className="flex justify-center items-center py-4">
             <div className="w-6 h-6 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -101,15 +96,30 @@ export default function AiPromptModal({
           </div>
         )}
 
-        {/* AI Response */}
+        {/* Typewriter Effect: if we have a response */}
         {aiResponse && (
-          <div className="border border-gray-300 rounded bg-gray-50 p-4 relative">
+          <div className="border border-gray-300 rounded bg-gray-50 p-4">
             <p className="font-semibold mb-2">AI Response:</p>
-            <p className="whitespace-pre-wrap">{aiResponse}</p>
+            <Typewriter
+              onInit={(typewriter) => {
+                // Replace newlines with <br/> so line breaks are preserved
+                const typedString = aiResponse.replace(/\n/g, "<br/>");
+                typewriter
+                  .typeString(typedString)
+                  .start();
+              }}
+              options={{
+                cursor: "|",
+                delay: 10, // typing speed (ms per character)
+                loop: false,
+                // If line breaks still don't appear, try enabling HTML parsing:
+                // html: true,
+              }}
+            />
           </div>
         )}
 
-        {/* Prompt Input (only if not loading and no AI response yet) */}
+        {/* Prompt Input (only if not loading and no AI response) */}
         {!aiResponse && !isLoading && (
           <div>
             <label
