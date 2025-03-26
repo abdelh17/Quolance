@@ -4,6 +4,7 @@ import { EditModesType, FreelancerProfileType } from "@/constants/models/user/Us
 import EditButton from "./EditButton";
 import SaveButton from "./SaveButton";
 import AiPromptModal from "@/components/ui/AiPromptModal";
+import { useGenerateAbout } from "@/api/textGeneration-api";
 
 interface AboutSectionProps {
   profile: {
@@ -28,6 +29,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({
 }) => {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const maxBioLength = 2000;
+
+  // Use your chosen mutation hook (e.g., useGenerateAbout) here:
+  const generateAboutMutation = useGenerateAbout();
 
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
@@ -107,6 +111,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({
         isOpen={isAiModalOpen}
         setIsOpen={setIsAiModalOpen}
         onApply={handleApplyAiText}
+        generateMutation={generateAboutMutation}
+        title="Generate About Me"
+        confirmText="Apply"
       />
     </section>
   );

@@ -1,4 +1,5 @@
 'use client';
+
 import { useAuthGuard } from '@/api/auth-api';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -13,6 +14,9 @@ import Modal from '@/components/ui/Modal';
 import { IoMdLock } from 'react-icons/io';
 import { ProjectStatus } from '@/constants/types/project-types';
 import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStatusBadge';
+import AiPromptModal from '@/components/ui/AiPromptModal';
+import { Sparkles } from 'lucide-react';
+import { useGenerateAbout } from '@/api/textGeneration-api';
 
 type ApplicationFormProps = {
   projectId: string;
@@ -27,26 +31,43 @@ export default function FreelancerApplicationForm({
   projectId,
   projectStatus,
 }: ApplicationFormProps) {
-  const { register, handleSubmit, watch } = useForm<ApplicationFormFields>();
+  const { register, handleSubmit, watch, setValue } = useForm<ApplicationFormFields>();
   const { user } = useAuthGuard({ middleware: 'auth' });
+
+  // Submitting and canceling the application
   const { mutate: submitApplication } = useSubmitApplication(projectId);
   const { mutate: cancelApplication } = useCancelApplication(projectId);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // Query existing application
   const { data: application } = useGetProjectApplication(projectId);
 
+  // AI Modal State
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  // Deletion Modal State
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Reuse the "about" mutation for now, or replace with your own AI endpoint
+  const generateMutation = useGenerateAbout();
+
+  // Submit form data
   const onSubmit: SubmitHandler<ApplicationFormFields> = async (formData) => {
     if (!user) return;
     submitApplication(formData.motivationalLetter);
   };
 
+  // Word count logic
+  const wordCount = watch('motivationalLetter')?.split(/\s+/).length || 0;
+  const maxWords = 500;
+
+  // Callback when user clicks "Apply" in AiPromptModal
+  const handleApplyAiText = (aiText: string) => {
+    setValue('motivationalLetter', aiText);
+  };
+
+  // If project is closed and no application
   if (projectStatus === ProjectStatus.CLOSED && !application) {
     return <ProjectClosedCannotApply />;
   }
-
-  // Calculate word count
-  const wordCount = watch('motivationalLetter')?.split(/\s+/).length || 0;
-  const maxWords = 500;
 
   return (
     <section className='py-8'>
@@ -54,6 +75,8 @@ export default function FreelancerApplicationForm({
         <h2 data-test="application-title" className='heading-2 pb-2'>
           {application ? 'Your Application' : 'Submit Application'}
         </h2>
+
+        {/* No existing application -> show submission form */}
         {!application && (
           <>
             <p data-test="application-desc" className='text-n300 pb-6 font-medium'>
@@ -69,14 +92,29 @@ export default function FreelancerApplicationForm({
                 >
                   Motivational Letter
                 </label>
-                <textarea
-                  id='motivationalLetter'
-                  {...register('motivationalLetter')}
-                  rows={12}
-                  data-test="application-input"
-                  className='bg-n10 focus:bg-n20 focus:ring-n100 w-full resize-none rounded-lg px-4 py-3 text-base outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:ring-2'
-                  placeholder="Introduce yourself and explain why you're a great fit for this project..."
-                />
+
+                {/* Relative container for floating AI button */}
+                <div className='relative'>
+                  <textarea
+                    id='motivationalLetter'
+                    {...register('motivationalLetter')}
+                    rows={12}
+                    data-test="application-input"
+                    className='bg-n10 focus:bg-n20 focus:ring-n100 w-full resize-none rounded-lg px-4 py-3 text-base outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:ring-2'
+                    placeholder="Introduce yourself and explain why you're a great fit for this project..."
+                  />
+                  {/* Floating AI Assist Button */}
+                  <button
+                    type='button'
+                    onClick={() => setIsAiModalOpen(true)}
+                    className='absolute top-2 right-2 flex items-center justify-center bg-indigo-600 text-white p-2 rounded-full shadow-md hover:bg-indigo-700 transform hover:scale-110 transition-all'
+                    title='Generate with AI'
+                  >
+                    <Sparkles className='w-5 h-5' />
+                  </button>
+                </div>
+
+                {/* Word count and advice */}
                 <div className='mt-2 flex justify-between text-sm'>
                   <p data-test="application-advise" className='text-n300'>
                     Be sure to include your relevant experience, skills, and why
@@ -84,16 +122,14 @@ export default function FreelancerApplicationForm({
                   </p>
                   <p
                     data-test="application-word-count"
-                    className={`${
-                      wordCount > maxWords ? 'text-red-500' : 'text-n300'
-                    }`}
+                    className={`${wordCount > maxWords ? 'text-red-500' : 'text-n300'}`}
                   >
                     {wordCount}/{maxWords} words
                   </p>
                 </div>
               </div>
 
-              {/* Submit Button Section */}
+              {/* Submit Button */}
               <div className='flex items-center justify-end gap-3'>
                 <Button
                   data-test="application-submit-btn"
@@ -112,6 +148,8 @@ export default function FreelancerApplicationForm({
             </form>
           </>
         )}
+
+        {/* If an application already exists */}
         {application && (
           <div className='space-y-6'>
             {projectStatus === ProjectStatus.CLOSED && (
@@ -124,7 +162,7 @@ export default function FreelancerApplicationForm({
               </div>
             )}
             <div className='border-n30 rounded-lg border bg-white'>
-              {/* Status Badge Section */}
+              {/* Status Badge */}
               <div data-test="applied-status" className='border-n30 border-b px-6 py-4'>
                 <ApplicationStatusBadge status={application.status} />
               </div>
@@ -165,9 +203,7 @@ export default function FreelancerApplicationForm({
                     bgColor='red-600'
                     icon={<PiX className='text-xl' />}
                     iconPosition='left'
-                    className={`${
-                      projectStatus === ProjectStatus.CLOSED && 'invisible'
-                    }`}
+                    className={`${projectStatus === ProjectStatus.CLOSED && 'invisible'}`}
                   >
                     Withdraw Application
                   </Button>
@@ -177,6 +213,8 @@ export default function FreelancerApplicationForm({
           </div>
         )}
       </div>
+
+      {/* Withdraw Confirmation Modal */}
       <Modal
         isOpen={isDeleteModalOpen}
         setIsOpen={setIsDeleteModalOpen}
@@ -197,10 +235,25 @@ export default function FreelancerApplicationForm({
         </p>
         <ul className='text-n300 mt-4 list-disc pl-6'>
           <li data-test="modal-widthdraw-statement1">Cannot be undone</li>
-          <li data-test="modal-widthdraw-statement2">Will remove your application from consideration</li>
-          <li data-test="modal-widthdraw-statement3">Will allow you to apply again if you change your mind</li>
+          <li data-test="modal-widthdraw-statement2">
+            Will remove your application from consideration
+          </li>
+          <li data-test="modal-widthdraw-statement3">
+            Will allow you to apply again if you change your mind
+          </li>
         </ul>
       </Modal>
+
+      {/* AI Prompt Modal for generating motivational letter */}
+      <AiPromptModal
+        isOpen={isAiModalOpen}
+        setIsOpen={setIsAiModalOpen}
+        onApply={handleApplyAiText}
+        // Pass the same "about" mutation for now, or replace with another
+        generateMutation={generateMutation}
+        title="Generate Motivational Letter"
+        confirmText="Apply"
+      />
     </section>
   );
 }

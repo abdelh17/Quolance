@@ -1,29 +1,38 @@
 import React, { useState } from "react";
 import LargeModal from "./LargeModal";
-import { useGenerateAbout } from "@/api/textGeneration-api";
 import Typewriter from "typewriter-effect";
 import { TailSpin } from "react-loading-icons";
 
-interface AiPromptModalProps {
+export interface AiPromptModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onApply: (value: string) => void;
+  generateMutation: {
+    mutate: (prompt: string, options?: { onSuccess?: (response: string) => void }) => void;
+    isLoading: boolean;
+  };
+  title?: string;
+  confirmText?: string;
 }
 
 export default function AiPromptModal({
   isOpen,
   setIsOpen,
   onApply,
+  generateMutation,
+  title = "Generate with AI",
+  confirmText = "Apply",
 }: AiPromptModalProps) {
   const [prompt, setPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState<string | null>(null);
 
-  const { mutate: generateAbout, isLoading } = useGenerateAbout();
+  // Destructure from the passed-in mutation prop
+  const { mutate, isLoading } = generateMutation;
 
   // Generate AI text
   const handleGenerate = () => {
     setAiResponse(null);
-    generateAbout(prompt, {
+    mutate(prompt, {
       onSuccess: (response) => {
         setAiResponse(response);
       },
@@ -82,18 +91,17 @@ export default function AiPromptModal({
     <LargeModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title="Generate About Me with AI"
+      title={title}
       onConfirm={handleApply}
-      confirmText="Apply"
+      confirmText={confirmText}
       footerExtra={footerButton}
-      // Disable confirm if we haven't generated an AI response yet
       disableConfirm={!aiResponse}
     >
       <div className="p-4 flex flex-col gap-4">
-        {/* Loading State: Show a larger container so modal size is stable */}
+        {/* Loading State */}
         {isLoading && !aiResponse && (
           <div className="flex flex-col items-center justify-center py-8 min-h-[250px] gap-4">
-            <TailSpin 
+            <TailSpin
               stroke="#3b82f6"
               speed={0.75}
               width="60"
@@ -116,7 +124,7 @@ export default function AiPromptModal({
                 cursor: "|",
                 delay: 10,
                 loop: false,
-                // html: true, // Uncomment if needed for line breaks
+                // html: true, // uncomment if needed for line breaks
               }}
             />
           </div>
