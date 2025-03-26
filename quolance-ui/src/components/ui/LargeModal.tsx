@@ -13,6 +13,8 @@ interface LargeModalProps {
   confirmButtonColor?: string;
   /** Extra content to be rendered in the footer, before the Cancel/Confirm buttons */
   footerExtra?: ReactNode;
+  /** Disable the confirm (Apply) button */
+  disableConfirm?: boolean;
 }
 
 export default function LargeModal({
@@ -26,7 +28,15 @@ export default function LargeModal({
   confirmText = 'Confirm',
   confirmButtonColor = 'bg-blue-600',
   footerExtra,
+  disableConfirm = false,
 }: LargeModalProps) {
+  // We’ll define separate classes for the confirm button, depending on whether it's disabled or not.
+  const confirmButtonClass = disableConfirm
+    ? // Disabled styling: no hover effects, gray color, and "cursor-not-allowed"
+      "relative flex items-center justify-center overflow-hidden rounded-full bg-gray-300 px-6 py-2 font-medium text-white opacity-70 cursor-not-allowed"
+    : // Enabled styling: normal color, hover transitions
+      `hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full ${confirmButtonColor} px-6 py-2 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]`;
+
   return (
     <>
       <section
@@ -72,8 +82,9 @@ export default function LargeModal({
             {/* Confirm (Apply) */}
             <button
               data-test="confirm-btn"
-              onClick={onConfirm}
-              className={`hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full ${confirmButtonColor} px-6 py-2 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]`}
+              onClick={!disableConfirm ? onConfirm : undefined}
+              disabled={disableConfirm}
+              className={confirmButtonClass}
             >
               <span className="relative z-10">{confirmText}</span>
             </button>

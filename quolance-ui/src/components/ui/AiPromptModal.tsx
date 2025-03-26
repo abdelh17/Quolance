@@ -7,7 +7,7 @@ import { TailSpin } from "react-loading-icons";
 interface AiPromptModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onApply: (value: string) => void; // Callback to apply AI-generated text
+  onApply: (value: string) => void;
 }
 
 export default function AiPromptModal({
@@ -23,7 +23,6 @@ export default function AiPromptModal({
   // Generate AI text
   const handleGenerate = () => {
     setAiResponse(null);
-
     generateAbout(prompt, {
       onSuccess: (response) => {
         setAiResponse(response);
@@ -62,7 +61,7 @@ export default function AiPromptModal({
       <button
         onClick={handleRetry}
         className="hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full bg-blue-600 px-6 py-2 font-medium text-white duration-700
-          after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-blue-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
+          after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
       >
         <span className="relative z-10">Retry</span>
       </button>
@@ -72,7 +71,7 @@ export default function AiPromptModal({
       <button
         onClick={handleGenerate}
         className="hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full bg-blue-600 px-6 py-2 font-medium text-white duration-700
-          after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-blue-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
+          after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
       >
         <span className="relative z-10">Generate</span>
       </button>
@@ -87,6 +86,8 @@ export default function AiPromptModal({
       onConfirm={handleApply}
       confirmText="Apply"
       footerExtra={footerButton}
+      // Disable confirm if we haven't generated an AI response yet
+      disableConfirm={!aiResponse}
     >
       <div className="p-4 flex flex-col gap-4">
         {/* Loading State: Show a larger container so modal size is stable */}
@@ -108,13 +109,12 @@ export default function AiPromptModal({
             <p className="font-semibold mb-2">AI Response:</p>
             <Typewriter
               onInit={(typewriter) => {
-                // Replace newlines with <br/> for multi-line
                 const typedString = aiResponse.replace(/\n/g, "<br/>");
                 typewriter.typeString(typedString).start();
               }}
               options={{
                 cursor: "|",
-                delay: 10, // typing speed (ms per character)
+                delay: 10,
                 loop: false,
                 // html: true, // Uncomment if needed for line breaks
               }}

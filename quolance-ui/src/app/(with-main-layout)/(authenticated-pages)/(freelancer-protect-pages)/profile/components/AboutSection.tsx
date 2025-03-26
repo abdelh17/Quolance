@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Book } from "lucide-react";
+import { Book, Sparkles } from "lucide-react";
 import { EditModesType, FreelancerProfileType } from "@/constants/models/user/UserResponse";
 import EditButton from "./EditButton";
 import SaveButton from "./SaveButton";
@@ -47,34 +47,45 @@ const AboutSection: React.FC<AboutSectionProps> = ({
       <div className="flex justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-800 self-center">About</h2>
         {!editModes.editAbout && (
-          <EditButton editModeKey="editAbout" updateEditModes={updateEditModes} checkEditModes={checkEditModes} />
+          <EditButton
+            editModeKey="editAbout"
+            updateEditModes={updateEditModes}
+            checkEditModes={checkEditModes}
+          />
         )}
       </div>
 
       {editModes.editAbout ? (
         <div>
-          <textarea
-            value={profile.bio}
-            placeholder="Enter Biography"
-            onChange={handleBioChange}
-            className={`text-sm placeholder:text-sm ${inputClassName}`}
-            rows={4}
-          />
+          {/* Wrap the textarea in a relative container so the button can float */}
+          <div className="relative">
+            <textarea
+              value={profile.bio}
+              placeholder="Enter Biography"
+              onChange={handleBioChange}
+              className={`text-sm placeholder:text-sm w-full ${inputClassName}`}
+              rows={4}
+            />
+            {/* Floating AI button (top-right corner) */}
+            <button
+              type="button"
+              onClick={() => setIsAiModalOpen(true)}
+              className="absolute top-2 right-2 flex items-center justify-center bg-indigo-600 text-white p-2 rounded-full shadow-md hover:bg-indigo-700 transform hover:scale-110 transition-all"
+              title="Generate with AI"
+            >
+              <Sparkles className="w-5 h-5" />
+            </button>
+          </div>
+
           <div className="flex justify-between mt-2">
             <div className="text-sm text-gray-500">
-              <span className={profile.bio.length > maxBioLength * 0.9 ? "text-amber-600" : ""}>
+              <span
+                className={profile.bio.length > maxBioLength * 0.9 ? "text-amber-600" : ""}
+              >
                 {profile.bio.length}
               </span>
               <span>/{maxBioLength} characters</span>
             </div>
-            {/* Generate with AI button */}
-            <button
-              type="button"
-              onClick={() => setIsAiModalOpen(true)}
-              className="bg-green-600 text-white px-3 py-1 rounded mr-2 hover:bg-green-700"
-            >
-              Generate with AI
-            </button>
             <SaveButton editModeKey="editAbout" handleSave={handleSave} />
           </div>
         </div>
