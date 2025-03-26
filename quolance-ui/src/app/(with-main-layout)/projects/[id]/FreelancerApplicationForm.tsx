@@ -16,7 +16,7 @@ import { ProjectStatus } from '@/constants/types/project-types';
 import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStatusBadge';
 import AiPromptModal from '@/components/ui/AiPromptModal';
 import { Sparkles } from 'lucide-react';
-import { useGenerateAbout } from '@/api/textGeneration-api';
+import { useGenerateApplicationLetter } from '@/api/textGeneration-api';
 
 type ApplicationFormProps = {
   projectId: string;
@@ -46,8 +46,16 @@ export default function FreelancerApplicationForm({
   // Deletion Modal State
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Reuse the "about" mutation for now, or replace with your own AI endpoint
-  const generateMutation = useGenerateAbout();
+  // Our actual mutation hook
+  const applicationLetterMutation = useGenerateApplicationLetter();
+
+  // Wrap it so AiPromptModal only passes a single "prompt" string,
+  // but behind the scenes we also include projectId.
+  const mergedMutation = {
+    mutate: (prompt: string, options?: { onSuccess?: (response: string) => void }) =>
+      applicationLetterMutation.mutate({ projectId, prompt }, options),
+    isLoading: applicationLetterMutation.isLoading,
+  };
 
   // Submit form data
   const onSubmit: SubmitHandler<ApplicationFormFields> = async (formData) => {
@@ -249,8 +257,8 @@ export default function FreelancerApplicationForm({
         isOpen={isAiModalOpen}
         setIsOpen={setIsAiModalOpen}
         onApply={handleApplyAiText}
-        // Pass the same "about" mutation for now, or replace with another
-        generateMutation={generateMutation}
+        // Pass the "mergedMutation" that merges projectId + prompt
+        generateMutation={mergedMutation}
         title="Generate Motivational Letter"
         confirmText="Apply"
       />

@@ -9,6 +9,35 @@ type MutationWithIsLoading<TData, TError, TVariables> =
     isLoading: boolean;
   };
 
+interface GenerateApplicationVars {
+  projectId: string;
+  prompt: string;
+}
+
+export function useGenerateApplicationLetter() {
+  const mutation = useMutation<string, HttpErrorResponse, GenerateApplicationVars>({
+    mutationFn: async ({ projectId, prompt }) => {
+      const response = await httpClient.post(
+        '/api/text-generation/application',
+        { projectId, prompt },
+        { responseType: 'text' }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      showToast('AI generation (Application) succeeded', 'success');
+    },
+    onError: (error) => {
+      const errorMessage = error?.message ?? 'Unknown error';
+      showToast(`Error generating application text: ${errorMessage}`, 'error');
+    },
+  });
+
+  return {
+    ...mutation,
+    isLoading: mutation.status === 'pending',
+  };
+}
 /**
  * Hook to generate "About" text using the AI text-generation endpoint.
  * Expects the endpoint to return plain text as the response body.
