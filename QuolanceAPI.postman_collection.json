@@ -1874,7 +1874,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/chat/messages/:userId?page=0&size=20",
+							"raw": "http://localhost:8081/api/chat/messages/:userId",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1885,16 +1885,6 @@
 								"chat",
 								"messages",
 								":userId"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "20"
-								}
 							],
 							"variable": [
 								{
