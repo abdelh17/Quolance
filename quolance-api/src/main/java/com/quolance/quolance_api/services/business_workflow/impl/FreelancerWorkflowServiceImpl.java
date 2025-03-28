@@ -213,7 +213,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     public FreelancerProfileDto getFreelancerProfile(String username) {
         Optional<User> freelancer = userService.findByUsername(username);
 
-        if (freelancer.isPresent()) {
+        if (freelancer.isPresent() && freelancer.get().getProfile() != null) {
             // iterate through all reviews and convert to dto
             List<Review> reviews = reviewService.getAllReviewsByFreelancerId(freelancer.get().getId());
             List<ReviewDto> reviewDtos = reviews.stream()
@@ -226,7 +226,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
         } else {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_NOT_FOUND)
-                    .message("Freelancer not found")
+                    .message("Freelancer or profile not found")
                     .build();
         }
     }
