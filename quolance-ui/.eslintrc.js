@@ -76,6 +76,8 @@ module.exports = {
       },
     ],
     //#endregion  //*======== Import Sort ===========
+    "simple-import-sort/imports": "off",
+    "simple-import-sort/exports": "off",
   },
   globals: {
     React: true,

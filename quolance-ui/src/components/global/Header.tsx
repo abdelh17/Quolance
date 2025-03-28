@@ -10,6 +10,7 @@ import { authenticatedHeaderMenu } from '@/constants/data';
 import useScroll from '@/util/hooks/useScroll';
 
 import MobileMenu from './MobileMenu';
+import NotificationPanel from '../ui/notifications/NotificationPanel';
 
 function Header() {
   const { user, logout } = useAuthGuard({ middleware: 'auth' });
@@ -144,6 +145,9 @@ function Header() {
               ) : (
                 <div className='flex items-center gap-6'>
                   <ul className='xxl:gap-6 flex items-center justify-start gap-2 font-medium'>
+                  <li className='hover:text-b500 duration-500'>
+                     <NotificationPanel />
+                    </li>
                     <li className='hover:text-b500 duration-500'>
                       <Link
                         href={
