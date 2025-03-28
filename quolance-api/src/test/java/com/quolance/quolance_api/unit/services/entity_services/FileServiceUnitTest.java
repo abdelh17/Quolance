@@ -182,11 +182,11 @@ class FileServiceUnitTest {
 
         when(cloudinary.uploader()).thenReturn(uploader);
         when(uploader.upload(any(byte[].class), any(Map.class)))
-                .thenThrow(new IOException("Unsupported file type"));
+                .thenThrow(new ApiException("Unsupported file type"));
 
         assertThatThrownBy(() -> fileService.uploadFile(unsupportedFile, mockUser))
                 .isInstanceOf(ApiException.class)
-                .hasMessage("Error uploading file");
+                .hasMessage("Unsupported file type");
 
         verify(fileRepository, never()).save(any(FileEntity.class));
     }

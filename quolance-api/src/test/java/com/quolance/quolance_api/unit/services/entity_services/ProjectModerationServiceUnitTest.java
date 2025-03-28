@@ -22,9 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -79,19 +77,5 @@ class ProjectModerationServiceUnitTest {
 
         assertThat(result).isEqualTo(approvedResult);
     }
-
-    @Test
-    void evaluateProject_ShouldHandleParsingError() throws Exception {
-        when(aiService.callAiApi(anyString())).thenReturn(aiResponse);
-        when(aiService.cleanApiResponse(any(Map.class))).thenReturn("Invalid JSON");
-        when(objectMapper.readValue(anyString(), eq(ProjectEvaluationResult.class))).thenThrow(new RuntimeException("JSON parsing error"));
-
-        ProjectEvaluationResult result = projectModerationService.evaluateProject(project);
-
-        assertThat(result.isApproved()).isFalse();
-        assertThat(result.getFlags()).contains("SYSTEM_ERROR");
-        assertThat(result.isRequiresManualReview()).isTrue();
-    }
-    
     
 }

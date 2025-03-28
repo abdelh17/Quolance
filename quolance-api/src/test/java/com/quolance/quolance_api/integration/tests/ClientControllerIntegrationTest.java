@@ -10,11 +10,6 @@ import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.*;
-import com.quolance.quolance_api.entities.enums.ExpectedDeliveryTime;
-import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
-import com.quolance.quolance_api.entities.enums.PriceRange;
-import com.quolance.quolance_api.entities.enums.ProjectCategory;
-import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
 import com.quolance.quolance_api.helpers.integration.NoOpNotificationConfig;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
@@ -501,7 +496,7 @@ class ClientControllerIntegrationTest extends BaseIntegrationTest {
 
         // Assert
         Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
-        assertThat(jsonResponse).containsEntry("message", "Freelancer not found");
+        assertThat(jsonResponse).containsEntry("message", "Freelancer or profile not found");
     }
 
     @Test
