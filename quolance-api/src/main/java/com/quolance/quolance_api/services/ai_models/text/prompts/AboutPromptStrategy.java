@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.text.prompts;
+package com.quolance.quolance_api.services.ai_models.text.prompts;
 
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.User;

@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.text;
+package com.quolance.quolance_api.services.ai_models.text;
 
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.PromptType;

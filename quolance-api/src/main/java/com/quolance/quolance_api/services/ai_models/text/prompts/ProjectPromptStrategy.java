@@ -1,4 +1,4 @@
-package com.quolance.quolance_api.services.text.prompts;
+package com.quolance.quolance_api.services.ai_models.text.prompts;
 
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.PromptType;
@@ -18,7 +18,6 @@ public class ProjectPromptStrategy implements PromptStrategy {
 
     @Override
     public String generatePrompt(User user, String userPrompt) {
-        // For projects, you might simply combine the base prompt with the user input.
         return basePrompt + userPrompt;
     }
 }
