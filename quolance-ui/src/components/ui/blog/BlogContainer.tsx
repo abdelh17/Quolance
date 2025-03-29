@@ -140,9 +140,9 @@ const BlogContainer: React.FC = () => {
                                     <Loading />
                                 ) : user ? (
                                     <CreatePostForm
-                                        onSubmit={({ userId, ...postData }) => handleFormSubmit(postData)}
+                                        onSubmit={(postData) => handleFormSubmit({ ...postData, userId: user.id })}
                                         onClose={() => setIsModalOpen(false)}
-                                    />
+                                        />
                                 ) : (
                                     <div className="flex justify-center items-center h-full">
                                         <div className="p-4 text-center">

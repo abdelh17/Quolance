@@ -1,11 +1,13 @@
-import React from 'react';
-import { Book } from 'lucide-react';
+import React, { useState } from 'react';
+import { Book, Sparkles } from 'lucide-react';
 import {
   EditModesType,
   FreelancerProfileType,
 } from '@/models/user/UserResponse';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
+import AiPromptModal from '@/components/ui/AiPromptModal';
+import { useGenerateAbout } from '@/api/textGeneration-api';
 
 interface AboutSectionProps {
   profile: {
@@ -31,7 +33,11 @@ const AboutSection: React.FC<AboutSectionProps> = ({
   handleSave,
   checkEditModes,
 }) => {
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const maxBioLength = 2000;
+
+  // Use your chosen mutation hook (e.g., useGenerateAbout) here:
+  const generateAboutMutation = useGenerateAbout();
 
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
@@ -40,30 +46,49 @@ const AboutSection: React.FC<AboutSectionProps> = ({
     }
   };
 
+  // Callback when user clicks "Apply" in the AI modal
+  const handleApplyAiText = (aiText: string) => {
+    // Set the about/bio to the AI-generated text
+    handleInputChange('bio', aiText);
+  };
+
   return (
     <section className='mb-8 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md'>
       <div className='mb-4 flex justify-between'>
-        <h2 className='self-center text-xl  font-semibold text-gray-800'>
+        <h2 className='self-center text-xl font-semibold text-gray-800'>
           About
         </h2>
-        {!editModes.editAbout ? (
+        {!editModes.editAbout && (
           <EditButton
             editModeKey='editAbout'
             updateEditModes={updateEditModes}
             checkEditModes={checkEditModes}
           />
-        ) : null}
+        )}
       </div>
 
       {editModes.editAbout ? (
         <div>
-          <textarea
-            value={profile.bio}
-            placeholder='Enter Biography'
-            onChange={handleBioChange}
-            className={`text-sm placeholder:text-sm ${inputClassName}`}
-            rows={4}
-          />
+          {/* Wrap the textarea in a relative container so the button can float */}
+          <div className='relative'>
+            <textarea
+              value={profile.bio}
+              placeholder='Enter Biography'
+              onChange={handleBioChange}
+              className={`w-full text-sm placeholder:text-sm ${inputClassName}`}
+              rows={4}
+            />
+            {/* Floating AI button (top-right corner) */}
+            <button
+              type='button'
+              onClick={() => setIsAiModalOpen(true)}
+              className='absolute right-2 top-2 flex transform items-center justify-center rounded-full bg-indigo-600 p-2 text-white shadow-md transition-all hover:scale-110 hover:bg-indigo-700'
+              title='Generate with AI'
+            >
+              <Sparkles className='h-5 w-5' />
+            </button>
+          </div>
+
           <div className='mt-2 flex justify-between'>
             <div className='text-sm text-gray-500'>
               <span
@@ -86,12 +111,22 @@ const AboutSection: React.FC<AboutSectionProps> = ({
             <p className='text-gray-700'>{profile.bio}</p>
           ) : (
             <div className='flex items-center'>
-              <Book className=' mr-3' />
+              <Book className='mr-3' />
               <p className='text-gray-700'>Not Specified</p>
             </div>
           )}
         </div>
       )}
+
+      {/* AI Prompt Modal */}
+      <AiPromptModal
+        isOpen={isAiModalOpen}
+        setIsOpen={setIsAiModalOpen}
+        onApply={handleApplyAiText}
+        generateMutation={generateAboutMutation}
+        title='Generate About Me'
+        confirmText='Apply'
+      />
     </section>
   );
 };

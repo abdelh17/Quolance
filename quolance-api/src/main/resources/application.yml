@@ -104,3 +104,21 @@ google:
   api:
     key: ${GOOGLE_API_KEY}
     model: ${MODEL_NAME}
+
+ai:
+  base-prompts:
+    about: >
+      Write a compelling "About Me" section for a freelancer, using no more than 2000 characters.
+      This text should be appealing to potential clients (contractors), highlighting key skills, relevant experience, and professional background.
+      Avoid any Markdown formatting. Limit your response to one or two paragraphs.
+      Here is some additional context:
+
+    project: >
+      Craft a creative project description that freelancers can read to quickly understand the project's requirements, scope, and benefits.
+      Use no more than 5000 characters, do not include any Markdown formatting, and limit the response to a maximum of two paragraphs.
+      Additional info:
+
+    application: >
+      Write a motivational letter for a project application, using no more than 500 words.
+      Avoid any Markdown formatting. You may include key points from the project's details to demonstrate relevance.
+      Additional context:
