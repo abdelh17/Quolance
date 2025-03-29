@@ -2,6 +2,7 @@ package com.quolance.quolance_api.services.auth.impl;
 
 import com.quolance.quolance_api.dtos.users.UpdatePendingUserRequestDto;
 import com.quolance.quolance_api.dtos.users.UserResponseDto;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.repositories.UserRepository;
@@ -38,6 +39,13 @@ public class PendingWorkflowServiceImpl implements PendingWorkflowService {
                     .build();
         }
 
+        // Re-fetch the persistent user to ensure we have the same instance (and its collections) managed by Hibernate.
+        User persistentUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> ApiException.builder()
+                        .status(HttpServletResponse.SC_NOT_FOUND)
+                        .message("User not found.")
+                        .build());
+
         // Validate and set the new role
         Role newRole;
         try {
@@ -54,14 +62,23 @@ public class PendingWorkflowServiceImpl implements PendingWorkflowService {
                     .message("Invalid role. Must be either CLIENT or FREELANCER.")
                     .build();
         }
-        user.setRole(newRole);
+        persistentUser.setRole(newRole);
+
+        // If the new role is FREELANCER, update the profile accordingly
+        if (newRole == Role.FREELANCER) {
+            Profile profile = new Profile();
+            profile.setContactEmail(persistentUser.getEmail());
+            profile.setBio(persistentUser.getFirstName() + " " + persistentUser.getLastName() + " bio.");
+            persistentUser.setProfile(profile);
+            profile.setUser(persistentUser);
+        }
 
         // Encode and set the new password
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
-        user.setPassword(passwordEncoder.encode(updatePendingUserDto.getPassword()));
+        persistentUser.setPassword(passwordEncoder.encode(updatePendingUserDto.getPassword()));
 
-        // Save the updated user to the database
-        User updatedUser = userRepository.save(user);
+        // Save the updated persistent user
+        User updatedUser = userRepository.save(persistentUser);
 
         // Convert the updated user to a response DTO and return
         return new UserResponseDto(updatedUser);
