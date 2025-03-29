@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label';
 
 import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
 import { cn } from '@/util/utils';
+import { useAuthGuard } from '@/api/auth-api';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -56,6 +57,8 @@ export function UpdatePendingUserForm({
     undefined
   );
 
+  const { logout } = useAuthGuard({ middleware: 'auth' });
+
   async function onSubmit(data: Schema) {
     setErrors(undefined);
     setSuccess(false);
@@ -87,9 +90,9 @@ export function UpdatePendingUserForm({
         message='User updated'
         description='Your password and role have been successfully updated.'
         action={
-          <Link href='/' className='underline'>
-            Access your account
-          </Link>
+          <div className='underline cursor-pointer' onClick={logout}>
+            Login to access your account.
+          </div>
         }
       />
 
