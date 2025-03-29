@@ -1,11 +1,10 @@
 'use client';
 
-
 import Loading from '@/components/ui/loading/loading';
 import VerificationNotice from '@/components/verify-account';
 
 import { useAuthGuard } from '@/api/auth-api';
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 
 import PendingUserForm from './components/pending-user-form';
 
@@ -20,7 +19,7 @@ export default function DashboardLayout({
 
   if (!user?.verified) return <VerificationNotice logout={logout} />;
 
-  if (user?.role === Role.PENDING) return <PendingUserForm user={user}/>;
+  if (user?.role === Role.PENDING) return <PendingUserForm user={user} />;
 
   return <>{children}</>;
 }

@@ -3,7 +3,7 @@ import { ArrowRight, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PiMapPin } from 'react-icons/pi';
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { FreelancerProfileType } from '@/models/user/UserResponse';
 import FreelancerDefaultAvatar from '@/public/images/freelancer_default_icon.png';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';

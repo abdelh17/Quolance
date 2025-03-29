@@ -4,7 +4,7 @@ import {
   EditModesType,
   FreelancerProfileType,
   ProjectExperience,
-} from '@/constants/models/user/UserResponse';
+} from '@/models/user/UserResponse';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
 import ProfileInputField from './ProfileInputField';
@@ -343,7 +343,7 @@ export const ProjectExperienceCard = ({
 
   return (
     <div
-      className={`rounded-2xl border border-gray-200 p-8 transition-shadow hover:shadow-sm mb-4`}
+      className={`mb-4 rounded-2xl border border-gray-200 p-8 transition-shadow hover:shadow-sm`}
     >
       {/* Project Header */}
       <div className='flex items-start justify-between'>

@@ -1,13 +1,17 @@
 'use client';
 
 import React from 'react';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import { cn } from '@/util/utils';
 
 interface ErrorFeedbackProps extends React.HTMLAttributes<HTMLDivElement> {
   data: HttpErrorResponse | undefined;
 }
-export default function ErrorFeedback({ data, className, ...rest }: ErrorFeedbackProps) {
+export default function ErrorFeedback({
+  data,
+  className,
+  ...rest
+}: ErrorFeedbackProps) {
   if (!data) return <></>;
 
   return (
@@ -17,7 +21,11 @@ export default function ErrorFeedback({ data, className, ...rest }: ErrorFeedbac
         className
       )}
     >
-      {data.message && <p {...rest} className='font-bold'>{data.message}</p>}
+      {data.message && (
+        <p {...rest} className='font-bold'>
+          {data.message}
+        </p>
+      )}
 
       {data.errors && (
         <ul className='mt-2 list-inside list-disc'>

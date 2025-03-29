@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EditModesType } from '@/constants/models/user/UserResponse';
+import { EditModesType } from '@/models/user/UserResponse';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
 

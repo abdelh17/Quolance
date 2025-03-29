@@ -16,7 +16,7 @@ import WorkExperienceSection from '@/app/(with-main-layout)/(authenticated-pages
 import {
   EditModesType,
   FreelancerProfileType,
-} from '@/constants/models/user/UserResponse';
+} from '@/models/user/UserResponse';
 import { SKILLS_OPTIONS } from '@/constants/types/form-types';
 
 import AboutSection from './components/AboutSection';

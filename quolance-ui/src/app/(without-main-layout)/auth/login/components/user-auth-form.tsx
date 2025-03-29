@@ -8,7 +8,7 @@ import * as z from 'zod';
 
 import ErrorFeedback from '@/components/error-feedback';
 import { Button } from '@/components/ui/button';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import { useAuthGuard } from '@/api/auth-api';
 import {
   FormInput,
@@ -25,12 +25,12 @@ export function UserAuthForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-
   const { user } = useAuthGuard({ middleware: 'auth' });
 
   const { login, isLoginLoading: isLoading } = useAuthGuard({
     middleware: 'guest',
-    redirectIfAuthenticated: user?.role == 'ADMIN' ? '/adminDashboard' : '/dashboard',
+    redirectIfAuthenticated:
+      user?.role == 'ADMIN' ? '/adminDashboard' : '/dashboard',
   });
 
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
@@ -74,7 +74,7 @@ export function UserAuthForm({
               register={register}
               error={formState.errors.email?.message}
               autoComplete='email'
-              data-test = "email-input"
+              data-test='email-input'
             />
             <FormInput
               id='password'
@@ -83,18 +83,18 @@ export function UserAuthForm({
               isLoading={isLoading}
               register={register}
               error={formState.errors.password?.message}
-              data-test = "password-input"
+              data-test='password-input'
             />
           </div>
 
-          <ErrorFeedback data-test= "error-message"  data={errors} />
+          <ErrorFeedback data-test='error-message' data={errors} />
 
           <Button
             disabled={isLoading}
             type='submit'
             className='mt-6 py-4'
             variant={'default'}
-            data-test = "login-submit"
+            data-test='login-submit'
           >
             {isLoading ? 'Signing in...' : 'Sign In with Email'}
           </Button>

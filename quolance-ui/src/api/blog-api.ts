@@ -1,12 +1,10 @@
-import {useMutation, useQuery} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import {BlogPostViewType} from '@/constants/types/blog-types';
-import {HttpErrorResponse} from '@/constants/models/http/HttpErrorResponse';
-import { PagedResponse } from '@/constants/models/http/PagedResponse';
+import { BlogPostViewType } from '@/constants/types/blog-types';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import { PagedResponse } from '@/models/http/PagedResponse';
 import { PaginationParams } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
-import { useInfiniteQuery } from '@tanstack/react-query';
-
 
 /* ---------- Blog Posts ---------- */
 export interface BlogPostUpdateDto {
@@ -22,20 +20,26 @@ export const useCreateBlogPost = (options?: {
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: (blogpost: { title: string; content: string; userId?: string; tags: string[]; files?: File[] }) => {
+    mutationFn: (blogpost: {
+      title: string;
+      content: string;
+      userId?: string;
+      tags: string[];
+      files?: File[];
+    }) => {
       if (!blogpost.userId) {
-        throw new Error("User ID is undefined. User must be logged in.");
+        throw new Error('User ID is undefined. User must be logged in.');
       }
 
       const formData = new FormData();
-      formData.append("title", blogpost.title);
-      formData.append("content", blogpost.content);
-      formData.append("userId", String(blogpost.userId));
-      blogpost.tags.forEach(tag => formData.append("tags", tag));
+      formData.append('title', blogpost.title);
+      formData.append('content', blogpost.content);
+      formData.append('userId', String(blogpost.userId));
+      blogpost.tags.forEach((tag) => formData.append('tags', tag));
 
       if (blogpost.files && blogpost.files.length > 0) {
         blogpost.files.forEach((file) => {
-          formData.append("images", file);
+          formData.append('images', file);
         });
       }
 
@@ -50,12 +54,13 @@ export const useCreateBlogPost = (options?: {
   });
 };
 
-
 export const useGetAllBlogPosts = () => {
   return useInfiniteQuery<PagedResponse<BlogPostViewType>, HttpErrorResponse>({
-    queryKey: ["all-blog-posts"],
+    queryKey: ['all-blog-posts'],
     queryFn: async ({ pageParam = 0 }) => {
-      const response = await httpClient.get(`/api/blog-posts?page=${pageParam}&size=10`);
+      const response = await httpClient.get(
+        `/api/blog-posts?page=${pageParam}&size=10`
+      );
       return response.data;
     },
     initialPageParam: 0,
@@ -106,14 +111,20 @@ export interface CommentRequestDto {
   content: string;
 }
 
-export const useGetCommentsByPostId = (postId: string, pagination: PaginationParams, options?: {
+export const useGetCommentsByPostId = (
+  postId: string,
+  pagination: PaginationParams,
+  options?: {
     onSuccess?: (data: PagedResponse<CommentResponseDto>) => void;
     onError?: (error: HttpErrorResponse) => void;
-}) => {
+  }
+) => {
   return useQuery<PagedResponse<CommentResponseDto>, HttpErrorResponse>({
-    queryKey: ["comments", postId, pagination],
+    queryKey: ['comments', postId, pagination],
     queryFn: async () => {
-      const response = await httpClient.get(`/api/blog-comments/${postId}?${queryToString(pagination)}`);
+      const response = await httpClient.get(
+        `/api/blog-comments/${postId}?${queryToString(pagination)}`
+      );
       return response.data;
     },
     staleTime: 1000 * 60 * 5,
@@ -122,13 +133,19 @@ export const useGetCommentsByPostId = (postId: string, pagination: PaginationPar
   });
 };
 
-export const useAddComment = (postId: string, options?: {
-  onSuccess?: (data: CommentResponseDto) => void;
-  onError?: (error: HttpErrorResponse) => void;
-}) => {
+export const useAddComment = (
+  postId: string,
+  options?: {
+    onSuccess?: (data: CommentResponseDto) => void;
+    onError?: (error: HttpErrorResponse) => void;
+  }
+) => {
   return useMutation<CommentResponseDto, HttpErrorResponse, CommentRequestDto>({
     mutationFn: async (newComment) => {
-      const response = await httpClient.post(`/api/blog-comments/${postId}`, newComment);
+      const response = await httpClient.post(
+        `/api/blog-comments/${postId}`,
+        newComment
+      );
       return response.data;
     },
     ...options,
@@ -154,9 +171,15 @@ export const useUpdateComment = (options?: {
   ) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useMutation<void, HttpErrorResponse, { commentId: string; content: string; blogPostId: string }>({
+  return useMutation<
+    void,
+    HttpErrorResponse,
+    { commentId: string; content: string; blogPostId: string }
+  >({
     mutationFn: async (commentData) => {
-      await httpClient.put(`/api/blog-comments/${commentData.commentId}`, { content: commentData.content });
+      await httpClient.put(`/api/blog-comments/${commentData.commentId}`, {
+        content: commentData.content,
+      });
     },
     ...options,
   });
@@ -176,14 +199,19 @@ export interface ReactionRequestDto {
   blogPostId: string;
 }
 
-export const useGetReactionsByPostId = (postId: string, options?: {
-  onSuccess?: (data: ReactionResponseDto[]) => void;
-  onError?: (error: HttpErrorResponse) => void;
-}) => {
+export const useGetReactionsByPostId = (
+  postId: string,
+  options?: {
+    onSuccess?: (data: ReactionResponseDto[]) => void;
+    onError?: (error: HttpErrorResponse) => void;
+  }
+) => {
   return useQuery<ReactionResponseDto[], HttpErrorResponse>({
     queryKey: ['post-reactions', postId],
     queryFn: async () => {
-      const response = await httpClient.get(`/api/blog-posts/reactions/post/${postId}`);
+      const response = await httpClient.get(
+        `/api/blog-posts/reactions/post/${postId}`
+      );
       return response.data;
     },
     enabled: !!postId,
@@ -195,9 +223,16 @@ export const useReactToPost = (options?: {
   onSuccess?: (data: ReactionResponseDto) => void;
   onError?: (error: HttpErrorResponse) => void;
 }) => {
-  return useMutation<ReactionResponseDto, HttpErrorResponse, ReactionRequestDto>({
+  return useMutation<
+    ReactionResponseDto,
+    HttpErrorResponse,
+    ReactionRequestDto
+  >({
     mutationFn: async (reactionRequest) => {
-      const response = await httpClient.post('/api/blog-posts/reactions/post', reactionRequest);
+      const response = await httpClient.post(
+        '/api/blog-posts/reactions/post',
+        reactionRequest
+      );
       return response.data;
     },
     ...options,

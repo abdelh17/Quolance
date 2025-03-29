@@ -1,7 +1,7 @@
 import Pagination from '@/components/ui/Pagination';
 import { PageMetaData } from '@/constants/types/pagination-types';
 import { CandidateFilterQuery } from '@/api/client-api';
-import { CandidateResponse } from '@/constants/models/candidates/CandidateResponse';
+import { CandidateResponse } from '@/models/candidates/CandidateResponse';
 import FreelancerCatalogCard from '@/components/ui/freelancers/candidates/FreelancerCatalogCard';
 import FreelancerCatalogFilter from '@/components/ui/freelancers/candidates/candidateFilter/FreelancerCatalogFilter';
 import SortControls from '@/components/ui/pagination/SortControls';

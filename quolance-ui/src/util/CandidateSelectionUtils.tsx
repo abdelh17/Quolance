@@ -1,10 +1,10 @@
 // Utility file used in ProjectSubmissions.tsx
+import { ApplicationFilters } from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
+import { Dispatch, SetStateAction } from 'react';
 import {
   ApplicationResponse,
   ApplicationStatus,
-} from '@/constants/models/applications/ApplicationResponse';
-import { ApplicationFilters } from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
-import { Dispatch, SetStateAction } from 'react';
+} from '@/models/applications/ApplicationResponse';
 
 // Filter logic function that will be used to filter submissions
 export const applySubmissionFilters = (

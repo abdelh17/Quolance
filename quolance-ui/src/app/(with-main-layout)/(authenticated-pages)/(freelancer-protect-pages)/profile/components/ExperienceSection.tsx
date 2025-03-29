@@ -1,9 +1,9 @@
 import React from 'react';
 import { Briefcase } from 'lucide-react';
 import {
-  FreelancerProfileType,
   EditModesType,
-} from '@/constants/models/user/UserResponse';
+  FreelancerProfileType,
+} from '@/models/user/UserResponse';
 import { ExperienceLevelRadioGroup } from '@/components/ui/freelancers/FreelancerProfileRadioGroups';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';

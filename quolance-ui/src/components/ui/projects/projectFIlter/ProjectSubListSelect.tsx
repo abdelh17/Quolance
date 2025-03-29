@@ -1,4 +1,4 @@
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 import { useAuthGuard } from '@/api/auth-api';
 
 const FreelancerSubLists = ['All Projects', 'Applied'];

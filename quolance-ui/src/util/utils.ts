@@ -1,4 +1,4 @@
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

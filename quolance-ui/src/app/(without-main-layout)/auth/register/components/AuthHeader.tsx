@@ -1,7 +1,7 @@
 import React from 'react';
 import { RegistrationUserType } from '@/app/(without-main-layout)/auth/register/page';
 import Link from 'next/link';
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 
 const getPropsFromUserRole = (userRole: RegistrationUserType) => {
   switch (userRole) {
