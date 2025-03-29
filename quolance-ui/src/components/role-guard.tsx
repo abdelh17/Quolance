@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { useAuthGuard } from '@/api/auth-api';
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 
 interface RoleGuardProps {
   rolesAllowed?: Role[];

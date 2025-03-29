@@ -5,7 +5,7 @@ import {
   EditModesType,
   FreelancerProfileType,
   UserResponse,
-} from '@/constants/models/user/UserResponse';
+} from '@/models/user/UserResponse';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
 
@@ -182,13 +182,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
             {/* City and State Display */}
             <div className='mt-4 flex items-center'>
-              {!(profile.city && profile.state) && (
-                <MapPin className='mr-2' />
-              )}
+              {!(profile.city && profile.state) && <MapPin className='mr-2' />}
               <span className='text-gray-700'>
-                {profile.city && profile.state
-                  ? <span className='flex'><MapPin className='mr-2' /> {profile.city}, {profile.state}</span>
-                  : 'Not Specified'}
+                {profile.city && profile.state ? (
+                  <span className='flex'>
+                    <MapPin className='mr-2' /> {profile.city}, {profile.state}
+                  </span>
+                ) : (
+                  'Not Specified'
+                )}
               </span>
             </div>
           </div>

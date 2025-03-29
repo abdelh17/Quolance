@@ -3,7 +3,7 @@ import { Globe, X } from 'lucide-react';
 import {
   EditModesType,
   FreelancerProfileType,
-} from '@/constants/models/user/UserResponse';
+} from '@/models/user/UserResponse';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
 import CustomListbox, { ListboxItem } from '@/components/ui/ComboListBox';

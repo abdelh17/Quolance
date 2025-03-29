@@ -5,7 +5,7 @@ import { useAuthGuard } from '@/api/auth-api';
 import Loading from '@/components/ui/loading/loading';
 import PermissionGuard from '@/components/permission-guard';
 import RoleGuard from '@/components/role-guard';
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 
 export default function DashboardLayout({
   children,

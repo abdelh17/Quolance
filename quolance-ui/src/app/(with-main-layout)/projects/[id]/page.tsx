@@ -6,14 +6,14 @@ import { useGetProjectInfo, useUpdateProject } from '@/api/projects-api';
 import ProjectDetailsHeader from '@/components/ui/projects/ProjectDetailsHeader';
 import FreelancerApplicationForm from '@/app/(with-main-layout)/projects/[id]/FreelancerApplicationForm';
 import ProjectSubmissions from '@/app/(with-main-layout)/projects/[id]/ProjectSubmissions';
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 import { ProjectType } from '@/constants/types/project-types';
 import ProjectDetailsContent from '@/components/ui/projects/ProjectDetailsContent';
 import Loading from '@/components/ui/loading/loading';
 import { useCallback, useEffect, useState } from 'react';
 import { isDeepEqual } from '@/util/objectUtils';
 import { showToast } from '@/util/context/ToastProvider';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import { getUserRoleForAPI } from '@/util/utils';
 
 function ProjectPage() {

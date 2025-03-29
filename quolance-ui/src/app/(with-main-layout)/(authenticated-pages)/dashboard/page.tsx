@@ -10,7 +10,7 @@ import {
   useGetFreelancerProfile,
   useGetProfileCompletion,
 } from '@/api/freelancer-api';
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { FreelancerProfileType } from '@/models/user/UserResponse';
 import ProfileStatus from '../(freelancer-protect-pages)/profile/components/ProfileStatus';
 
 export default function Dashboard() {
