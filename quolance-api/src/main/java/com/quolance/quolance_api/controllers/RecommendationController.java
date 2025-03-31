@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.recommendation.FreelancerRecommendationDto;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.services.ai_models.recommendation.RecommendationService;
 import com.quolance.quolance_api.services.entity_services.ProjectService;
@@ -20,10 +21,10 @@ public class RecommendationController {
     private final ProjectService projectService;
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<List<FreelancerProfileDto>> getFreelancerRecommendations(@PathVariable UUID projectId,
+    public ResponseEntity<List<FreelancerRecommendationDto>> getFreelancerRecommendations(@PathVariable UUID projectId,
                                                                                    @RequestParam(defaultValue = "5") int topN) {
         Project project = projectService.getProjectById(projectId);
-        List<FreelancerProfileDto> recommendations = recommendationService.recommendFreelancers(project, topN);
+        List<FreelancerRecommendationDto> recommendations = recommendationService.recommendFreelancers(project, topN);
         return ResponseEntity.ok(recommendations);
     }
 }

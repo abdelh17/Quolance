@@ -1,14 +1,14 @@
 'use client';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
-import { Send } from 'lucide-react';
+import { useChat } from '@/components/ui/chat/ChatProvider';
 import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
 import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
-import { useChat } from '@/components/ui/chat/ChatProvider';
+import { Send } from 'lucide-react';
 
 interface SimpleFreelancerCardProps {
   freelancerProfile: FreelancerProfileType;
+  similarityScore?: number;
 }
 
 const isImageURL = (img: string | StaticImageData): img is string => {
@@ -17,44 +17,44 @@ const isImageURL = (img: string | StaticImageData): img is string => {
 
 export default function SimpleFreelancerCard({
   freelancerProfile,
+  similarityScore,
 }: SimpleFreelancerCardProps) {
   const { onNewChat } = useChat();
   const fullName = `${freelancerProfile.firstName} ${freelancerProfile.lastName}`;
   const location = freelancerProfile.city || freelancerProfile.state || '';
-
-  // Determine which image to show: if a URL is provided, use it, otherwise fallback.
   const profileImage = freelancerProfile.profileImageUrl
     ? freelancerProfile.profileImageUrl
     : FreelancerDefaultProfilePic;
+
+  const imageProps = isImageURL(profileImage)
+    ? {
+        src: profileImage,
+        width: 80,
+        height: 80,
+        className: 'object-cover',
+      }
+    : {
+        src: profileImage,
+        fill: true,
+        className: 'object-cover',
+      };
 
   return (
     <div className="rounded-3xl bg-white shadow-md p-4 transition-all duration-200 hover:shadow-lg">
       <Link href={`/public-profile/${freelancerProfile.username}`}>
         <div className="flex flex-col items-center">
           <div className="relative w-20 h-20 rounded-full overflow-hidden">
-            {isImageURL(profileImage) ? (
-              <Image
-                src={profileImage}
-                alt={`${fullName}'s profile picture`}
-                fill
-                sizes="80px"
-                className="object-cover"
-              />
-            ) : (
-              <Image
-                src={profileImage}
-                alt={`${fullName}'s profile picture`}
-                fill
-                sizes="80px"
-                className="object-cover"
-              />
-            )}
+            <Image {...imageProps} alt={`${fullName}'s profile picture`} sizes="80px" />
           </div>
           <h3 className="mt-4 text-lg font-semibold">{fullName}</h3>
           {location && <p className="text-sm text-gray-500">{location}</p>}
+          {similarityScore !== undefined && (
+            <p className="mt-2 text-sm text-gray-700">
+              Similarity: {(similarityScore * 100).toFixed(1)}%
+            </p>
+          )}
         </div>
       </Link>
-
       <div className="mt-4 flex justify-center">
         <button
           onClick={(e) => {

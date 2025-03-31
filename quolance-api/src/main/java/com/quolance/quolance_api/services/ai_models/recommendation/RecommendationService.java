@@ -2,6 +2,7 @@ package com.quolance.quolance_api.services.ai_models.recommendation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quolance.quolance_api.dtos.profile.FreelancerProfileDto;
+import com.quolance.quolance_api.dtos.recommendation.FreelancerRecommendationDto;
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
@@ -31,32 +32,32 @@ public class RecommendationService {
      * Recommend top N freelancers based on project description similarity.
      */
     @Transactional(readOnly = true)
-    public List<FreelancerProfileDto> recommendFreelancers(Project project, int topN) {
-        // Compute the project embedding using its description (and optionally title or tags)
+    public List<FreelancerRecommendationDto> recommendFreelancers(Project project, int topN) {
         String projectText = project.getDescription();
         float[] projectEmbedding = geminiEmbeddingService.embedContent(projectText, "SEMANTIC_SIMILARITY");
 
-        // Load freelancer users (assume freelancers have a Profile with embeddingJson)
         List<User> freelancers = userRepository.findAllByRole(Role.FREELANCER);
 
         return freelancers.stream()
                 .map(user -> {
                     Profile profile = user.getProfile();
-                    if (profile == null || profile.getEmbeddingJson() == null) {
-                        // If no profile or embedding, set similarity to zero.
-                        return Map.entry(user, 0.0);
+                    double similarity = 0.0;
+                    if (profile != null && profile.getEmbeddingJson() != null) {
+                        try {
+                            float[] profileEmbedding = objectMapper.readValue(profile.getEmbeddingJson(), float[].class);
+                            similarity = SimilarityUtils.cosineSimilarity(projectEmbedding, profileEmbedding);
+                        } catch (IOException e) {
+                            similarity = 0.0;
+                        }
                     }
-                    try {
-                        float[] profileEmbedding = objectMapper.readValue(profile.getEmbeddingJson(), float[].class);
-                        double similarity = SimilarityUtils.cosineSimilarity(projectEmbedding, profileEmbedding);
-                        return Map.entry(user, similarity);
-                    } catch (IOException e) {
-                        return Map.entry(user, 0.0);
-                    }
+                    return Map.entry(user, similarity);
                 })
                 .sorted(Comparator.comparingDouble((Map.Entry<User, Double> entry) -> entry.getValue()).reversed())
                 .limit(topN)
-                .map(entry -> FreelancerProfileDto.fromEntity(entry.getKey()))
+                .map(entry -> FreelancerRecommendationDto.builder()
+                        .profile(FreelancerProfileDto.fromEntity(entry.getKey()))
+                        .similarityScore(entry.getValue())
+                        .build())
                 .collect(Collectors.toList());
     }
 }
