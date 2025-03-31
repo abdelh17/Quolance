@@ -10,7 +10,7 @@ import com.quolance.quolance_api.dtos.review.ReviewDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
 import com.quolance.quolance_api.entities.*;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
-import com.quolance.quolance_api.services.ai_models.recommendation.ProfileService;
+import com.quolance.quolance_api.services.ai_models.recommendation.ProfileEmbeddingService;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
 import com.quolance.quolance_api.services.entity_services.*;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
@@ -44,7 +44,7 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final FileService fileService;
     private final ReviewService reviewService;
     private final NotificationMessageService notificationMessageService;
-    private final ProfileService profileService;
+    private final ProfileEmbeddingService profileService;
 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
