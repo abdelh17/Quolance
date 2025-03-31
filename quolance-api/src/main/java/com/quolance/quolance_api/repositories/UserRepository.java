@@ -1,6 +1,7 @@
 package com.quolance.quolance_api.repositories;
 
 import com.quolance.quolance_api.entities.User;
+import com.quolance.quolance_api.entities.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -23,4 +24,6 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     boolean existsByUsername(String username);
 
     List<User> findAll(); // Added for email uniqueness check
+
+    List<User> findAllByRole(Role role);
 }
