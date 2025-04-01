@@ -12,7 +12,8 @@ import { formatEnumString, formatPriceRange } from '@/util/stringUtils';
 import dynamic from 'next/dynamic';
 import {useAuthGuard} from "@/api/auth-api";
 import { Control, FieldErrors,Controller } from 'react-hook-form';
-import type { ProjectFormValues } from '@/app/(with-main-layout)/projects/[id]/page';
+import { ProjectFormValues } from '@/lib/validation/projectSchema';
+
 
 
 

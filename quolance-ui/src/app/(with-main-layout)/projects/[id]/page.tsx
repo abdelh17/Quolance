@@ -18,20 +18,8 @@ import { getUserRoleForAPI } from '@/util/utils';
 import { z } from 'zod';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { projectSchema, ProjectFormValues } from '@/lib/validation/projectSchema';
 
-
-
-
-export const projectSchema = z.object({
- title: z.string().min(1, 'Project title is required').max(255, 'Project Title must contain at most 255 characters'),
- description: z.string().min(80, 'Project Description must contain a minimum 80 characters').max(5000, 'Project Description must contain at most 5000 characters'),
- category: z.string().min(1, 'Project Category is required'),
- priceRange: z.string().min(1, 'Project Budget is required'),
- experienceLevel: z.string().min(1, 'Project Experience level is required'),
-});
-
-
-export type ProjectFormValues = z.infer<typeof projectSchema>;
 
 
 function ProjectPage() {

@@ -19,7 +19,7 @@ import {
  import Tooltip from '@/components/ui/Tooltip';
  import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
  import type { UseFormHandleSubmit,UseFormReset } from 'react-hook-form';
- import type { ProjectFormValues } from '@/app/(with-main-layout)/projects/[id]/page';
+ import { ProjectFormValues } from '@/lib/validation/projectSchema';
  
  
  interface ProjectDetailsProps {
