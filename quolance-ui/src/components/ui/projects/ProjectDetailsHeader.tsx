@@ -4,78 +4,74 @@ import {
   CheckIcon,
   CurrencyDollarIcon,
   PencilIcon,
-} from '@heroicons/react/20/solid';
-import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
-import {
+ } from '@heroicons/react/20/solid';
+ import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
+ import {
   formatDate,
   formatEnumString,
   formatPriceRange,
-} from '@/util/stringUtils';
-import { Button } from '@/components/ui/button';
-import { XIcon } from 'lucide-react';
-import { RxReset } from 'react-icons/rx';
-import { useAuthGuard } from '@/api/auth-api';
-import { Role } from '@/models/user/UserResponse';
-import Tooltip from '@/components/ui/Tooltip';
-import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
-
-interface ProjectDetailsProps {
+ } from '@/util/stringUtils';
+ import { Button } from '@/components/ui/button';
+ import { XIcon } from 'lucide-react';
+ import { RxReset } from 'react-icons/rx';
+ import { useAuthGuard } from '@/api/auth-api';
+ import { Role } from '@/models/user/UserResponse';
+ import Tooltip from '@/components/ui/Tooltip';
+ import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
+ import type { UseFormHandleSubmit,UseFormReset } from 'react-hook-form';
+ import type { ProjectFormValues } from '@/app/(with-main-layout)/projects/[id]/page';
+ 
+ 
+ interface ProjectDetailsProps {
   project: ProjectType;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
   isEdited: boolean;
   resetDraftProject: () => void;
   updateProject: () => void;
-}
-
-export default function ProjectDetailsHeader({
+  onSubmit: (values: ProjectFormValues) => void;
+  handleSubmit: UseFormHandleSubmit<ProjectFormValues>;
+  reset: UseFormReset<ProjectFormValues>;
+ }
+ 
+ 
+ export default function ProjectDetailsHeader({
   project,
   editMode,
   setEditMode,
   isEdited,
   resetDraftProject,
   updateProject,
-}: ProjectDetailsProps) {
+  onSubmit,
+  handleSubmit,
+  reset
+ }: ProjectDetailsProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
-
+ 
+ 
   return (
     <div className='lg:flex lg:items-center lg:justify-between'>
       <div className='min-w-0 flex-1'>
-        <h2
-          data-test='header-project-title'
-          className='mt-2 text-2xl/7 font-bold sm:truncate sm:text-3xl sm:tracking-tight'
-        >
+        <h2 data-test="header-project-title" className='mt-2 text-2xl/7 font-bold sm:truncate sm:text-3xl sm:tracking-tight'>
           {project.title}
         </h2>
-        <div
-          data-test='header-project-status'
-          className='mt-2 flex flex-col items-start gap-3 sm:flex-wrap md:flex-row md:items-center'
-        >
+        <div  data-test="header-project-status" className='mt-2 flex flex-col items-start gap-3 sm:flex-wrap md:flex-row md:items-center'>
           <ProjectStatusBadge status={project.projectStatus as ProjectStatus} />
-          <div
-            data-test='header-project-category'
-            className='flex items-center text-sm text-gray-500'
-          >
+          <div data-test="header-project-category" className='flex items-center text-sm text-gray-500'>
             <BriefcaseIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
             />
             {formatEnumString(project.category)}
           </div>
-          <div
-            data-test='header-project-priceRange'
-            className='flex items-center text-sm text-gray-500'
-          >
+          <div data-test="header-project-priceRange" className='flex items-center text-sm text-gray-500'>
             <CurrencyDollarIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
             />
             {formatPriceRange(project.priceRange)}
           </div>
-          <div
-            data-test='header-project-expirationDate'
-            className='flex items-center text-sm text-gray-500'
-          >
+          <div data-test="header-project-expirationDate" className='flex items-center text-sm text-gray-500'>
             <CalendarIcon
               aria-hidden='true'
               className='mr-1.5 h-5 w-5 shrink-0 text-gray-400'
@@ -104,7 +100,8 @@ export default function ProjectDetailsHeader({
               </Button>
             </Tooltip>
           )}
-
+ 
+ 
         {editMode && (
           <span className='ml-3'>
             <Button
@@ -113,13 +110,18 @@ export default function ProjectDetailsHeader({
               icon={
                 <XIcon aria-hidden='true' className='-ml-0.5 mr-1.5 h-5 w-5' />
               }
-              onClick={() => setEditMode(false)}
+              onClick={() => {
+                reset(project);
+                setEditMode(false);
+              }}
+             
             >
               Cancel
             </Button>
           </span>
         )}
-
+ 
+ 
         {editMode && (
           <span className='ml-3'>
             <Button
@@ -131,29 +133,28 @@ export default function ProjectDetailsHeader({
                   className='-ml-0.5 mr-1.5 h-5 w-5'
                 />
               }
-              onClick={resetDraftProject}
-              disabled={!isEdited}
+              onClick={() => reset(project)}
             >
               Reset Changes
             </Button>
           </span>
         )}
-
+ 
+ 
         {editMode && (
           <span className='ml-3'>
             <Button
               variant='default'
               animation='default'
               size='sm'
-              disabled={!isEdited}
               icon={
                 <CheckIcon
                   aria-hidden='true'
                   className='-ml-0.5 mr-1.5 h-5 w-5'
                 />
               }
-              onClick={updateProject}
-              data-test='update-project-btn'
+              onClick={handleSubmit(onSubmit)}
+              data-test="update-project-btn"
             >
               Update
             </Button>
@@ -162,4 +163,8 @@ export default function ProjectDetailsHeader({
       </div>
     </div>
   );
-}
+ }
+ 
+ 
+ 
+ 
