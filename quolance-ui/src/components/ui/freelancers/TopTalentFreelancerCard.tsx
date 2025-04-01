@@ -4,7 +4,7 @@ import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { useChat } from '@/components/ui/chat/ChatProvider';
 import FreelancerDefaultProfilePic from '@/public/images/freelancer_default_icon.png';
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { FreelancerProfileType } from '@/models/user/UserResponse';
 import { Send, Star, MapPin, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 
