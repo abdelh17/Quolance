@@ -1,14 +1,14 @@
 import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { showToast } from '@/util/context/ToastProvider';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import {
   PaginationParams,
   PaginationQueryDefault,
 } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
 import { ProjectType } from '@/constants/types/project-types';
-import {PostReviewType} from '@/constants/models/user/UserResponse';
+import { PostReviewType } from '@/models/user/UserResponse';
 
 /*--- Filters ---*/
 export interface CandidateFilterQuery extends PaginationParams {
@@ -129,4 +129,4 @@ export const usePostReview = () => {
       showToast(`Error: ${ErrorResponse.message}`, 'error');
     },
   });
- };
+};

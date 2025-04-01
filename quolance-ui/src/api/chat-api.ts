@@ -6,8 +6,8 @@ import {
   MessageDto,
   SendMessageDto,
 } from '@/constants/types/chat-types';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
-import { UserResponse } from '@/constants/models/user/UserResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import { UserResponse } from '@/models/user/UserResponse';
 
 // API Functions
 export const sendMessage = async (
