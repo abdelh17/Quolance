@@ -1,6 +1,6 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { FreelancerProfileType } from '@/models/user/UserResponse';
 import React, { useEffect, useState } from 'react';
 import ProfileProgressBar from './ProfileProgressBar';
 import { Button } from '@/components/ui/button';
@@ -81,7 +81,7 @@ const ProfileProgress: React.FC<ProfileStatusProps> = ({
   if (isHidden) return null;
 
   return (
-    <div className='mb-8 flex flex-wrap gap-8 rounded-lg bg-white p-4 py-4 border-n40 border md:justify-between lg:flex-nowrap'>
+    <div className='border-n40 mb-8 flex flex-wrap gap-8 rounded-lg border bg-white p-4 py-4 md:justify-between lg:flex-nowrap'>
       <div className='flex w-full flex-col px-2 sm:flex-row sm:items-center sm:px-8'>
         <svg
           xmlns='http://www.w3.org/2000/svg'

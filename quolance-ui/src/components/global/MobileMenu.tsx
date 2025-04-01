@@ -5,7 +5,7 @@ import { PiCaretRight, PiX } from 'react-icons/pi';
 
 import { headerMenu } from '@/constants/data';
 import useToggle from '@/util/hooks/useToggle';
-import { UserResponse } from '@/constants/models/user/UserResponse';
+import { UserResponse } from '@/models/user/UserResponse';
 
 function MobileMenu({
   showMobileMenu,
@@ -51,11 +51,19 @@ function MobileMenu({
       >
         <div className=' top-0 mt-2 flex w-full items-center justify-between p-4 sm:p-8'>
           {user ? (
-            <Link href='/dashboard' className='text-2xl font-bold text-white' onClick={handleLinkClick}>
+            <Link
+              href='/dashboard'
+              className='text-2xl font-bold text-white'
+              onClick={handleLinkClick}
+            >
               Quolance
             </Link>
           ) : (
-            <Link href='/' className='text-2xl font-bold text-white' onClick={handleLinkClick}>
+            <Link
+              href='/'
+              className='text-2xl font-bold text-white'
+              onClick={handleLinkClick}
+            >
               Quolance
             </Link>
           )}
@@ -93,7 +101,11 @@ function MobileMenu({
                     <ul className=' flex flex-col items-start justify-start gap-2 overflow-hidden pl-4 duration-700'>
                       {menu.submenu?.map(({ id, name, link }) => (
                         <li key={id}>
-                          <Link href={link} className='text-base' onClick={handleLinkClick}>
+                          <Link
+                            href={link}
+                            className='text-base'
+                            onClick={handleLinkClick}
+                          >
                             <span>-</span> {name}
                           </Link>
                         </li>
@@ -102,7 +114,11 @@ function MobileMenu({
                   </AnimateHeight>
                 </div>
               ) : (
-                <Link href='#' className=' hover:text-b500 duration-300' onClick={handleLinkClick}>
+                <Link
+                  href='#'
+                  className=' hover:text-b500 duration-300'
+                  onClick={handleLinkClick}
+                >
                   {menu.name}
                 </Link>
               )}
@@ -112,15 +128,21 @@ function MobileMenu({
           {user ? (
             <>
               <li className='hover:text-b500 duration-500'>
-                <Link href='/dashboard' onClick={handleLinkClick}>Dashboard</Link>
+                <Link href='/dashboard' onClick={handleLinkClick}>
+                  Dashboard
+                </Link>
               </li>
               {user.role === 'FREELANCER' && (
                 <li className='hover:text-b500 duration-500'>
-                  <Link href='/profile' onClick={handleLinkClick}>My Profile</Link>
+                  <Link href='/profile' onClick={handleLinkClick}>
+                    My Profile
+                  </Link>
                 </li>
               )}
               <li className='hover:text-b500 duration-500'>
-                <Link href='/setting' onClick={handleLinkClick}>Settings</Link>
+                <Link href='/setting' onClick={handleLinkClick}>
+                  Settings
+                </Link>
               </li>
               <li
                 className='hover:text-b500 cursor-pointer duration-500'
@@ -132,12 +154,20 @@ function MobileMenu({
           ) : (
             <>
               <li className='hover:text-b500 duration-500'>
-                <Link href='/auth/register' className='rounded-lg px-2 py-3' onClick={handleLinkClick}>
+                <Link
+                  href='/auth/register'
+                  className='rounded-lg px-2 py-3'
+                  onClick={handleLinkClick}
+                >
                   Sign up
                 </Link>
               </li>
               <li className='hover:text-b500 duration-500'>
-                <Link href='/auth/login' className='rounded-lg px-2 py-3' onClick={handleLinkClick}>
+                <Link
+                  href='/auth/login'
+                  className='rounded-lg px-2 py-3'
+                  onClick={handleLinkClick}
+                >
                   Sign in
                 </Link>
               </li>

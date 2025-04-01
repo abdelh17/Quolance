@@ -8,7 +8,6 @@ import {
 } from '@/api/client-api';
 import Loading from '@/components/ui/loading/loading';
 import FreelancerCard from '@/components/ui/freelancers/FreelancerCard';
-import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
 import {
   applySubmissionFilters,
   handleApplyFilters,
@@ -18,6 +17,7 @@ import {
 } from '@/util/CandidateSelectionUtils';
 import RefuseSubmissionsModal from '@/components/ui/freelancers/RefuseSubmissionsModal';
 import { useQueryClient } from '@tanstack/react-query';
+import { ApplicationResponse } from '@/models/applications/ApplicationResponse';
 
 type ProjectSubmissionsProps = {
   projectId: string;

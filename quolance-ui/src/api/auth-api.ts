@@ -4,8 +4,8 @@ import useSWR from 'swr';
 
 import httpClient from '@/lib/httpClient';
 
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
-import { UserResponse } from '@/constants/models/user/UserResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import { UserResponse } from '@/models/user/UserResponse';
 
 interface AuthProps {
   middleware?: 'auth' | 'guest';

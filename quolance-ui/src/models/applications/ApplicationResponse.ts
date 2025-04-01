@@ -1,4 +1,4 @@
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { FreelancerProfileType } from '@/models/user/UserResponse';
 
 export interface ApplicationResponse {
   id: string;
