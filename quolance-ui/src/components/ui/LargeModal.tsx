@@ -4,16 +4,14 @@ import { ReactNode, SetStateAction } from 'react';
 interface LargeModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
-  title: string;
+  title: string | ReactNode; 
   icon?: ReactNode;
   iconColor?: string;
   children: ReactNode;
   onConfirm: () => void;
-  confirmText?: string;
+  confirmText?: string | number | boolean | ReactNode | null;  // Expanded type definition
   confirmButtonColor?: string;
-  /** Extra content to be rendered in the footer, before the Cancel/Confirm buttons */
   footerExtra?: ReactNode;
-  /** Disable the confirm (Apply) button */
   disableConfirm?: boolean;
 }
 
@@ -30,12 +28,9 @@ export default function LargeModal({
   footerExtra,
   disableConfirm = false,
 }: LargeModalProps) {
-  // We’ll define separate classes for the confirm button, depending on whether it's disabled or not.
   const confirmButtonClass = disableConfirm
-    ? // Disabled styling: no hover effects, gray color, and "cursor-not-allowed"
-      "relative flex items-center justify-center overflow-hidden rounded-full bg-gray-300 px-6 py-2 font-medium text-white opacity-70 cursor-not-allowed"
-    : // Enabled styling: normal color, hover transitions
-      `hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full ${confirmButtonColor} px-6 py-2 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]`;
+    ? 'relative flex items-center justify-center overflow-hidden rounded-full bg-gray-300 px-6 py-2 font-medium text-white opacity-70 cursor-not-allowed'
+    : `hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full ${confirmButtonColor} px-6 py-2 font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]`;
 
   return (
     <>
@@ -44,18 +39,12 @@ export default function LargeModal({
           isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
         }`}
       >
-        {/* 
-          Adaptive modal:
-          - max-w-[1000px]: up to 1000px wide
-          - min-h-[300px]: ensures a minimum height
-          - max-h-[90vh] overflow-y-auto: scroll if content is tall
-        */}
         <div className="w-full max-w-[1000px] min-h-[300px] max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-8 drop-shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               {icon && <span className={`text-3xl ${iconColor}`}>{icon}</span>}
-              <p className="text-xl font-medium">{title}</p>
+              <div className="text-xl font-medium">{title}</div>
             </div>
             <button onClick={() => setIsOpen(false)}>
               <PiX className="text-2xl" />
@@ -67,10 +56,7 @@ export default function LargeModal({
 
           {/* Footer */}
           <div className="flex items-center justify-end gap-4">
-            {/* Extra content (e.g., Generate button) */}
             {footerExtra}
-
-            {/* Cancel */}
             <button
               data-test="cancel-btn"
               onClick={() => setIsOpen(false)}
@@ -78,8 +64,6 @@ export default function LargeModal({
             >
               <span className="relative z-10">Cancel</span>
             </button>
-
-            {/* Confirm (Apply) */}
             <button
               data-test="confirm-btn"
               onClick={!disableConfirm ? onConfirm : undefined}
@@ -92,7 +76,7 @@ export default function LargeModal({
         </div>
       </section>
 
-      {/* Semi-opaque background overlay */}
+      {/* Overlay */}
       <div
         className={`bg-b50/60 fixed inset-0 z-[998] duration-700 ${
           isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full'
