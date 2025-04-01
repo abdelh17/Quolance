@@ -25,7 +25,7 @@ export default function TopTalentFreelancerCard({
   const fullName = `${freelancerProfile.firstName} ${freelancerProfile.lastName}`;
   const location = freelancerProfile.city || freelancerProfile.state || '';
   const profileImage = freelancerProfile.profileImageUrl || FreelancerDefaultProfilePic;
-  const title = freelancerProfile.title || '';
+  const title = '';
 
   const imageProps = isImageURL(profileImage)
     ? { src: profileImage, width: 80, height: 80, className: 'object-cover' }
