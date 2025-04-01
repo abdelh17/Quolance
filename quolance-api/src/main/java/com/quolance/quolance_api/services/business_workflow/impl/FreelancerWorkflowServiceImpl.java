@@ -23,6 +23,7 @@ import jakarta.persistence.criteria.Subquery;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -45,6 +46,8 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final ReviewService reviewService;
     private final NotificationMessageService notificationMessageService;
     private final ProfileEmbeddingService profileService;
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
@@ -72,10 +75,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             application.setProject(project);
             application.setMessage(applicationCreateDto.getMessage());
             applicationService.saveApplication(application);
-
-            // Notify freelancer that the application was submitted successfully.
-            String freelancerNotification = "Your application for project '" + project.getTitle() + "' has been submitted successfully.";
-            notificationMessageService.sendNotificationToUser(freelancer, freelancer, freelancerNotification);
 
             // Optionally, notify the project owner that a new application has been received.
             User client = project.getClient();
@@ -111,10 +110,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .build();
         }
         applicationService.deleteApplication(application);
-
-        // Notify freelancer that the application has been deleted.
-        String deletionNotification = "Your application for project '" + application.getProject().getTitle() + "' has been deleted.";
-        notificationMessageService.sendNotificationToUser(freelancer, freelancer, deletionNotification);
     }
 
     @Override
@@ -258,6 +253,10 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             profile.setProjectExperiences(updateFreelancerProfileDto.getProjectExperiences());
 
             // Update the freelancer's embedding based on the new profile data
+            if (!activeProfile.contains("test")) {
+                profileService.updateProfileEmbedding(profile);
+            }
+
             profileService.updateProfileEmbedding(profile);
 
             UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
@@ -266,10 +265,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .build();
 
             userService.updateUser(updateUserRequestDto, freelancer);
-
-            // Notify freelancer that their profile has been updated.
-            String profileUpdateNotification = "Your profile has been updated successfully.";
-            notificationMessageService.sendNotificationToUser(freelancer, freelancer, profileUpdateNotification);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
@@ -289,10 +284,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             String photoUrl = uploadResult.get("secure_url").toString();
 
             userService.updateProfilePicture(freelancer, photoUrl);
-
-            // Notify freelancer that their profile picture has been updated.
-            String pictureUpdateNotification = "Your profile picture has been updated successfully.";
-            notificationMessageService.sendNotificationToUser(freelancer, freelancer, pictureUpdateNotification);
 
         } catch (Exception e) {
             throw ApiException.builder()
