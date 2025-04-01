@@ -41,5 +41,6 @@ public enum Tag {
     REACTNATIVE,
     FLUTTER,
     IOS,
-    ANDROID
+    ANDROID,
+    NODE
 }
