@@ -257,8 +257,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                 profileService.updateProfileEmbedding(profile);
             }
 
-            profileService.updateProfileEmbedding(profile);
-
             UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                     .firstName(updateFreelancerProfileDto.getFirstName())
                     .lastName(updateFreelancerProfileDto.getLastName())
