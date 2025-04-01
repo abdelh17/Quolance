@@ -485,3 +485,25 @@ input[type='number'] {
 }
 
 
+@layer utilities {
+  .animate-text {
+    background-size: 200% 200%;
+    animation: gradientAnimation 4s ease infinite;
+  }
+
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .glass-card {
+    @apply bg-white/30 backdrop-blur-lg shadow-lg rounded-2xl border border-white/20;
+  }
+}
