@@ -2,9 +2,12 @@ package com.quolance.quolance_api.controllers;
 
 import com.quolance.quolance_api.dtos.users.LoginRequestDto;
 import com.quolance.quolance_api.dtos.users.UserResponseDto;
+import com.quolance.quolance_api.dtos.users.VerifyEmailDto;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.services.auth.AuthService;
+import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.util.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
+
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(
@@ -50,5 +55,23 @@ public class AuthController {
     @GetMapping("/csrf")
     public ResponseEntity<Void> csrf() {
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verify-email")
+    @Operation(
+            summary = "Verify the email of the user",
+            description = "Verify the email of the user by passing the token")
+    public ResponseEntity<String> verifyEmail(@RequestBody VerifyEmailDto verificationDto) {
+        String verificationResponse = userService.verifyEmail(verificationDto);
+        return ResponseEntity.ok(verificationResponse);
+    }
+
+    @PostMapping("/resend-verification/{email}")
+    @Operation(
+            summary = "Resend verification code"
+    )
+    public ResponseEntity<String> resendVerificationEmail(@PathVariable String email) {
+        userService.resendVerificationEmail(email);
+        return ResponseEntity.ok("Code sent successfully");
     }
 }
