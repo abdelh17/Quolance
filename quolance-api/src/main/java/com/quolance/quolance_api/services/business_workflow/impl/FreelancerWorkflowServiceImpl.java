@@ -252,7 +252,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             profile.setLanguagesSpoken(updateFreelancerProfileDto.getLanguagesSpoken());
             profile.setProjectExperiences(updateFreelancerProfileDto.getProjectExperiences());
 
-            // Update the freelancer's embedding based on the new profile data
             profileService.updateProfileEmbedding(profile);
 
             UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
