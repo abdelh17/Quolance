@@ -46,13 +46,9 @@ export default function FreelancerApplicationForm({
  };
 
 
- if (projectStatus === ProjectStatus.CLOSED && !application) {
-   return <ProjectClosedCannotApply />;
- }
-
 
  // Calculate word count
- //const wordCount = watch('motivationalLetter')?.split(/\s+/).length || 0;
+ 
  const [characterCount, setCharacterCount] = useState(0);
 const maxCharacters = 5000;
 
@@ -65,7 +61,9 @@ useEffect(() => {
 }, [motivationalLetterValue]);
 
 
-
+if (projectStatus === ProjectStatus.CLOSED && !application) {
+  return <ProjectClosedCannotApply />;
+}
 
 
 
