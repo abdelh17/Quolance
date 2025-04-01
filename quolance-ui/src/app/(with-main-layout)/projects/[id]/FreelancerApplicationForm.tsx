@@ -17,6 +17,7 @@ import ApplicationStatusBadge from '@/components/ui/applications/ApplicationStat
 import AiPromptModal from '@/components/ui/AiPromptModal';
 import { Sparkles } from 'lucide-react';
 import { useGenerateApplicationLetter } from '@/api/textGeneration-api';
+import { motion } from 'framer-motion';
 
 type ApplicationFormProps = {
   projectId: string;
@@ -112,14 +113,51 @@ export default function FreelancerApplicationForm({
                     placeholder="Introduce yourself and explain why you're a great fit for this project..."
                   />
                   {/* Floating AI Assist Button */}
-                  <button
-                    type='button'
+                  <motion.button
+                    type="button"
                     onClick={() => setIsAiModalOpen(true)}
-                    className='absolute top-2 right-2 flex items-center justify-center bg-indigo-600 text-white p-2 rounded-full shadow-md hover:bg-indigo-700 transform hover:scale-110 transition-all'
-                    title='Generate with AI'
+                    className="absolute top-2 right-2 flex items-center justify-center p-2
+                      bg-white/90 backdrop-blur-sm border border-indigo-100
+                      shadow-md text-indigo-800 rounded-md overflow-hidden"
+                    title="Generate with AI"
+                    whileHover={{ 
+                      y: -2, 
+                      boxShadow: "0 8px 20px -4px rgba(99, 102, 241, 0.25)"
+                    }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 500, 
+                      damping: 15 
+                    }}
                   >
-                    <Sparkles className='w-5 h-5' />
-                  </button>
+                    {/* Background gradient that appears on hover */}
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 opacity-0"
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                    />
+
+                    {/* Icon container with animation */}
+                    <motion.div 
+                      className="relative flex items-center justify-center w-5 h-5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-sm"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-white relative z-10" />
+                    </motion.div>
+
+                    {/* Tiny activity indicator */}
+                    <motion.span 
+                      className="absolute top-0.5 right-0.5 h-1 w-1 rounded-full bg-fuchsia-500"
+                      animate={{ 
+                        scale: [1, 1.5, 1],
+                        opacity: [1, 0.5, 1] 
+                      }}
+                      transition={{ 
+                        repeat: Infinity, 
+                        duration: 2 
+                      }}
+                    />
+                  </motion.button>
                 </div>
 
                 {/* Word count and advice */}

@@ -6,6 +6,11 @@ import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dynamic from 'next/dynamic';
+import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import AiPromptModal from '@/components/ui/AiPromptModal';
+import { useGenerateProject } from '@/api/textGeneration-api'; // Adjust this import as needed
 
 const RichTextEditor = dynamic(() => import('@/components/ui/RichTextEditor'), {
   ssr: false,
@@ -22,10 +27,16 @@ const schema = z.object({
 
 function StepOne({ handleNext }: { handleNext: () => void }) {
   const { formData, setFormData } = useSteps();
+  const [isAiDescriptionModalOpen, setIsAiDescriptionModalOpen] = useState(false);
+  
+  // Use your text generation hook for project descriptions
+  const generateDescriptionMutation = useGenerateProject();
+
   const {
     register,
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -35,6 +46,11 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
   const onSubmit = (data: any) => {
     setFormData({ ...formData, ...data });
     handleNext();
+  };
+
+  // AI text application handler for project description
+  const handleApplyAiDescription = (aiText: string) => {
+    setValue('projectDescription', aiText, { shouldValidate: true });
   };
 
   return (
@@ -104,21 +120,66 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
           </p>
         </div>
       </div>
-      <Controller
-        name='projectDescription'
-        control={control}
-        defaultValue=''
-        render={({ field: { onChange, value } }) => (
-          <RichTextEditor
-            value={value}
-            onChange={(name, value) => onChange(value)}
-            name='projectDescription'
-            placeholder=''
-            className=''
-            minHeight='130px'
-          />
-        )}
-      />
+      <div className="relative">
+        <Controller
+          name='projectDescription'
+          control={control}
+          defaultValue=''
+          render={({ field: { onChange, value } }) => (
+            <div className="relative">
+              <RichTextEditor
+                value={value}
+                onChange={(name, value) => onChange(value)}
+                name='projectDescription'
+                placeholder=''
+                className=''
+                minHeight='130px'
+              />
+              {/* AI button for project description */}
+              <motion.button
+                type="button"
+                onClick={() => setIsAiDescriptionModalOpen(true)}
+                className="absolute top-0.5 right-2 flex items-center justify-center p-2
+                  bg-white/90 backdrop-blur-sm border border-indigo-100
+                  shadow-md text-indigo-800 rounded-md overflow-hidden"
+                title="Generate description with AI"
+                whileHover={{ 
+                  y: -2, 
+                  boxShadow: "0 8px 20px -4px rgba(99, 102, 241, 0.25)"
+                }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 500, 
+                  damping: 15 
+                }}
+              >
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 opacity-0"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                />
+                <motion.div 
+                  className="relative flex items-center justify-center w-5 h-5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-sm"
+                  whileHover={{ scale: 1.1 }}
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-white relative z-10" />
+                </motion.div>
+                <motion.span 
+                  className="absolute top-0.5 right-0.5 h-1 w-1 rounded-full bg-fuchsia-500"
+                  animate={{ 
+                    scale: [1, 1.5, 1],
+                    opacity: [1, 0.5, 1] 
+                  }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 2 
+                  }}
+                />
+              </motion.button>
+            </div>
+          )}
+        />
+      </div>
       {errors.projectDescription && (
         <p data-test='project-desc-error' className='text-red-500'>
           {errors.projectDescription.message}
@@ -164,6 +225,16 @@ function StepOne({ handleNext }: { handleNext: () => void }) {
           <span className='relative z-10'>Next</span>
         </button>
       </div>
+
+      {/* AI Prompt Modal for Project Description */}
+      <AiPromptModal
+        isOpen={isAiDescriptionModalOpen}
+        setIsOpen={setIsAiDescriptionModalOpen}
+        onApply={handleApplyAiDescription}
+        generateMutation={generateDescriptionMutation}
+        title="Generate Project Description"
+        confirmText="Apply"
+      />
     </form>
   );
 }

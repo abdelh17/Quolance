@@ -70,4 +70,9 @@ public class Profile extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
     private List<ProjectExperience> projectExperiences;
+
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(name = "embedding_json", columnDefinition = "TEXT")
+    private String embeddingJson;
 }

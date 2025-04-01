@@ -3,9 +3,10 @@ package com.quolance.quolance_api.integration.tests;
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.entities.Application;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.*;
+import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.Availability;
 import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
@@ -15,11 +16,13 @@ import com.quolance.quolance_api.integration.BaseIntegrationTest;
 import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
+import com.quolance.quolance_api.services.ai_models.recommendation.ProfileEmbeddingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,7 +50,8 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private ProjectRepository projectRepository;
-
+    @MockBean
+    private ProfileEmbeddingService profileService;
     @Autowired
     private UserRepository userRepository;
 
@@ -320,6 +326,7 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     void updateFreelancerProfileFullUpdateIsOk() throws Exception {
         // Arrange
+        doNothing().when(profileService).updateProfileEmbedding(any(Profile.class));
         UpdateFreelancerProfileDto updateDto = UpdateFreelancerProfileDto.builder()
                 .firstName("John")
                 .lastName("Updated")

@@ -32,6 +32,12 @@ export interface FreelancerProfileType {
   reviews:GetReviewType[];
 }
 
+export interface FreelancerRecommendationType {
+  profile: FreelancerProfileType;
+  similarityScore: number;
+}
+
+
 interface ConnectedAccount {
   provider: 'google' | 'github' | 'facebook' | 'okta';
   connectedAt: string;
