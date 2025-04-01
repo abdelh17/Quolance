@@ -3,7 +3,7 @@
 import { useGetFreelancerRecommendations } from '@/api/client-api';
 import Loading from '@/components/ui/loading/loading';
 import TopTalentFreelancerCard from '@/components/ui/freelancers/TopTalentFreelancerCard';
-import { FreelancerRecommendationType } from '@/constants/models/user/UserResponse';
+import { FreelancerRecommendationType } from '@/models/user/UserResponse';
 import { motion } from 'framer-motion';
 import { Sparkles, BrainCircuit, Cpu } from 'lucide-react';
 
