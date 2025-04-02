@@ -137,7 +137,7 @@ export default function FreelancerPage() {
 
                <div className='w-full pt-6 sm:px-12'>
                  <a
-                   href={`mailto:${freelancer.contactEmail || 'example@domain.com'}`}
+                   href={`mailto:${freelancer.contactEmail || 'support@quolance.com'}`}
                    className='bg-n700 hover:text-n900 relative block w-full overflow-hidden rounded-full px-6 py-3 text-sm font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]'
                  >
                    <div className='relative z-20 flex items-center justify-center gap-3 whitespace-nowrap'>

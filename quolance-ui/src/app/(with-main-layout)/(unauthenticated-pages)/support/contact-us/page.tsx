@@ -1,172 +1,179 @@
 'use client'
-import React, { useState } from 'react';
-import { EnvelopeIcon } from '@heroicons/react/24/outline'
+import React from 'react';
+import { EnvelopeIcon, ClockIcon, InformationCircleIcon, CodeBracketIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 const ContactUsPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    message: ''
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Reset form
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      message: ''
-    });
-  };
-
   return (
-    <div className="relative isolate bg-white">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
-        <div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
-          <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
-            <div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-gray-100 ring-1 ring-gray-900/10 lg:w-1/2">
-              <svg
-                aria-hidden="true"
-                className="absolute inset-0 size-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
-              >
-                <defs>
-                  <pattern
-                    x="100%"
-                    y={-1}
-                    id="83fd4e5a-9d52-42fc-97b6-718e5d7ee527"
-                    width={200}
-                    height={200}
-                    patternUnits="userSpaceOnUse"
+    <div className="relative isolate bg-white overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
+      <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-blue-100 opacity-30 blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-40 right-10 h-60 w-60 rounded-full bg-indigo-100 opacity-20 blur-3xl pointer-events-none"></div>
+      
+      <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32">
+        <div className="max-w-2xl mb-16">
+          <h1 
+            data-test="contact-us-title" 
+            className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600"
+          >
+            Get in touch
+          </h1>
+          <p 
+            data-test="contact-us-desc" 
+            className="mt-6 text-lg text-gray-600 max-w-xl"
+          >
+            Have questions about Quolance? Whether you're a client looking to hire or a freelancer ready to offer your expertise,
+            we're here to help you succeed in the digital marketplace.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-y-8 gap-x-12 lg:grid-cols-2">
+          {/* Contact information - more compact */}
+          <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">Contact Information</h2>
+            
+            <div className="space-y-6">
+              {/* Email */}
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <EnvelopeIcon className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="text-base font-medium text-gray-900">Email</h3>
+                  <a 
+                    data-test="contact-us-email-value" 
+                    href="mailto:support@quolance.com" 
+                    className="text-base text-gray-700 hover:text-blue-600 transition-colors"
                   >
-                    <path d="M130 200V.5M.5 .5H200" fill="none" />
-                  </pattern>
-                </defs>
-                <rect fill="white" width="100%" height="100%" strokeWidth={0} />
-                <svg x="100%" y={-1} className="overflow-visible fill-gray-50">
-                  <path d="M-470.5 0h201v201h-201Z" strokeWidth={0} />
-                </svg>
-                <rect fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)" width="100%" height="100%" strokeWidth={0} />
-              </svg>
-            </div>
-            <h2 data-test="contact-us-title" className="text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
-              Get in touch
-            </h2>
-            <p  data-test="contact-us-desc" className="mt-6 text-lg/8 text-gray-600">
-              Have questions about Quolance? Whether you're a client looking to hire or a freelancer ready to offer your expertise,
-              we're here to help you succeed in the digital marketplace.
-            </p>
-            <dl className="mt-10 space-y-4 text-base/7 text-gray-600">
-              <div className="flex gap-x-4">
-                <dt className="flex-none">
-                  <span data-test="contact-us-email-title"  className="sr-only">Email</span>
-                  <EnvelopeIcon aria-hidden="true" className="h-7 w-6 text-b300" />
-                </dt>
-                <dd>
-                  <a data-test="contact-us-email-value"  href="mailto:contact@quolance.com" className="hover:text-gray-900">
-                    contact@quolance.com
+                    support@quolance.com
                   </a>
-                </dd>
+                </div>
               </div>
-            </dl>
+              
+              {/* Support Hours */}
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <ClockIcon className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="text-base font-medium text-gray-900">Support Hours</h3>
+                  <p className="text-base text-gray-700">
+                    Mon-Fri: 9AM-6PM EST | Weekend: Limited
+                  </p>
+                </div>
+              </div>
+              
+              {/* GitHub */}
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <CodeBracketIcon className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="text-base font-medium text-gray-900">GitHub</h3>
+                  <a 
+                    href="https://github.com/abdelh17/Quolance" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-base text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    github.com/abdelh17/Quolance
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            {/* Quick FAQ access */}
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <InformationCircleIcon className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="text-base font-medium text-gray-900">Need Quick Answers?</h3>
+                  <Link
+                    href="/support/faqs"
+                    className="text-base text-gray-700 hover:text-blue-600 transition-colors flex items-center"
+                  >
+                    Browse our FAQ section
+                    <svg className="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clipRule="evenodd" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Community section */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 shadow-lg text-white">
+            <h2 className="text-2xl font-semibold mb-4">Join Our Community</h2>
+            <p className="text-blue-100 mb-6">
+              Quolance is an open-source project dedicated to connecting freelancers and clients. We welcome contributors and community members who want to help improve the platform.
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-center">
+                <svg className="h-6 w-6 mr-3 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <a 
+                    href="https://github.com/abdelh17/Quolance"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white font-medium hover:text-blue-200 transition-colors"
+                  >
+                    Star our repository
+                  </a>
+                  <p className="text-sm text-blue-200">Get notified about updates</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center">
+                <svg className="h-6 w-6 mr-3 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
+                </svg>
+                <div>
+                  <a 
+                    href="https://github.com/abdelh17/Quolance/issues"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white font-medium hover:text-blue-200 transition-colors"
+                  >
+                    Report issues
+                  </a>
+                  <p className="text-sm text-blue-200">Help us improve the platform</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center">
+                <svg className="h-6 w-6 mr-3 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.28 7.78a.75.75 0 00-1.06-1.06l-9.5 9.5a.75.75 0 101.06 1.06l9.5-9.5z" />
+                  <path fillRule="evenodd" d="M17.75 10a.75.75 0 01.75.75v6.5a.75.75 0 01-.75.75h-6.5a.75.75 0 010-1.5h5.75v-5.75a.75.75 0 01.75-.75zm-10.5 2.5a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5a.75.75 0 01-.75-.75zm5.5-3.5a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5a.75.75 0 01.75-.75zm-8.25.75a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5h-1.5z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <a 
+                    href="https://github.com/abdelh17/Quolance/pulls"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white font-medium hover:text-blue-200 transition-colors"
+                  >
+                    Contribute
+                  </a>
+                  <p className="text-sm text-blue-200">Submit pull requests</p>
+                </div>
+              </div>
+            </div>
+            
+            <Link
+              href="/support/faqs"
+              className="mt-8 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 transition-colors duration-300 w-full"
+            >
+              Check our FAQ section
+            </Link>
           </div>
         </div>
-        <form onSubmit={handleSubmit} className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48">
-          <div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
-            <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-              <div>
-                <label data-test="first-name-label" htmlFor="firstName" className="block text-sm/6 font-semibold text-gray-900">
-                  First name
-                </label>
-                <div className="mt-2.5">
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    data-test="first-name-input"
-                    required
-                    autoComplete="given-name"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-b300"
-                  />
-                </div>
-              </div>
-              <div>
-                <label data-test="last-name-label" htmlFor="lastName" className="block text-sm/6 font-semibold text-gray-900">
-                  Last name
-                </label>
-                <div className="mt-2.5">
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    data-test="last-name-input"
-                    required
-                    autoComplete="family-name"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-b300"
-                  />
-                </div>
-              </div>
-              <div className="sm:col-span-2">
-                <label data-test="email-label"  htmlFor="email" className="block text-sm/6 font-semibold text-gray-900">
-                  Email
-                </label>
-                <div className="mt-2.5">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    data-test="email-input"
-                    required
-                    autoComplete="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-b300"
-                  />
-                </div>
-              </div>
-              <div className="sm:col-span-2">
-                <label data-test="message-label"   htmlFor="message" className="block text-sm/6 font-semibold text-gray-900">
-                  Message
-                </label>
-                <div className="mt-2.5">
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={4}
-                    data-test="message-input"
-                    required
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-b300"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="mt-8 flex justify-end">
-              <button
-                data-test="send-message-btn"
-                type="submit"
-                className="bg-b300 hover:text-n900 relative flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
-              >
-                <span className="relative z-10">Send message</span>
-              </button>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
   );
