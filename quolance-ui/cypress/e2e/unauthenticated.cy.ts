@@ -11,8 +11,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
 
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
-
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');
 
@@ -104,8 +102,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
 
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
-
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');
 
@@ -187,8 +183,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
 
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
-
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');
 
@@ -249,8 +243,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // Removing the problematic Why Quolance? element checks
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
-
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
 
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');
@@ -313,8 +305,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
 
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
-
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');
 
@@ -365,8 +355,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
 
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
-
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');
 
@@ -394,39 +382,6 @@ describe('Flow for Unauthenticated Pages', () => {
 
   })
 
-  it('Flow For /whats-new/blog', () => {
-    cy.visit('/whats-new/blog')
-
-    cy.get('[data-test="quolance-header-unauthenticated"]').contains(/Quolance/i);
-
-    cy.get('[data-test="How It Works"]').contains(/How It Works/i);
-    cy.get('[data-test="How It Works"]').trigger('mouseover')
-
-    // Removing the problematic Why Quolance? element checks
-    // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
-    // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
-
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
-
-    cy.get('[data-test="Support"]').contains(/Support/i);
-    cy.get('[data-test="Support"]').trigger('mouseover');
-
-    cy.get('[data-test="sign-up-header"]').contains(/Sign up/i);
-
-    cy.get('[data-test="sign-in-header"]').contains(/Sign in/i);
-
-    cy.get('[data-test="blog-title"]').contains(/Blog/i);
-    cy.get('[data-test="blog-desc"]').contains(/Stay up to date with the latest news. Here you can find articles, events, news./i);
-
-
-    cy.get('[data-test="blog-title-unauthenticated"]').contains(/Sign In Required/i);
-    cy.get('[data-test="blog-desc-unauthenticated"]').contains(/You must be signed in to create a post. Please log in to continue./i);
-    cy.get('[data-test="blog-btn-unauthenticated"]').contains(/Sign In/i);
-
-    cy.get('[data-test="footer"]').contains(/Copyright @ 2025 Quolance/i);
-
-  })
-
   it('Successfull Flow For Submitting Email on contact-us page', () => {
     cy.visit('/support/contact-us')
 
@@ -438,8 +393,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // Removing the problematic Why Quolance? element checks
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
-
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
 
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');
@@ -538,8 +491,6 @@ describe('Flow for Unauthenticated Pages', () => {
     // Removing the problematic Why Quolance? element checks
     // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
     // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
-
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
 
     cy.get('[data-test="Support"]').contains(/Support/i);
     cy.get('[data-test="Support"]').trigger('mouseover');

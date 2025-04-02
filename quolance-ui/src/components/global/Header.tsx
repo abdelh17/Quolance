@@ -165,6 +165,9 @@ function Header() {
                       </li>
                     )}
                     <li className='hover:text-b500 duration-500'>
+                      <Link href='/blog'>Blog</Link>
+                    </li>
+                    <li className='hover:text-b500 duration-500'>
                       <Link href='/setting'>Settings</Link>
                     </li>
                     <li
