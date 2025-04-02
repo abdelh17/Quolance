@@ -10,7 +10,7 @@ export default function LoginPage() {
   return (
     <>
       <AuthHeader userRole={undefined} />
-      <div className='mx-auto mt-4 flex h-full min-w-52 max-w-screen-sm flex-col justify-center space-y-6 pt-24 md:mt-0 pb-6'>
+      <div className='mx-auto mt-4 flex h-full min-w-52 max-w-screen-sm flex-col justify-center space-y-6 pb-6 pt-24 md:mt-0'>
         <div className='rounded-3xl border p-6'>
           <div className='my-6 flex flex-col space-y-2 text-center'>
             <h1 className='text-2xl font-semibold tracking-tight'>
@@ -41,27 +41,27 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <p className='!mt-8 flex justify-center gap-x-2'>
-          Forgot your password?
-          <Link
-            href='/auth/forgot-password'
-            className='underline underline-offset-4'
-          >
-            Request password reset
-          </Link>
-        </p>
+        {/*<p className='!mt-8 flex justify-center gap-x-2'>*/}
+        {/*  Forgot your password?*/}
+        {/*  <Link*/}
+        {/*    href='/auth/forgot-password'*/}
+        {/*    className='underline underline-offset-4'*/}
+        {/*  >*/}
+        {/*    Request password reset*/}
+        {/*  </Link>*/}
+        {/*</p>*/}
 
         <p className='text-muted-foreground !mt-4 px-8 text-center text-sm'>
           By clicking continue, you agree to our{' '}
           <Link
-            href='/terms'
+            href='/support/terms-of-service'
             className='hover:text-primary underline underline-offset-4'
           >
             Terms of Service
           </Link>{' '}
           and{' '}
           <Link
-            href='/privacy'
+            href='/support/privacy-policy'
             className='hover:text-primary underline underline-offset-4'
           >
             Privacy Policy

@@ -117,14 +117,14 @@ const UserRegistration = ({ userRole }: { userRole: RegistrationUserType }) => {
       <p className='text-center text-sm'>
         By creating an account, you agree to our{' '}
         <Link
-          href='/terms'
+          href='/support/terms-of-service'
           className='hover:text-n600 underline underline-offset-4'
         >
           Terms
         </Link>{' '}
         and{' '}
         <Link
-          href='/privacy'
+          href='/support/privacy-policy'
           className='hover:text-n600 underline underline-offset-4'
         >
           Privacy Policy
