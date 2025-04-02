@@ -19,6 +19,8 @@ import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import { cn } from '@/util/utils';
 import { useAuthGuard } from '@/api/auth-api';
 
+import PasswordRequirements from '@/app/(without-main-layout)/auth/register/components/PasswordRequirement';
+
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 // Define schema for form validation using Zod
@@ -78,10 +80,12 @@ export function UpdatePendingUserForm({
       });
   }
 
-  const { register, handleSubmit, formState } = useForm<Schema>({
+  const { register, handleSubmit, formState, watch } = useForm<Schema>({
     resolver: zodResolver(updateSchema),
     reValidateMode: 'onSubmit',
   });
+
+  const password = watch('password');
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
@@ -122,6 +126,7 @@ export function UpdatePendingUserForm({
             disabled={isLoading}
             {...register('password')}
           />
+          <PasswordRequirements password={password} />
           {formState.errors.password && (
             <small className='text-red-600'>
               {formState.errors.password.message}
