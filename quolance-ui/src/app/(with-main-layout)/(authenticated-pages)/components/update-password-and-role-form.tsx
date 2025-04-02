@@ -20,6 +20,7 @@ import { cn } from '@/util/utils';
 import { useAuthGuard } from '@/api/auth-api';
 
 import PasswordRequirements from '@/app/(without-main-layout)/auth/register/components/PasswordRequirement';
+import PasswordStrengthBar from '../setting/components/PasswordStrengthBar';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -126,6 +127,7 @@ export function UpdatePendingUserForm({
             disabled={isLoading}
             {...register('password')}
           />
+          {password?.length > 0 && <PasswordStrengthBar password={password} />}
           <PasswordRequirements password={password} />
           {formState.errors.password && (
             <small className='text-red-600'>
