@@ -213,6 +213,7 @@ export default function ProjectSubmissions({
                           (submission) => submission.status === 'ACCEPTED'
                         ) && submission.status === 'APPLIED'
                       }
+                      message={submission.message}
                       currentProjectId={projectId}
                     />
                   </div>
