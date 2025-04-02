@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { PiCaretDown, PiListBold, PiPlusBold } from 'react-icons/pi';
+import {usePathname} from 'next/navigation';
+import {useState} from 'react';
+import {PiCaretDown, PiListBold, PiPlusBold} from 'react-icons/pi';
 
-import { useAuthGuard } from '@/api/auth-api';
-import { authenticatedHeaderMenu } from '@/constants/data';
+import {useAuthGuard} from '@/api/auth-api';
+import {authenticatedHeaderMenu} from '@/constants/header-data';
 import useScroll from '@/util/hooks/useScroll';
 
 import MobileMenu from './MobileMenu';
@@ -164,6 +164,9 @@ function Header() {
                         <Link href='/profile'>My profile</Link>
                       </li>
                     )}
+                    <li className='hover:text-b500 duration-500'>
+                      <Link href='/blog'>Blog</Link>
+                    </li>
                     <li className='hover:text-b500 duration-500'>
                       <Link href='/setting'>Settings</Link>
                     </li>

@@ -20,6 +20,7 @@ import {
   SocialAuthLogins,
 } from '@/app/(without-main-layout)/auth/shared/auth-components';
 import PasswordRequirements from './PasswordRequirement';
+import PasswordStrengthBar from '@/app/(with-main-layout)/(authenticated-pages)/setting/components/PasswordStrengthBar';
 
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -95,7 +96,7 @@ export function UserRegisterForm({
       <SuccessFeedback
         show={success}
         message='Account created'
-        description='An email verification code has been sent to your inbox. Please enter the code to verify your account.'
+        description='An email verification code has been sent to your inbox. Please enter the code to verify your account. Check your spam folder if you do not find it!'
         action={
           <Link href='/auth/verify-email' className='underline'>
             Verify Email
@@ -160,6 +161,7 @@ export function UserRegisterForm({
               data-test='password-input'
             />
 
+            {password?.length > 0 && <PasswordStrengthBar password={password} />}
             <PasswordRequirements password={password} />
 
             <FormInput

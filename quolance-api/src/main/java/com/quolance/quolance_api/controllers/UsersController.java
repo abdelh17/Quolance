@@ -55,14 +55,6 @@ public class UsersController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/verify-email")
-    @Operation(
-            summary = "Verify the email of the user",
-            description = "Verify the email of the user by passing the token")
-    public ResponseEntity<String> verifyEmail(@RequestBody VerifyEmailDto verificationDto) {
-        String verificationResponse = userService.verifyEmail(verificationDto);
-        return ResponseEntity.ok(verificationResponse);
-    }
 
     @PostMapping("/forgot-password")
     @Operation(summary = "Request a password reset email")

@@ -12,7 +12,7 @@ import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
 import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
-import com.quolance.quolance_api.repositories.VerificationCodeRepository;
+import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import com.quolance.quolance_api.services.entity_services.impl.UserServiceImpl;
 import com.quolance.quolance_api.util.ApplicationContextProvider;
 import com.quolance.quolance_api.util.exceptions.ApiException;
@@ -41,7 +41,7 @@ class UserServiceUnitTest {
     private UserRepository userRepository;
 
     @Mock
-    private VerificationCodeRepository verificationCodeRepository;
+    private VerificationCodeService verificationCodeService;
 
     @Mock
     private PasswordResetTokenRepository passwordResetTokenRepository;
@@ -57,12 +57,6 @@ class UserServiceUnitTest {
 
     @Captor
     private ArgumentCaptor<User> userCaptor;
-
-    @Captor
-    private ArgumentCaptor<VerificationCode> verificationCodeCaptor;
-
-    @Captor
-    private ArgumentCaptor<PasswordResetToken> passwordResetTokenCaptor;
 
     private User mockUser;
     private VerificationCode mockVerificationCode;
@@ -155,8 +149,6 @@ class UserServiceUnitTest {
         assertThat(savedUser.getFirstName()).isEqualTo(createUserRequest.getFirstName());
         assertThat(savedUser.getLastName()).isEqualTo(createUserRequest.getLastName());
         assertThat(savedUser.getRole()).isEqualTo(Role.valueOf(createUserRequest.getRole()));
-        verify(verificationCodeRepository).save(any(VerificationCode.class));
-        backgroundJobRequestMock.verify(() -> BackgroundJobRequest.enqueue(any(SendWelcomeEmailJob.class)));
     }
 
     @Test

@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { SetStateAction } from 'react';
+import {SetStateAction} from 'react';
 import AnimateHeight from 'react-animate-height';
-import { PiCaretRight, PiX } from 'react-icons/pi';
+import {PiCaretRight, PiX} from 'react-icons/pi';
 
-import { headerMenu } from '@/constants/data';
+import {mobileHeaderMenu} from '@/constants/header-data';
 import useToggle from '@/util/hooks/useToggle';
-import { UserResponse } from '@/models/user/UserResponse';
+import {UserResponse} from '@/models/user/UserResponse';
 
 function MobileMenu({
   showMobileMenu,
@@ -76,7 +76,7 @@ function MobileMenu({
         </div>
 
         <ul className='flex w-full flex-col items-start gap-6 overflow-y-auto pb-10 text-lg sm:text-xl lg:gap-10 ltr:pl-8 rtl:pr-8'>
-          {headerMenu.map((menu) => (
+          {mobileHeaderMenu.map((menu) => (
             <li key={menu.id}>
               {menu.isSubmenu ? (
                 <div className='subMenuToggle group flex flex-col items-start justify-start'>

@@ -20,6 +20,8 @@ public interface UserService {
 
     String verifyEmail(VerifyEmailDto verifyEmailDto);
 
+    void resendVerificationEmail(String email);
+
     void forgotPassword(String email);
 
     void resetPassword(UpdateUserPasswordRequestDto request);

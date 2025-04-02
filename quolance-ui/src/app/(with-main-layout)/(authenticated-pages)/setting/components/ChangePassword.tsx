@@ -15,6 +15,8 @@ import { showToast } from '@/util/context/ToastProvider';
 
 import PasswordStrengthBar from './PasswordStrengthBar';
 
+import PasswordRequirements from '@/app/(without-main-layout)/auth/register/components/PasswordRequirement';
+
 const changePasswordSchema = z
   .object({
     oldPassword: z.string().min(1, 'Current password is required'),
@@ -132,6 +134,7 @@ export default function ChangePassword() {
             </small>
           )}
           {password.length >= 1 && <PasswordStrengthBar password={password} />}
+          {password.length >= 1 && <PasswordRequirements password={password} />}
         </div>
 
         <div className='col-span-full'>
