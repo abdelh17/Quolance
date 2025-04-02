@@ -18,7 +18,7 @@ public interface UserService {
 
     Optional<User> findByUsername(String username);
 
-    String verifyEmail(VerifyEmailDto verifyEmailDto);
+    String verifyEmail(String email, VerifyEmailDto verifyEmailDto);
 
     void resendVerificationEmail(String email);
 

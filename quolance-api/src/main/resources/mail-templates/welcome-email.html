@@ -97,7 +97,7 @@
     <p>Enter this verification code on the site to complete your account creation. This code will expire in 10
         minutes.</p>
 
-    <a class="button" th:href="@{${verificationLink}}" target="_blank">
+    <a class="button" th:href="@{${verificationLink}+ '/'+${user.getEmail()}}" target="_blank">
         Verify Email Address
     </a>
 

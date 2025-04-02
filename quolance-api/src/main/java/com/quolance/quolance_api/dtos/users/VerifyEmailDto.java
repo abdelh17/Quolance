@@ -10,7 +10,5 @@ import lombok.Setter;
 @Setter
 public class VerifyEmailDto {
     @NotNull
-    private String email;
-    @NotNull
     private String verificationCode;
 }
