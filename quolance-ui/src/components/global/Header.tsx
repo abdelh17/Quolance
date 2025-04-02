@@ -52,7 +52,7 @@ function Header() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="max-w-7.5xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between py-5">
             {/* Left side: Logo and non-user related links */}
             <div className="flex items-center gap-6">
