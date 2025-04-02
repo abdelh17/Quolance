@@ -54,7 +54,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className='min-h-full bg-stone-100'>
+      <div className='flex-grow bg-stone-100'>
         <div className='relative h-[300px] overflow-hidden'>
           {' '}
           {/* Fixed height for Image component */}
@@ -96,7 +96,7 @@ export default function Dashboard() {
         </div>
 
         <main>
-          <div className='mx-auto px-4 py-8 sm:px-6 lg:px-8'>
+          <div className='mx-auto flex-grow px-4 py-8 sm:px-6 lg:px-8'>
             {user?.role === 'CLIENT' && (
               <div>
                 <ClientDashboardActionButtons />
