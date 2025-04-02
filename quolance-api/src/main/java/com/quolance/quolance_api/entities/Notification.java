@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,8 @@ import java.time.LocalDateTime;
 @Table(name = "notifications")
 public class Notification extends AbstractEntity {
 
-    @Column(nullable = false)
+    @Length(max = 500)
+    @Column(nullable = false,length = 500)
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

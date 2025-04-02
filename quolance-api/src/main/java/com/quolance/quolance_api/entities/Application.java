@@ -5,6 +5,7 @@ import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.UUID;
 
@@ -33,8 +34,10 @@ public class Application extends AbstractEntity {
     @Version
     private Long version;
 
-    @Column(length = 1000)
+    @Length(max = 5000)
+    @Column(length = 5000)
     private String message;
+
     
     /**
      * Checks if the application is owned by a particular freelancer.

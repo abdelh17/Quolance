@@ -126,6 +126,8 @@ export const useGetFreelancerProfile = (username?: string) => {
   });
 };
 
+export type EditProfileMutationType = ReturnType<typeof useEditProfile>
+
 export const useEditProfile = () => {
   const queryClient = useQueryClient();
 

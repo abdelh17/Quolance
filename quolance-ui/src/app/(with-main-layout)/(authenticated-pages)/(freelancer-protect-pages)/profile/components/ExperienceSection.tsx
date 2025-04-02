@@ -1,75 +1,81 @@
 import React from 'react';
 import { Briefcase } from 'lucide-react';
 import {
-  EditModesType,
-  FreelancerProfileType,
+ FreelancerProfileType,
+ EditModesType,
 } from '@/models/user/UserResponse';
 import { ExperienceLevelRadioGroup } from '@/components/ui/freelancers/FreelancerProfileRadioGroups';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
 
+
 interface ExperienceSectionProps {
-  profile: {
-    experienceLevel?: string | null;
-  };
-  handleInputChange: (
-    field: keyof FreelancerProfileType,
-    value: string
-  ) => void;
-  updateEditModes: (value: string) => void;
-  editModes: EditModesType;
-  handleSave: (value: string) => void;
-  checkEditModes: (value: string) => boolean;
+ profile: {
+   experienceLevel?: string | null;
+ };
+ handleInputChange: (
+   field: keyof FreelancerProfileType,
+   value: string
+ ) => void;
+ updateEditModes: (value: string) => void;
+ editModes: EditModesType;
+ handleSave: (value: string) => void;
+ checkEditModes: (value: string) => boolean;
 }
 
+
 const ExperienceSection: React.FC<ExperienceSectionProps> = ({
-  profile,
-  handleInputChange,
-  updateEditModes,
-  editModes,
-  handleSave,
-  checkEditModes,
+ profile,
+ handleInputChange,
+ updateEditModes,
+ editModes,
+ handleSave,
+ checkEditModes,
 }) => (
-  <section className='mb-8 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md'>
-    <div className='mb-4 flex justify-between'>
-      <h2 className='self-center text-xl font-semibold text-gray-800'>
-        Experience
-      </h2>
-      {!editModes.editExperience ? (
-        <EditButton
-          editModeKey='editExperience'
-          updateEditModes={updateEditModes}
-          checkEditModes={checkEditModes}
-        />
-      ) : null}
-    </div>
-    <div className=''>
-      {editModes.editExperience ? (
-        <div>
-          <div className='flex'>
-            <Briefcase className=' mr-3' />
-            <ExperienceLevelRadioGroup
-              name='experienceLevel'
-              value={profile.experienceLevel ?? ''}
-              onChange={(e) =>
-                handleInputChange('experienceLevel', e.target.value)
-              }
-            />
-          </div>
-          <div className='mt-4'>
-            <SaveButton editModeKey='editExperience' handleSave={handleSave} />
-          </div>
-        </div>
-      ) : (
-        <div className='flex items-center'>
-          <Briefcase className=' mr-3' />
-          <span className='capitalize text-gray-700'>
-            {profile.experienceLevel?.toLowerCase() ?? 'Not specified'}
-          </span>
-        </div>
-      )}
-    </div>
-  </section>
+ <section className='mb-8 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md'>
+   <div className='mb-4 flex justify-between'>
+     <h2 className='flex items-center self-center text-md sm:text-xl font-semibold text-gray-80'>
+     <Briefcase className=' mr-2' />  Experience Level
+     </h2>
+     {!editModes.editExperience ? (
+       <EditButton
+         editModeKey='editExperience'
+         updateEditModes={updateEditModes}
+         checkEditModes={checkEditModes}
+       />
+     ) : null}
+   </div>
+   <div className=''>
+     {editModes.editExperience ? (
+       <div>
+         <div className='flex'>
+           <ExperienceLevelRadioGroup
+             name='experienceLevel'
+             value={profile.experienceLevel ?? ''}
+             onChange={(e) =>
+               handleInputChange('experienceLevel', e.target.value)
+             }
+           />
+         </div>
+         <div className='mt-4'>
+           <SaveButton editModeKey='editExperience' handleSave={handleSave} />
+         </div>
+       </div>
+     ) : (
+       <p
+       className={
+         profile.experienceLevel
+           ? 'capitalize text-gray-700'
+           : 'italic text-gray-500'
+       }
+     >
+       {profile.experienceLevel?.toLowerCase() ?? 'No experience level added.'}
+     </p>
+     )}
+   </div>
+ </section>
 );
 
+
 export default ExperienceSection;
+
