@@ -66,6 +66,7 @@ function FreelancersFilterModal({
               className={'mt-3'}
               innerClassName={'!rounded-2xl !px-4 !py-3'}
               items={SKILLS_OPTIONS}
+              placeholder={'Select skills'}
               name={'skills'}
               multiple={true}
               value={filters.skills}
