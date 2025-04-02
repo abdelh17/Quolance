@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
     List<BlogPost> findByUserId(UUID userId);
 
-    Page<BlogPost> findAll(Pageable pageable);
+    Page<BlogPost> findAllByOrderByLastModifiedDateDesc(Pageable pageable);
 
     @Query("SELECT b FROM BlogPost b " +
             "JOIN b.tags t " +
