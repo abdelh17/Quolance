@@ -164,6 +164,11 @@ function Header() {
                         <Link href='/profile'>My profile</Link>
                       </li>
                     )}
+                    {user?.role === 'FREELANCER' && (
+                      <li className='hover:text-b500 duration-500'>
+                        <Link href='/blog'>Blog</Link>
+                      </li>
+                    )}
                     <li className='hover:text-b500 duration-500'>
                       <Link href='/setting'>Settings</Link>
                     </li>
