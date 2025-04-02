@@ -20,6 +20,7 @@ import {
   SocialAuthLogins,
 } from '@/app/(without-main-layout)/auth/shared/auth-components';
 import PasswordRequirements from './PasswordRequirement';
+import PasswordStrengthBar from '@/app/(with-main-layout)/(authenticated-pages)/setting/components/PasswordStrengthBar';
 
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -160,6 +161,7 @@ export function UserRegisterForm({
               data-test='password-input'
             />
 
+            {password?.length > 0 && <PasswordStrengthBar password={password} />}
             <PasswordRequirements password={password} />
 
             <FormInput
