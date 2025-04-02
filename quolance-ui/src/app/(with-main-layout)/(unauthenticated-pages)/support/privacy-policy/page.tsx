@@ -72,7 +72,7 @@ const PrivacyPolicy: React.FC = () => {
         <p className="text-gray-600">
           Also see our{' '}
           <Link href="/support/terms-of-service" className="font-semibold text-b300 hover:text-b400">
-            Terms Of Service
+            Terms of Service
           </Link>{' '}
           for platform rules and user responsibilities.
         </p>
