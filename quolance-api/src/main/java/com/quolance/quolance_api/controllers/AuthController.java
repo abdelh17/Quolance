@@ -57,12 +57,10 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/verify-email")
-    @Operation(
-            summary = "Verify the email of the user",
-            description = "Verify the email of the user by passing the token")
-    public ResponseEntity<String> verifyEmail(@RequestBody VerifyEmailDto verificationDto) {
-        String verificationResponse = userService.verifyEmail(verificationDto);
+    @PostMapping("/verify-email/{email}")
+    @Operation(summary = "Verify the email of the user")
+    public ResponseEntity<String> verifyEmail(@PathVariable String email, @RequestBody VerifyEmailDto verificationDto) {
+        String verificationResponse = userService.verifyEmail(email, verificationDto);
         return ResponseEntity.ok(verificationResponse);
     }
 

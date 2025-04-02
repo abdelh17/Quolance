@@ -12,49 +12,56 @@ import httpClient from '@/lib/httpClient';
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
 import {Button} from '@/components/ui/button';
-
-import {FormInput} from '@/app/(without-main-layout)/auth/shared/auth-components';
 import {HttpErrorResponse} from '@/models/http/HttpErrorResponse';
 
+const CODE_LENGTH = 6;
+
 const verificationFormSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
   verificationCode: z
-    .string()
-    .min(6, 'Verification code must be at least 6 characters'),
+      .string()
+      .length(CODE_LENGTH, `Verification code must be ${CODE_LENGTH} characters`)
 });
 
 type VerificationSchema = z.infer<typeof verificationFormSchema>;
 
 interface VerificationFormProps extends React.HTMLAttributes<HTMLDivElement> {
-  onEmailChange?: (email: string) => void;
+  email: string;
 }
 
 export function VerificationForm({
                                    className,
-                                   onEmailChange,
+                                   email,
                                    ...props
                                  }: VerificationFormProps) {
   const router = useRouter();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
-    undefined
-  );
+  const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(undefined);
   const [countdown, setCountdown] = React.useState(3);
   const [redirecting, setRedirecting] = React.useState(false);
+  const [code, setCode] = React.useState(Array(CODE_LENGTH).fill(''));
 
-  const { register, handleSubmit, formState, watch } = useForm<VerificationSchema>({
+  const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+
+  const decodedEmail = React.useMemo(() => {
+    try {
+      return decodeURIComponent(email);
+    } catch (e) {
+      return email;
+    }
+  }, [email]);
+
+  const { handleSubmit, setError, formState, setValue, clearErrors } = useForm<VerificationSchema>({
     resolver: zodResolver(verificationFormSchema),
     reValidateMode: 'onSubmit',
+    defaultValues: {
+      verificationCode: ''
+    }
   });
 
-  const email = watch('email');
-
   React.useEffect(() => {
-    if (email && onEmailChange) {
-      onEmailChange(email);
-    }
-  }, [email, onEmailChange]);
+    inputRefs.current = inputRefs.current.slice(0, CODE_LENGTH);
+  }, []);
 
   React.useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -73,34 +80,92 @@ export function VerificationForm({
     };
   }, [countdown, redirecting, router]);
 
+  const handleInputChange = (index: number, value: string) => {
+    if (value && !/^\d*$/.test(value)) {
+      return;
+    }
+
+    const newCode = [...code];
+    newCode[index] = value.slice(-1);
+    setCode(newCode);
+
+    const combinedCode = newCode.join('');
+    setValue('verificationCode', combinedCode);
+
+    if (combinedCode.length === CODE_LENGTH) {
+      clearErrors('verificationCode');
+    }
+
+    if (value && index < CODE_LENGTH - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !code[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text/plain').trim();
+
+    if (!/^\d*$/.test(pastedData)) {
+      return;
+    }
+
+    const chars = pastedData.slice(0, CODE_LENGTH).split('');
+
+    const newCode = [...code];
+    chars.forEach((char, idx) => {
+      if (idx < CODE_LENGTH) {
+        newCode[idx] = char;
+      }
+    });
+
+    setCode(newCode);
+    setValue('verificationCode', newCode.join(''));
+
+    if (chars.length < CODE_LENGTH) {
+      inputRefs.current[chars.length]?.focus();
+    } else {
+      inputRefs.current[CODE_LENGTH - 1]?.focus();
+    }
+  };
+
   async function onSubmit(data: VerificationSchema) {
     setErrors(undefined);
     setIsLoading(true);
 
+    const verificationData = {
+      verificationCode: data.verificationCode
+    };
+
     httpClient
-      .post('/api/auth/verify-email', data)
-      .then((response) => {
-        setSuccess(true);
-        setRedirecting(true);
-      })
-      .catch((error) => {
-        setSuccess(false);
-        const errData = error.response.data as HttpErrorResponse;
-        if (errData.message === 'Email already verified') {
-          setErrors({
-            ...errData,
-            message: 'Email already verified, please log in.',
-          });
+        .post(`/api/auth/verify-email/${email}`, verificationData)
+        .then((response) => {
+          setSuccess(true);
           setRedirecting(true);
-        } else {
-          setErrors(errData);
-          toast.error(errData.message || 'Verification failed');
-        }
-        console.log(errData);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+        })
+        .catch((error) => {
+          setSuccess(false);
+          const errData = error.response.data as HttpErrorResponse;
+          if (errData.message === 'Email already verified') {
+            setErrors({
+              ...errData,
+              message: 'Email already verified, please log in.',
+            });
+            setRedirecting(true);
+          } else {
+            setErrors(errData);
+            toast.error(errData.message || 'Verification failed');
+          }
+          console.log(errData);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
   }
 
   return (
@@ -118,30 +183,38 @@ export function VerificationForm({
         />
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='grid gap-4'>
-            <FormInput
-                id='email'
-                label='Email'
-                type='email'
-                placeholder='name@example.com'
-                isLoading={isLoading}
-                register={register}
-                error={formState.errors.email?.message}
-                autoComplete='email'
-                data-test='email-input'
-            />
-            <FormInput
-                id='verificationCode'
-                label='Verification Code'
-                type='text'
-                placeholder='Enter verification code'
-                isLoading={isLoading}
-                register={register}
-                error={formState.errors.verificationCode?.message}
-                data-test='verification-code-input'
-            />
+            <div>
+              <div className="flex justify-center space-x-2" onPaste={handlePaste}>
+                {Array.from({ length: CODE_LENGTH }).map((_, index) => (
+                    <input
+                        key={index}
+                        ref={(el) => (inputRefs.current[index] = el)}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={code[index]}
+                        onChange={(e) => handleInputChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
+                        className="w-12 h-12 text-center text-lg font-semibold border rounded-md focus:ring-2 focus:ring-primary focus:border-primary"
+                        disabled={isLoading}
+                        aria-label={`Digit ${index + 1} of verification code`}
+                        data-test={`verification-code-digit-${index}`}
+                    />
+                ))}
+              </div>
+              {formState.errors.verificationCode && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {formState.errors.verificationCode.message}
+                  </p>
+              )}
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                Enter the {CODE_LENGTH}-digit code sent to your email
+              </p>
+            </div>
+
             <ErrorFeedback data-test='error-message' data={errors} />
             <Button
-                disabled={isLoading}
+                disabled={isLoading || code.join('').length !== CODE_LENGTH}
                 type='submit'
                 className='mt-6 py-4'
                 variant='default'

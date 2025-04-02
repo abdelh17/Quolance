@@ -162,27 +162,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String verifyEmail(VerifyEmailDto verifyEmailDto) {
-        log.debug("Attempting to verify email: {}", verifyEmailDto.getEmail());
+    public String verifyEmail(String email, VerifyEmailDto verifyEmailDto) {
+        log.debug("Attempting to verify email: {}", email);
         VerificationCode verificationCode = verificationCodeService.findByCode(verifyEmailDto.getVerificationCode());
-        User user = findByEmail(verifyEmailDto.getEmail());
+        User user = findByEmail(email);
 
         if (user.isVerified()) {
-            log.warn("User {} - already verified.", verifyEmailDto.getEmail());
+            log.warn("User {} - already verified.", email);
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_BAD_REQUEST)
                     .message("Email already verified")
                     .build();
         }
         if (verificationCode == null) {
-            log.warn("Email verification failed for {} - invalid code.", verifyEmailDto.getEmail());
+            log.warn("Email verification failed for {} - invalid code.", email);
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_NOT_FOUND)
                     .message("Invalid code")
                     .build();
         }
         if (!verificationCode.getCode().equals(verifyEmailDto.getVerificationCode())) {
-            log.warn("Email verification failed for {} - invalid code: {}", verifyEmailDto.getEmail());
+            log.warn("Email verification failed for {} - invalid code: {}", email);
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_BAD_REQUEST)
                     .message("Invalid code")

@@ -1,6 +1,6 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -11,15 +11,12 @@ import { motion } from 'framer-motion';
 import httpClient from '@/lib/httpClient';
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
-import { Button } from '@/components/ui/button';
-import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
-import { cn } from '@/util/utils';
-import { RegistrationUserType } from '@/app/(without-main-layout)/auth/register/page';
-import { Role } from '@/models/user/UserResponse';
-import {
-  FormInput,
-  SocialAuthLogins,
-} from '@/app/(without-main-layout)/auth/shared/auth-components';
+import {Button} from '@/components/ui/button';
+import {HttpErrorResponse} from '@/models/http/HttpErrorResponse';
+import {cn} from '@/util/utils';
+import {RegistrationUserType} from '@/app/(without-main-layout)/auth/register/page';
+import {Role} from '@/models/user/UserResponse';
+import {FormInput, SocialAuthLogins,} from '@/app/(without-main-layout)/auth/shared/auth-components';
 import PasswordRequirements from './PasswordRequirement';
 import PasswordStrengthBar from '@/app/(with-main-layout)/(authenticated-pages)/setting/components/PasswordStrengthBar';
 
@@ -121,7 +118,7 @@ export function UserRegisterForm({
         message='Account created'
         description='An email verification code has been sent to your inbox. Please enter the code to verify your account. Check your spam folder if you do not find it!'
         action={
-          <Link href='/auth/verify-email' className='underline'>
+          <Link href={`/auth/verify-email/${watch('email')}`} className='underline'>
             Verify Email
           </Link>
         }
