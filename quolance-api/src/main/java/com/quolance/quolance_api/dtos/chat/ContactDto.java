@@ -31,6 +31,9 @@ public class ContactDto {
     @JsonProperty("last_message_timestamp")
     private LocalDateTime lastMessageTimestamp;
 
+    @JsonProperty("last_sender_id")
+    private UUID lastSenderId;
+
     public static ContactDto fromUserAndMessage(User user, Message lastMessage) {
         return ContactDto.builder()
                 .userId(user.getId())
@@ -38,6 +41,7 @@ public class ContactDto {
                 .profilePicture(user.getProfileImageUrl())
                 .lastMessage(lastMessage != null ? lastMessage.getContent() : null)
                 .lastMessageTimestamp(lastMessage != null ? lastMessage.getTimestamp() : null)
+                .lastSenderId(lastMessage != null ? lastMessage.getSender().getId() : null)
                 .build();
     }
 }
