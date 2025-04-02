@@ -32,13 +32,7 @@ export default function VerificationPage() {
             toast.success('Verification code has been resent to your email');
         } catch (error: any) {
             if (error.response) {
-                if (error.response.status === 404) {
-                    setResendError({
-                        message: 'User not found. Please check your email address.',
-                        status: 404
-                    });
-                    toast.error('User not found');
-                } else if (error.response.data && error.response.data.message === 'Email already verified') {
+                if (error.response.data && error.response.data.message === 'Email already verified') {
                     setResendError({
                         message: 'Email already verified. You can proceed to login.',
                         status: error.response.status

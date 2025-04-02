@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
             log.warn("No user found with email: {}", email);
             return ApiException.builder()
                     .status(HttpServletResponse.SC_NOT_FOUND)
-                    .message("User not found")
+                    .message("Invalid credentials")
                     .build();
         });
         return user;
@@ -147,8 +147,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resendVerificationEmail(String email) {
+        log.debug("Attempting to resend verification email for user: {}", email);
         User user = findByEmail(email);
-        log.debug("Attempting to resend verification email for user: {}", user.getEmail());
         if (user.isVerified()) {
             log.warn("Resend verification email failed - user already verified: {}", email);
             throw ApiException.builder()
