@@ -39,8 +39,8 @@ public class BlogPostResponseDto {
         response.setTitle(blogPost.getTitle());
         response.setContent(blogPost.getContent());
         response.setAuthorName(blogPost.getUser().getUsername());
-        response.setDateCreated(blogPost.getDateCreated());
-        response.setLastModified(blogPost.getLastModified());
+        response.setDateCreated(blogPost.getCreationDate());
+        response.setLastModified(blogPost.getLastModifiedDate());
         response.setTags(blogPost.getTags() != null
                 ? blogPost.getTags().stream()
                 .map(Enum::name)

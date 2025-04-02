@@ -108,8 +108,8 @@ public class EntityCreationHelper {
         BlogPost blogPost = new BlogPost();
         blogPost.setContent("This is a test blog post.");
         blogPost.setUser(user);
-        blogPost.setDateCreated(LocalDateTime.now());
-        blogPost.setLastModified(LocalDateTime.now());
+//        blogPost.setDateCreated(LocalDateTime.now());
+//        blogPost.setLastModified(LocalDateTime.now());
         blogPost.setReported(false);
         blogPost.setResolved(false);
         return blogPost;
@@ -121,8 +121,8 @@ public class EntityCreationHelper {
         blogPost.setContent(content);
         blogPost.setUser(user);
         blogPost.setTags(Set.copyOf(tags));
-        blogPost.setDateCreated(creationDate);
-        blogPost.setLastModified(creationDate);
+//        blogPost.setDateCreated(creationDate);
+//        blogPost.setLastModified(creationDate);
         blogPost.setReported(false);
         blogPost.setResolved(false);
         return blogPost;
@@ -133,8 +133,8 @@ public class EntityCreationHelper {
         blogPost.setTitle("Blog Post with Images");
         blogPost.setContent("This is a test blog post with images.");
         blogPost.setUser(user);
-        blogPost.setDateCreated(LocalDateTime.now());
-        blogPost.setLastModified(LocalDateTime.now());
+//        blogPost.setDateCreated(LocalDateTime.now());
+//        blogPost.setLastModified(LocalDateTime.now());
         blogPost.setReported(false);
         blogPost.setResolved(false);
 

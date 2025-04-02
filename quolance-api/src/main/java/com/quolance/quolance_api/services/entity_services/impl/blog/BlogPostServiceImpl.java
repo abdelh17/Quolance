@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,16 +39,13 @@ public class BlogPostServiceImpl implements BlogPostService {
         log.info("Creating a new blog post for user: {}", author.getId());
         List<BlogImage> blogImages = new ArrayList<>();
 
-        // Step 1: Upload images and create BlogImage entities
         if (request.getImages() != null) {
             for (MultipartFile image : request.getImages()) {
                 log.debug("Processing image: {}", image.getOriginalFilename());
                 System.out.println("Received file: " + image.getOriginalFilename());
-                // Upload to Cloudinary or local storage and get the path/URL
                 Map<String, Object> uploadResult = fileService.uploadFile(image, author);
-                String imagePath = uploadResult.get("secure_url").toString();  // Store the Cloudinary URL
+                String imagePath = uploadResult.get("secure_url").toString();
 
-                // Create BlogImage entity and associate it with the post
                 BlogImage blogImage = BlogImage.builder()
                         .imagePath(imagePath)
                         .build();
@@ -57,23 +53,20 @@ public class BlogPostServiceImpl implements BlogPostService {
             }
         }
 
-        // Step 2: Convert DTO to BlogPost entity
         BlogPost blogPost = BlogPost.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .user(author)
                 .tags(request.getTags() != null ? Set.copyOf(request.getTags()) : Set.of())
-                .images(blogImages)  // Associate the BlogImage entities
-                .dateCreated(LocalDateTime.now())
-                .lastModified(LocalDateTime.now())
+                .images(blogImages)
+//                .dateCreated(LocalDateTime.now())
+//                .lastModified(LocalDateTime.now())
                 .build();
 
-        // Associate the blog post with each BlogImage
         for (BlogImage blogImage : blogImages) {
             blogImage.setBlogPost(blogPost);
         }
 
-        // Step 3: Save the blog post
         BlogPost savedBlogPost = blogPostRepository.save(blogPost);
         log.info("Blog post created successfully with ID: {}", savedBlogPost.getId());
         return BlogPostResponseDto.fromEntity(savedBlogPost);
@@ -135,7 +128,7 @@ public class BlogPostServiceImpl implements BlogPostService {
             blogPost.setContent(updateRequest.getContent());
         if (updateRequest.getTitle() != null)
             blogPost.setTitle(updateRequest.getTitle());
-        blogPost.setLastModified(LocalDateTime.now());
+//        blogPost.setLastModified(LocalDateTime.now());
         return blogPost;
     }
 

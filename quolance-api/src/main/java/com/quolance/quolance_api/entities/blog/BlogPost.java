@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +38,6 @@ public class BlogPost extends AbstractEntity {
 
     @Column(nullable = false)
     private boolean isResolved;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime dateCreated;
-
-    @Column(nullable = false)
-    private LocalDateTime lastModified;
 
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogComment> blogComments = new ArrayList<>();
