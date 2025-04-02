@@ -1,21 +1,20 @@
 'use client';
-
-import { zodResolver } from '@hookform/resolvers/zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import {useForm} from 'react-hook-form';
+import {toast} from 'sonner';
 import * as z from 'zod';
 
 import httpClient from '@/lib/httpClient';
 
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
-import { Button } from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 
-import { FormInput } from '@/app/(without-main-layout)/auth/shared/auth-components';
-import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import {FormInput} from '@/app/(without-main-layout)/auth/shared/auth-components';
+import {HttpErrorResponse} from '@/models/http/HttpErrorResponse';
 
 const verificationFormSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -26,10 +25,15 @@ const verificationFormSchema = z.object({
 
 type VerificationSchema = z.infer<typeof verificationFormSchema>;
 
+interface VerificationFormProps extends React.HTMLAttributes<HTMLDivElement> {
+  onEmailChange?: (email: string) => void;
+}
+
 export function VerificationForm({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+                                   className,
+                                   onEmailChange,
+                                   ...props
+                                 }: VerificationFormProps) {
   const router = useRouter();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -39,10 +43,18 @@ export function VerificationForm({
   const [countdown, setCountdown] = React.useState(3);
   const [redirecting, setRedirecting] = React.useState(false);
 
-  const { register, handleSubmit, formState } = useForm<VerificationSchema>({
+  const { register, handleSubmit, formState, watch } = useForm<VerificationSchema>({
     resolver: zodResolver(verificationFormSchema),
     reValidateMode: 'onSubmit',
   });
+
+  const email = watch('email');
+
+  React.useEffect(() => {
+    if (email && onEmailChange) {
+      onEmailChange(email);
+    }
+  }, [email, onEmailChange]);
 
   React.useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -66,7 +78,7 @@ export function VerificationForm({
     setIsLoading(true);
 
     httpClient
-      .post('/api/users/verify-email', data)
+      .post('/api/auth/verify-email', data)
       .then((response) => {
         setSuccess(true);
         setRedirecting(true);
@@ -92,61 +104,58 @@ export function VerificationForm({
   }
 
   return (
-    <div className='grid gap-6'>
-      <SuccessFeedback
-        show={success}
-        message='Account verified successfully'
-        description='You can now login with your email and password.'
-        action={
-          <Link href='/auth/login' className='underline'>
-            Login
-          </Link>
-        }
-        data-test='success-message'
-      />
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='grid gap-4'>
-          <FormInput
-            id='email'
-            label='Email'
-            type='email'
-            placeholder='name@example.com'
-            isLoading={isLoading}
-            register={register}
-            error={formState.errors.email?.message}
-            autoComplete='email'
-            data-test='email-input'
-          />
-          <FormInput
-            id='verificationCode'
-            label='Verification Code'
-            type='text'
-            placeholder='Enter verification code'
-            isLoading={isLoading}
-            register={register}
-            error={formState.errors.verificationCode?.message}
-            data-test='verification-code-input'
-          />
-
-          <ErrorFeedback data-test='error-message' data={errors} />
-
-          <Button
-            disabled={isLoading}
-            type='submit'
-            className='mt-6 py-4'
-            variant='default'
-            data-test='verify-submit'
-          >
-            {isLoading ? 'Verifying...' : 'Verify Email'}
-          </Button>
-        </div>
-      </form>
-
-      {(redirecting || success) && (
-        <div className='mt-4 text-sm text-gray-500'>
-          You will be redirected to the login page in {countdown}...
-        </div>
-      )}
-    </div>
+      <div className={className} {...props}>
+        <SuccessFeedback
+            show={success}
+            message='Account verified successfully'
+            description='You can now login with your email and password.'
+            action={
+              <Link href='/auth/login' className='underline'>
+                Login
+              </Link>
+            }
+            data-test='success-message'
+        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='grid gap-4'>
+            <FormInput
+                id='email'
+                label='Email'
+                type='email'
+                placeholder='name@example.com'
+                isLoading={isLoading}
+                register={register}
+                error={formState.errors.email?.message}
+                autoComplete='email'
+                data-test='email-input'
+            />
+            <FormInput
+                id='verificationCode'
+                label='Verification Code'
+                type='text'
+                placeholder='Enter verification code'
+                isLoading={isLoading}
+                register={register}
+                error={formState.errors.verificationCode?.message}
+                data-test='verification-code-input'
+            />
+            <ErrorFeedback data-test='error-message' data={errors} />
+            <Button
+                disabled={isLoading}
+                type='submit'
+                className='mt-6 py-4'
+                variant='default'
+                data-test='verify-submit'
+            >
+              {isLoading ? 'Verifying...' : 'Verify Email'}
+            </Button>
+          </div>
+        </form>
+        {(redirecting || success) && (
+            <div className='mt-4 text-sm text-gray-500'>
+              You will be redirected to the login page in {countdown}...
+            </div>
+        )}
+      </div>
   );
 }

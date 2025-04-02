@@ -19,7 +19,7 @@ describe('Flow for Unauthenticated Pages', () => {
     cy.get('[data-test="sign-in-header"]').contains(/Sign in/i);
 
 
-    cy.get('[data-test="hero-desc"]').contains(/Find trusted freelancers and contractors with ease./i);
+    cy.get('[data-test="hero-desc"]').contains(/Find trusted freelancers and clients with ease./i);
 
     cy.get('[data-test="sign-up-btn-hero"]').contains(/Sign Up For Free/i);
 
