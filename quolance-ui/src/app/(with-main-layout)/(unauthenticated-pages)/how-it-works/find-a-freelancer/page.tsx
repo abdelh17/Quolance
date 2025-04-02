@@ -5,6 +5,8 @@ import Link from "next/link";
 import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import heroImage1 from '@/public/images/freelancer-hero-img-1.jpg';
+
 
 const features = [
   {
@@ -222,10 +224,10 @@ function FindAFreelancerPage() {
                   <div className="absolute -top-3 -left-3 w-20 h-20 bg-blue-500/20 rounded-full blur-xl"></div>
                   <div className="absolute -bottom-4 -right-4 w-40 h-40 bg-indigo-500/20 rounded-full blur-xl"></div>
                   
-                  <img
+                  <Image
                     data-test="banner1-image"
                     alt="Successful freelancer"
-                    src="https://images.pexels.com/photos/1181293/pexels-photo-1181293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    src={heroImage1}
                     className="relative w-full rounded-2xl shadow-xl object-cover aspect-[16/9]"
                   />
                 </div>
