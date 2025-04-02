@@ -34,6 +34,8 @@ const Tooltip: React.FC<TooltipProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout>();
+  const childRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     return () => {
@@ -130,15 +132,17 @@ const Tooltip: React.FC<TooltipProps> = ({
 
   return (
     <div
-      className='relative inline-block'
+      ref={childRef}
+      className='relative inline-block w-full'
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
     >
       {children}
       {isMounted && (
         <div
+          ref={tooltipRef}
           className={`
-            absolute z-50 transform-gpu whitespace-nowrap rounded bg-[#6d6d6d] px-3 py-2 text-sm font-medium
+            absolute z-50 min-w-max max-w-xs transform-gpu whitespace-normal rounded bg-[#6d6d6d] px-3 py-2 text-sm font-medium
             text-white shadow-sm
             ${getPositionClasses()}
             ${getAnimationClasses()}

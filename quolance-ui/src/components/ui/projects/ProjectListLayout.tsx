@@ -47,9 +47,10 @@ const ProjectListLayout = ({
             sortOptions={ProjectSortOptions}
             metadata={pageMetaData}
           />
-          {isSuccess && data && (
-            <div className='mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-              {data.map((project: ProjectType) => (
+          <div className='mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
+            {isSuccess &&
+              data &&
+              data.map((project: ProjectType) => (
                 <ProjectCard
                   key={project.id}
                   tags={project.tags}
@@ -68,14 +69,18 @@ const ProjectListLayout = ({
                   hasApplied={project.hasApplied}
                 />
               ))}
-            </div>
-          )}
 
-          {!isLoading && (!data || data.length === 0) && (
-            <div className='flex h-64 items-center justify-center'>
-              <p data-test="no-projects-found" className='text-center text-gray-500'>No projects found</p>
-            </div>
-          )}
+            {!isLoading && (!data || data.length === 0) && (
+              <div className='col-span-full flex h-64 items-center justify-center'>
+                <p
+                  data-test='no-projects-found'
+                  className='text-center text-gray-500'
+                >
+                  No projects found
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className={'mb-5 mt-8 w-full'}>

@@ -34,6 +34,7 @@ const chatbotContact: ContactDto = {
   profile_picture: 'chatbot',
   last_message: 'Hello how can I help you?',
   last_message_timestamp: '',
+  last_sender_id: 'chatbot',
 };
 
 const createDraftContact = (
@@ -46,6 +47,7 @@ const createDraftContact = (
   profile_picture: profilePictureUrl || '',
   last_message: '',
   last_message_timestamp: '',
+  last_sender_id: '',
 });
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {

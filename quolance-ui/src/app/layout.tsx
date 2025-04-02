@@ -31,14 +31,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' dir='ltr'>
-      <body className='flex min-h-screen flex-col'>
+      <body className='h-full'>
         <ToastProvider>
           <ReactQueryProvider>
             <StepsProvider>
               <WebSocketProvider>
                 <ChatProvider>
-                  <div className='flex flex-grow flex-col'>
-                    <main className='flex-grow'>{children}</main>
+                  <div className='flex min-h-screen flex-col'>
+                    <main className='flex flex-grow flex-col'>{children}</main>
                     <ChatInterface />
                     <Footer />
                   </div>

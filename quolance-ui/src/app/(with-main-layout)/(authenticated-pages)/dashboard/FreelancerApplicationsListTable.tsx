@@ -48,7 +48,6 @@ export default function FreelancerApplicationsListTable() {
   });
 
   const applications = data?.content || [];
-  console.log('applications is', applications);
   const metadata = data?.metadata;
 
   const handleSort = (column: string) => {
@@ -158,10 +157,10 @@ export default function FreelancerApplicationsListTable() {
                       Get started by applying to a project!
                     </p>
                     <Link
-                      href='/applications'
+                      href='/projects'
                       className='text-sm/6 font-semibold text-gray-900'
                     >
-                      Find new applications<span aria-hidden='true'>→</span>
+                      Find new projects<span aria-hidden='true'>→</span>
                     </Link>
                   </div>
                 </td>
