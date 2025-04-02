@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { PiSliders, PiUsers, PiX } from 'react-icons/pi';
 import FreelancersFilterModal from '@/components/ui/freelancers/FreelancersFilterModal';
 import {
@@ -26,14 +26,16 @@ type ProjectSubmissionsProps = {
 export interface ApplicationFilters {
   viewRejected: boolean;
   skills: string[];
-  experienceLevel: string;
+  experienceLevel: string[];
+  availability: string[];
   name: string;
 }
 
 const initialFilters: ApplicationFilters = {
   viewRejected: false,
   skills: [],
-  experienceLevel: '',
+  experienceLevel: [],
+  availability: [],
   name: '',
 };
 
@@ -72,10 +74,6 @@ export default function ProjectSubmissions({
   // Filter state that is used specifically for the filter modal popup
   const [tempFilters, setTempFilters] =
     useState<ApplicationFilters>(initialFilters);
-
-  useEffect(() => {
-    console.log('tempFilters', tempFilters);
-  }, [tempFilters]);
 
   // Query hooks
   const queryClient = useQueryClient();
@@ -221,7 +219,9 @@ export default function ProjectSubmissions({
               )}
             </div>
           ) : (
-            <NoApplicationsFound fromFilter={data !== undefined} />
+            <NoApplicationsFound
+              fromFilter={submissions && submissions.length > 0}
+            />
           )}
         </div>
       </div>

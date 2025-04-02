@@ -48,7 +48,6 @@ export default function FreelancerApplicationsListTable() {
   });
 
   const applications = data?.content || [];
-  console.log('applications is', applications);
   const metadata = data?.metadata;
 
   const handleSort = (column: string) => {

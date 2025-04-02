@@ -13,7 +13,6 @@ export const applySubmissionFilters = (
 ) => {
   return submissions.filter((submission) => {
     const { freelancerProfile } = submission;
-
     // Filter by rejected status
     if (
       !filters.viewRejected &&
@@ -30,12 +29,34 @@ export const applySubmissionFilters = (
     }
 
     // Filter by experience level
-    if (
-      filters.experienceLevel &&
-      freelancerProfile.experienceLevel?.toLowerCase() !==
-        filters.experienceLevel.toLowerCase()
-    ) {
-      return false;
+    if (filters.experienceLevel && filters.experienceLevel.length > 0) {
+      if (!freelancerProfile.experienceLevel) {
+        return false;
+      }
+      const filterExperience = filters.experienceLevel.map((e) =>
+        e.toLowerCase()
+      );
+      const freelancerExperience =
+        freelancerProfile.experienceLevel.toLowerCase();
+      if (!filterExperience.includes(freelancerExperience)) {
+        return false;
+      }
+    }
+
+    // Filter by availability
+    if (filters.availability && filters.availability.length > 0) {
+      if (!freelancerProfile.availability) {
+        return false;
+      }
+      const filterAvailability = filters.availability.map((a) =>
+        a.toLowerCase()
+      );
+      const freelancerAvailability = freelancerProfile.availability
+        .toLowerCase()
+        .replace(/_/g, ' ');
+      if (!filterAvailability.includes(freelancerAvailability)) {
+        return false;
+      }
     }
 
     // Filter by skills

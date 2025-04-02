@@ -89,7 +89,7 @@ function FreelancersFilterModal({
             )}
           </div>
 
-          <div className='border-n30 border-b py-6'>
+          <div className='border-n30 pt-6'>
             <p className='pb-3 text-sm font-medium sm:text-xl'>
               Expertise Level
             </p>
@@ -99,12 +99,56 @@ function FreelancersFilterModal({
                   key={level}
                   className={`border-n30 hover:border-n50 cursor-pointer rounded-2xl border px-4 py-2 duration-300 
                     ${
-                      filters.experienceLevel === level
+                      filters.experienceLevel.includes(level)
                         ? 'text-n900 bg-n20 hover:bg-n30'
                         : 'hover:bg-n20'
                     }
                   `}
-                  onClick={() => onFilterChange('experienceLevel', level)}
+                  onClick={() => {
+                    if (filters.experienceLevel.includes(level)) {
+                      onFilterChange(
+                        'experienceLevel',
+                        filters.experienceLevel.filter((l) => l !== level)
+                      );
+                    } else {
+                      onFilterChange('experienceLevel', [
+                        ...filters.experienceLevel,
+                        level,
+                      ]);
+                    }
+                  }}
+                >
+                  {level}
+                </p>
+              ))}
+            </div>
+          </div>
+          <div className='border-n30 border-b py-6'>
+            <p className='pb-3 text-sm font-medium sm:text-xl'>Availability</p>
+            <div className='text-n300 flex flex-wrap items-center justify-start gap-3 text-xs sm:text-sm'>
+              {['Full Time', 'Part Time', 'Contract'].map((level) => (
+                <p
+                  key={level}
+                  className={`border-n30 hover:border-n50 cursor-pointer rounded-2xl border px-4 py-2 duration-300 
+                    ${
+                      filters.availability.includes(level)
+                        ? 'text-n900 bg-n20 hover:bg-n30'
+                        : 'hover:bg-n20'
+                    }
+                  `}
+                  onClick={() => {
+                    if (filters.availability.includes(level)) {
+                      onFilterChange(
+                        'availability',
+                        filters.availability.filter((l) => l !== level)
+                      );
+                    } else {
+                      onFilterChange('availability', [
+                        ...filters.availability,
+                        level,
+                      ]);
+                    }
+                  }}
                 >
                   {level}
                 </p>
