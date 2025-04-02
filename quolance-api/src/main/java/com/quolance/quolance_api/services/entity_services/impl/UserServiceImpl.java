@@ -1,35 +1,30 @@
 package com.quolance.quolance_api.services.entity_services.impl;
 
 import com.quolance.quolance_api.dtos.users.*;
-import com.quolance.quolance_api.entities.PasswordResetToken;
-import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.VerificationCode;
+import com.quolance.quolance_api.entities.*;
+import com.quolance.quolance_api.entities.enums.ApplicationStatus;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
 import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
-import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
-import com.quolance.quolance_api.repositories.UserRepository;
-import com.quolance.quolance_api.repositories.VerificationCodeRepository;
+import com.quolance.quolance_api.repositories.*;
 import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jobrunr.scheduling.BackgroundJobRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.quolance.quolance_api.entities.*;
-import com.quolance.quolance_api.entities.enums.ApplicationStatus;
-import com.quolance.quolance_api.entities.enums.ProjectStatus;
-import com.quolance.quolance_api.entities.enums.Role;
-import com.quolance.quolance_api.repositories.*;
-import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -58,12 +53,12 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto create(CreateUserRequestDto request) {
         log.debug("Attempting to create new user with email: {}", request.getEmail());
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail().toLowerCase())) {
             log.warn("User creation failed - email already exists: {}", request.getEmail());
             throw new ApiException("A user with this email already exists.");
         }
 
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUsername(request.getUsername().toLowerCase())) {
             log.warn("User creation failed - username already exists: {}", request.getUsername());
             throw new ApiException("A user with this username already exists.");
         }
