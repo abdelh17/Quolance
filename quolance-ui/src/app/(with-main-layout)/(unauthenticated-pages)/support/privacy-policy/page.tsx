@@ -70,10 +70,11 @@ const PrivacyPolicy: React.FC = () => {
         </p>
 
         <p className="text-gray-600">
-          Need help or have questions?{' '}
-          <Link href="/support/contact-us" className="font-semibold text-b300 hover:text-b400">
-            Contact our support team
-          </Link>.
+          Also see our{' '}
+          <Link href="/support/terms-of-service" className="font-semibold text-b300 hover:text-b400">
+            Terms Of Service
+          </Link>{' '}
+          for platform rules and user responsibilities.
         </p>
       </div>
     </div>
