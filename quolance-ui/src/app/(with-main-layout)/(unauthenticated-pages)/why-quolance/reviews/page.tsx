@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { StarIcon } from '@heroicons/react/20/solid';
+import { UserIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
+import { motion } from 'framer-motion';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
@@ -60,37 +62,117 @@ const reviews = [
 ];
 
 const ReviewsPage = () => {
+  // Animation variants
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6 }
+    }
+  };
+
   return (
-    <div className="bg-white">
+    <div className="bg-gradient-to-b from-white via-blue-50/10 to-white relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
+      <div className="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-blue-100 opacity-30 blur-3xl pointer-events-none"></div>
+      <div className="absolute top-1/2 right-10 h-60 w-60 rounded-full bg-indigo-100 opacity-20 blur-3xl pointer-events-none"></div>
+      
       {/* Hero Section */}
-      <div className="relative isolate px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl py-12 sm:py-16">
-          <div className="text-center">
-            <h1 data-test="hero-section-title" className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Client Success Stories
-            </h1>
-            <p data-test="hero-section-desc" className="mt-6 text-lg leading-8 text-gray-600">
-              Discover how Quolance has helped businesses and freelancers achieve their goals. 
-              Our platform has enabled countless successful collaborations and projects.
-            </p>
+      <div className="relative px-6 lg:px-8 pt-24 pb-16">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={fadeIn}
+          className="mx-auto max-w-3xl text-center"
+        >
+          <div className="inline-flex items-center bg-blue-50 px-3 py-1 rounded-full mb-5">
+            <div className="h-2 w-2 rounded-full bg-blue-500 mr-2"></div>
+            <span className="text-sm font-semibold text-blue-600">Testimonials</span>
           </div>
-        </div>
+          
+          <h1 
+            data-test="hero-section-title" 
+            className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600"
+          >
+            Client Success Stories
+          </h1>
+          
+          <p 
+            data-test="hero-section-desc" 
+            className="mt-6 text-xl leading-8 text-gray-600 max-w-2xl mx-auto"
+          >
+            Discover how Quolance has helped businesses and freelancers achieve their goals. 
+            Our platform has enabled countless successful collaborations and projects.
+          </p>
+        </motion.div>
       </div>
 
-      {/* Reviews Section */}
-      <div className="bg-gray-50 py-16 sm:py-20">
+      {/* Stats section */}
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeIn}
+        className="pb-16"
+      >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl lg:max-w-none">
+            <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-3">
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                    <UserIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="text-4xl font-bold tracking-tight text-gray-900">1,000+</div>
+                <div className="mt-1 text-base text-gray-600">Happy Clients</div>
+              </div>
+              
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="text-4xl font-bold tracking-tight text-gray-900">98%</div>
+                <div className="mt-1 text-base text-gray-600">Satisfaction Rate</div>
+              </div>
+              
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                    <StarIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="text-4xl font-bold tracking-tight text-gray-900">4.9/5</div>
+                <div className="mt-1 text-base text-gray-600">Average Rating</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Reviews Section */}
+      <div className="relative py-16 sm:py-24">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeIn}
+          className="mx-auto max-w-7xl px-6 lg:px-8 mb-12"
+        >
           <div className="mx-auto max-w-2xl lg:text-center mb-16">
-            <h2 data-test="reviews-section-title" className="text-base font-semibold leading-7 text-b300">Testimonials</h2>
-            <p data-test="reviews-section-slogan" className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Trusted by Businesses Worldwide
-            </p>
-            <p data-test="reviews-section-desc" className="mt-6 text-lg leading-8 text-gray-600">
-              Read what our clients say about their experience with Quolance
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              What Our Users Are Saying
+            </h2>
+            <p data-test="reviews-section-desc" className="mt-4 text-lg leading-8 text-gray-600">
+              Real feedback from businesses and freelancers who use Quolance every day
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <Swiper
               modules={[EffectCoverflow, Pagination, Autoplay]}
               effect="coverflow"
@@ -105,13 +187,17 @@ const ReviewsPage = () => {
                 modifier: 2.5,
                 slideShadows: false,
               }}
-              pagination={{ clickable: true }}
+              pagination={{ 
+                clickable: true,
+                bulletActiveClass: 'swiper-pagination-bullet-active bg-blue-600',
+                bulletClass: 'swiper-pagination-bullet bg-gray-300 inline-block rounded-full h-2.5 w-2.5 mx-1.5 opacity-100'
+              }}
               autoplay={{
                 delay: 3000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
-              className="pb-12"
+              className="pb-16"
               breakpoints={{
                 320: {
                   slidesPerView: 1,
@@ -125,46 +211,65 @@ const ReviewsPage = () => {
               }}
             >
               {reviews.map((review) => (
-                <SwiperSlide key={review.id}>
-                  <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl">
-                    <div className="flex items-center gap-x-4 mb-4">
-                      <img src={review.image} alt="" className="h-12 w-12 rounded-full bg-gray-100" />
-                      <div>
-                        <h3 data-test={`${review.name}`} className="text-lg font-semibold text-gray-900">{review.name}</h3>
-                        <p data-test={`${review.role}`} className="text-sm text-gray-500">{review.role}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-x-1 mb-4">
+                <SwiperSlide key={review.id} className="px-4 pb-8">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
+                    <div className="flex gap-1 mb-6">
                       {[...Array(review.rating)].map((_, i) => (
                         <StarIcon key={i} className="h-5 w-5 text-yellow-400" />
                       ))}
                     </div>
-                    <p data-test={`${review.comment.split(' ')[0]}`}  className="text-gray-600 italic">{review.comment}</p>
+                    
+                    <p data-test={`${review.comment.split(' ')[0]}`} className="text-gray-700 font-medium italic flex-grow">"{review.comment}"</p>
+                    
+                    <div className="flex items-center gap-x-4 mt-6 pt-6 border-t border-gray-100">
+                      <img src={review.image} alt="" className="h-12 w-12 rounded-full bg-gray-100 object-cover" />
+                      <div>
+                        <h3 data-test={`${review.name}`} className="text-base font-semibold text-gray-900">{review.name}</h3>
+                        <p data-test={`${review.role}`} className="text-sm text-gray-600">{review.role}</p>
+                      </div>
+                    </div>
                   </div>
                 </SwiperSlide>
               ))}
             </Swiper>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* CTA Section */}
-      <div className="bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:flex lg:items-center lg:justify-between lg:px-8">
-          <h2 data-test="cta-section-title" className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Ready to experience the difference?<br />
-            Join our growing community today.
-          </h2>
-          <div className="mt-10 flex items-center gap-x-6 lg:mt-0 lg:flex-shrink-0">
-            <a
-              href="/auth/register"
-              className="bg-b300 hover:text-n900 relative flex items-center justify-center  rounded-full px-8 py-3 font-semibold text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:bg-yellow-400 after:duration-700 hover:after:w-[calc(100%+2px)]"
-            >
-              <span data-test="get-started-btn" className="relative z-10">Get Started</span>
-            </a>
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeIn}
+        className="relative mx-auto max-w-7xl px-6 py-16 sm:py-24 mb-8"
+      >
+        <div className="overflow-hidden rounded-3xl">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-16 sm:px-16 sm:py-20 lg:flex lg:items-center lg:justify-between lg:gap-x-8 relative">
+            <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+            
+            <div>
+              <h2 data-test="cta-section-title" className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Ready to experience the difference?
+                <br />
+                <span className="text-blue-200">Join our growing community today.</span>
+              </h2>
+              <p className="mt-4 text-lg text-blue-100 max-w-xl">
+                Connect with top talent or find exciting projects on our AI-powered platform designed for successful collaborations.
+              </p>
+            </div>
+            
+            <div className="mt-10 lg:mt-0 z-10">
+              <a
+                href="/auth/register"
+                className="relative inline-flex items-center justify-center overflow-hidden rounded-full bg-white px-8 py-3.5 text-lg font-semibold text-blue-600 shadow-md transition-all duration-300 hover:bg-yellow-400 hover:text-blue-700 group"
+              >
+                <span data-test="get-started-btn">Get Started</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
