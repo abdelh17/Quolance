@@ -9,7 +9,7 @@ const PrivacyPolicy: React.FC = () => {
           Privacy Policy
         </h2>
 
-        <p className="mb-4 text-gray-700">Effective Date: 01/01/2025<br />Last Updated: 3/23/2025</p>
+        <p className="mb-4 text-gray-700">Effective Date: 01/04/2025<br />Last Updated: 01/04/2025</p>
 
         <p className="mb-6 text-gray-700">
           Welcome to <strong>Quolance</strong>! Your privacy is important to us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.
@@ -70,10 +70,11 @@ const PrivacyPolicy: React.FC = () => {
         </p>
 
         <p className="text-gray-600">
-          Need help or have questions?{' '}
-          <Link href="/support/contact-us" className="font-semibold text-b300 hover:text-b400">
-            Contact our support team
-          </Link>.
+          Also see our{' '}
+          <Link href="/support/terms-of-service" className="font-semibold text-b300 hover:text-b400">
+            Terms of Service
+          </Link>{' '}
+          for platform rules and user responsibilities.
         </p>
       </div>
     </div>

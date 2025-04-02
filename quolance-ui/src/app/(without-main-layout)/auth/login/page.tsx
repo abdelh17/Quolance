@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { UserAuthForm } from './components/user-auth-form';
+import {UserAuthForm} from './components/user-auth-form';
 import AuthHeader from '@/app/(without-main-layout)/auth/register/components/AuthHeader';
 import * as React from 'react';
 
@@ -54,14 +54,14 @@ export default function LoginPage() {
         <p className='text-muted-foreground !mt-4 px-8 text-center text-sm'>
           By clicking continue, you agree to our{' '}
           <Link
-            href='/terms'
+            href='/support/terms-of-service'
             className='hover:text-primary underline underline-offset-4'
           >
             Terms of Service
           </Link>{' '}
           and{' '}
           <Link
-            href='/privacy'
+            href='/support/privacy-policy'
             className='hover:text-primary underline underline-offset-4'
           >
             Privacy Policy
