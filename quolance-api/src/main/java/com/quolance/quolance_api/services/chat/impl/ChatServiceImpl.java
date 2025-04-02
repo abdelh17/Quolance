@@ -52,7 +52,6 @@ public class ChatServiceImpl implements ChatService {
         message.setContent(sendMessageDto.getContent());
 
         Message savedMessage = messageRepository.save(message);
-        log.info("Message sent from user {} to user {}", sender.getId(), receiver.getId());
 
         return MessageDto.fromEntity(savedMessage);
     }
@@ -71,8 +70,6 @@ public class ChatServiceImpl implements ChatService {
         validateRolesForMessaging(currentUser, otherUser);
 
         List<Message> messages = messageRepository.findMessagesBetweenUsers(currentUser, otherUser);
-        log.info("Retrieved {} messages between users {} and {}",
-                messages.size(), currentUser.getId(), otherUser.getId());
 
         return messages.stream()
                 .map(MessageDto::fromEntity)
@@ -88,7 +85,6 @@ public class ChatServiceImpl implements ChatService {
 
         // Get all contact IDs for the current user
         List<UUID> contactIds = messageRepository.findContactIdsByUserId(currentUser.getId());
-        log.info("Retrieved {} contact IDs for user {}", contactIds.size(), currentUser.getId());
 
         List<ContactDto> contactDtos = new ArrayList<>();
 

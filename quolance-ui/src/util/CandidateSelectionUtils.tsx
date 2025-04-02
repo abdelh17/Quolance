@@ -12,12 +12,61 @@ export const applySubmissionFilters = (
   filters: ApplicationFilters
 ) => {
   return submissions.filter((submission) => {
+    const { freelancerProfile } = submission;
+    // Filter by rejected status
     if (
       !filters.viewRejected &&
       submission.status === ApplicationStatus.REJECTED
     ) {
       return false;
     }
+
+    // Filter by name
+    const fullName =
+      `${freelancerProfile.firstName} ${freelancerProfile.lastName}`.toLowerCase();
+    if (filters.name && !fullName.includes(filters.name.toLowerCase())) {
+      return false;
+    }
+
+    // Filter by experience level
+    if (filters.experienceLevel && filters.experienceLevel.length > 0) {
+      if (!freelancerProfile.experienceLevel) {
+        return false;
+      }
+      const filterExperience = filters.experienceLevel.map((e) =>
+        e.toLowerCase()
+      );
+      const freelancerExperience =
+        freelancerProfile.experienceLevel.toLowerCase();
+      if (!filterExperience.includes(freelancerExperience)) {
+        return false;
+      }
+    }
+
+    // Filter by availability
+    if (filters.availability && filters.availability.length > 0) {
+      if (!freelancerProfile.availability) {
+        return false;
+      }
+      const filterAvailability = filters.availability.map((a) =>
+        a.toLowerCase()
+      );
+      const freelancerAvailability = freelancerProfile.availability
+        .toLowerCase()
+        .replace(/_/g, ' ');
+      if (!filterAvailability.includes(freelancerAvailability)) {
+        return false;
+      }
+    }
+
+    // Filter by skills
+    if (
+      filters.skills.length > 0 &&
+      !filters.skills.every((skill) => freelancerProfile.skills.includes(skill))
+    ) {
+      return false;
+    }
+
     return true;
   });
 };
@@ -25,7 +74,7 @@ export const applySubmissionFilters = (
 export const handleFilterChange = (
   setTempFilters: Dispatch<SetStateAction<ApplicationFilters>>,
   filterType: keyof ApplicationFilters,
-  value: boolean
+  value: ApplicationFilters[keyof ApplicationFilters]
 ) => {
   setTempFilters((prevFilters) => ({
     ...prevFilters,
@@ -48,8 +97,8 @@ export const handleResetFilters = (
   setActiveFilters: Dispatch<SetStateAction<ApplicationFilters>>,
   setFilterModal: Dispatch<SetStateAction<boolean>>
 ) => {
-  setTempFilters(initialFilters);
-  setActiveFilters(initialFilters);
+  setTempFilters({ ...initialFilters });
+  setActiveFilters({ ...initialFilters });
   setFilterModal(false);
 };
 

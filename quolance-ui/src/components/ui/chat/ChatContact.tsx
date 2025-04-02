@@ -4,6 +4,7 @@ import { ContactDto } from '@/constants/types/chat-types';
 import { getFirstName } from '@/util/stringUtils';
 import { formatTimeForChat, isMessageUnread } from '@/util/chatUtils';
 import { useChat } from '@/components/ui/chat/ChatProvider';
+import { useAuthGuard } from '@/api/auth-api';
 
 interface ContactProps {
   contact: ContactDto;
@@ -11,12 +12,19 @@ interface ContactProps {
 }
 
 function ChatContact({ contact, onClick }: ContactProps) {
-  const { name, profile_picture, last_message, last_message_timestamp } =
-    contact;
+  const {
+    name,
+    profile_picture,
+    last_message,
+    last_message_timestamp,
+    last_sender_id,
+  } = contact;
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const [hasTwoLines, setHasTwoLines] = useState(false);
   const [isUnread, setIsUnread] = useState(false);
   const { lastReadUpdate } = useChat();
+  const { user } = useAuthGuard({ middleware: 'auth' });
+  const isOwn = last_sender_id === user?.id; // TODO: check if this is correct
 
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -47,7 +55,7 @@ function ChatContact({ contact, onClick }: ContactProps) {
           ref={lastMessageRef}
           className='line-clamp-2 overflow-ellipsis text-xs font-[100] text-slate-500'
         >
-          {getFirstName(name)}: {last_message}
+          {isOwn ? 'You' : getFirstName(name)}: {last_message}
         </div>
       </div>
       <div className='ml-auto flex flex-col justify-between'>
