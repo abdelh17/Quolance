@@ -24,6 +24,7 @@ public class BlogPostResponseDto {
     private String content;
     private String authorName;
     private LocalDateTime dateCreated;
+    private LocalDateTime lastModified;
     private List<BlogCommentDto> comments;
     private Set<String> tags;
     private UUID userId;
@@ -38,7 +39,8 @@ public class BlogPostResponseDto {
         response.setTitle(blogPost.getTitle());
         response.setContent(blogPost.getContent());
         response.setAuthorName(blogPost.getUser().getUsername());
-        response.setDateCreated(blogPost.getCreationDate());
+        response.setDateCreated(blogPost.getDateCreated());
+        response.setLastModified(blogPost.getLastModified());
         response.setTags(blogPost.getTags() != null
                 ? blogPost.getTags().stream()
                 .map(Enum::name)

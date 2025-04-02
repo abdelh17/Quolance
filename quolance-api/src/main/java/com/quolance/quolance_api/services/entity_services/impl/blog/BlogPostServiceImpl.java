@@ -64,6 +64,8 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .user(author)
                 .tags(request.getTags() != null ? Set.copyOf(request.getTags()) : Set.of())
                 .images(blogImages)  // Associate the BlogImage entities
+                .dateCreated(LocalDateTime.now())
+                .lastModified(LocalDateTime.now())
                 .build();
 
         // Associate the blog post with each BlogImage
@@ -133,6 +135,7 @@ public class BlogPostServiceImpl implements BlogPostService {
             blogPost.setContent(updateRequest.getContent());
         if (updateRequest.getTitle() != null)
             blogPost.setTitle(updateRequest.getTitle());
+        blogPost.setLastModified(LocalDateTime.now());
         return blogPost;
     }
 
@@ -200,8 +203,10 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
-        return blogPostRepository.findAll(pageable).map(BlogPostResponseDto::fromEntity);
+        return blogPostRepository.findAllByOrderByLastModifiedDesc(pageable)
+                .map(BlogPostResponseDto::fromEntity);
     }
+
     @Override
     public Page<BlogPostResponseDto> getFilteredPosts(BlogFilterRequestDto filterDto, Pageable pageable) {
         LocalDateTime startDate = filterDto.getCreationDate();
