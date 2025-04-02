@@ -23,8 +23,9 @@ import java.util.Set;
 @Table(name = "profile")
 public class Profile extends AbstractEntity {
 
-    @Length(max = 2000)
-    @Column(length = 2000)
+
+    @Length(max = 5000)
+    @Column(length = 5000)
     private String bio;
 
     private String contactEmail;

@@ -1,31 +1,44 @@
 'use client';
 
-import {zodResolver} from '@hookform/resolvers/zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import React from 'react';
-import {useForm} from 'react-hook-form';
-import {toast} from 'sonner';
-import {z} from 'zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 import httpClient from '@/lib/httpClient';
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
-import {Button} from '@/components/ui/button';
-import {HttpErrorResponse} from '@/models/http/HttpErrorResponse';
-import {cn} from '@/util/utils';
-import {RegistrationUserType} from '@/app/(without-main-layout)/auth/register/page';
-import {Role} from '@/models/user/UserResponse';
-import {FormInput, SocialAuthLogins,} from '@/app/(without-main-layout)/auth/shared/auth-components';
+import { Button } from '@/components/ui/button';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import { cn } from '@/util/utils';
+import { RegistrationUserType } from '@/app/(without-main-layout)/auth/register/page';
+import { Role } from '@/models/user/UserResponse';
+import {
+  FormInput,
+  SocialAuthLogins,
+} from '@/app/(without-main-layout)/auth/shared/auth-components';
+import PasswordRequirements from './PasswordRequirement';
+
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
   userRole: RegistrationUserType;
 };
 
+
+
 const registerSchema = z
   .object({
     email: z.string().email(),
-    username: z.string().min(8),
-    password: z.string().min(8),
+    username: z.string().min(8, 'Username must be at least 8 characters'),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters long')
+      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .regex(/[0-9]/, 'Password must contain at least one number')
+      .regex(/[^a-zA-Z0-9]/, 'Password must contain at least one special character'),
     passwordConfirmation: z.string().min(8),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
@@ -49,10 +62,12 @@ export function UserRegisterForm({
     undefined
   );
 
-  const { register, handleSubmit, formState } = useForm<Schema>({
+  const { register, handleSubmit, formState, watch } = useForm<Schema>({
     resolver: zodResolver(registerSchema),
     reValidateMode: 'onSubmit',
   });
+
+  const password = watch('password');
 
   async function onSubmit(data: Schema) {
     setErrors(undefined);
@@ -144,6 +159,8 @@ export function UserRegisterForm({
               error={formState.errors.password?.message}
               data-test='password-input'
             />
+
+            <PasswordRequirements password={password} />
 
             <FormInput
               id='passwordConfirmation'

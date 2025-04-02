@@ -53,8 +53,8 @@ public class Review extends AbstractEntity {
     @Column(name = "overall_rating", nullable = false)
     private Double overallRating;
 
-    @Size(max = 1000, message = "Comment must be less than 1000 characters")
-    @Column(name = "comment")
+    @Column(name = "comment", length = 5000)
+    @Size(max = 5000, message = "Comment must be less than 5000 characters")
     private String comment;
 
     @Column(name = "client_first_name", nullable = false)
