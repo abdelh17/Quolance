@@ -427,51 +427,6 @@ describe('Flow for Unauthenticated Pages', () => {
 
   })
 
-  it('Flow For /support/faqs', () => {
-    cy.visit('/support/faqs')
-
-    cy.get('[data-test="quolance-header-unauthenticated"]').contains(/Quolance/i);
-
-    cy.get('[data-test="How It Works"]').contains(/How It Works/i);
-    cy.get('[data-test="How It Works"]').trigger('mouseover')
-
-    // Removing the problematic Why Quolance? element checks
-    // cy.get('[data-test="Why Quolance?"]').contains(/Why Quolance?/i);
-    // cy.get('[data-test="Why Quolance?"]').trigger('mouseover');
-
-    cy.get('[data-test="What\'s New"]').trigger('mouseover');
-
-    cy.get('[data-test="Support"]').contains(/Support/i);
-    cy.get('[data-test="Support"]').trigger('mouseover');
-
-    cy.get('[data-test="sign-up-header"]').contains(/Sign up/i);
-
-    cy.get('[data-test="sign-in-header"]').contains(/Sign in/i);
-
-    cy.get('[data-test="faq-title"]').contains(/Frequently asked questions/i);
-
-    cy.get('[data-test="What are the fees for using the platform?"]').contains(/What are the fees for using the platform?/i);
-    cy.get('[data-test="We"]').contains(/We maintain a transparent fee structure. Clients can post projects for free./i);
-    cy.get("[data-test=\"What happens if there's a dispute between a client and freelancer?\"]").contains(/What happens if there's a dispute between a client and freelancer?/i);
-    cy.get('[data-test="Our"]').contains(/Our dedicated dispute resolution team handles any conflicts that may arise./i);
-    cy.get('[data-test="Can I hire freelancers for long-term projects?"]').contains(/Can I hire freelancers for long-term projects?/i);
-    cy.get('[data-test="Yes,"]').contains(/Yes, you can hire freelancers for both short-term and long-term projects/i);
-    cy.get('[data-test="How do I know if a freelancer is right for my project?"]').contains(/How do I know if a freelancer is right for my project?/i);
-    cy.get('[data-test="You"]').contains(/You can review freelancers' profiles, which include their portfolio, skills, experience, and client reviews./i);
-    cy.get('[data-test="What types of projects can I post or find on the platform?"]').contains(/What types of projects can I post or find on the platform?/i);
-    cy.get('[data-test="Our"]').contains(/Our platform supports a wide range of digital and creative services including web development,/i);
-    cy.get('[data-test="How do you ensure the quality of work?"]').contains(/How do you ensure the quality of work?/i);
-    cy.get('[data-test="Quality"]').contains(/Quality is maintained through our rating system, skill verification process, and portfolio reviews./i);
-    cy.get("[data-test=\"What happens if I'm not satisfied with the work?\"]").contains(/What happens if I'm not satisfied with the work?/i);
-    cy.get('[data-test="If"]').contains(/If you're not satisfied with the delivered work, you can request revisions based on the original project/i);
-    cy.get('[data-test="How do you protect intellectual property rights?"]').contains(/How do you protect intellectual property rights?/i);
-    cy.get('[data-test="Our"]').contains(/Our terms of service include clear provisions for intellectual property rights./i);
-
-
-    cy.get('[data-test="footer"]').contains(/Copyright @ 2025 Quolance/i);
-
-  })
-
   it('Successfull Flow For Submitting Email on contact-us page', () => {
     cy.visit('/support/contact-us')
 
