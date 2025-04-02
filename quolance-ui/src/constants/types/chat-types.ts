@@ -18,6 +18,7 @@ export interface ContactDto {
   profile_picture: string;
   last_message: string;
   last_message_timestamp: string;
+  last_sender_id: string;
 }
 
 export interface ChatContactProps {
