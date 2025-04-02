@@ -112,7 +112,7 @@ ai:
   base-prompts:
     about: >
       Write a compelling "About Me" section for a freelancer, using no more than 2000 characters.
-      This text should be appealing to potential clients (contractors), highlighting key skills, relevant experience, and professional background.
+      This text should be appealing to potential clients, highlighting key skills, relevant experience, and professional background.
       Avoid any Markdown formatting. Limit your response to one or two paragraphs.
       Here is some additional context:
     project: >

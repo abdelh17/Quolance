@@ -1,11 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import heroImage1 from '@/public/images/freelancer-hero-img-1.jpg';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function HeroSection() {
-  const words = ['Freelancers', 'Contractors'];
+  const words = ['Freelancers', 'Clients'];
   const [text, setText] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -57,7 +57,7 @@ export default function HeroSection() {
             </h1>
             <div className='mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1'>
               <p data-test="hero-desc" className='text-pretty text-lg font-medium text-gray-500 sm:text-xl/8'>
-                Find trusted freelancers and contractors with ease. Our extensive network of skilled local experts—from programming and design to writing and beyond—is here to help you succeed, no matter the project.
+                Find trusted freelancers and clients with ease. Our extensive network of skilled local experts—from programming and design to writing and beyond—is here to help you succeed, no matter the project.
               </p>
               <div className='mt-10 flex items-center gap-x-6'>
                 <Link
