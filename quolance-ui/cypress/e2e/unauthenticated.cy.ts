@@ -21,7 +21,7 @@ describe('Flow for Unauthenticated Pages', () => {
     cy.get('[data-test="sign-in-header"]').contains(/Sign in/i);
 
 
-    cy.get('[data-test="hero-desc"]').contains(/Find trusted freelancers and contractors with ease./i);
+    cy.get('[data-test="hero-desc"]').contains(/Find trusted freelancers and clients with ease./i);
 
     cy.get('[data-test="sign-up-btn-hero"]').contains(/Sign Up For Free/i);
 
@@ -452,8 +452,6 @@ describe('Flow for Unauthenticated Pages', () => {
 
     cy.get('[data-test="What are the fees for using the platform?"]').contains(/What are the fees for using the platform?/i);
     cy.get('[data-test="We"]').contains(/We maintain a transparent fee structure. Clients can post projects for free./i);
-    cy.get('[data-test="How do you verify freelancers and clients?"]').contains(/How do you verify freelancers and clients?/i);
-    cy.get('[data-test="We"]').contains(/We have a comprehensive verification process that includes identity verification, skill assessment, and portfolio/i);
     cy.get("[data-test=\"What happens if there's a dispute between a client and freelancer?\"]").contains(/What happens if there's a dispute between a client and freelancer?/i);
     cy.get('[data-test="Our"]').contains(/Our dedicated dispute resolution team handles any conflicts that may arise./i);
     cy.get('[data-test="Can I hire freelancers for long-term projects?"]').contains(/Can I hire freelancers for long-term projects?/i);
