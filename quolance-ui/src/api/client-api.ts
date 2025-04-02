@@ -1,14 +1,14 @@
 import httpClient from '@/lib/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { showToast } from '@/util/context/ToastProvider';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import {
   PaginationParams,
   PaginationQueryDefault,
 } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
 import { ProjectType } from '@/constants/types/project-types';
-import {PostReviewType} from '@/constants/models/user/UserResponse';
+import { PostReviewType } from '@/models/user/UserResponse';
 
 /*--- Filters ---*/
 export interface CandidateFilterQuery extends PaginationParams {
@@ -108,12 +108,23 @@ export const useGetAllClientProjects = (
 };
 
 /** Gets all the candidates in the website. Called for the repository of candidates. TO-DO should be renamed */
-
 export const useGetAllCandidates = (query: CandidateFilterQuery) => {
   return useQuery({
     queryKey: ['all-candidates', query],
     queryFn: () =>
       httpClient.get(`/api/client/freelancers/all?${queryToString(query)}`),
+  });
+};
+
+/** 
+ * Gets top N freelancer recommendations for a project.
+ * Endpoint: GET /api/recommendations/{projectId}?topN={topN}
+ */
+export const useGetFreelancerRecommendations = (projectId: string, topN: number) => {
+  return useQuery({
+    queryKey: ['freelancer-recommendations', projectId, topN],
+    queryFn: () =>
+      httpClient.get(`/api/recommendations/${projectId}?topN=${topN}`),
   });
 };
 
@@ -129,4 +140,4 @@ export const usePostReview = () => {
       showToast(`Error: ${ErrorResponse.message}`, 'error');
     },
   });
- };
+};

@@ -23,8 +23,9 @@ import java.util.Set;
 @Table(name = "profile")
 public class Profile extends AbstractEntity {
 
-    @Length(max = 2000)
-    @Column(length = 2000)
+
+    @Length(max = 5000)
+    @Column(length = 5000)
     private String bio;
 
     private String contactEmail;
@@ -70,4 +71,9 @@ public class Profile extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
     private List<ProjectExperience> projectExperiences;
+
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(name = "embedding_json", columnDefinition = "TEXT")
+    private String embeddingJson;
 }

@@ -100,9 +100,6 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
 
         projectService.deleteProject(project);
 
-        // Notify client that the project has been deleted.
-        String deletionMessage = "Your project '" + project.getTitle() + "' has been deleted.";
-        notificationMessageService.sendNotificationToUser(client, client, deletionMessage);
     }
 
     @Override
@@ -173,10 +170,6 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         }
 
         projectService.updateProject(existingProject, projectUpdateDto);
-
-        // Notify client that the project has been updated successfully.
-        String updateMessage = "Your project '" + existingProject.getTitle() + "' has been updated successfully.";
-        notificationMessageService.sendNotificationToUser(client, client, updateMessage);
 
         return ProjectDto.fromEntity(existingProject);
     }

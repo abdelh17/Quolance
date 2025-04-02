@@ -4,40 +4,51 @@ import {
   CheckIcon,
   CurrencyDollarIcon,
   PencilIcon,
-} from '@heroicons/react/20/solid';
-import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
-import {
+ } from '@heroicons/react/20/solid';
+ import { ProjectStatus, ProjectType } from '@/constants/types/project-types';
+ import {
   formatDate,
   formatEnumString,
   formatPriceRange,
-} from '@/util/stringUtils';
-import { Button } from '@/components/ui/button';
-import { XIcon } from 'lucide-react';
-import { RxReset } from 'react-icons/rx';
-import { useAuthGuard } from '@/api/auth-api';
-import { Role } from '@/constants/models/user/UserResponse';
-import Tooltip from '@/components/ui/Tooltip';
-import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
-
-interface ProjectDetailsProps {
+ } from '@/util/stringUtils';
+ import { Button } from '@/components/ui/button';
+ import { XIcon } from 'lucide-react';
+ import { RxReset } from 'react-icons/rx';
+ import { useAuthGuard } from '@/api/auth-api';
+ import { Role } from '@/models/user/UserResponse';
+ import Tooltip from '@/components/ui/Tooltip';
+ import ProjectStatusBadge from '@/components/ui/projects/ProjectStatusBadge';
+ import type { UseFormHandleSubmit,UseFormReset } from 'react-hook-form';
+ import { ProjectFormValues } from '@/lib/validation/projectSchema';
+ 
+ 
+ interface ProjectDetailsProps {
   project: ProjectType;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
   isEdited: boolean;
   resetDraftProject: () => void;
   updateProject: () => void;
-}
-
-export default function ProjectDetailsHeader({
+  onSubmit: (values: ProjectFormValues) => void;
+  handleSubmit: UseFormHandleSubmit<ProjectFormValues>;
+  reset: UseFormReset<ProjectFormValues>;
+ }
+ 
+ 
+ export default function ProjectDetailsHeader({
   project,
   editMode,
   setEditMode,
   isEdited,
   resetDraftProject,
   updateProject,
-}: ProjectDetailsProps) {
+  onSubmit,
+  handleSubmit,
+  reset
+ }: ProjectDetailsProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
-
+ 
+ 
   return (
     <div className='lg:flex lg:items-center lg:justify-between'>
       <div className='min-w-0 flex-1'>
@@ -89,7 +100,8 @@ export default function ProjectDetailsHeader({
               </Button>
             </Tooltip>
           )}
-
+ 
+ 
         {editMode && (
           <span className='ml-3'>
             <Button
@@ -98,13 +110,18 @@ export default function ProjectDetailsHeader({
               icon={
                 <XIcon aria-hidden='true' className='-ml-0.5 mr-1.5 h-5 w-5' />
               }
-              onClick={() => setEditMode(false)}
+              onClick={() => {
+                reset(project);
+                setEditMode(false);
+              }}
+             
             >
               Cancel
             </Button>
           </span>
         )}
-
+ 
+ 
         {editMode && (
           <span className='ml-3'>
             <Button
@@ -116,28 +133,27 @@ export default function ProjectDetailsHeader({
                   className='-ml-0.5 mr-1.5 h-5 w-5'
                 />
               }
-              onClick={resetDraftProject}
-              disabled={!isEdited}
+              onClick={() => reset(project)}
             >
               Reset Changes
             </Button>
           </span>
         )}
-
+ 
+ 
         {editMode && (
           <span className='ml-3'>
             <Button
               variant='default'
               animation='default'
               size='sm'
-              disabled={!isEdited}
               icon={
                 <CheckIcon
                   aria-hidden='true'
                   className='-ml-0.5 mr-1.5 h-5 w-5'
                 />
               }
-              onClick={updateProject}
+              onClick={handleSubmit(onSubmit)}
               data-test="update-project-btn"
             >
               Update
@@ -147,4 +163,8 @@ export default function ProjectDetailsHeader({
       </div>
     </div>
   );
-}
+ }
+ 
+ 
+ 
+ 

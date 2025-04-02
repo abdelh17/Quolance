@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { UserRegisterForm } from './components/register-form';
 import AuthHeader from '@/app/(without-main-layout)/auth/register/components/AuthHeader';
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 import RadioCardUser from '@/app/(without-main-layout)/auth/register/components/RadioCardUser';
 import { Briefcase, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -58,14 +58,14 @@ const UserRoleSelection = ({
           text="I'm a client, hiring for a project"
           isSelected={selected === Role.CLIENT}
           onSelect={() => handleSelect(Role.CLIENT)}
-          data-test = "client-role"
+          data-test='client-role'
         />
         <RadioCardUser
           icon={Briefcase}
           text="I'm a freelancer, looking for work"
           isSelected={selected === Role.FREELANCER}
           onSelect={() => handleSelect(Role.FREELANCER)}
-          data-test = "freelancer-role"
+          data-test='freelancer-role'
         />
       </div>
       <div className={'flex w-full justify-center'}>
@@ -74,7 +74,7 @@ const UserRoleSelection = ({
           onClick={() => setUserRoleConfirmed(true)}
           disabled={!selected}
           animation={'default'}
-          data-test = "select-role"
+          data-test='select-role'
         >
           {!selected
             ? 'Create an account'

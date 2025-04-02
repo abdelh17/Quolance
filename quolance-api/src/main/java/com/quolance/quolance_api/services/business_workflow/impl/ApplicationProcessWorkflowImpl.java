@@ -86,9 +86,6 @@ public class ApplicationProcessWorkflowImpl implements ApplicationProcessWorkflo
             String rejectNotification = "Your application for project '" + project.getTitle() + "' has been rejected.";
             notificationMessageService.sendNotificationToUser(application.getFreelancer(), application.getFreelancer(), rejectNotification);
 
-            // Optionally, notify the client as well.
-            String clientNotification = "You have rejected an application for your project '" + project.getTitle() + "'.";
-            notificationMessageService.sendNotificationToUser(client, client, clientNotification);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);

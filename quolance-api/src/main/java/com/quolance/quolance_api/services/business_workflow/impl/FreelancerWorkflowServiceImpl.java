@@ -10,6 +10,7 @@ import com.quolance.quolance_api.dtos.review.ReviewDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
 import com.quolance.quolance_api.entities.*;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.services.ai_models.recommendation.ProfileEmbeddingService;
 import com.quolance.quolance_api.services.business_workflow.FreelancerWorkflowService;
 import com.quolance.quolance_api.services.entity_services.*;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
@@ -22,6 +23,7 @@ import jakarta.persistence.criteria.Subquery;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -43,6 +45,9 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
     private final FileService fileService;
     private final ReviewService reviewService;
     private final NotificationMessageService notificationMessageService;
+    private final ProfileEmbeddingService profileService;
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
 
     @Override
     public void submitApplication(ApplicationCreateDto applicationCreateDto, User freelancer) {
@@ -70,10 +75,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             application.setProject(project);
             application.setMessage(applicationCreateDto.getMessage());
             applicationService.saveApplication(application);
-
-            // Notify freelancer that the application was submitted successfully.
-            String freelancerNotification = "Your application for project '" + project.getTitle() + "' has been submitted successfully.";
-            notificationMessageService.sendNotificationToUser(freelancer, freelancer, freelancerNotification);
 
             // Optionally, notify the project owner that a new application has been received.
             User client = project.getClient();
@@ -109,10 +110,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
                     .build();
         }
         applicationService.deleteApplication(application);
-
-        // Notify freelancer that the application has been deleted.
-        String deletionNotification = "Your application for project '" + application.getProject().getTitle() + "' has been deleted.";
-        notificationMessageService.sendNotificationToUser(freelancer, freelancer, deletionNotification);
     }
 
     @Override
@@ -255,16 +252,14 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             profile.setLanguagesSpoken(updateFreelancerProfileDto.getLanguagesSpoken());
             profile.setProjectExperiences(updateFreelancerProfileDto.getProjectExperiences());
 
+            profileService.updateProfileEmbedding(profile);
+
             UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                     .firstName(updateFreelancerProfileDto.getFirstName())
                     .lastName(updateFreelancerProfileDto.getLastName())
                     .build();
 
             userService.updateUser(updateUserRequestDto, freelancer);
-
-            // Notify freelancer that their profile has been updated.
-            String profileUpdateNotification = "Your profile has been updated successfully.";
-            notificationMessageService.sendNotificationToUser(freelancer, freelancer, profileUpdateNotification);
 
         } catch (OptimisticLockException e) {
             handleOptimisticLockException(e);
@@ -284,10 +279,6 @@ public class FreelancerWorkflowServiceImpl implements FreelancerWorkflowService 
             String photoUrl = uploadResult.get("secure_url").toString();
 
             userService.updateProfilePicture(freelancer, photoUrl);
-
-            // Notify freelancer that their profile picture has been updated.
-            String pictureUpdateNotification = "Your profile picture has been updated successfully.";
-            notificationMessageService.sendNotificationToUser(freelancer, freelancer, pictureUpdateNotification);
 
         } catch (Exception e) {
             throw ApiException.builder()

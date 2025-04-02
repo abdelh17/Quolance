@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
 import { showToast } from '@/util/context/ToastProvider';
-import { HttpErrorResponse } from '@/constants/models/http/HttpErrorResponse';
-import { FreelancerProfileType } from '@/constants/models/user/UserResponse';
+import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
+import { FreelancerProfileType } from '@/models/user/UserResponse';
 import { ProjectFilterQuery } from '@/api/projects-api';
 import { queryToString } from '@/util/stringUtils';
-import { ApplicationResponse } from '@/constants/models/applications/ApplicationResponse';
+
+import { ApplicationResponse } from '@/models/applications/ApplicationResponse';
 
 /*--- Hooks ---*/
 export const useSubmitApplication = (projectId: string) => {
@@ -124,6 +125,8 @@ export const useGetFreelancerProfile = (username?: string) => {
     enabled: !!username,
   });
 };
+
+export type EditProfileMutationType = ReturnType<typeof useEditProfile>
 
 export const useEditProfile = () => {
   const queryClient = useQueryClient();

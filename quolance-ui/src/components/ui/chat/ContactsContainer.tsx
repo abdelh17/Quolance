@@ -7,7 +7,7 @@ import ChatContact from '@/components/ui/chat/ChatContact';
 import conversation_illustration from '@/public/images/conversation_illustration.png';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Role } from '@/constants/models/user/UserResponse';
+import { Role } from '@/models/user/UserResponse';
 
 interface ContactsContainerProps {
   contacts: ContactDto[];
