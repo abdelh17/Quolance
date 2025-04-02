@@ -3,24 +3,24 @@ import Link from 'next/link';
 
 function FooterOne() {
   return (
-    <footer className="bg-gradient-to-r from-gray-900 to-blue-900 text-white">
+    <footer className="bg-gradient-to-r from-blue-800 to-indigo-700 text-white">
       <div className="container mx-auto flex items-center justify-between gap-6 py-6 font-medium max-md:flex-col px-6">
-        <p data-test="footer" className="text-gray-200">
+        <p data-test="footer" className="text-white/90">
           © {new Date().getFullYear()} Quolance. All rights reserved.
         </p>
         
         <div className="flex gap-8 items-center max-md:flex-col max-md:gap-4">
-          <Link href="/support/faqs" className="text-gray-300 hover:text-white text-sm transition-colors">
+          <Link href="/support/faqs" className="text-white/80 hover:text-white text-sm transition-colors">
             FAQs
           </Link>
-          <Link href="/support/contact-us" className="text-gray-300 hover:text-white text-sm transition-colors">
+          <Link href="/support/contact-us" className="text-white/80 hover:text-white text-sm transition-colors">
             Contact Us
           </Link>
           <a 
             href="https://github.com/abdelh17/Quolance" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="text-gray-300 hover:text-white transition-colors"
+            className="text-white/80 hover:text-white transition-colors hover:scale-110"
             aria-label="GitHub"
           >
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
