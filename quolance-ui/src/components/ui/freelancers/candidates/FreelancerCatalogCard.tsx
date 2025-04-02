@@ -67,10 +67,6 @@ const FreelancerCatalogCard = ({
             </div>
           </div>
 
-          <div className='mt-4'>
-            <p className='text-n600 line-clamp-2 text-sm'>{freelancer.bio}</p>
-          </div>
-
           {freelancer.skills?.length > 0 && (
             <div className='mt-4 flex flex-wrap gap-2'>
               {freelancer.skills.slice(0, 4).map((skill, index) => (
