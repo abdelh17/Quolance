@@ -196,7 +196,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public Page<BlogPostResponseDto> getPaginatedBlogPosts(Pageable pageable) {
-        return blogPostRepository.findAllByOrderByLastModifiedDesc(pageable)
+        return blogPostRepository.findAllByOrderByLastModifiedDateDesc(pageable)
                 .map(BlogPostResponseDto::fromEntity);
     }
 
