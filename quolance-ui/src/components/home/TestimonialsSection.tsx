@@ -3,38 +3,53 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-// Sample testimonial data
 const testimonials = [
   {
-    quote: "Quolance's AI matched me with an incredible developer who understood exactly what I needed. The project was completed ahead of schedule and exceeded my expectations.",
-    author: "Sarah Johnson",
-    role: "Founder",
-    company: "Bloom Marketing",
-    image: "https://randomuser.me/api/portraits/women/32.jpg",
+    quote: "Very pleased with the service. Quolance is the go-to for quality freelancing. Professional platform that connects you with the best clients out there.",
+    author: "Benjamin Foster",
+    role: "Senior Frontend Developer",
+    company: "Contract",
+    image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80",
     rating: 5
   },
   {
-    quote: "As a freelancer, I've found amazing clients through this platform. The AI-powered matching ensures I get projects that perfectly align with my skills and experience.",
-    author: "Michael Chen",
-    role: "Full-Stack Developer",
-    company: "Independent",
-    image: "https://randomuser.me/api/portraits/men/26.jpg",
+    quote: "Quolance has connected me with top-notch freelancers. The quality of work and communication has been exceptional.",
+    author: "Sofia Rodriguez",
+    role: "UI/UX Design",
+    company: "Contractor",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80",
     rating: 5
   },
   {
-    quote: "The AI content generator helped me create a professional profile that stands out. Since updating my profile, I've received three times more client inquiries!",
-    author: "Alex Rivera",
-    role: "UX Designer",
-    company: "DesignCraft",
-    image: "https://randomuser.me/api/portraits/women/68.jpg",
+    quote: "The platform is intuitive and the talent pool is impressive. I've found amazing freelancers for various projects.",
+    author: "Isabelle Chen",
+    role: "Full Stack Developer",
+    company: "Freelancer",
+    image: "https://images.unsplash.com/photo-1579017331263-ef82f0bbc748?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=900&h=900&q=80",
     rating: 5
   },
   {
-    quote: "I was skeptical about AI-assisted project matching, but after my first project through Quolance, I'm a believer. The platform saved me countless hours finding the right talent.",
-    author: "David Wilson",
-    role: "Product Manager",
-    company: "TechStart Inc.",
-    image: "https://randomuser.me/api/portraits/men/42.jpg",
+    quote: "As a creative professional, I appreciate the high standards maintained by Quolance. The platform has been instrumental in scaling our team.",
+    author: "Emily Parker",
+    role: "Product Designer",
+    company: "Freelancer",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80",
+    rating: 5
+  },
+  {
+    quote: "The freelancers on Quolance are truly exceptional. Every project has been delivered with outstanding quality.",
+    author: "Marcus Thompson",
+    role: "Mobile App Developer",
+    company: "Contract",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80",
+    rating: 5
+  },
+  {
+    quote: "Quolance made it easy to find specialized talent for our startup. The quality of work has consistently exceeded our expectations.",
+    author: "Kumar Patel",
+    role: "Backend Developer",
+    company: "Freelancer",
+    image: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80",
     rating: 5
   }
 ];
