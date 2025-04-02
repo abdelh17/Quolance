@@ -6,8 +6,10 @@ import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
-import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
-import com.quolance.quolance_api.repositories.*;
+import com.quolance.quolance_api.repositories.ApplicationRepository;
+import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
+import com.quolance.quolance_api.repositories.ProjectRepository;
+import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import com.quolance.quolance_api.services.entity_services.UserService;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
@@ -36,17 +38,12 @@ import java.util.UUID;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationCodeService verificationCodeService;
     private final ProjectRepository projectRepository;
     private final ApplicationRepository applicationRepository;
     private NotificationMessageService notificationMessageService;
-
-
-
-
 
     @Override
     @Transactional
@@ -137,7 +134,7 @@ public class UserServiceImpl implements UserService {
             log.warn("No user found with email: {}", email);
             return ApiException.builder()
                     .status(HttpServletResponse.SC_NOT_FOUND)
-                    .message("User not found")
+                    .message("Invalid credentials")
                     .build();
         });
         return user;
@@ -145,19 +142,22 @@ public class UserServiceImpl implements UserService {
 
     private void sendVerificationEmail(User user) {
         log.debug("Creating verification code for user ID: {}", user.getId());
-        VerificationCode verificationCode = new VerificationCode(user);
-        user.setVerificationCode(verificationCode);
-        verificationCodeRepository.save(verificationCode);
+        verificationCodeService.sendVerificationCode(user);
+    }
 
-        SendWelcomeEmailJob sendWelcomeEmailJob = new SendWelcomeEmailJob(user.getId());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            log.warn("Thread interrupted while waiting to send welcome email for user ID: {}", user.getId(), e);
-            Thread.currentThread().interrupt();
+    @Override
+    public void resendVerificationEmail(String email) {
+        log.debug("Attempting to resend verification email for user: {}", email);
+        User user = findByEmail(email);
+        if (user.isVerified()) {
+            log.warn("Resend verification email failed - user already verified: {}", email);
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Email already verified")
+                    .build();
         }
-        log.debug("Enqueueing welcome email job for user ID: {}", user.getId());
-        BackgroundJobRequest.enqueue(sendWelcomeEmailJob);
+        verificationCodeService.deleteVerificationCode(user.getVerificationCode());
+        verificationCodeService.sendVerificationCode(user);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class UserServiceImpl implements UserService {
 
         user.setVerified(true);
         userRepository.save(user);
-        verificationCodeRepository.delete(verificationCode);
+        verificationCodeService.deleteVerificationCode(verificationCode);
         log.info("Successfully verified email for: {}", user.getEmail());
         return "Email verified successfully";
     }
