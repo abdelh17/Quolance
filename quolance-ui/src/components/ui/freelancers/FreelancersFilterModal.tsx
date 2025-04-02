@@ -34,7 +34,7 @@ function FreelancersFilterModal({
             : '-translate-y-full opacity-0'
         }`}
       >
-        <div className='mx-3 mb-24 mt-14 max-h-[85vh] min-w-[500px] max-w-[1175px] overflow-y-auto rounded-2xl bg-white p-8 drop-shadow-2xl'>
+        <div className='mx-3 mb-24 mt-14 max-h-[85vh] min-w-[calc(100%-60px)] max-w-[1175px] overflow-y-auto rounded-2xl bg-white p-8 drop-shadow-2xl md:min-w-[500px]'>
           <div className='flex items-center justify-between gap-3'>
             <p className='text-xl font-medium'>All filters</p>
             <button onClick={() => setFilterModal(false)}>
