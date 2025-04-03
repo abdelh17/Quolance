@@ -25,7 +25,7 @@ function GenericChatHeader({
   return (
     <div
       className={
-        'bg-b400 hover:bg-b500 rounded-t-xl p-[10px] px-[11px] pb-[8px] text-slate-200 drop-shadow-md transition-all duration-200'
+        'rounded-t-xl bg-white p-[10px] px-[11px] pb-[8px] shadow-md drop-shadow-md transition-all duration-200 hover:bg-gray-100'
       }
       style={{ width }}
     >
@@ -45,10 +45,12 @@ function GenericChatHeader({
         {isUnread && (
           <div className={'ml-2 h-2 w-2 rounded-full bg-rose-600'} />
         )}
-        <div className={'ml-auto flex'}>
+        <div className={'ml-auto flex text-gray-600'}>
           {buttons.map((button, index) => (
             <button
-              className={'rounded-full p-2 transition-colors hover:bg-white/10'}
+              className={
+                'rounded-full p-2 transition-colors hover:bg-gray-600/10'
+              }
               style={{ display: button.isVisible ? 'block' : 'none' }}
               key={index}
               onClick={(event) => {
