@@ -39,7 +39,7 @@ function CandidatesContainer() {
               Scout For Your Next Candidate Today
             </p>
             <p className='mt-6 text-base/7 text-gray-300'>
-              Find trusted freelancers and contractors with ease. Our extensive
+              Find trusted freelancers and clients with ease. Our extensive
               network of skilled local experts—from programming and design to
               writing and beyond—is here to help you succeed, no matter the
               project.
