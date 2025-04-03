@@ -20,6 +20,7 @@ import {
   ProjectFormValues,
   projectSchema,
 } from '@/lib/validation/projectSchema';
+import TopTalents from './TopTalent';
 
 function ProjectPage() {
   const { id } = useParams();
@@ -158,7 +159,10 @@ function ProjectPage() {
 
               {/* Submission List - Only visible to clients who own the project */}
               {role === Role.CLIENT && userId === project.clientId && (
+                <>
                 <ProjectSubmissions projectId={project.id} />
+                <TopTalents projectId={project.id} />
+                </>
               )}
             </div>
           </div>
