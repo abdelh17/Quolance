@@ -28,22 +28,6 @@ export interface ChatContactProps {
   isExpanded: boolean;
 }
 
-export type ChatContextType = {
-  containers: ChatContactProps[];
-  contacts: ContactDto[];
-  isLoading: boolean;
-  sendMessage: (receiverId: string, message: string, isDraft?: boolean) => void;
-  onOpenChat: (contact: ContactDto) => void;
-  onNewChat: (
-    receiverId: string,
-    name?: string,
-    profileImageUrl?: string
-  ) => void;
-  removeContainer: (receiverId: string) => void;
-  setMinimize: (receiverId: string, value: boolean) => void;
-  setExpanded: (receiverId: string, value: boolean) => void;
-  lastReadUpdate: number;
-};
 export const chatbotContact: ContactDto = {
   user_id: 'chatbot',
   name: 'Chatbot',
