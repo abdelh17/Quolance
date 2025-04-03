@@ -439,19 +439,16 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           </div>
         )}
       </div>
-  
+
       {/* Full-screen viewer */}
       {showFullScreen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
           <div className="relative w-3/4 h-3/4 bg-zinc-800 rounded-md overflow-hidden">
-            <div className="absolute top-2 left-2 text-white bg-black bg-opacity-50 px-2 py-1 rounded-md text-sm font-semibold">
-              {currentImageIndex + 1} / {imageUrls.length}
-            </div>
             <button
               onClick={closeFullScreen}
-              className="absolute top-2 right-2 text-white bg-red-500 p-2 rounded-full"
+              className="absolute text-2xl top-4 right-4 text-white px-3 py-2 rounded-md hover:bg-red-600 transition"
             >
-              X
+              &#128473;
             </button>
             <img
               src={imageUrls[currentImageIndex]}
@@ -460,16 +457,19 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             />
             <button
               onClick={prevImage}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-md"
+              className="absolute text-6xl left-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:bg-gray-500 transition"
             >
-              &lt;
+              &#8249;
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-md"
+              className="absolute text-6xl right-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:bg-gray-500 transition"
             >
-              &gt;
+              &#8250;
             </button>
+            <div className="absolute text-xl bottom-4 left-1/2 transform -translate-x-1/2 bg-slate-400 bg-opacity-50 text-white px-3 py-1 rounded-md text-sm font-medium">
+              {currentImageIndex + 1} / {imageUrls.length}
+            </div>
           </div>
         </div>
       )}
