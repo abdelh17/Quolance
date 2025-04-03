@@ -1,6 +1,7 @@
 import { ContactDto, MessageDto } from '@/constants/types/chat-types';
 import { format, isThisYear, isToday, isYesterday } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { isMobileWidth } from '@/util/utils';
 
 const GROUPING_THRESHOLD = 300000; // 5 minutes
 const LAST_READ_KEY = 'chatLastReadTimestamps';
@@ -130,12 +131,18 @@ export const isMessageUnread = (
 
 export const getHeightFromWindowsDimensions = (
   type: 'chat' | 'contacts',
+  windowWidth: number,
   windowHeight: number
 ) => {
+  const isMobile = isMobileWidth(windowWidth);
+
   if (type === 'chat') {
-    return windowHeight - 100;
+    if (isMobile) {
+      return windowHeight - 56;
+    }
+    return Math.floor(windowHeight * 0.34) - 56;
   }
-  return windowHeight - 80;
+  return isMobile ? windowHeight - 56 : Math.floor(windowHeight * 0.65) - 56;
 };
 
 export const createDraftContact = (
@@ -151,6 +158,7 @@ export const createDraftContact = (
   last_sender_id: '',
 });
 
+// Add URL to the blacklist to hide the chat interface
 export const BLACKLISTED_PATHS = [
   '/auth/',
   '/profile',

@@ -8,6 +8,9 @@ import conversation_illustration from '@/public/images/conversation_illustration
 import Image from 'next/image';
 import Link from 'next/link';
 import { Role } from '@/models/user/UserResponse';
+import { getHeightFromWindowsDimensions } from '@/util/chatUtils';
+import useWindowDimensions from '@/util/hooks/useWindowDimensions';
+import { useChat } from '@/components/ui/chat/ChatProvider';
 
 interface ContactsContainerProps {
   contacts: ContactDto[];
@@ -18,7 +21,13 @@ function ContactsContainer({ contacts, onOpenChat }: ContactsContainerProps) {
   const { user } = useAuthGuard({ middleware: 'auth' });
   const [isMinimized, setIsMinimized] = React.useState(true);
   const width = 320;
-  const height = 696;
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { setHideChatInterface } = useChat();
+  const height = getHeightFromWindowsDimensions(
+    'contacts',
+    windowWidth,
+    windowHeight
+  );
 
   return (
     <div className='mt-auto w-72 '>
@@ -28,6 +37,10 @@ function ContactsContainer({ contacts, onOpenChat }: ContactsContainerProps) {
         width={width}
         isMinimized={isMinimized}
         onMinimize={() => setIsMinimized((prevState) => !prevState)}
+        onHideChat={() => {
+          setIsMinimized(true);
+          setHideChatInterface(true);
+        }}
       />
       <GenericChatContainer
         isMinimized={isMinimized}

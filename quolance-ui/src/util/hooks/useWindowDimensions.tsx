@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
+import { isMobileWidth } from '@/util/utils';
 
 interface WindowDimensions {
   width: number;
   height: number;
+}
+
+interface ExtendedWindowDimensions extends WindowDimensions {
+  isMobile: boolean;
 }
 
 /**
@@ -11,11 +16,11 @@ interface WindowDimensions {
  * Safe for SSR (returns default values until client-side hydration)
  */
 
-function useWindowDimensions(): WindowDimensions {
+function useWindowDimensions(): ExtendedWindowDimensions {
   // Default dimensions for SSR
   const [windowDimensions, setWindowDimensions] = useState<WindowDimensions>({
-    width: 0,
-    height: 0,
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
   });
 
   useEffect(() => {
@@ -37,7 +42,13 @@ function useWindowDimensions(): WindowDimensions {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return { width: windowDimensions.width, height: windowDimensions.height };
+  const isMobile = isMobileWidth(windowDimensions.width);
+
+  return {
+    width: windowDimensions.width,
+    height: windowDimensions.height,
+    isMobile,
+  };
 }
 
 export default useWindowDimensions;

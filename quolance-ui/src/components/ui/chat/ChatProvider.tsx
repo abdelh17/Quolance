@@ -6,7 +6,6 @@ import ChatContainer from '@/components/ui/chat/ChatContainer';
 import {
   chatbotContact,
   ChatContactProps,
-  ChatContextType,
   ContactDto,
 } from '@/constants/types/chat-types';
 import ContactsContainer from '@/components/ui/chat/ContactsContainer';
@@ -19,6 +18,25 @@ import {
 } from '@/util/chatUtils';
 import { usePathname } from 'next/navigation';
 
+type ChatContextType = {
+  containers: ChatContactProps[];
+  contacts: ContactDto[];
+  isLoading: boolean;
+  sendMessage: (receiverId: string, message: string, isDraft?: boolean) => void;
+  onOpenChat: (contact: ContactDto) => void;
+  onNewChat: (
+    receiverId: string,
+    name?: string,
+    profileImageUrl?: string
+  ) => void;
+  hideChatInterface: boolean;
+  setHideChatInterface: (value: boolean) => void;
+  removeContainer: (receiverId: string) => void;
+  setMinimize: (receiverId: string, value: boolean) => void;
+  setExpanded: (receiverId: string, value: boolean) => void;
+  lastReadUpdate: number;
+};
+
 const ChatContext = createContext<ChatContextType | null>(null);
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
@@ -26,6 +44,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const { data: contacts = [], isLoading, isFetched } = useGetContacts(user);
   const { mutateAsync: sendMessageMutate } = useSendMessage();
   const queryClient = useQueryClient();
+  const [hideChatInterface, setHideChatInterface] = useState(false);
   const [containers, setContainers] = useState<ChatContactProps[]>([]);
   const [lastReadUpdate, setLastReadUpdate] = useState(0);
 
@@ -183,6 +202,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         sendMessage,
         onOpenChat,
         onNewChat,
+        hideChatInterface,
+        setHideChatInterface,
         removeContainer: containerActions.remove,
         setMinimize: containerActions.minimize,
         setExpanded: containerActions.expand,

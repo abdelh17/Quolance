@@ -1,5 +1,7 @@
 import GenericChatHeader from '@/components/ui/chat/GenericChatHeader';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import useWindowDimensions from '@/util/hooks/useWindowDimensions';
+import { CgClose } from 'react-icons/cg';
 
 interface ConversationHeaderProps {
   avatar: string;
@@ -7,6 +9,7 @@ interface ConversationHeaderProps {
   width: number;
   isMinimized: boolean;
   onMinimize: () => void;
+  onHideChat: () => void;
 }
 
 function ContactsHeader({
@@ -15,7 +18,9 @@ function ContactsHeader({
   width,
   isMinimized,
   onMinimize,
+  onHideChat,
 }: ConversationHeaderProps) {
+  const { isMobile } = useWindowDimensions();
   return (
     <GenericChatHeader
       title={title}
@@ -26,7 +31,12 @@ function ContactsHeader({
         {
           icon: isMinimized ? <FaChevronUp /> : <FaChevronDown />,
           onClick: onMinimize,
-          isVisible: true,
+          isVisible: !isMobile,
+        },
+        {
+          icon: <CgClose />,
+          onClick: onHideChat,
+          isVisible: false,
         },
       ]}
     />
