@@ -44,7 +44,9 @@ function GenericChatHeader({
         <h1 className={'ml-2 max-w-[calc(100%-80px)] truncate'} title={title}>
           {title}
         </h1>
-        {isUnread && <div className={'bg-b300 ml-2 h-2 w-2 rounded-full'} />}
+        {isUnread && (
+          <div className={'bg-b300 ml-2 min-h-2 min-w-2 rounded-full'} />
+        )}
         <div className={'ml-auto flex text-gray-600'}>
           {buttons.map((button, index) => (
             <button
