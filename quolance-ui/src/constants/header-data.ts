@@ -21,6 +21,23 @@ export const authenticatedHeaderMenu = [
   },
   {
     id: uuidv4(),
+    name: 'Why Quolance?',
+    isSubmenu: true,
+    submenu: [
+      {
+        id: uuidv4(),
+        name: 'About US',
+        link: '/why-quolance//about-us',
+      },
+      {
+        id: uuidv4(),
+        name: 'Reviews',
+        link: '/why-quolance/reviews',
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
     name: 'Support',
     isSubmenu: true,
     submenu: [
