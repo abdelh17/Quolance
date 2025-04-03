@@ -296,7 +296,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
 
   return (
-    <div className="bg-white shadow-md rounded-md font-sans p-5">
+    <div className="bg-white shadow-md rounded-md font-sans p-8">
       {/* User Info + Top Row */}
       <div className="flex justify-between items-start">
         <div className="flex items-center">
@@ -312,7 +312,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           <div className="ml-4">
             <button
               ref={authorNameRef}
-              className="text-gray-800 font-bold cursor-pointer focus:outline-none"
+              className="text-gray-800 text-lg font-bold cursor-pointer focus:outline-none"
               onClick={handleShowUserSummary}
             >
               {authorName}
@@ -394,7 +394,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
       <div className="flex justify-between mt-2 gap-4">
         {/* Title + Content */}
         <div className="flex-1">
-          <h3 className="text-md font-semibold text-gray-800 mt-1">{title}</h3>
+          <h3 className="text-xl font-semibold text-gray-800 my-3">{title}</h3>
           <div className={`mt-1 ${!isExpanded ? "line-clamp-6 md:line-clamp-10" : ""}`}>
             <p className="text-gray-700">{content}</p>
           </div>
@@ -413,7 +413,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   
         {/* Image stack */}
         {imageUrls.length > 0 && (
-          <div className="relative w-[200px] h-[200px] shrink-0">
+          <div className="relative w-[200px] h-[200px] mt-3 shrink-0">
             {imageUrls.slice(0, 3).map((url, index) => (
               <div
                 key={index}

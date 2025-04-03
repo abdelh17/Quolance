@@ -169,7 +169,7 @@ const BlogContainer: React.FC = () => {
                               >
                                 Create New Post
                               </Button>
-                              <div className="w-full">
+                              <div className="w-full md:-ml-44">
                                 <SearchBar />
                               </div>
                             </div>
