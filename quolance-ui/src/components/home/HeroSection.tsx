@@ -130,7 +130,7 @@ export default function HeroSection() {
                 data-test="hero-desc" 
                 className="mt-6 max-w-xl text-pretty text-lg leading-8 text-gray-600"
               >
-                Find trusted freelancers and contractors with ease. Our extensive network of skilled local experts—from programming and design to writing and beyond—is here to help you succeed, no matter the project.
+                Find trusted freelancers and clients with ease. Our extensive network of skilled local experts—from programming and design to writing and beyond—is here to help you succeed, no matter the project.
               </motion.p>
               
               <motion.div 
