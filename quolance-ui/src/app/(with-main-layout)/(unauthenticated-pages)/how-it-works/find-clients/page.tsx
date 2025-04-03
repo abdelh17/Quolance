@@ -367,12 +367,6 @@ function FindClientsPage() {
               <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
             </Link>
             
-            <Link
-              href="#"
-              className="text-sm font-semibold leading-6 text-gray-900 relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-blue-500 after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 hover:after:origin-bottom-left after:transition-transform after:duration-300"
-            >
-              Learn more <span aria-hidden="true">→</span>
-            </Link>
           </motion.div>
         </div>
       </div>

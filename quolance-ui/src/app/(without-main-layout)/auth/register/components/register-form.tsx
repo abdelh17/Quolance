@@ -2,7 +2,7 @@
 
 import {zodResolver} from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -58,13 +58,26 @@ export function UserRegisterForm({
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
     undefined
   );
+  
+  // Reference for the success message element
+  const successMessageRef = useRef<HTMLDivElement>(null);
 
-  const { register, handleSubmit, formState, watch } = useForm<Schema>({
+  const { register, handleSubmit, formState, watch, reset } = useForm<Schema>({
     resolver: zodResolver(registerSchema),
     reValidateMode: 'onSubmit',
   });
 
   const password = watch('password');
+
+  // Scroll to success message when it appears
+  useEffect(() => {
+    if (success && successMessageRef.current) {
+      successMessageRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }, [success]);
 
   async function onSubmit(data: Schema) {
     setErrors(undefined);
@@ -77,6 +90,8 @@ export function UserRegisterForm({
       .then(() => {
         toast.success('Account created successfully');
         setSuccess(true);
+        // Reset the form after successful submission
+        reset();
       })
       .catch((error) => {
         const errData = error.response.data as HttpErrorResponse;
@@ -113,17 +128,19 @@ export function UserRegisterForm({
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <SuccessFeedback
-        show={success}
-        message='Account created'
-        description='An email verification code has been sent to your inbox. Please enter the code to verify your account. Check your spam folder if you do not find it!'
-        action={
-          <Link href={`/auth/verify-email/${watch('email')}`} className='underline'>
-            Verify Email
-          </Link>
-        }
-        data-test='success-message'
-      />
+      <div ref={successMessageRef}>
+        <SuccessFeedback
+          show={success}
+          message='Account created'
+          description='An email verification code has been sent to your inbox. Please enter the code to verify your account. Check your spam folder if you do not find it!'
+          action={
+            <Link href={`/auth/verify-email/${watch('email')}`} className='underline'>
+              Verify Email
+            </Link>
+          }
+          data-test='success-message'
+        />
+      </div>
       
       <motion.div
         initial="hidden"
