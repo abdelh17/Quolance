@@ -14,13 +14,13 @@ function GenericChatContainer({
   height,
   children,
 }: GenericChatContainerProps) {
-  const { isMobile } = useWindowDimensions();
+  const { isMobile, width: windowWidth } = useWindowDimensions();
   return (
     <div
       className={`transition-height border-t border-gray-200 bg-slate-50 shadow-md drop-shadow-md transition-all duration-200`}
       style={{
         height: isMobile ? height : isMinimized ? 0 : height,
-        width,
+        width: isMobile ? windowWidth : width,
         overflow: 'hidden',
       }}
     >

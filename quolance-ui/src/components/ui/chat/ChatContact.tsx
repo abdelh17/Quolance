@@ -24,7 +24,7 @@ function ChatContact({ contact, onClick }: ContactProps) {
   const [isUnread, setIsUnread] = useState(false);
   const { lastReadUpdate } = useChat();
   const { user } = useAuthGuard({ middleware: 'auth' });
-  const isOwn = last_sender_id === user?.id; // TODO: check if this is correct
+  const isOwn = last_sender_id === user?.id;
 
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -41,7 +41,7 @@ function ChatContact({ contact, onClick }: ContactProps) {
 
   return (
     <div
-      className='flex h-[80px] cursor-pointer items-stretch p-3 hover:bg-slate-100'
+      className='flex h-[80px] cursor-pointer items-stretch border-gray-200 bg-white p-3 pl-5 first:border-t hover:bg-slate-100'
       onClick={() => onClick(contact)}
     >
       <Avatar size='md' src={profile_picture} className={'my-auto'} />
@@ -50,7 +50,9 @@ function ChatContact({ contact, onClick }: ContactProps) {
           hasTwoLines ? 'mt-0' : 'mt-2'
         } flex flex-grow flex-col overflow-hidden`}
       >
-        <div className='text-sm font-semibold text-slate-800'>{name}</div>
+        <div className='line-clamp-1 truncate text-sm font-semibold text-slate-800'>
+          {name}
+        </div>
         <div
           ref={lastMessageRef}
           className='line-clamp-2 overflow-ellipsis text-xs font-[100] text-slate-500'
@@ -63,7 +65,7 @@ function ChatContact({ contact, onClick }: ContactProps) {
           {formatTimeForChat(last_message_timestamp)}
         </div>
         {isUnread && (
-          <div className='bg-b400 mb-1 ml-auto mr-1 flex h-[10px] w-[10px] items-center justify-center rounded-full' />
+          <div className='bg-b300 mb-1 ml-auto mr-1 flex h-[10px] w-[10px] items-center justify-center rounded-full' />
         )}
       </div>
     </div>

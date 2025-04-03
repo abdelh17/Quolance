@@ -102,7 +102,7 @@ const ChatContent: React.FC<{
 }> = ({ contact, messages, isMinimized }) => {
   const { user } = useAuthGuard({ middleware: 'auth' });
   const { user_id: receiverId, profile_picture, name } = contact;
-  const { sendMessage } = useChat();
+  const { sendMessage, onUserInteraction } = useChat();
   const [inputValue, setInputValue] = React.useState('');
   const { mutateAsync: sendChatbotMessage } = useSendChatbotMessage();
   const [chatInputExpanded, setChatInputExpanded] = React.useState(false);
@@ -171,6 +171,9 @@ const ChatContent: React.FC<{
         onChange={setInputValue}
         expanded={chatInputExpanded}
         setExpanded={setChatInputExpanded}
+        onClick={() => {
+          onUserInteraction(receiverId);
+        }}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import Avatar from '@/components/ui/chat/Avatar';
+import useWindowDimensions from '@/util/hooks/useWindowDimensions';
 
 interface GenericChatHeaderProps {
   title: string;
@@ -22,12 +23,13 @@ function GenericChatHeader({
   onMinimize,
   isUnread,
 }: GenericChatHeaderProps) {
+  const { isMobile } = useWindowDimensions();
   return (
     <div
       className={
-        'rounded-t-xl bg-white p-[10px] px-[11px] pb-[8px] shadow-md drop-shadow-md transition-all duration-200 hover:bg-gray-100'
+        'bg-white p-[10px] pb-[8px] pl-[16px] shadow-md drop-shadow-md transition-all duration-200 hover:bg-gray-100 sm:rounded-t-xl sm:px-[11px] sm:pl-[11px]'
       }
-      style={{ width }}
+      style={{ width: isMobile ? '100%' : width }}
     >
       <div
         className={'flex h-full w-full cursor-pointer items-center'}
@@ -42,9 +44,7 @@ function GenericChatHeader({
         <h1 className={'ml-2 max-w-[calc(100%-80px)] truncate'} title={title}>
           {title}
         </h1>
-        {isUnread && (
-          <div className={'ml-2 h-2 w-2 rounded-full bg-rose-600'} />
-        )}
+        {isUnread && <div className={'bg-b300 ml-2 h-2 w-2 rounded-full'} />}
         <div className={'ml-auto flex text-gray-600'}>
           {buttons.map((button, index) => (
             <button

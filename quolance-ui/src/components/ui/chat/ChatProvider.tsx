@@ -14,9 +14,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   createDraftContact,
   isBlacklistedPath,
+  isMessageUnread,
   updateLastRead,
 } from '@/util/chatUtils';
 import { usePathname } from 'next/navigation';
+import ChatIconMobile from '@/components/ui/chat/ChatIconMobile';
+import useWindowDimensions from '@/util/hooks/useWindowDimensions';
 
 type ChatContextType = {
   containers: ChatContactProps[];
@@ -29,6 +32,8 @@ type ChatContextType = {
     name?: string,
     profileImageUrl?: string
   ) => void;
+  onUserInteraction: (receiverId: string) => void;
+  allMessagesRead: boolean;
   hideChatInterface: boolean;
   setHideChatInterface: (value: boolean) => void;
   removeContainer: (receiverId: string) => void;
@@ -41,10 +46,12 @@ const ChatContext = createContext<ChatContextType | null>(null);
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuthGuard({ middleware: 'auth' });
+  const { isMobile } = useWindowDimensions();
   const { data: contacts = [], isLoading, isFetched } = useGetContacts(user);
   const { mutateAsync: sendMessageMutate } = useSendMessage();
   const queryClient = useQueryClient();
-  const [hideChatInterface, setHideChatInterface] = useState(false);
+  const [hideChatInterface, setHideChatInterface] = useState(true);
+  const [allMessagesRead, setAllMessagesRead] = useState(false);
   const [containers, setContainers] = useState<ChatContactProps[]>([]);
   const [lastReadUpdate, setLastReadUpdate] = useState(0);
 
@@ -58,6 +65,18 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         });
       }
     }
+    // update all containers with the new contacts
+    setContainers((prev) =>
+      prev.map((container) => {
+        const contact = contacts.find(
+          (c) => c.user_id === container.contact.user_id
+        );
+        if (contact) {
+          return { ...container, contact };
+        }
+        return container;
+      })
+    );
   }, [contacts]);
 
   useEffect(() => {
@@ -72,6 +91,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (contacts.length > 0) {
+      const unreadMessages = contacts.some((contact) =>
+        isMessageUnread(contact, user?.id || '')
+      );
+      setAllMessagesRead(!unreadMessages);
+    }
+  }, [contacts, lastReadUpdate]);
+
   const containerActions = {
     add: (container: ChatContactProps) =>
       setContainers((prev) =>
@@ -83,22 +111,18 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       setContainers((prev) =>
         prev.filter((c) => c.contact.user_id !== receiverId)
       ),
-    minimize: (receiverId: string, value: boolean) => {
+    minimize: (receiverId: string, value: boolean) =>
       setContainers((prev) =>
         prev.map((c) =>
           c.contact.user_id === receiverId ? { ...c, isMinimized: value } : c
         )
-      );
-      onUserInteraction(receiverId);
-    },
-    expand: (receiverId: string, value: boolean) => {
+      ),
+    expand: (receiverId: string, value: boolean) =>
       setContainers((prev) =>
         prev.map((c) =>
           c.contact.user_id === receiverId ? { ...c, isExpanded: value } : c
         )
-      );
-      onUserInteraction(receiverId);
-    },
+      ),
   };
 
   const onUserInteraction = (receiverId: string) => {
@@ -165,6 +189,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     name?: string,
     profilePictureUrl?: string
   ) => {
+    isMobile && setHideChatInterface(false);
     const existing = containers.find((c) => c.contact.user_id === receiverId);
     if (existing) {
       // If chat already exists, minimize all other chats, and unminimize the chat
@@ -202,11 +227,13 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         sendMessage,
         onOpenChat,
         onNewChat,
+        onUserInteraction,
         hideChatInterface,
         setHideChatInterface,
         removeContainer: containerActions.remove,
         setMinimize: containerActions.minimize,
         setExpanded: containerActions.expand,
+        allMessagesRead,
         lastReadUpdate,
       }}
     >
@@ -218,18 +245,38 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 export function ChatInterface() {
   const context = useContext(ChatContext);
   const { user } = useAuthGuard({ middleware: 'auth' });
+  const { isMobile } = useWindowDimensions();
   const [isBlacklisted, setIsBlacklisted] = useState(false);
   const pathname = usePathname();
+
+  if (!context)
+    throw new Error('ChatInterface must be used within ChatProvider');
+  const {
+    containers,
+    contacts,
+    isLoading,
+    onOpenChat,
+    removeContainer,
+    hideChatInterface,
+    setHideChatInterface,
+  } = context;
 
   useEffect(() => {
     setIsBlacklisted(isBlacklistedPath(pathname));
   }, [pathname]);
 
-  if (!context)
-    throw new Error('ChatInterface must be used within ChatProvider');
+  useEffect(() => {
+    if (!document) return;
+    if (!hideChatInterface && isMobile) {
+      document.body.classList.add('overflow-hidden', 'fixed', 'w-full');
+    } else {
+      document.body.classList.remove('overflow-hidden', 'fixed', 'w-full');
+    }
 
-  const { containers, contacts, isLoading, onOpenChat, removeContainer } =
-    context;
+    return () => {
+      document.body.classList.remove('overflow-hidden', 'fixed', 'w-full');
+    };
+  }, [hideChatInterface, isMobile]);
 
   if (isLoading || isBlacklisted) return <></>;
 
@@ -244,14 +291,41 @@ export function ChatInterface() {
   }
 
   return (
-    <div className='fixed bottom-0 right-4 z-[999] px-10'>
-      <div className='relative'>
-        <div className={'relative right-[304px] flex flex-row gap-4'}>
+    <div className='fixed bottom-0 right-0 z-[999] sm:right-4 sm:px-10'>
+      {/* Mobile Interface */}
+      <div className='sm:hidden'>
+        {hideChatInterface ? (
+          <div className='relative bottom-3 right-4'>
+            <ChatIconMobile onClick={() => setHideChatInterface(false)} />
+          </div>
+        ) : (
+          <>
+            {/* Mobile Chat Containers */}
+            <div className='absolute bottom-0 right-0 z-20'>
+              {containers.map((container) => (
+                <ChatContainer key={container.contact.user_id} {...container} />
+              ))}
+            </div>
+
+            {/* Mobile Contacts Container */}
+            <div className='absolute bottom-0 right-0 z-10'>
+              <ContactsContainer
+                contacts={[chatbotContact, ...contacts]}
+                onOpenChat={onOpenChat}
+              />
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Desktop Interface */}
+      <div className='hidden sm:block'>
+        <div className='relative right-[304px] flex flex-row gap-4'>
           {containers.map((container) => (
             <ChatContainer key={container.contact.user_id} {...container} />
           ))}
         </div>
-        <div className='absolute bottom-0 right-0'>
+        <div className='absolute bottom-0 right-10'>
           <ContactsContainer
             contacts={[chatbotContact, ...contacts]}
             onOpenChat={onOpenChat}

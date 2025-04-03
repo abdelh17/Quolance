@@ -8,6 +8,7 @@ interface ChatInputProps {
   onChange: (message: string) => void;
   expanded?: boolean;
   setExpanded?: (expanded: boolean) => void;
+  onClick?: () => void;
 }
 
 function ChatInput({
@@ -16,8 +17,9 @@ function ChatInput({
   onChange,
   expanded,
   setExpanded,
+  onClick,
 }: ChatInputProps) {
-  const [onFocus, setOnFocus] = React.useState(false);
+  const [isFocused, setIsFocused] = React.useState(false);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -32,7 +34,7 @@ function ChatInput({
       <div
         className={`absolute left-0 top-0 border-t-2 border-blue-600 transition-all duration-300 ease-out`}
         style={{
-          width: onFocus ? '100%' : '0%',
+          width: isFocused ? '100%' : '0%',
         }}
       ></div>
 
@@ -45,8 +47,13 @@ function ChatInput({
               : 'max-h-[50px] overflow-y-hidden'
           }`}
           value={value}
-          onFocus={() => setOnFocus(true)}
-          onBlur={() => setOnFocus(false)}
+          onFocus={() => {
+            setIsFocused(true);
+          }}
+          onClick={() => {
+            onClick?.();
+          }}
+          onBlur={() => setIsFocused(false)}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder='Type a message...'
