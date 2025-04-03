@@ -3,6 +3,7 @@ import { format, isThisYear, isToday, isYesterday } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 const GROUPING_THRESHOLD = 300000; // 5 minutes
+const LAST_READ_KEY = 'chatLastReadTimestamps';
 
 export function groupMessages(messages: MessageDto[]): MessageDto[][] {
   const sortedMessages = [...messages].sort(
@@ -92,8 +93,6 @@ export const formatTimestampString = (timestamp: string) => {
   return formattedDate;
 };
 
-const LAST_READ_KEY = 'chatLastReadTimestamps';
-
 export const updateLastRead = (receiverId: string, timestamp: string) => {
   const timestamps = getLastReadTimestamps();
   timestamps[receiverId] = timestamp;
@@ -104,9 +103,13 @@ export const getLastReadTimestamps = (): Record<string, string> => {
   return JSON.parse(localStorage.getItem(LAST_READ_KEY) || '{}');
 };
 
-export const isMessageUnread = (contact: ContactDto): boolean => {
+export const isMessageUnread = (
+  contact: ContactDto,
+  self_id: string
+): boolean => {
   if (contact.user_id == 'chatbot' || contact.name.startsWith('Draft: '))
     return false;
+  if (contact.last_sender_id == self_id) return false;
 
   const lastRead = getLastReadTimestamps()[contact.user_id];
   if (!lastRead) return true;
@@ -123,4 +126,45 @@ export const isMessageUnread = (contact: ContactDto): boolean => {
   const lastMessageSeconds = Math.floor(lastMessageDate.getTime() / 1000);
 
   return lastMessageSeconds > lastReadSeconds;
+};
+
+export const getHeightFromWindowsDimensions = (
+  type: 'chat' | 'contacts',
+  windowHeight: number
+) => {
+  if (type === 'chat') {
+    return windowHeight - 100;
+  }
+  return windowHeight - 80;
+};
+
+export const createDraftContact = (
+  receiverId: string,
+  name?: string,
+  profilePictureUrl?: string
+): ContactDto => ({
+  user_id: receiverId,
+  name: `Draft: ${name || receiverId}`,
+  profile_picture: profilePictureUrl || '',
+  last_message: '',
+  last_message_timestamp: '',
+  last_sender_id: '',
+});
+
+export const BLACKLISTED_PATHS = [
+  '/auth/',
+  '/profile',
+  '/how-it-works',
+  '/support',
+  '/why-quolance',
+  '/not-found',
+  '/post-project',
+  '/setting',
+];
+
+export const isBlacklistedPath = (path: string) => {
+  return BLACKLISTED_PATHS.some(
+    (p) =>
+      path.startsWith(p) || path.replace(/\/$/, '') === p.replace(/\/$/, '')
+  );
 };

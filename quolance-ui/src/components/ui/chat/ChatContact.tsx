@@ -36,12 +36,12 @@ function ChatContact({ contact, onClick }: ContactProps) {
   }, [last_message]);
 
   useEffect(() => {
-    setIsUnread(isMessageUnread(contact));
+    setIsUnread(isMessageUnread(contact, user?.id || ''));
   }, [contact, lastReadUpdate]);
 
   return (
     <div
-      className='flex h-[80px] cursor-pointer items-stretch p-3 hover:bg-slate-200'
+      className='flex h-[80px] cursor-pointer items-stretch p-3 hover:bg-slate-100'
       onClick={() => onClick(contact)}
     >
       <Avatar size='md' src={profile_picture} className={'my-auto'} />
