@@ -27,3 +27,12 @@ export interface ChatContactProps {
   isMinimized: boolean;
   isExpanded: boolean;
 }
+
+export const chatbotContact: ContactDto = {
+  user_id: 'chatbot',
+  name: 'Chatbot',
+  profile_picture: 'chatbot',
+  last_message: 'Hello how can I help you?',
+  last_message_timestamp: '',
+  last_sender_id: 'chatbot',
+};

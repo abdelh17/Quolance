@@ -1,4 +1,5 @@
 import React from 'react';
+import useWindowDimensions from '@/util/hooks/useWindowDimensions';
 
 interface GenericChatContainerProps {
   isMinimized: boolean;
@@ -13,17 +14,19 @@ function GenericChatContainer({
   height,
   children,
 }: GenericChatContainerProps) {
+  const { isMobile, width: windowWidth } = useWindowDimensions();
   return (
     <div
-      className='bg-slate-50 drop-shadow-md transition-all duration-200'
+      className={`transition-height border-t border-gray-200 bg-slate-50 shadow-md drop-shadow-md transition-all duration-200`}
       style={{
-        height: isMinimized ? 0 : height,
-        width,
+        height: isMobile ? height : isMinimized ? 0 : height,
+        width: isMobile ? windowWidth : width,
         overflow: 'hidden',
       }}
     >
-      {children}{' '}
+      {children}
     </div>
   );
 }
+
 export default GenericChatContainer;

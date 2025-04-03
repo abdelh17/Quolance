@@ -30,6 +30,23 @@ body {
   color: #0e0d39;
 }
 
+body.overflow-hidden {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+}
+
+@supports (height: 100dvh) {
+  body.overflow-hidden {
+    height: 100dvh;
+  }
+}
+@supports not (height: 100dvh) {
+  body.overflow-hidden {
+    height: 100vh;
+  }
+}
+
 @layer components {
   html {
     @apply scroll-smooth;

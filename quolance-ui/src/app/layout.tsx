@@ -31,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' dir='ltr'>
-      <body className='h-full'>
+      <body className='h-full overflow-x-hidden'>
         <ToastProvider>
           <ReactQueryProvider>
             <StepsProvider>

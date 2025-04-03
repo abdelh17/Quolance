@@ -14,6 +14,8 @@ import ChatInput from '@/components/ui/chat/ChatInput';
 import MessageList from '@/components/ui/chat/MessageList';
 import { useChat } from '@/components/ui/chat/ChatProvider';
 import ChatUserCard from '@/components/ui/chat/ChatUserCard';
+import { getHeightFromWindowsDimensions } from '@/util/chatUtils';
+import useWindowDimensions from '@/util/hooks/useWindowDimensions';
 
 const ChatContainer: React.FC<ChatContactProps> = ({
   contact,
@@ -25,9 +27,19 @@ const ChatContainer: React.FC<ChatContactProps> = ({
   const { user_id: receiverId } = contact;
   const { data: messages } = useGetMessages(receiverId, !isMinimized);
   const { setMinimize, setExpanded } = useChat();
+  const {
+    width: windowWidth,
+    height: windowHeight,
+    isMobile,
+  } = useWindowDimensions();
   const [isClosing, setIsClosing] = React.useState(false);
-  const width = isMinimized ? 230 : isExpanded ? 500 : 336;
-  const height = isExpanded ? 696 : 400;
+  const width = isMinimized ? 230 : isExpanded ? 470 : 336;
+  const tempHeight = getHeightFromWindowsDimensions(
+    'chat',
+    windowWidth,
+    windowHeight
+  );
+  const height = isExpanded && !isMobile ? tempHeight * 1.76 : tempHeight;
 
   const setIsMinimized = (value: boolean) => {
     setMinimize(receiverId, value);
@@ -90,7 +102,7 @@ const ChatContent: React.FC<{
 }> = ({ contact, messages, isMinimized }) => {
   const { user } = useAuthGuard({ middleware: 'auth' });
   const { user_id: receiverId, profile_picture, name } = contact;
-  const { sendMessage } = useChat();
+  const { sendMessage, onUserInteraction } = useChat();
   const [inputValue, setInputValue] = React.useState('');
   const { mutateAsync: sendChatbotMessage } = useSendChatbotMessage();
   const [chatInputExpanded, setChatInputExpanded] = React.useState(false);
@@ -159,6 +171,9 @@ const ChatContent: React.FC<{
         onChange={setInputValue}
         expanded={chatInputExpanded}
         setExpanded={setChatInputExpanded}
+        onClick={() => {
+          onUserInteraction(receiverId);
+        }}
       />
     </div>
   );

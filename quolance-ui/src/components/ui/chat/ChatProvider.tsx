@@ -3,11 +3,23 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuthGuard } from '@/api/auth-api';
 import ChatContainer from '@/components/ui/chat/ChatContainer';
-import { ChatContactProps, ContactDto } from '@/constants/types/chat-types';
+import {
+  chatbotContact,
+  ChatContactProps,
+  ContactDto,
+} from '@/constants/types/chat-types';
 import ContactsContainer from '@/components/ui/chat/ContactsContainer';
 import { useGetContacts, useSendMessage } from '@/api/chat-api';
 import { useQueryClient } from '@tanstack/react-query';
-import { updateLastRead } from '@/util/chatUtils';
+import {
+  createDraftContact,
+  isBlacklistedPath,
+  isMessageUnread,
+  updateLastRead,
+} from '@/util/chatUtils';
+import { usePathname } from 'next/navigation';
+import ChatIconMobile from '@/components/ui/chat/ChatIconMobile';
+import useWindowDimensions from '@/util/hooks/useWindowDimensions';
 
 type ChatContextType = {
   containers: ChatContactProps[];
@@ -20,6 +32,10 @@ type ChatContextType = {
     name?: string,
     profileImageUrl?: string
   ) => void;
+  onUserInteraction: (receiverId: string) => void;
+  allMessagesRead: boolean;
+  hideChatInterface: boolean;
+  setHideChatInterface: (value: boolean) => void;
   removeContainer: (receiverId: string) => void;
   setMinimize: (receiverId: string, value: boolean) => void;
   setExpanded: (receiverId: string, value: boolean) => void;
@@ -28,33 +44,14 @@ type ChatContextType = {
 
 const ChatContext = createContext<ChatContextType | null>(null);
 
-const chatbotContact: ContactDto = {
-  user_id: 'chatbot',
-  name: 'Chatbot',
-  profile_picture: 'chatbot',
-  last_message: 'Hello how can I help you?',
-  last_message_timestamp: '',
-  last_sender_id: 'chatbot',
-};
-
-const createDraftContact = (
-  receiverId: string,
-  name?: string,
-  profilePictureUrl?: string
-): ContactDto => ({
-  user_id: receiverId,
-  name: `Draft: ${name || receiverId}`,
-  profile_picture: profilePictureUrl || '',
-  last_message: '',
-  last_message_timestamp: '',
-  last_sender_id: '',
-});
-
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuthGuard({ middleware: 'auth' });
+  const { isMobile } = useWindowDimensions();
   const { data: contacts = [], isLoading, isFetched } = useGetContacts(user);
   const { mutateAsync: sendMessageMutate } = useSendMessage();
   const queryClient = useQueryClient();
+  const [hideChatInterface, setHideChatInterface] = useState(true);
+  const [allMessagesRead, setAllMessagesRead] = useState(false);
   const [containers, setContainers] = useState<ChatContactProps[]>([]);
   const [lastReadUpdate, setLastReadUpdate] = useState(0);
 
@@ -62,50 +59,78 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     // Invalidate all containers when contacts change
     if (isFetched) {
       for (const container of containers) {
-        queryClient.invalidateQueries({
-          queryKey: ['messages', container.contact.user_id],
-          refetchType: 'active',
-        });
+        queryClient
+          .invalidateQueries({
+            queryKey: ['messages', container.contact.user_id],
+            refetchType: 'active',
+          })
+          .then(() => {
+            // update all containers with the new contacts
+            setContainers((prev) =>
+              prev.map((container) => {
+                const contact = contacts.find(
+                  (c) => c.user_id === container.contact.user_id
+                );
+                if (contact) {
+                  return { ...container, contact };
+                }
+                return container;
+              })
+            );
+          });
       }
     }
   }, [contacts]);
 
+  useEffect(() => {
+    setContainers([]);
+    if (!user) {
+      containerActions.add({
+        contact: chatbotContact,
+        onClose: () => containerActions.remove('chatbot'),
+        isMinimized: true,
+        isExpanded: false,
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (contacts.length > 0) {
+      const unreadMessages = contacts.some((contact) =>
+        isMessageUnread(contact, user?.id || '')
+      );
+      setAllMessagesRead(!unreadMessages);
+    }
+  }, [contacts, lastReadUpdate]);
+
+  const containerActions = {
+    add: (container: ChatContactProps) =>
+      setContainers((prev) =>
+        prev.some((c) => c.contact.user_id === container.contact.user_id)
+          ? prev
+          : [...prev, container].slice(-3)
+      ),
+    remove: (receiverId: string) =>
+      setContainers((prev) =>
+        prev.filter((c) => c.contact.user_id !== receiverId)
+      ),
+    minimize: (receiverId: string, value: boolean) =>
+      setContainers((prev) =>
+        prev.map((c) =>
+          c.contact.user_id === receiverId ? { ...c, isMinimized: value } : c
+        )
+      ),
+    expand: (receiverId: string, value: boolean) =>
+      setContainers((prev) =>
+        prev.map((c) =>
+          c.contact.user_id === receiverId ? { ...c, isExpanded: value } : c
+        )
+      ),
+  };
+
   const onUserInteraction = (receiverId: string) => {
     updateLastRead(receiverId, new Date().toISOString());
     setLastReadUpdate(Date.now());
-  };
-
-  const addContainer = (container: ChatContactProps) => {
-    setContainers((prev) => {
-      if (prev.some((c) => c.contact.user_id === container.contact.user_id)) {
-        return prev;
-      }
-      return [...prev, container].slice(-3);
-    });
-  };
-
-  const removeContainer = (receiverId: string) => {
-    setContainers((prev) =>
-      prev.filter((c) => c.contact.user_id !== receiverId)
-    );
-  };
-
-  const setMinimize = (receiverId: string, value: boolean) => {
-    setContainers((prev) =>
-      prev.map((c) =>
-        c.contact.user_id === receiverId ? { ...c, isMinimized: value } : c
-      )
-    );
-    onUserInteraction(receiverId);
-  };
-
-  const setExpanded = (receiverId: string, value: boolean) => {
-    setContainers((prev) =>
-      prev.map((c) =>
-        c.contact.user_id === receiverId ? { ...c, isExpanded: value } : c
-      )
-    );
-    onUserInteraction(receiverId);
   };
 
   const onOpenChat = (contact: ContactDto) => {
@@ -116,12 +141,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         !c.contact.name.startsWith('Draft')
     );
     if (existing) {
-      setMinimize(contact.user_id, false);
+      containerActions.minimize(contact.user_id, false);
       return;
     }
-    addContainer({
+    containerActions.add({
       contact,
-      onClose: () => removeContainer(contact.user_id),
+      onClose: () => containerActions.remove(contact.user_id),
       isMinimized: true,
       isExpanded: false,
     });
@@ -141,7 +166,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         // Fetch the contacts again to get the updated list
         // Then open the chat with the new contact
         if (isDraft) {
-          removeContainer(receiverId);
+          containerActions.remove(receiverId);
           // Wait for the contacts query to refetch and complete
           queryClient
             .invalidateQueries({
@@ -167,6 +192,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     name?: string,
     profilePictureUrl?: string
   ) => {
+    isMobile && setHideChatInterface(false);
     const existing = containers.find((c) => c.contact.user_id === receiverId);
     if (existing) {
       // If chat already exists, minimize all other chats, and unminimize the chat
@@ -186,26 +212,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     if (!existing) {
-      addContainer({
+      containerActions.add({
         contact: createDraftContact(receiverId, name, profilePictureUrl),
-        onClose: () => removeContainer(receiverId),
+        onClose: () => containerActions.remove(receiverId),
         isMinimized: true,
         isExpanded: false,
       });
     }
   };
-
-  useEffect(() => {
-    setContainers([]);
-    if (!user) {
-      addContainer({
-        contact: chatbotContact,
-        onClose: () => removeContainer('chatbot'),
-        isMinimized: true,
-        isExpanded: false,
-      });
-    }
-  }, [user]);
 
   return (
     <ChatContext.Provider
@@ -216,9 +230,13 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         sendMessage,
         onOpenChat,
         onNewChat,
-        removeContainer,
-        setMinimize,
-        setExpanded,
+        onUserInteraction,
+        hideChatInterface,
+        setHideChatInterface,
+        removeContainer: containerActions.remove,
+        setMinimize: containerActions.minimize,
+        setExpanded: containerActions.expand,
+        allMessagesRead,
         lastReadUpdate,
       }}
     >
@@ -230,13 +248,40 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 export function ChatInterface() {
   const context = useContext(ChatContext);
   const { user } = useAuthGuard({ middleware: 'auth' });
+  const { isMobile } = useWindowDimensions();
+  const [isBlacklisted, setIsBlacklisted] = useState(false);
+  const pathname = usePathname();
+
   if (!context)
     throw new Error('ChatInterface must be used within ChatProvider');
+  const {
+    containers,
+    contacts,
+    isLoading,
+    onOpenChat,
+    removeContainer,
+    hideChatInterface,
+    setHideChatInterface,
+  } = context;
 
-  const { containers, contacts, isLoading, onOpenChat, removeContainer } =
-    context;
+  useEffect(() => {
+    setIsBlacklisted(isBlacklistedPath(pathname));
+  }, [pathname]);
 
-  if (isLoading) return <></>;
+  useEffect(() => {
+    if (!document) return;
+    if (!hideChatInterface && isMobile) {
+      document.body.classList.add('overflow-hidden', 'fixed', 'w-full');
+    } else {
+      document.body.classList.remove('overflow-hidden', 'fixed', 'w-full');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden', 'fixed', 'w-full');
+    };
+  }, [hideChatInterface, isMobile]);
+
+  if (isLoading || isBlacklisted) return <></>;
 
   if (!user) {
     // If user is not logged in, show chatbot only. For now, we don't support
@@ -249,14 +294,41 @@ export function ChatInterface() {
   }
 
   return (
-    <div className='fixed bottom-0 right-4 z-[999] px-10'>
-      <div className='relative'>
-        <div className={'relative right-[304px] flex flex-row gap-4'}>
+    <div className='fixed bottom-0 right-0 z-[999] sm:right-4 sm:px-10'>
+      {/* Mobile Interface */}
+      <div className='sm:hidden'>
+        {hideChatInterface ? (
+          <div className='relative bottom-3 right-4'>
+            <ChatIconMobile onClick={() => setHideChatInterface(false)} />
+          </div>
+        ) : (
+          <>
+            {/* Mobile Chat Containers */}
+            <div className='absolute bottom-0 right-0 z-20'>
+              {containers.map((container) => (
+                <ChatContainer key={container.contact.user_id} {...container} />
+              ))}
+            </div>
+
+            {/* Mobile Contacts Container */}
+            <div className='absolute bottom-0 right-0 z-10'>
+              <ContactsContainer
+                contacts={[chatbotContact, ...contacts]}
+                onOpenChat={onOpenChat}
+              />
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Desktop Interface */}
+      <div className='hidden sm:block'>
+        <div className='relative right-[304px] flex flex-row gap-4'>
           {containers.map((container) => (
             <ChatContainer key={container.contact.user_id} {...container} />
           ))}
         </div>
-        <div className='absolute bottom-0 right-0'>
+        <div className='absolute bottom-0 right-10'>
           <ContactsContainer
             contacts={[chatbotContact, ...contacts]}
             onOpenChat={onOpenChat}

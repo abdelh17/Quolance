@@ -49,6 +49,9 @@ export const useSendMessage = () => {
           return [...oldData, newMessage];
         }
       );
+      queryClient.invalidateQueries({
+        queryKey: ['contacts'],
+      });
     },
     onError: (error) => {
       showToast(
