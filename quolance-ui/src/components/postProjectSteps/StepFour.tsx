@@ -101,7 +101,7 @@ function StepFour({
             <a href='/support/terms-of-service' className='text-blue-600 underline ml-1' target='_blank'>
               Terms of Service
             </a>{' '}
-              and acknowledge that Quolance is not liable for any disputes or outcomes related to this project.
+            and acknowledge that Quolance is not liable for any disputes or outcomes related to this project.
           </label>
         </div>
 
@@ -115,7 +115,7 @@ function StepFour({
           <button
               onClick={submitForm}
               disabled={!isChecked}
-              className={`relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 lg:px-8 lg:py-3 ${
+              className={`relative flex w-1/2 items-center justify-center overflow-hidden rounded-full px-4 py-2 text-lg font-medium text-white duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:duration-700 lg:px-8 lg:py-3 ${
                   isChecked ? 'bg-b300 hover:text-n900 after:bg-yellow-400 hover:after:w-[calc(100%+2px)]' : 'bg-gray-400 cursor-not-allowed'
               }`}
           >
