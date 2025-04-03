@@ -103,7 +103,7 @@ export function UpdatePendingUserForm({
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='grid gap-2'>
-          <Label htmlFor='oldPassword'>Temp Password</Label>
+          <Label htmlFor='oldPassword'>Temporary password key (Sent in your mail) </Label>
           <Input
             id='oldPassword'
             type='password'
@@ -118,7 +118,7 @@ export function UpdatePendingUserForm({
             </small>
           )}
 
-          <Label htmlFor='password'>New Password</Label>
+          <Label htmlFor='password'>Password</Label>
           <Input
             id='password'
             type='password'

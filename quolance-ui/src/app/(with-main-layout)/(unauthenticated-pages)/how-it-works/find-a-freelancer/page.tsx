@@ -292,19 +292,6 @@ function FindAFreelancerPage() {
                 to help you achieve your project goals efficiently and effectively.
               </p>
               
-              <div className="mt-10 flex">
-                <div className="flex -space-x-2">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className={`inline-block h-10 w-10 rounded-full ring-2 ring-white bg-gradient-to-br from-blue-${400 + i*100} to-indigo-${500 + i*100}`}>
-                      <span className="sr-only">User</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-semibold text-gray-900">Join 10,000+ businesses</p>
-                  <p className="text-sm text-gray-500">that trust our freelance network</p>
-                </div>
-              </div>
             </div>
             
             <motion.dl 
@@ -368,12 +355,6 @@ function FindAFreelancerPage() {
               <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
             </Link>
 
-            <Link
-              href="#"
-              className="text-sm font-semibold leading-6 text-gray-900 relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-blue-500 after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 hover:after:origin-bottom-left after:transition-transform after:duration-300"
-            >
-              Learn more <span aria-hidden="true">→</span>
-            </Link>
           </motion.div>
         </div>
       </div>

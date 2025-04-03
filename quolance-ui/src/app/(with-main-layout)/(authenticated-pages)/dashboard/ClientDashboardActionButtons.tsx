@@ -43,7 +43,7 @@ export default function ClientDashboardActionButtons() {
             <div className='mt-2 sm:flex sm:items-start sm:justify-between'>
               <div className='max-w-xl text-sm text-gray-500'>
                 <p>
-                  Browse through the list of freelancers and contractors and
+                  Browse through the list of freelancers and clients and
                   select the best one for your project.
                 </p>
               </div>
