@@ -144,34 +144,34 @@ const BlogContainer: React.FC = () => {
                                         onClose={() => setIsModalOpen(false)}
                                         />
                                 ) : (
-                                    <div className="flex justify-center items-center h-full">
-                                        <div className="p-4 text-center">
-                                            <h2 className="text-lg font-bold mb-2">Sign In Required</h2>
-                                            <p className="text-gray-700">
-                                                You must be signed in to create a post. Please log in to continue.
-                                            </p>
-                                            <Button
-                                                onClick={() => (window.location.pathname = "/auth/login")}
-                                                animation="default"
-                                            >
-                                                Sign In
-                                            </Button>
-                                        </div>
+                                  <div className="flex justify-center items-center h-full">
+                                    <div className="p-4 text-center">
+                                      <h2 className="text-lg font-bold mb-2">Sign In Required</h2>
+                                      <p className="text-gray-700">
+                                        You must be signed in to create a post. Please log in to continue.
+                                      </p>
+                                      <Button
+                                        onClick={() => (window.location.pathname = "/auth/login")}
+                                        animation="default"
+                                      >
+                                        Sign In
+                                      </Button>
                                     </div>
+                                  </div>
                                 )}
                             </CreatePostModal>
                             {/* Create Post Button and Search Bar*/}
-                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
-                                <Button
-                                    onClick={() => setIsModalOpen(true)}
-                                    animation="default"
-                                    className="w-full md:w-auto"
-                                >
-                                    Create New Post
-                                </Button>
-                                <div className="w-full">
-                                    <SearchBar />
-                                </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 w-full pb-4">
+                              <Button
+                                onClick={() => setIsModalOpen(true)}
+                                animation="default"
+                                className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm md:text-base font-medium py-2 px-5 rounded-xl shadow-sm hover:opacity-90 transition duration-200"
+                              >
+                                Create New Post
+                              </Button>
+                              <div className="w-full">
+                                <SearchBar />
+                              </div>
                             </div>
 
                             {/* Blog Posts */}
