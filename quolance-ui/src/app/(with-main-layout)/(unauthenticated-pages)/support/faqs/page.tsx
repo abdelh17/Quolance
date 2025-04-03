@@ -195,7 +195,6 @@ const FAQPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
 
-  // Sample groups and FAQs (you would replace these with your actual data)
   const faqGroups = [
     {
       title: "About Quolance",
@@ -204,9 +203,18 @@ const FAQPage: React.FC = () => {
         {
           id: 1,
           question: "What is Quolance?",
-          answer: "Quolance is a freelancing platform that connects clients with freelancers specializing in tech services."
+          answer: "Quolance is a freelancing platform that connects clients with freelancers specializing in tech services. It allows clients to post projects, receive proposals, and hire professionals, while freelancers can compete to get contracts, showcase their skills, and collaborate with clients."
+        },
+        {
+          id: 2,
+          question: "Who can use Quolance?",
+          answer: "Anyone looking to hire tech talent or offer freelance tech services can use Quolance. The platform is open to individuals and businesses across Canada and beyond."
+        },
+        {
+          id: 3,
+          question: "I am not a tech-related freelancer/client, can I still use Quolance?",
+          answer: "The platform is primarily focused on tech-related projects. While it's open to everyone, it may be challenging to find the right fit if you're not involved in tech services or seeking tech skills."
         }
-        // Add more FAQs for this group
       ]
     },
     {
@@ -216,9 +224,23 @@ const FAQPage: React.FC = () => {
         {
           id: 5,
           question: "How do I sign up?",
-          answer: "To sign up, visit the \"Sign Up\" tab and enter your information."
+          answer: "To sign up, simply visit our website and create an account. You can register as a freelancer or a client using an email address or an OAuth2-supported provider like Google."
+        },
+        {
+          id: 6,
+          question: "Is Quolance free to use?",
+          answer: "Yes! Creating an account and browsing projects is free. Some AI features may require a premium subscription or incur service fees."
+        },
+        {
+          id: 31,
+          question: "How do I reset my password?",
+          answer: "Go to the login page and click \"Forgot Password?\" Follow the instructions to reset your password via email."
+        },
+        {
+          id: 32,
+          question: "How do I delete my account?",
+          answer: "To delete your account, go to your profile settings and select the \"Delete Account\" option. Follow the instructions to confirm the deletion."
         }
-        // Add more FAQs for this group
       ]
     },
     {
@@ -228,7 +250,7 @@ const FAQPage: React.FC = () => {
         {
           id: 8,
           question: "What are the fees?",
-          answer: "We maintain a transparent fee structure with free project posting."
+          answer: "Creating an account and browsing projects is free. Some advanced AI features may have associated costs."
         }
       ]
     },
@@ -239,7 +261,37 @@ const FAQPage: React.FC = () => {
         {
           id: 9,
           question: "How do I post a project?",
-          answer: "Log in as a client, go to Post a Project, fill in details, and publish."
+          answer: "You need a client account to post a project. Once logged in, go to the Post a Project section, fill in required details such as title, description, budget, and deadline, then publish. Your project will be reviewed and approved before going live."
+        },
+        {
+          id: 10,
+          question: "How long before my project is approved?",
+          answer: "Most projects are approved instantaneously, but it may take up to 24 hours for our team to review and approve your project if it was flagged as sensitive."
+        },
+        {
+          id: 11,
+          question: "What kinds of projects can I post?",
+          answer: "You can post a wide range of tech-related projects, including web development, mobile app development, data analysis, cybersecurity, and more. Ensure your post is not an ad, a full-time job offer, spam, or inappropriate."
+        },
+        {
+          id: 12,
+          question: "How do I select a freelancer?",
+          answer: "Review proposals submitted by freelancers, check their profiles, and communicate with them via the platform before making a selection."
+        },
+        {
+          id: 13,
+          question: "Can I modify a project after posting it?",
+          answer: "No, once a project is posted and approved, you cannot modify it. However, you can close it or post an updated version."
+        },
+        {
+          id: 14,
+          question: "What happens when my project expires?",
+          answer: "Projects expire one week after posting by default. Once expired, they remain publicly visible for three additional days before being archived."
+        },
+        {
+          id: 15,
+          question: "Is there a limit on the number of projects I can post?",
+          answer: "No! You can post as many projects as you want."
         }
       ]
     },
@@ -250,7 +302,27 @@ const FAQPage: React.FC = () => {
         {
           id: 18,
           question: "How do I find projects?",
-          answer: "Browse the \"Available Projects\" section and filter by your skills."
+          answer: "Freelancers can browse the \"Available Projects\" section and filter listings based on their skills and preferences."
+        },
+        {
+          id: 19,
+          question: "How do I submit a proposal?",
+          answer: "Go to the project page you are interested in and click \"Submit Proposal.\" Enter a message explaining why you're the best fit for the contract."
+        },
+        {
+          id: 20,
+          question: "Can I update my proposal after submission?",
+          answer: "No, once submitted, a proposal cannot be modified. If necessary, you can delete your application and submit a new one."
+        },
+        {
+          id: 21,
+          question: "Can I communicate with clients before getting selected?",
+          answer: "Yes, freelancers can send messages to clients to discuss project details before selection."
+        },
+        {
+          id: 22,
+          question: "I have difficulty getting contracts. What should I do?",
+          answer: "Make sure your profile is complete and showcases your skills effectively. Customize your proposals to each project, highlight relevant experience, and use the chat feature to reach out to clients directly."
         }
       ]
     },
@@ -260,8 +332,13 @@ const FAQPage: React.FC = () => {
       faqs: [
         {
           id: 24,
-          question: "How do you ensure quality?",
-          answer: "We use AI-powered models to evaluate profiles and enforce platform rules."
+          question: "How do you ensure quality and security?",
+          answer: "Quolance uses AI-powered models to evaluate freelancer profiles, assess proposal quality, and enforce platform rules. Our verification system ensures transparency and professionalism."
+        },
+        {
+          id: 25,
+          question: "Does Quolance help with setting up a contract?",
+          answer: "No, Quolance does not provide legal services or contract templates. It is up to the client and freelancer to agree on contract terms. We are a platform for connecting clients and freelancers."
         }
       ]
     },
@@ -272,12 +349,11 @@ const FAQPage: React.FC = () => {
         {
           id: 30,
           question: "How do I contact support?",
-          answer: "Visit our support page or email support@quolance.com."
+          answer: "For further assistance, visit our support page or email support@quolance.com."
         }
       ]
     }
   ];
-
   // Search functionality
   const filteredGroups = faqGroups.map(group => ({
     ...group,
