@@ -55,7 +55,7 @@ export default function Dashboard() {
   return (
     <>
       <div className='flex-grow bg-stone-100'>
-        <div className='relative h-[300px] overflow-hidden'>
+        <div className='relative h-1/3 overflow-hidden'>
           {' '}
           {/* Fixed height for Image component */}
           {/* Background wrapper */}

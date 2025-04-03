@@ -212,7 +212,7 @@ const UserRegistration = ({ userRole }: { userRole: RegistrationUserType }) => {
 
       <UserRegisterForm userRole={userRole} />
 
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center space-y-4 pb-4">
         <p className='text-center text-sm text-gray-500 max-w-md'>
           By creating an account, you agree to our{' '}
           <Link

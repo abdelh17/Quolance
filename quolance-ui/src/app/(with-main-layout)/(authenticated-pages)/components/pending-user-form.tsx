@@ -19,7 +19,7 @@ export default function PendingUserForm({ user }: { user: UserResponse }) {
           <span className='block'>
             We’ve sent an email to{' '}
             <strong className='text-blue-600'>{user.email}</strong> with your
-            temporary password.
+            temporary secure password key.
           </span>
           <span className='mt-2 block'>
             To complete your registration, please follow the steps below:
@@ -29,8 +29,7 @@ export default function PendingUserForm({ user }: { user: UserResponse }) {
         <div className='mt-2 w-full rounded-lg bg-gray-50 p-4 shadow-sm'>
           <ol className='list-inside list-decimal space-y-2 text-gray-700'>
             <li>
-              <span className='font-medium'>Update your password</span> to
-              something secure.
+              <span className='font-medium'>Create your password</span>
             </li>
             <li>
               <span className='font-medium'>Choose your role</span> as either
