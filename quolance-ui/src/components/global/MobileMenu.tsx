@@ -194,6 +194,19 @@ function MobileMenu({
                     <span className="text-base font-medium">Dashboard</span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/blog"
+                    className={`block py-3 px-4 rounded-lg transition-colors ${
+                      path === '/blog' 
+                        ? 'bg-white/15 text-white' 
+                        : 'hover:bg-white/10 text-white/90 hover:text-white'
+                    }`}
+                    onClick={handleLinkClick}
+                  >
+                    <span className="text-base font-medium">Blog</span>
+                  </Link>
+                </li>
                 {user.role === 'FREELANCER' && (
                   <li>
                     <Link
