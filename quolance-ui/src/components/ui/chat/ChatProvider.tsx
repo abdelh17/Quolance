@@ -59,24 +59,27 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     // Invalidate all containers when contacts change
     if (isFetched) {
       for (const container of containers) {
-        queryClient.invalidateQueries({
-          queryKey: ['messages', container.contact.user_id],
-          refetchType: 'active',
-        });
+        queryClient
+          .invalidateQueries({
+            queryKey: ['messages', container.contact.user_id],
+            refetchType: 'active',
+          })
+          .then(() => {
+            // update all containers with the new contacts
+            setContainers((prev) =>
+              prev.map((container) => {
+                const contact = contacts.find(
+                  (c) => c.user_id === container.contact.user_id
+                );
+                if (contact) {
+                  return { ...container, contact };
+                }
+                return container;
+              })
+            );
+          });
       }
     }
-    // update all containers with the new contacts
-    setContainers((prev) =>
-      prev.map((container) => {
-        const contact = contacts.find(
-          (c) => c.user_id === container.contact.user_id
-        );
-        if (contact) {
-          return { ...container, contact };
-        }
-        return container;
-      })
-    );
   }, [contacts]);
 
   useEffect(() => {
