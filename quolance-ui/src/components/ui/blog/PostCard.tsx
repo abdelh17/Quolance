@@ -296,7 +296,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
 
   return (
-    <div className="bg-white shadow-md rounded-md font-sans p-8">
+    <div className="bg-white bg-opacity-60 shadow-md rounded-md font-sans p-8">
       {/* User Info + Top Row */}
       <div className="flex justify-between items-start">
         <div className="flex items-center">
