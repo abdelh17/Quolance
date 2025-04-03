@@ -83,15 +83,6 @@ const UserRoleSelection = ({
             : 'Join as a freelancer'}
         </Button>
       </div>
-      <div className={'mt-6 flex w-full flex-row justify-center'}>
-        <span>Already have an account?</span>
-        <Link
-          href={'/auth/login'}
-          className={'hover:text-n600 ml-1 underline underline-offset-4'}
-        >
-          Login
-        </Link>
-      </div>
     </div>
   );
 };
@@ -105,15 +96,6 @@ const UserRegistration = ({ userRole }: { userRole: RegistrationUserType }) => {
           : 'Sign up to work on projects'}
       </h1>
       <UserRegisterForm userRole={userRole} />
-      <p className='text-center'>
-        Already have an account?
-        <Link
-          href='/auth/login'
-          className='hover:text-n600 ml-1 underline underline-offset-4'
-        >
-          Login
-        </Link>
-      </p>
       <p className='text-center text-sm'>
         By creating an account, you agree to our{' '}
         <Link
