@@ -296,10 +296,10 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
 
   return (
-    <div className="bg-white shadow-md rounded-md font-sans">
-      {/* User Info */}
-      <div className="flex justify-between bg-n20 w-full rounded-t-md">
-        <div className="flex items-center mb-2 mt-2 ml-5 py-3">
+    <div className="bg-white bg-opacity-60 shadow-md rounded-md font-sans p-8">
+      {/* User Info + Top Row */}
+      <div className="flex justify-between items-start">
+        <div className="flex items-center">
           <Image
             ref={profileImageRef}
             alt={`${authorName}'s profile`}
@@ -309,297 +309,255 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             className="w-14 h-14 rounded-full object-cover cursor-pointer"
             onClick={handleShowUserSummary}
           />
-          <button
-            ref={authorNameRef}
-            className="ml-4 text-gray-800 font-bold cursor-pointer focus:outline-none"
-            onClick={handleShowUserSummary}
-          >
-            {authorName}
-          </button>
+          <div className="ml-4">
+            <button
+              ref={authorNameRef}
+              className="text-gray-800 text-lg font-bold cursor-pointer focus:outline-none"
+              onClick={handleShowUserSummary}
+            >
+              {authorName}
+            </button>
+            <div className="text-sm text-gray-500">
+              {new Intl.DateTimeFormat("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(new Date(dateCreated))}
+            </div>
+          </div>
           {isUserSummaryOpen && userSummaryPosition && (
             <div
               ref={userSummaryRef}
               className="absolute z-50"
               style={{
                 top: userSummaryPosition.y,
-                left: userSummaryPosition.x
+                left: userSummaryPosition.x,
               }}
             >
               {authorProfile && <UserSummary user={authorProfile} />}
             </div>
           )}
         </div>
-        <span className="text-sm text-gray-500 mr-5 mt-3">
-          <div ref={menuRef} className="relative">
-            <Button
-              onClick={toggleMenu}
-              className="focus:outline-none text-2xl font-bold mt-2"
-              variant="ghost"
-            >
-              ...
-            </Button>
-            {isMenuOpen && (
-              <div className="absolute top-8 right-0 bg-white shadow-md rounded-md mt-5 mr-3 w-28 flex flex-col gap-1">
-                {user?.username === authorName ? (
-                  <>
-                    <button 
-                      onClick={handleEdit} 
-                      className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full"
-                    >
-                      <div className="mt-2 ml-2">
-                        Edit
-                      </div>
-                    </button>
-                    <button
-                        onClick={() => handleDeletePost(id)}
-                        className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full "
-                    >
-                      <div className="ml-2 mb-2">
-                        Delete
-                      </div>
-                    </button>
-                  </>
-                ) : (
-                  <button 
-                    onClick={handleReport} 
-                    className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full"
-                  >
-                    <div className="mt-2 ml-2 mb-2">
-                      Report
-                    </div>
-                  </button>
-                )
-              }
-              </div>
-            )}
-            {isEditing && editingPost && (
-              <CreatePostModal open={isEditing} onClose={() => setIsEditing(false)}>
-                <CreatePostForm
-                  initialData={editingPost}
-                  isEditMode={true}
-                  onSubmit={(postData) => {
-                    onSubmit(postData);
-                    setIsEditing(false);
-                  }}
-                  onClose={() => setIsEditing(false)}
-                />
-              </CreatePostModal>
-            )}
-          </div>
-          
-        </span>
-      </div>
-      <div className="m-5">
-        {/* Post Images */}
-        {imageUrls.length > 0 && (
-          <div className={`mt-4 ${imageUrls.length === 3 ? 'grid grid-rows-2 gap-2' : imageUrls.length > 1 ? 'grid grid-cols-2 gap-2' : ''}`}>
-            {/* Full-width layout for 1 image */}
-            {imageUrls.length === 1 && (
-              <div
-                  onClick={() => handleImageClick(0)}
-                  className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
-                  style={{ height: '32rem' }} // dynamically forcing h-128 height
-              >
-                <img src={imageUrls[0]} alt="Single image" className="object-cover w-full h-full" />
-              </div>
-            )}
-
-            {imageUrls.length === 2 && (
-              imageUrls.map((url, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleImageClick(index)}
-                  className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
-                  style={{ height: '32rem' }} // dynamically forcing h-128 height
-                >
-                  <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full" />
-                </div>
-              ))
-            )}
-
-            {/* 3 images: First image full width, next two side by side */}
-            {imageUrls.length === 3 && (
-              <>
-                <div
-                  onClick={() => handleImageClick(0)}
-                  className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
-                  style={{ height: '16rem' }} // dynamically forcing h-128 height
-                >
-                  <img src={imageUrls[0]} alt="Full-width image" className="object-cover w-full h-full" />
-
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {imageUrls.slice(1, 3).map((url, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleImageClick(index + 1)}
-                      className="w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
-                      style={{ height: '16rem' }} // dynamically forcing h-128 height
-                    >
-                      <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full" />
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-            {/* 4 images and more*/}
-            {imageUrls.length > 3 && (
-              imageUrls.slice(0, 4).map((url, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleImageClick(index)}
-                  className="relative w-full bg-gray-100 rounded-md cursor-pointer overflow-hidden"
-                  style={{ height: '16rem' }} // dynamically forcing h-128 height
-                >
-                  <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full" />
-
-
-                  {index === 3 && imageUrls.length > 3 && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                      <p className="text-white text-sm font-bold">VIEW MORE</p>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        )}
-
-        {/* Full-screen image viewer */}
-        {showFullScreen && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="relative w-3/4 h-3/4 bg-zinc-800 rounded-md overflow-hidden bg-opacity-50">
-              {/* Image Index Indicator */}
-              <div className="absolute top-2 left-2 text-white bg-black bg-opacity-50 px-2 py-1 rounded-md text-sm font-semibold">
-                {currentImageIndex + 1} / {imageUrls.length}
-              </div>
-
-              {/* Close button */}
-              <button
-                onClick={closeFullScreen}
-                className="absolute top-2 right-2 text-white bg-red-500 p-2 rounded-full"
-              >
-                X
-              </button>
-
-              <img src={imageUrls[currentImageIndex]} alt="Full view" className="w-full h-full object-contain" />
-
-              {/* Navigation buttons */}
-              <button
-                onClick={prevImage}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-md"
-              >
-                &lt;
-              </button>
-              <button
-                onClick={nextImage}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-md"
-              >
-                &gt;
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Post Content */}
-      <div className="md:pb-5 md:px-8 px-2 pb-0.5">
-        <div className="flex justify-between">
-          <h3 className="text-md font-semibold text-gray-800">{title}</h3>
-          <span className="text-sm text-gray-500">
-            {new Intl.DateTimeFormat("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(new Date(dateCreated))}
-          </span>
-        </div>
-        <div className={`mt-2 ${!isExpanded ? "line-clamp-3" : ""}`}>
-          <p className="text-gray-700">{content}</p>
-        </div>
-
-        {content.length > 300 && (
-          <button
-            onClick={toggleExpand}
-            className="text-blue-500 text-sm mt-2 focus:outline-none"
+  
+        {/* 3-dot Menu */}
+        <div ref={menuRef} className="relative">
+          <Button
+            onClick={toggleMenu}
+            className="focus:outline-none text-2xl font-bold"
+            variant="ghost"
           >
-            {isExpanded ? "Read less" : "Read more"}
-          </button>
-        )}
-
-        {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {tags.map((tag) => (
-              <span key={tag} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-semibold">
-                {tag.replace(/_/g, ' ')}
-              </span>
+            ...
+          </Button>
+          {isMenuOpen && (
+            <div className="absolute top-8 right-0 bg-white shadow-md rounded-md w-28 flex flex-col gap-1 z-40">
+              {user?.username === authorName ? (
+                <>
+                  <button
+                    onClick={handleEdit}
+                    className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full px-3 py-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeletePost(id)}
+                    className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full px-3 py-2"
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleReport}
+                  className="text-gray-800 text-sm hover:bg-gray-100 text-left w-full px-3 py-2"
+                >
+                  Report
+                </button>
+              )}
+            </div>
+          )}
+          {isEditing && editingPost && (
+            <CreatePostModal open={isEditing} onClose={() => setIsEditing(false)}>
+              <CreatePostForm
+                initialData={editingPost}
+                isEditMode={true}
+                onSubmit={(postData) => {
+                  onSubmit(postData);
+                  setIsEditing(false);
+                }}
+                onClose={() => setIsEditing(false)}
+              />
+            </CreatePostModal>
+          )}
+        </div>
+      </div>
+  
+      <div className="flex justify-between mt-2 gap-4">
+        {/* Title + Content */}
+        <div className="flex-1">
+          <h3 className="text-xl font-semibold text-gray-800 my-3">{title}</h3>
+          <div className={`mt-1 ${!isExpanded ? "line-clamp-6 md:line-clamp-10" : ""}`}>
+            <p className="text-gray-700">{content}</p>
+          </div>
+  
+          {content.length > 800 && (
+            <button
+              onClick={toggleExpand}
+              className="text-blue-500 text-sm mt-2 focus:outline-none"
+            >
+              {isExpanded ? "Read less" : "Read more"}
+            </button>
+          )}
+  
+          
+        </div>
+  
+        {/* Image stack */}
+        {imageUrls.length > 0 && (
+          <div className="relative w-[200px] h-[200px] mt-3 shrink-0">
+            {imageUrls.slice(0, 3).map((url, index) => (
+              <div
+                key={index}
+                onClick={() => handleImageClick(index)}
+                className="absolute top-0 left-0 w-[180px] h-[180px] rounded-md overflow-hidden cursor-pointer border transition-transform"
+                style={{
+                  transform: `translate(${index * 10}px, ${index * 10}px)`,
+                  zIndex: 10 - index,
+                }}
+              >
+                <img
+                  src={url}
+                  alt={`Post image ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                {index === 2 && imageUrls.length > 3 && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-sm font-semibold">
+                    +{imageUrls.length - 3}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
+      </div>
 
-        {/* Reaction Buttons */}
-        <div className="mt-4 flex items-center gap-1">
-          {reactions &&
-            Object.keys(reactions).map((reaction) => (
-              <PostReaction
-                key={reaction}
-                reaction={reaction}
-                reactionCount={reactions[reaction].count}
-                userReaction={reactions[reaction].userReacted}
-                onReactionClick={() => handleReactionClick(reaction)}
-              />
+      {/* Full-screen viewer */}
+      {showFullScreen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="relative w-3/4 h-3/4 bg-zinc-800 rounded-md overflow-hidden">
+            <button
+              onClick={closeFullScreen}
+              className="absolute text-2xl top-4 right-4 text-white px-3 py-2 rounded-md hover:bg-red-600 transition"
+            >
+              &#128473;
+            </button>
+            <img
+              src={imageUrls[currentImageIndex]}
+              alt="Full view"
+              className="w-full h-full object-contain"
+            />
+            <button
+              onClick={prevImage}
+              className="absolute text-6xl left-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:bg-gray-500 transition"
+            >
+              &#8249;
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute text-6xl right-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:bg-gray-500 transition"
+            >
+              &#8250;
+            </button>
+            <div className="absolute text-xl bottom-4 left-1/2 transform -translate-x-1/2 bg-slate-400 bg-opacity-50 text-white px-3 py-1 rounded-md text-sm font-medium">
+              {currentImageIndex + 1} / {imageUrls.length}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tags */}
+      {tags && tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-semibold"
+            >
+              {tag.replace(/_/g, " ")}
+            </span>
           ))}
         </div>
+      )}
+
+      {/* Reactions */}
+      <div className="mt-4 flex items-center gap-1">
+        {reactions &&
+          Object.keys(reactions).map((reaction) => (
+            <PostReaction
+              key={reaction}
+              reaction={reaction}
+              reactionCount={reactions[reaction].count}
+              userReaction={reactions[reaction].userReacted}
+              onReactionClick={() => handleReactionClick(reaction)}
+            />
+          ))}
+      </div>
+  
+      {/* Comments Section */}
+      <div className="mt-5">
         <button
           onClick={toggleComments}
-          className="text-blue-500 text-sm focus:outline-none mt-3 mb-3"
+          className="text-blue-500 text-sm focus:outline-none mb-3"
         >
-          {pagedComments?.totalElements ?? 0} Comments {showComments ? <MdExpandLess className="inline-block text-xl"/> : <MdExpandMore className="inline-block text-xl"/>}
-        </button>
-
-        {/* Comments Section */}
-        <div className="md:mx-2 md:px-3">
-          {showComments && (
-            <div className="border-solid border-2 shadow-md mb-2 p-3 rounded-md content-center">
-              {allLoadedComments.map((comment) => (
-                <CommentCard
-                  key={comment.commentId}
-                  blogPostId={id}
-                  commentId={comment.commentId}
-                  authorName={comment.username}
-                  content={comment.content}
-                  dateCreated={new Date().toISOString()}
-                />
-              ))}
-              {(pagedComments?.number ?? 0) < ((pagedComments?.totalPages ?? 1) - 1) && (
-                <div className="flex justify-center">
-                  <Button
-                    onClick={handleLoadMoreComments}
-                    variant="white"
-                    className="mt-2"
-                  >
-                    See More Comments
-                  </Button>
-                </div>
-              )}
-
-              {/* Add Comment Input */}
-              <div className="mt-4 flex flex-row justify-between gap-2">
-                <textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Add a comment..."
-                  className="w-full h-10 p-2 border border-gray-300 rounded-md text-sm"
-                  rows={3}
-                />
-                <IoSendSharp
-                  onClick={handleAddComment}
-                  className="text-3xl text-blue-600 cursor-pointer mt-1"
-                />
-              </div>
-            </div>
+          {pagedComments?.totalElements ?? 0} Comments{" "}
+          {showComments ? (
+            <MdExpandLess className="inline-block text-xl" />
+          ) : (
+            <MdExpandMore className="inline-block text-xl" />
           )}
-        </div>
+        </button>
+  
+        {showComments && (
+          <div className="border-t pt-4">
+            {allLoadedComments.map((comment) => (
+              <CommentCard
+                key={comment.commentId}
+                blogPostId={id}
+                commentId={comment.commentId}
+                authorName={comment.username}
+                content={comment.content}
+                dateCreated={new Date().toISOString()}
+              />
+            ))}
+  
+            {(pagedComments?.number ?? 0) <
+              ((pagedComments?.totalPages ?? 1) - 1) && (
+              <div className="flex justify-center">
+                <Button
+                  onClick={handleLoadMoreComments}
+                  variant="white"
+                  className="mt-2"
+                >
+                  See More Comments
+                </Button>
+              </div>
+            )}
+  
+            {/* Add Comment Input */}
+            <div className="mt-4 flex items-start gap-2">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="w-full h-10 p-2 border border-gray-300 rounded-md text-sm"
+                rows={2}
+              />
+              <IoSendSharp
+                onClick={handleAddComment}
+                className="text-3xl text-blue-600 cursor-pointer mt-1"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
