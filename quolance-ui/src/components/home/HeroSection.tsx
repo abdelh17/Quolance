@@ -1,12 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import heroImage1 from '@/public/images/freelancer-hero-img-1.jpg';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 
 export default function HeroSection() {
-  const words = ['Freelancers', 'Contractors'];
+  const words = ['Freelancers', 'Clients'];
   const [text, setText] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
