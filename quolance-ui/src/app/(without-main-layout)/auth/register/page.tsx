@@ -22,18 +22,18 @@ export default function RegisterPage() {
         {/* Gradient Bubbles */}
         <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-blue-100 opacity-20 blur-3xl animate-blob"></div>
         <div className="absolute top-60 -left-20 h-60 w-60 rounded-full bg-indigo-100 opacity-20 blur-3xl animate-blob animation-delay-2000"></div>
-        
+
         {/* Sophisticated Circuit Pattern */}
         <svg width="100%" height="100%" className="absolute inset-0 text-gray-200/10 opacity-20" style={{ mixBlendMode: 'overlay' }}>
           <defs>
             <pattern id="sophisticated-circuit" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-              <path 
-                d="M0 50 Q25 25, 50 50 T100 50 
-                   M50 0 Q75 25, 50 50 T50 100 
-                   M25 25 Q50 50, 75 25 T125 25" 
-                stroke="currentColor" 
-                strokeWidth="0.5" 
-                fill="none" 
+              <path
+                d="M0 50 Q25 25, 50 50 T100 50
+                   M50 0 Q75 25, 50 50 T50 100
+                   M25 25 Q50 50, 75 25 T125 25"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                fill="none"
                 strokeDasharray="5 5"
               />
             </pattern>
@@ -60,9 +60,9 @@ export default function RegisterPage() {
               setUserRoleConfirmed={setUserRoleConfirmed}
             />
           ) : (
-            <UserRegistration 
+            <UserRegistration
               key="user-registration"
-              userRole={userRole} 
+              userRole={userRole}
             />
           )}
         </AnimatePresence>
@@ -86,7 +86,7 @@ const UserRoleSelection = ({
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -115,16 +115,16 @@ const UserRoleSelection = ({
 
       <div className='grid gap-8 md:grid-cols-2'>
         {[
-          { 
-            role: Role.CLIENT, 
-            icon: User, 
+          {
+            role: Role.CLIENT,
+            icon: User,
             text: "I'm a client, hiring for a project",
             color: "blue",
             delay: 0.1
           },
-          { 
-            role: Role.FREELANCER, 
-            icon: Briefcase, 
+          {
+            role: Role.FREELANCER,
+            icon: Briefcase,
             text: "I'm a freelancer, looking for work",
             color: "indigo",
             delay: 0.2
@@ -148,18 +148,18 @@ const UserRoleSelection = ({
         ))}
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
         className={'flex w-full justify-center mt-10'}
       >
         <Button
-          className='px-10 py-3 text-base font-semibold 
-            bg-gradient-to-r from-blue-600 to-indigo-600 
-            hover:from-blue-700 hover:to-indigo-700 
-            shadow-lg hover:shadow-xl 
-            transition-all duration-300 
+          className='px-10 py-3 text-base font-semibold
+            bg-gradient-to-r from-blue-600 to-indigo-600
+            hover:from-blue-700 hover:to-indigo-700
+            shadow-lg hover:shadow-xl
+            transition-all duration-300
             transform hover:-translate-y-1'
           onClick={() => setUserRoleConfirmed(true)}
           disabled={!selected}
@@ -173,41 +173,26 @@ const UserRoleSelection = ({
             : 'Join as a freelancer'}
         </Button>
       </motion.div>
-
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-        className={'mt-8 flex w-full flex-row justify-center items-center text-gray-600 space-x-2'}
-      >
-        <span>Already have an account?</span>
-        <Link
-          href={'/auth/login'}
-          className={'text-blue-600 hover:text-blue-800 font-medium transition-colors'}
-        >
-          Login
-        </Link>
-      </motion.div>
     </motion.div>
   );
 };
 
 const UserRegistration = ({ userRole }: { userRole: RegistrationUserType }) => {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
       className='mx-auto mt-4 flex h-full min-w-52 max-w-screen-sm flex-col justify-center space-y-6 px-4 pt-24 md:mt-0'
     >
-      <motion.h1 
+      <motion.h1
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className='text-4xl font-bold tracking-tight text-gray-900 
-          bg-clip-text text-transparent 
-          bg-gradient-to-r from-blue-600 to-indigo-600 
+        className='text-4xl font-bold tracking-tight text-gray-900
+          bg-clip-text text-transparent
+          bg-gradient-to-r from-blue-600 to-indigo-600
           leading-tight'
       >
         {userRole === Role.CLIENT
@@ -228,15 +213,6 @@ const UserRegistration = ({ userRole }: { userRole: RegistrationUserType }) => {
       <UserRegisterForm userRole={userRole} />
 
       <div className="flex flex-col items-center space-y-4">
-        <p className='text-center text-gray-600'>
-          Already have an account?
-          <Link
-            href='/auth/login'
-            className='text-blue-600 hover:text-blue-800 font-medium ml-2 transition-colors'
-          >
-            Login
-          </Link>
-        </p>
         <p className='text-center text-sm text-gray-500 max-w-md'>
           By creating an account, you agree to our{' '}
           <Link
