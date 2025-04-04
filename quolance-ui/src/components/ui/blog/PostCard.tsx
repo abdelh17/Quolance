@@ -395,10 +395,16 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
         {/* Title + Content */}
         <div className="flex-1">
           <h3 className="text-xl font-semibold text-gray-800 my-3">{title}</h3>
-          <div className={`mt-1 ${!isExpanded ? "line-clamp-6 md:line-clamp-10" : ""}`}>
-            <p className="text-gray-700">{content}</p>
-          </div>
-  
+          {!isExpanded ? 
+            <div className="mt-1 line-clamp-6 md:line-clamp-10">
+              <p className="text-gray-700">{content}</p>
+            </div>
+          : 
+            <div className="mt-1">
+              <p className="text-gray-700">{content}</p>
+            </div>
+          }
+
           {content.length > 800 && (
             <button
               onClick={toggleExpand}
