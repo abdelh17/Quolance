@@ -2,9 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-          name="viewport">
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Welcome to Quolance</title>
     <style>
         * {
@@ -23,21 +23,21 @@
             max-width: 600px;
             margin: 0 auto;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             padding: 40px;
         }
 
-        .quolance {
-            font-size: 24px;
+        .brand {
+            font-size: 28px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: #3B6BFF;
             margin-bottom: 30px;
             text-decoration: none;
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 26px;
             color: #1a1a1a;
             margin-bottom: 20px;
         }
@@ -47,18 +47,6 @@
             font-size: 16px;
             line-height: 1.6;
             margin-bottom: 16px;
-        }
-
-        .verification-code {
-            background-color: #f8f9fa;
-            padding: 16px;
-            border-radius: 6px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #1a1a1a;
-            text-align: center;
-            margin: 24px 0;
-            letter-spacing: 2px;
         }
 
         .button {
@@ -77,32 +65,35 @@
             padding-top: 20px;
             border-top: 1px solid #eee;
             font-size: 14px;
-            color: #666;
+            color: #888;
         }
     </style>
 </head>
 <body>
 <div class="email-container">
-    <div class="quolance">
-        Quolance
-    </div>
+    <div class="brand">Quolance</div>
 
-    <h1 th:text="'Welcome to Quolance, ' + ${user.firstName} + '!'"></h1>
+    <h1 th:text="'Welcome to Quolance, ' + ${user.firstName} + '!'">Welcome to Quolance!</h1>
 
-    <p>We're excited to have you join our community of talented freelancers and clients. To get started, please
-        verify your email address.</p>
+    <p>
+        We're thrilled to have you join our community of talented freelancers and ambitious clients. Whether you're here to
+        find incredible opportunities or connect with the right talent, you're in the right place.
+    </p>
 
-    <div class="verification-code" th:text="${verificationCode}"></div>
+    <p>
+        If you ever want to access the platform using your email and a password, you can easily do so by resetting your password.
+    </p>
 
-    <p>Enter this verification code on the site to complete your account creation. This code will expire in 10
-        minutes.</p>
+    <p>
+        Click below to set a new password at any time:
+    </p>
 
-    <a class="button" th:href="@{${verificationLink}+ '/'+${user.getEmail()}}" target="_blank">
-        Verify Email Address
+    <a class="button" th:href="@{${resetPasswordUrl}}" target="_blank">
+        Reset Your Password
     </a>
-
-    <p style="font-size: 14px; color: #666;">If you didn't create an account with Quolance, please ignore this
-        email.</p>
+    <p>
+        We're here to support you every step of the way. If you have any questions or feedback, feel free to reach out.
+    </p>
 
     <div class="footer">
         Need help? Contact our support team at <a href="mailto:support@quolance.com">support@quolance.com</a><br/>
