@@ -97,8 +97,8 @@ public class User extends AbstractEntity implements UserDetails {
      */
     public User(CreateUserRequestDto data) {
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
-        this.email = data.getEmail();
-        this.username = data.getUsername();
+        this.email = data.getEmail().toLowerCase();
+        this.username = data.getUsername().toLowerCase();
         this.password = passwordEncoder.encode(data.getPassword());
         this.firstName = data.getFirstName();
         this.lastName = data.getLastName();
@@ -118,8 +118,8 @@ public class User extends AbstractEntity implements UserDetails {
      */
     public User(CreateAdminRequestDto data) {
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
-        this.email = data.getEmail();
-        this.username = data.getUsername();
+        this.email = data.getEmail().toLowerCase();
+        this.username = data.getUsername().toLowerCase();
         this.password = passwordEncoder.encode(data.getTemporaryPassword());
         this.firstName = data.getFirstName();
         this.lastName = data.getLastName();

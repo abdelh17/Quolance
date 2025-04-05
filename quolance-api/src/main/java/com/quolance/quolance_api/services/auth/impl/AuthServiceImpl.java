@@ -45,14 +45,14 @@ public class AuthServiceImpl implements AuthService {
                       LoginRequestDto body
     ) throws AuthenticationException {
 
-        if (!userRepository.existsByEmail(body.getUsername()) && !userRepository.existsByUsername(body.getUsername())) {
+        if (!userRepository.existsByEmail(body.getUsername().toLowerCase()) && !userRepository.existsByUsername(body.getUsername().toLowerCase())) {
             throw ApiException.builder()
                     .status(HttpServletResponse.SC_UNAUTHORIZED)
                     .message("Bad Credentials")
                     .build();
         }
 
-        UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(body.getUsername(), body.getPassword());
+        UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(body.getUsername().toLowerCase(), body.getPassword());
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
         SecurityContext context = securityContextHolderStrategy.createEmptyContext();

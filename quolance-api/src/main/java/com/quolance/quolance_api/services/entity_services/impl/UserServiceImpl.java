@@ -50,12 +50,12 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto create(CreateUserRequestDto request) {
         log.debug("Attempting to create new user with email: {}", request.getEmail());
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail().toLowerCase())) {
             log.warn("User creation failed - email already exists: {}", request.getEmail());
             throw new ApiException("A user with this email already exists.");
         }
 
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUsername(request.getUsername().toLowerCase())) {
             log.warn("User creation failed - username already exists: {}", request.getUsername());
             throw new ApiException("A user with this username already exists.");
         }
