@@ -2,11 +2,11 @@
 
 import {zodResolver} from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import React, { useRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import { motion } from 'framer-motion';
+import React, {useEffect, useRef} from 'react';
+import {useForm} from 'react-hook-form';
+import {toast} from 'sonner';
+import {z} from 'zod';
+import {motion} from 'framer-motion';
 
 import httpClient from '@/lib/httpClient';
 import ErrorFeedback from '@/components/error-feedback';
@@ -160,7 +160,7 @@ export function UserRegisterForm({
         </motion.div>
         
         <motion.div variants={itemVariants}>
-          <SocialAuthLogins isLoading={isLoading} />
+          <SocialAuthLogins isLoading={isLoading} userRole={userRole} />
         </motion.div>
         
         <motion.form variants={itemVariants} onSubmit={handleSubmit(onSubmit)} className="space-y-5">
