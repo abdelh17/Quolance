@@ -2,11 +2,11 @@
 
 import {zodResolver} from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import React, { useRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import { motion } from 'framer-motion';
+import React, {useEffect, useRef} from 'react';
+import {useForm} from 'react-hook-form';
+import {toast} from 'sonner';
+import {z} from 'zod';
+import {motion} from 'framer-motion';
 
 import httpClient from '@/lib/httpClient';
 import ErrorFeedback from '@/components/error-feedback';
@@ -58,7 +58,8 @@ export function UserRegisterForm({
   const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
     undefined
   );
-  
+  const [submittedEmail, setSubmittedEmail] = React.useState<string>('');
+
   // Reference for the success message element
   const successMessageRef = useRef<HTMLDivElement>(null);
 
@@ -83,6 +84,7 @@ export function UserRegisterForm({
     setErrors(undefined);
     setSuccess(false);
     setIsLoading(true);
+    setSubmittedEmail(data.email);
     data.role = userRole;
 
     httpClient
@@ -134,7 +136,7 @@ export function UserRegisterForm({
           message='Account created'
           description='An email verification code has been sent to your inbox. Please enter the code to verify your account. Check your spam folder if you do not find it!'
           action={
-            <Link href={`/auth/verify-email/${watch('email')}`} className='underline'>
+            <Link href={`/auth/verify-email/${submittedEmail}`} className='underline'>
               Verify Email
             </Link>
           }
