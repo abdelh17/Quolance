@@ -71,6 +71,12 @@ export const StatusColors = {
     header: 'bg-green-600/5 bg-gradient-to-r',
     container: 'ring-1 ring-green-700/10',
   },
+  CANCELLED: {
+    checkbox_outline: 'border-gray-300',
+    outline: 'ring-gray-400',
+    header: 'bg-gray-600/5 bg-gradient-to-r',
+    container: 'ring-1 ring-gray-700/10',
+  },
 };
 
 const getStatusConfig = (status: ApplicationStatus) => {
@@ -130,15 +136,15 @@ function FreelancerCard({
 
   const imageProps = isImageURL(profileImage)
     ? {
-        src: profileImage.url,
-        width: profileImage.width,
-        height: profileImage.height,
-        fill: false,
-      }
+      src: profileImage.url,
+      width: profileImage.width,
+      height: profileImage.height,
+      fill: false,
+    }
     : {
-        src: profileImage,
-        fill: true,
-      };
+      src: profileImage,
+      fill: true,
+    };
 
   const [ratings, setRatings] = useState({
     title: '',
@@ -195,9 +201,8 @@ function FreelancerCard({
 
   return (
     <div
-      className={`select-animation h-full rounded-3xl transition-all duration-200 ${
-        selected && '!ring-2 !ring-blue-500 !ring-offset-2'
-      }`}
+      className={`select-animation h-full rounded-3xl transition-all duration-200 ${selected && '!ring-2 !ring-blue-500 !ring-offset-2'
+        }`}
     >
       <div
         className={`shadow-animation relative flex h-full flex-col rounded-3xl pb-6 shadow-md transition-all duration-300 ease-out hover:shadow-[0_6px_10px_-2px_rgb(0_0_0_/0.13),_0_3px_5px_-3px_rgb(0_0_0_/0.13)]
@@ -215,11 +220,10 @@ function FreelancerCard({
               disabled={isReviewed}
               className={`relative overflow-hidden rounded-full px-3 py-[6px] text-sm font-semibold
               before:absolute before:inset-0 before:left-0 before:w-0 before:rounded-full before:duration-700 hover:before:w-[calc(100%+2px)]
-              ${
-                isReviewed
+              ${isReviewed
                   ? 'bg-yellow-400 text-black'
                   : 'bg-n700 hover:text-n900 text-white before:bg-yellow-400'
-              } z-10`}
+                } z-10`}
             >
               <span className='relative z-10 flex items-center gap-1'>
                 {isReviewed && (
@@ -279,9 +283,8 @@ function FreelancerCard({
             <div className='max-[350px]:max-w-20'>
               <div className='flex items-center justify-start gap-3'>
                 <h5
-                  className={`heading-5 transition-colors duration-300 ${
-                    isHovered ? 'text-blue-600' : 'text-inherit'
-                  }`}
+                  className={`heading-5 transition-colors duration-300 ${isHovered ? 'text-blue-600' : 'text-inherit'
+                    }`}
                 >
                   {fullName}
                 </h5>
@@ -343,11 +346,10 @@ function FreelancerCard({
                 }}
                 disabled={!canSelect}
                 className={`relative w-full overflow-hidden rounded-full px-6 py-[10px] text-sm font-semibold duration-700 after:absolute after:inset-0 after:left-0 after:w-0 after:rounded-full after:duration-700 hover:after:w-[calc(100%+2px)]
-                ${
-                  !canSelect
+                ${!canSelect
                     ? 'bg-gray-700/20 text-white hover:bg-gray-700/30'
                     : 'bg-n700 hover:text-n900 text-white after:bg-yellow-400'
-                }`}
+                  }`}
               >
                 <div className='relative z-20 flex items-center justify-center gap-3'>
                   <PiHandshake className='text-2xl !leading-none ' />
@@ -380,9 +382,8 @@ function FreelancerCard({
                       setIsMessageModalOpen(true);
                     }}
                     disabled={!message}
-                    className={`hover:bg-n100/20 relative z-20 flex w-full flex-grow items-center justify-center rounded-full border p-3 text-xl !leading-none duration-[400ms] ${
-                      !message ? 'cursor-not-allowed opacity-50' : ''
-                    }`}
+                    className={`hover:bg-n100/20 relative z-20 flex w-full flex-grow items-center justify-center rounded-full border p-3 text-xl !leading-none duration-[400ms] ${!message ? 'cursor-not-allowed opacity-50' : ''
+                      }`}
                   >
                     <PiChatCircle className='text-xl' />
                     <span className='mx-[6px] line-clamp-1 truncate text-sm font-semibold sm:hidden'>
