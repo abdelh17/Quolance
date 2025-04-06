@@ -67,12 +67,9 @@ class SendResetPasswordEmailUnitTest {
 
     @Test
     void run_WithValidToken_SendsEmail() throws Exception {
-        String baseUrl = "http://localhost:8080";
-        String expectedLink = baseUrl + "/auth/reset-password?token=" + mockToken.getToken();
         String expectedHtmlBody = "<html>Test email body</html>";
 
         when(passwordResetTokenRepository.findById(mockJob.getTokenId())).thenReturn(Optional.of(mockToken));
-        when(applicationProperties.getBaseUrl()).thenReturn(baseUrl);
         when(templateEngine.process(eq("password-reset"), any(Context.class))).thenReturn(expectedHtmlBody);
 
         jobHandler.run(mockJob);
@@ -80,7 +77,7 @@ class SendResetPasswordEmailUnitTest {
         verify(templateEngine).process(eq("password-reset"), contextCaptor.capture());
         Context capturedContext = contextCaptor.getValue();
         assertThat(capturedContext.getVariable("user")).isEqualTo(mockUser);
-        assertThat(capturedContext.getVariable("link")).isEqualTo(expectedLink);
+        assertThat(capturedContext.getVariable("code")).isEqualTo(mockToken.getToken());
 
         verify(emailService).sendHtmlMessage(
                 List.of(mockUser.getEmail()),
@@ -118,7 +115,6 @@ class SendResetPasswordEmailUnitTest {
     @Test
     void run_WithEmailServiceFailure_PropagatesException() {
         when(passwordResetTokenRepository.findById(mockToken.getId())).thenReturn(Optional.of(mockToken));
-        when(applicationProperties.getBaseUrl()).thenReturn("http://localhost:8080");
         when(templateEngine.process(eq("password-reset"), any(Context.class))).thenReturn("<html></html>");
         doThrow(new RuntimeException("Email service failed"))
                 .when(emailService).sendHtmlMessage(any(), any(), any());
@@ -133,11 +129,9 @@ class SendResetPasswordEmailUnitTest {
 
     @Test
     void run_WithValidTokenButEmailSendingFails_ThrowsException() {
-        String baseUrl = "http://localhost:8080";
         String expectedHtmlBody = "<html>Test email body</html>";
 
         when(passwordResetTokenRepository.findById(mockToken.getId())).thenReturn(Optional.of(mockToken));
-        when(applicationProperties.getBaseUrl()).thenReturn(baseUrl);
         when(templateEngine.process(eq("password-reset"), any(Context.class))).thenReturn(expectedHtmlBody);
         doThrow(new RuntimeException("Email service failed"))
                 .when(emailService).sendHtmlMessage(any(), any(), any());
