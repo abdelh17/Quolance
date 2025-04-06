@@ -236,15 +236,13 @@ export function UserRegisterForm({
               </motion.div>
 
               {password?.length > 0 && (
-                <motion.div 
-                  variants={itemVariants} 
-                  className="sm:col-span-2 bg-white p-3 rounded-lg border border-gray-100"
+                <motion.div
+                  variants={itemVariants}
+                  className="sm:col-span-2 bg-white p-4 rounded-xl border border-gray-200 shadow-sm"
                 >
                   <PasswordStrengthBar password={password} />
-                  <div className="mt-3">
                     <PasswordRequirements password={password} />
-                  </div>
-                </motion.div>
+                  </motion.div>
               )}
 
               <motion.div variants={itemVariants} className="sm:col-span-2">
