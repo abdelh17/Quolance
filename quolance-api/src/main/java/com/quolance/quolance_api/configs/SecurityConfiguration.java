@@ -17,6 +17,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider;
+import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -27,11 +32,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -76,7 +76,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.POST, "/api/users")).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/verify-email")).permitAll()
-                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/forgot-password/**")).permitAll()
+                                .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-forgotten-password/**")).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.PATCH, "/api/users/reset-password")).permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.POST, "/api/users/admin")).hasRole("ADMIN")
                                 .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/login")).permitAll()
