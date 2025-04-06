@@ -52,6 +52,14 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         }
 
+        User user = userRepository.findByUsername(body.getUsername())
+                .filter(u -> !u.isDeleted())
+                .orElseThrow(() -> ApiException.builder()
+                        .status(HttpServletResponse.SC_UNAUTHORIZED)
+                        .message("Bad Credentials")
+                        .build());
+
+
         UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(body.getUsername(), body.getPassword());
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();

@@ -47,4 +47,6 @@ public interface BlogPostService {
 
     void deleteReportedPost(UUID postId);
 
+    List<BlogPost> getPostsByUserId(UUID userId);
+
 }
