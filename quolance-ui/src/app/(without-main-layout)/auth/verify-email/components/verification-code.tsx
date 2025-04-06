@@ -5,10 +5,10 @@ import {useRouter} from 'next/navigation';
 import * as React from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
+import {motion} from 'framer-motion';
 import * as z from 'zod';
 
 import httpClient from '@/lib/httpClient';
-
 import ErrorFeedback from '@/components/error-feedback';
 import SuccessFeedback from '@/components/success-feedback';
 import {Button} from '@/components/ui/button';
@@ -147,6 +147,7 @@ export function VerificationForm({
         .then((response) => {
           setSuccess(true);
           setRedirecting(true);
+          toast.success('Email verified successfully');
         })
         .catch((error) => {
           setSuccess(false);
@@ -161,12 +162,25 @@ export function VerificationForm({
             setErrors(errData);
             toast.error(errData.message || 'Verification failed');
           }
-          console.log(errData);
         })
         .finally(() => {
           setIsLoading(false);
         });
   }
+
+  // Animation item variants
+  const itemVariants = {
+    hidden: {opacity: 0, y: 10},
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
 
   return (
       <div className={className} {...props}>
@@ -175,16 +189,17 @@ export function VerificationForm({
             message='Account verified successfully'
             description='You can now login with your email and password.'
             action={
-              <Link href='/auth/login' className='underline'>
+              <Link href='/auth/login' className='font-medium text-blue-600 hover:text-blue-500 underline'>
                 Login
               </Link>
             }
             data-test='success-message'
         />
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='grid gap-4'>
-            <div>
-              <div className="flex justify-center space-x-2" onPaste={handlePaste}>
+            <motion.div variants={itemVariants}>
+              <div className="flex justify-center space-x-2 mb-4" onPaste={handlePaste}>
                 {Array.from({ length: CODE_LENGTH }).map((_, index) => (
                     <input
                         key={index}
@@ -195,7 +210,7 @@ export function VerificationForm({
                         value={code[index]}
                         onChange={(e) => handleInputChange(index, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(index, e)}
-                        className="w-12 h-12 text-center text-lg font-semibold border rounded-md focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-12 h-12 text-center text-lg font-semibold bg-gray-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-colors"
                         disabled={isLoading}
                         aria-label={`Digit ${index + 1} of verification code`}
                         data-test={`verification-code-digit-${index}`}
@@ -203,31 +218,40 @@ export function VerificationForm({
                 ))}
               </div>
               {formState.errors.verificationCode && (
-                  <p className="text-sm text-red-500 mt-1">
+                  <p className="text-sm text-red-500 mt-1 text-center">
                     {formState.errors.verificationCode.message}
                   </p>
               )}
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                Enter the {CODE_LENGTH}-digit code sent to your email
+              <p className="text-sm text-gray-600 mt-2 text-center">
+                Enter the {CODE_LENGTH}-digit code sent to<br/>
+                <span className="font-semibold">{decodedEmail}</span>
               </p>
-            </div>
+            </motion.div>
 
-            <ErrorFeedback data-test='error-message' data={errors} />
-            <Button
-                disabled={isLoading || code.join('').length !== CODE_LENGTH}
-                type='submit'
-                className='mt-6 py-4'
-                variant='default'
-                data-test='verify-submit'
-            >
-              {isLoading ? 'Verifying...' : 'Verify Email'}
-            </Button>
+            <motion.div variants={itemVariants}>
+              <ErrorFeedback data-test='error-message' data={errors} />
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="pt-3">
+              <Button
+                  disabled={isLoading || code.join('').length !== CODE_LENGTH}
+                  type='submit'
+                  className="w-full py-6 text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                  data-test='verify-submit'
+              >
+                {isLoading ? 'Verifying...' : 'Verify Email'}
+              </Button>
+            </motion.div>
           </div>
         </form>
+
         {(redirecting || success) && (
-            <div className='mt-4 text-sm text-gray-500'>
+            <motion.div
+                variants={itemVariants}
+                className='mt-4 text-sm text-center text-gray-600'
+            >
               You will be redirected to the login page in {countdown}...
-            </div>
+            </motion.div>
         )}
       </div>
   );
