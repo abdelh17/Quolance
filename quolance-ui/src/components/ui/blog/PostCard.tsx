@@ -405,6 +405,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             </div>
           )}
 
+
           {content.length > 800 && (
             <button
               onClick={toggleExpand}
