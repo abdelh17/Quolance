@@ -325,6 +325,10 @@ public class UserServiceImpl implements UserService {
                     }
 
                 }
+                for(Application application : project.getApplications()){
+                    application.setApplicationStatus(ApplicationStatus.CANCELLED);
+                }
+
                 project.setProjectStatus(ProjectStatus.EXPIRED);
                 projectRepository.save(project);
             }
@@ -365,8 +369,6 @@ public class UserServiceImpl implements UserService {
         for(BlogComment comment : blogCommentService.getCommentsByUserId(user.getId())){
             blogCommentService.deleteBlogComment(comment.getId(), user);
         }
-
-
 
         user.setDeleted(true);
         userRepository.save(user);
