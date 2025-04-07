@@ -1,51 +1,22 @@
 {
 	"info": {
-		"_postman_id": "21f8c0de-107d-4503-8c06-37ef501ece1b",
-		"name": "QuolanceAPI",
+		"_postman_id": "17038d11-e62e-489d-b3c8-99760981b4c8",
+		"name": "QuolanceAPI Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "40687150"
+		"_exporter_id": "26432903"
 	},
 	"item": [
 		{
 			"name": "Users",
 			"item": [
 				{
-					"name": "Create user (CLIENT)",
+					"name": "Create user (CLIENT/FL)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"username\": \"MyUsernameClient123\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"Nermin\",\r\n    \"lastName\": \"Karapandzic\",\r\n    \"role\":\"CLIENT\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8081/api/users",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create user (FREELANCER)",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"freelancer@freelancer.com\",\r\n    \"username\": \"MyUsernameFreelancer456\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Smith\",\r\n    \"role\":\"FREELANCER\"\r\n}",
+							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"username\": \"MyUsernameClient123\",\r\n    \"password\": \"Test1234\",\r\n    \"passwordConfirmation\": \"Test1234\",\r\n    \"firstName\": \"Nermin\",\r\n    \"lastName\": \"Karapandzic\",\r\n    \"role\":\"FREELANCER\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -260,6 +231,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
@@ -273,7 +252,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"username\": \"MyUsernameClient123\",\r\n    \"password\": \"Test1234\"\r\n}",
+							"raw": "{\r\n    \"email\": \"client@client.com\",\r\n    \"password\": \"Test1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -396,40 +375,6 @@
 								"api",
 								"client",
 								"create-project"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Review freelancer",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"string\",\n  \"communicationRating\": 5,\n  \"qualityOfWorkRating\": 5,\n  \"qualityOfDeliveryRating\": 5,\n  \"comment\": \"string\",\n  \"projectId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"reviewedFreelancerId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8081/api/client/project/review",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"client",
-								"project",
-								"review"
 							]
 						}
 					},
@@ -1836,90 +1781,8 @@
 			]
 		},
 		{
-			"name": "Chat",
-			"item": [
-				{
-					"name": "Send Message",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"receiver_id\": \"YOUR_RECEIVER_USER_ID\",\r\n    \"content\": \"Hello! This is a test message.\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8081/api/chat/send",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"chat",
-								"send"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Messages With User",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/api/chat/messages/:userId",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"chat",
-								"messages",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "YOUR_OTHER_USER_ID",
-									"description": "ID of the user you're chatting with"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Contacts",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/api/chat/contacts",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"chat",
-								"contacts"
-							]
-						},
-						"description": "Get all contacts with their last messages, sorted by most recent conversation"
-					},
-					"response": []
-				}
-			]
+			"name": "New Folder",
+			"item": []
 		}
 	]
 }
