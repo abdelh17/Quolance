@@ -16,13 +16,13 @@ const UserSummary: React.FC<{ user: FreelancerProfileType }> = ({ user }) => {
       className="w-96 rounded-2xl bg-gradient-to-r from-blue-50 via-white to-indigo-50 p-6 shadow-xl border border-gray-100 text-center"
     >
 
-      <div className="flex justify-center -mt-24 mb-4">
+      <div className="flex justify-center -mt-20 mb-4">
         <Image
           alt={`${user.firstName} ${user.lastName}'s profile`}
           src={user.profileImageUrl || FreelancerDefaultIcon}
           width={120}
           height={120}
-          className="w-36 h-36 rounded-full border-4 border-indigo-200 shadow-md object-cover"
+          className="w-28 h-28 rounded-full border-4 border-indigo-200 shadow-md object-cover"
         />
       </div>
 
