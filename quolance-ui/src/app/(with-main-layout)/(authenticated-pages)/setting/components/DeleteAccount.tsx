@@ -1,17 +1,20 @@
-// components/DeleteAccount.tsx
+
 'use client';
 
 import { useState } from 'react';
 import DeleteAccountModal from './DeleteAccountModal';
 import { useDeleteAccount } from '@/api/user-api';
+import { useAuthGuard } from '@/api/auth-api';
 
 export default function DeleteAccount() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: deleteAccount } = useDeleteAccount();
+  const { logout } = useAuthGuard({ middleware: 'auth' });
 
   const handleConfirmDelete = () => {
     deleteAccount();
     setIsModalOpen(false);
+    logout();
   };
 
   return (
