@@ -215,7 +215,8 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                 .filter(Objects::nonNull)
                 .toList();
 
-        return new PageImpl<>(freelancerDtos, pageable, userPage.getTotalElements());
+        return new PageImpl<>(freelancerDtos, pageable, freelancerDtos.size());
+
     }
 
     @Override
