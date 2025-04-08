@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '../dropdown-menu';
-import { useGenerateBlogPost } from '@/api/blog-api';
+import { useGenerateBlogPost } from '@/api/textGeneration-api';
 import AiPromptModal from '@/components/ui/AiPromptModal';
 
 const blogTags = [
@@ -58,11 +58,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, init
 
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
-  const generateBlogPostMutation = useGenerateBlogPost({
-    onSuccess: (generatedContent) => {
-      setContent(generatedContent);
-    },
-  })
+  const generateBlogPostMutation = useGenerateBlogPost();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -269,10 +265,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, init
         isOpen={isAiModalOpen}
         setIsOpen={setIsAiModalOpen}
         onApply={(generatedText) => setContent(generatedText)}
-        generateMutation={{
-          mutate: generateBlogPostMutation.mutate,
-          isLoading: generateBlogPostMutation.isLoading,
-        }}
+        generateMutation={generateBlogPostMutation}
         title="Generate Blog Post Content"
         confirmText="Use this Content"
       />
