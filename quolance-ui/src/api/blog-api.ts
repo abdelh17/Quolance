@@ -99,6 +99,23 @@ export const useDeleteBlogPost = (options?: {
   });
 };
 
+/* ---------- AI Blog Post Generation ---------- */
+
+export const useGenerateBlogPost = (options?: {
+  onSuccess?: (data: string) => void;
+  onError?: (error: HttpErrorResponse) => void;
+}) => {
+  return useMutation<string, HttpErrorResponse, string>({
+    mutationFn: async (prompt: string) => {
+      const response = await httpClient.post('/api/text-generation/blogpost', {
+        prompt,
+      });
+      return response.data;
+    },
+    ...options,
+  });
+};
+
 /* ---------- Blog Comments ---------- */
 export interface CommentResponseDto {
   commentId: string;
