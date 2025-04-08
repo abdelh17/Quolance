@@ -123,12 +123,17 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     private BlogPost updateBlogPost(BlogPostUpdateDto updateRequest, BlogPost blogPost) {
-        log.debug("Updating blog post content and title");
-        if (updateRequest.getContent() != null)
+        log.debug("Updating blog post title, content, and tags");
+        if (updateRequest.getContent() != null) {
             blogPost.setContent(updateRequest.getContent());
-        if (updateRequest.getTitle() != null)
+        }
+        if (updateRequest.getTitle() != null) {
             blogPost.setTitle(updateRequest.getTitle());
-//        blogPost.setLastModified(LocalDateTime.now());
+        }
+        if (updateRequest.getTags() != null) {
+            blogPost.setTags(updateRequest.getTags());
+        }
+
         return blogPost;
     }
 
