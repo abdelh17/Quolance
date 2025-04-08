@@ -420,12 +420,12 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   
         {/* Image stack */}
         {imageUrls.length > 0 && (
-          <div className="relative w-full md:w-[300px] h-[300px] mb-2 md:mb-0 shrink-0">
+          <div className="relative w-full md:w-[250px] h-[250px] mb-2 md:mb-0 shrink-0">
             {imageUrls.slice(0, 3).map((url, index) => (
               <div
                 key={index}
                 onClick={() => handleImageClick(index)}
-                className="absolute top-0 left-0 w-[280px] h-[280px] rounded-md overflow-hidden cursor-pointer border transition-transform"
+                className="absolute top-0 left-0 w-[230px] h-[230px] rounded-md overflow-hidden cursor-pointer border transition-transform"
                 style={{
                   transform: `translate(${index * 10}px, ${index * 10}px)`,
                   zIndex: 10 - index,
