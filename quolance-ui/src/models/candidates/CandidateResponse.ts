@@ -16,7 +16,8 @@ export interface CandidateResponse {
   projectExperiences: any[];
   workExperiences: any[];
   languagesSpoken: string[];
-  reviews:Reviews[];
+  reviews: Reviews[];
+  deleted: boolean;
 }
 
 type Reviews = {
@@ -31,4 +32,4 @@ type Reviews = {
   clientUsername: string;
   projectId: string;
   reviewedFreelancerId: string;
- };
+};

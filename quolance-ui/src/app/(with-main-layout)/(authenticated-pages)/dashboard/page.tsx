@@ -38,6 +38,7 @@ export default function Dashboard() {
     workExperiences: [],
     languagesSpoken: [],
     reviews: [],
+    deleted: false,
   });
 
   useEffect(() => {
