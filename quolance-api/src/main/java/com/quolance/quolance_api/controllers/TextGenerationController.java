@@ -55,4 +55,15 @@ public class TextGenerationController {
         );
         return ResponseEntity.ok(generatedText);
     }
+
+    @PostMapping("/blogpost")
+    public ResponseEntity<String> generateBlogPostText(@RequestBody GenerateTextDto generateTextDto) {
+        User user = SecurityUtil.getAuthenticatedUser();
+        String generatedText = textGenerationService.generateText(
+                PromptType.BLOGPOST,
+                user,
+                generateTextDto.getPrompt()
+        );
+        return ResponseEntity.ok(generatedText);
+    }
 }
