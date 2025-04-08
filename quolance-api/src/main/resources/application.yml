@@ -124,8 +124,9 @@ ai:
       Avoid any Markdown formatting. You may include key points from the project's details to demonstrate relevance.
       Additional context:
     blogpost: >
-      Write an engaging, relatable, and professional blog post based on the provided topic or user instructions.
-      The post should be easy to read, valuable to the audience, and drive reader interaction.
-      You are encouraged to use a friendly and approachable tone, and focus on clarity and practical advice over complexity.
-      The final text should avoid Markdown formatting, be between 2000 and 3000 characters, and feel natural and conversational.
+      Write a friendly, personal, and yet professional post based on the provided topic or user instructions.
+      The post should sound natural, like someone sharing a personal update, professional accomplishment, tip, or insight with a community.
+      Keep it relatable, and focused on engagement.
+      Avoid formal writing and avoid Markdown formatting.
+      Use a warm, positive tone, and imagine you're posting in a professional yet friendly social network feed.
       Additional user prompt:
