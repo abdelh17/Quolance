@@ -179,6 +179,8 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         Specification<User> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            predicates.add(criteriaBuilder.isFalse(root.get("deleted")));
+
             if (filters != null) {
                 if (filters.getSearchName() != null && !filters.getSearchName().trim().isEmpty()) {
                     String searchPattern = "%" + filters.getSearchName().toLowerCase() + "%";
