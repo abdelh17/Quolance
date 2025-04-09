@@ -110,6 +110,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
               className="w-full p-2 border rounded-md mt-2 text-sm"
+              placeholder="Edit you comment..."
             />
           ):(
             <p className="text-sm text-gray-700 mt-1 break-all overflow-hidden w-full">

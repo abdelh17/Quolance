@@ -10,7 +10,6 @@ import CommentCard from "./CommentCard";
 import {useGetFreelancerProfile} from "@/api/freelancer-api";
 import UserSummary from "@/components/ui/blog/UserSummary";
 import {
-  CommentResponseDto,
   useAddComment,
   useDeleteBlogPost,
   useGetCommentsByPostId,
@@ -19,6 +18,7 @@ import {
   useRemoveReaction,
   useReportBlogPost
 } from "@/api/blog-api";
+import { CommentResponseDto } from "@/constants/types/blog-types";
 import {showToast} from "@/util/context/ToastProvider";
 import { PaginationParams } from "@/constants/types/pagination-types";
 import { Button } from "../button";
@@ -62,7 +62,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editingPost, setEditingPost] = useState<PostCardProps | null>(null);
 
-  const [userSummaryPosition, setUserSummaryPosition] = useState<{ x: number; y: number } | null>(null);
   const [pagination, setPagination] = useState<PaginationParams>({page: 0, size: 5});
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -146,7 +145,6 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
         !authorNameRef.current.contains(event.target as Node)
       ) {
         setOpenUserSummaryPostId(null);
-        setUserSummaryPosition(null);
       }
     }
 
@@ -229,14 +227,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   const handleShowUserSummary = (event: React.MouseEvent<HTMLElement>) => {
     if (isUserSummaryOpen) {
       setOpenUserSummaryPostId(null);
-      setUserSummaryPosition(null);
     } else {
-      const rect = event.currentTarget.getBoundingClientRect();
-
-      setUserSummaryPosition({
-        x: rect.left - 25 + window.scrollX,
-        y: rect.top - 50 + window.scrollY
-      });
       setOpenUserSummaryPostId(id);
     }
   };
@@ -299,43 +290,31 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
     <div className="bg-white bg-opacity-60 shadow-md rounded-md font-sans p-8">
       {/* User Info + Top Row */}
       <div className="flex justify-between items-start">
-        <div className="flex items-center">
-          <Image
-            ref={profileImageRef}
-            alt={`${authorName}'s profile`}
-            src={authorProfile?.profileImageUrl || icon}
-            width={56}
-            height={56}
-            className="w-14 h-14 rounded-full object-cover cursor-pointer"
+        <div className="relative inline-block">
+          <button
+            ref={authorNameRef}
+            className="flex items-center space-x-2"
             onClick={handleShowUserSummary}
-          />
-          <div className="ml-4">
-            <button
-              ref={authorNameRef}
-              className="text-gray-800 text-lg font-bold cursor-pointer focus:outline-none"
-              onClick={handleShowUserSummary}
-            >
-              {authorName}
-            </button>
-            <div className="text-sm text-gray-500">
-              {new Intl.DateTimeFormat("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }).format(new Date(dateCreated))}
-            </div>
-          </div>
-          {isUserSummaryOpen && userSummaryPosition && (
+          >
+            <Image
+              ref={profileImageRef}
+              src={authorProfile?.profileImageUrl || icon}
+              alt="User Profile"
+              width={56}
+              height={56}
+              className="w-14 h-14 rounded-full object-cover"
+            />
+            <span className="font-semibold text-gray-800">{authorName}</span>
+          </button>
+
+          {isUserSummaryOpen && authorProfile && (
             <div
-              ref={userSummaryRef}
-              className="absolute z-50"
-              style={{
-                top: userSummaryPosition.y,
-                left: userSummaryPosition.x,
-              }}
-            >
-              {authorProfile && <UserSummary user={authorProfile} />}
-            </div>
+            ref={userSummaryRef}
+            className="absolute z-50 -translate-x-4 translate-y-4 md:translate-x-4 md:translate-y-1"
+          >
+            <UserSummary user={authorProfile} />
+          </div>
+          
           )}
         </div>
   
@@ -474,7 +453,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             >
               &#8250;
             </button>
-            <div className="absolute text-xl bottom-4 left-1/2 transform -translate-x-1/2 bg-b100 bg-opacity-50 text-white px-3 py-1 rounded-md text-sm font-medium">
+            <div className="absolute text-xl bottom-4 left-1/2 transform -translate-x-1/2 bg-b100 bg-opacity-50 text-white px-3 py-1 rounded-md font-medium">
               {currentImageIndex + 1} / {imageUrls.length}
             </div>
           </div>

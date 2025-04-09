@@ -1,20 +1,12 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import httpClient from '@/lib/httpClient';
-import { BlogPostViewType } from '@/constants/types/blog-types';
+import { BlogPostUpdateDto, BlogPostViewType, CommentRequestDto, CommentResponseDto, ReactionRequestDto, ReactionResponseDto } from '@/constants/types/blog-types';
 import { HttpErrorResponse } from '@/models/http/HttpErrorResponse';
 import { PagedResponse } from '@/models/http/PagedResponse';
 import { PaginationParams } from '@/constants/types/pagination-types';
 import { queryToString } from '@/util/stringUtils';
 
 /* ---------- Blog Posts ---------- */
-export interface BlogPostUpdateDto {
-  postId: string;
-  title: string;
-  content: string;
-  // tags: string[];
-  // files?: File[];
-}
-
 export const useCreateBlogPost = (options?: {
   onSuccess?: () => void;
   onError?: (error: unknown) => void;
@@ -100,17 +92,6 @@ export const useDeleteBlogPost = (options?: {
 };
 
 /* ---------- Blog Comments ---------- */
-export interface CommentResponseDto {
-  commentId: string;
-  blogPostId: string;
-  username: string;
-  content: string;
-}
-
-export interface CommentRequestDto {
-  content: string;
-}
-
 export const useGetCommentsByPostId = (
   postId: string,
   pagination: PaginationParams,
@@ -186,19 +167,6 @@ export const useUpdateComment = (options?: {
 };
 
 /* ---------- Blog Reactions ---------- */
-export interface ReactionResponseDto {
-  id: string;
-  reactionType: string;
-  userId: string;
-  userName: string;
-  blogPostId: string;
-}
-
-export interface ReactionRequestDto {
-  reactionType: string;
-  blogPostId: string;
-}
-
 export const useGetReactionsByPostId = (
   postId: string,
   options?: {
