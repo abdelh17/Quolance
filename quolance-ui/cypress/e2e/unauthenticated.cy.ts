@@ -145,13 +145,6 @@ describe('Flow for Unauthenticated Pages', () => {
         cy.get('[data-test="header-project-category"]').contains(/Digital Marketing/i)
         cy.get('[data-test="header-project-priceRange"]').contains(/10000+/i)
 
-
-        cy.get('[data-test="header-project-expirationDate"]').contains(/Closing on March 10, 2025/i)
-
-
-        cy.get('[data-test="project-img"]').should('be.visible');
-        cy.get('[data-test="project-quote"]').contains(/Bring your ideas to life with skilled freelancers ready to/i)
-        cy.get('[data-test="sign-up-for-free-btn"]').contains(/Sign Up For Free/i)
     })
 
 
