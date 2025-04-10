@@ -90,11 +90,10 @@ const BlogContainer: React.FC = () => {
         try {
             if (postData.id) {
                 await updateBlogPost({
-                    postId: postData.id, 
+                    postId: postData.id,
                     title: postData.title, 
-                    content: postData.content
-                    // tags: postData.tags,
-                    // files: postData.files
+                    content: postData.content,
+                    tags: postData.tags
                 });
             } else {
                 await mutateBlogPosts({
