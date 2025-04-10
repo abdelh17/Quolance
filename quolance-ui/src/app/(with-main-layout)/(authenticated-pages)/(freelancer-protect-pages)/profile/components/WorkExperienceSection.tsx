@@ -301,6 +301,7 @@ const WorkExperienceSection: React.FC<WorkExperienceSectionProps> = ({
             editModeKey='editWorkExperience'
             updateEditModes={updateEditModes}
             checkEditModes={checkEditModes}
+            dataTest="profile-work-edit-btn"
           />
         ) : null}
       </div>
@@ -329,6 +330,7 @@ const WorkExperienceSection: React.FC<WorkExperienceSectionProps> = ({
               <SaveButton
                 editModeKey='editWorkExperience'
                 handleSave={handleWorkExperienceSave}
+                dataTest="profile-work-save-btn"
               />
             </div>
           </div>

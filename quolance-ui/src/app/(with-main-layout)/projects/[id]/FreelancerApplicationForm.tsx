@@ -185,6 +185,7 @@ export default function FreelancerApplicationForm({
                   className='h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
                   checked={isChecked}
                   onChange={() => setIsChecked(!isChecked)}
+                  data-test="application-ack-checkbox"
                 />
                 <label htmlFor='termsCheckbox' className='ml-2 text-sm text-gray-700'>
                   By submitting this application, I confirm that I have read and agree to the
