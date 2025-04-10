@@ -37,8 +37,7 @@ export interface BlogPostUpdateDto {
     postId: string;
     title: string;
     content: string;
-    // tags: string[];
-    // files?: File[];
+    tags: string[];
   }
 
   export interface ReactionResponseDto {
