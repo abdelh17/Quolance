@@ -391,14 +391,21 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
         </div>
       </div>
   
-      <div className="flex justify-between mt-2 gap-4">
+      <div className="flex flex-col md:flex-row md:items-start gap-6 mt-4">
         {/* Title + Content */}
-        <div className="flex-1">
-          <h3 className="text-xl font-semibold text-gray-800 my-3">{title}</h3>
-          <div className={`mt-1 ${!isExpanded ? "line-clamp-6 md:line-clamp-10" : ""}`}>
-            <p className="text-gray-700">{content}</p>
-          </div>
-  
+        <div className="flex-1 mt-2 md:mt-0">
+          <h3 className="text-xl md:text-2xl font-semibold text-gray-800 mb-3">{title}</h3>
+          {!isExpanded ? (
+            <div className="mt-1 line-clamp-6 md:line-clamp-10">
+              <p className="text-gray-700">{content}</p>
+            </div>
+          ) : (
+            <div className="mt-1">
+              <p className="text-gray-700">{content}</p>
+            </div>
+          )}
+
+
           {content.length > 800 && (
             <button
               onClick={toggleExpand}
@@ -413,12 +420,12 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
   
         {/* Image stack */}
         {imageUrls.length > 0 && (
-          <div className="relative w-[200px] h-[200px] mt-3 shrink-0">
+          <div className="relative w-full md:w-[250px] h-[250px] mb-2 md:mb-0 shrink-0">
             {imageUrls.slice(0, 3).map((url, index) => (
               <div
                 key={index}
                 onClick={() => handleImageClick(index)}
-                className="absolute top-0 left-0 w-[180px] h-[180px] rounded-md overflow-hidden cursor-pointer border transition-transform"
+                className="absolute top-0 left-0 w-[230px] h-[230px] rounded-md overflow-hidden cursor-pointer border transition-transform"
                 style={{
                   transform: `translate(${index * 10}px, ${index * 10}px)`,
                   zIndex: 10 - index,
@@ -446,9 +453,9 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
           <div className="relative w-3/4 h-3/4 bg-zinc-800 rounded-md overflow-hidden">
             <button
               onClick={closeFullScreen}
-              className="absolute text-2xl top-4 right-4 text-white px-3 py-2 rounded-md hover:bg-red-600 transition"
+              className="absolute text-4xl w-10 h-10 top-4 right-4 text-white -px-3rounded-md hover:text-red-600 transition"
             >
-              &#128473;
+              ×
             </button>
             <img
               src={imageUrls[currentImageIndex]}
@@ -457,17 +464,17 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
             />
             <button
               onClick={prevImage}
-              className="absolute text-6xl left-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:bg-gray-500 transition"
+              className="absolute text-6xl left-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:text-blue-500 transition"
             >
               &#8249;
             </button>
             <button
               onClick={nextImage}
-              className="absolute text-6xl right-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:bg-gray-500 transition"
+              className="absolute text-6xl right-4 top-1/2 transform -translate-y-1/2 text-white px-3 pb-3 rounded-md hover:text-blue-500 transition"
             >
               &#8250;
             </button>
-            <div className="absolute text-xl bottom-4 left-1/2 transform -translate-x-1/2 bg-slate-400 bg-opacity-50 text-white px-3 py-1 rounded-md text-sm font-medium">
+            <div className="absolute text-xl bottom-4 left-1/2 transform -translate-x-1/2 bg-b100 bg-opacity-50 text-white px-3 py-1 rounded-md text-sm font-medium">
               {currentImageIndex + 1} / {imageUrls.length}
             </div>
           </div>

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FreelancerProfileType } from '@/models/user/UserResponse';
 import FreelancerDefaultIcon from '@/public/images/freelancer_default_icon.png';
+import Link from 'next/link';
 
 const UserSummary: React.FC<{ user: FreelancerProfileType }> = ({ user }) => {
   return (
@@ -15,13 +16,13 @@ const UserSummary: React.FC<{ user: FreelancerProfileType }> = ({ user }) => {
       className="w-96 rounded-2xl bg-gradient-to-r from-blue-50 via-white to-indigo-50 p-6 shadow-xl border border-gray-100 text-center"
     >
 
-      <div className="flex justify-center -mt-16 mb-4">
+      <div className="flex justify-center -mt-20 mb-4">
         <Image
           alt={`${user.firstName} ${user.lastName}'s profile`}
           src={user.profileImageUrl || FreelancerDefaultIcon}
-          width={96}
-          height={96}
-          className="w-24 h-24 rounded-full border-4 border-indigo-200 shadow-md object-cover"
+          width={120}
+          height={120}
+          className="w-28 h-28 rounded-full border-4 border-indigo-200 shadow-md object-cover"
         />
       </div>
 
@@ -46,7 +47,13 @@ const UserSummary: React.FC<{ user: FreelancerProfileType }> = ({ user }) => {
         </div>
       </div>
 
-      <p className="text-sm text-gray-700 italic mb-4">{user.bio || 'No bio provided.'}</p>
+      <p className="text-sm text-gray-700 italic mb-4 line-clamp-6">{user.bio || 'No bio provided.'}</p>
+      <Link 
+        href={`/public-profile/${user.username}`}
+        className="text-blue-600 hover:text-blue-800 text-sm font-medium underline underline-offset-4 transition"
+      >
+        view {user.firstName}'s profile
+      </Link>
 
       {user.skills.length > 0 && (
         <div className="flex flex-wrap justify-center gap-2">

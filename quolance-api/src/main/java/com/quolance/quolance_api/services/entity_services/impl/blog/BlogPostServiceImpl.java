@@ -95,7 +95,10 @@ public class BlogPostServiceImpl implements BlogPostService {
         BlogPost blogPost = getBlogPostEntity(request.getPostId());
         if (!isAuthorOfPost(blogPost, author)) {
             log.warn("User {} attempted to edit a blog post they do not own", author.getId());
-            throw new ApiException("You cannot edit a project that does not belong to you.");
+            throw ApiException.builder()
+                .status(HttpServletResponse.SC_FORBIDDEN)
+                .message("You cannot edit a blog post that does not belong to you.")
+                .build();
         }
         BlogPost updated = updateBlogPost(request, blogPost);
         blogPostRepository.save(updated);
@@ -110,7 +113,10 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         if (!isAuthorOfPost(blogPost, author)) {
             log.warn("User {} attempted to delete a blog post they do not own", author.getId());
-            throw new ApiException("You cannot delete a project that does not belong to you.");
+            throw ApiException.builder()
+                .status(HttpServletResponse.SC_FORBIDDEN)
+                .message("You cannot delete a blog post that does not belong to you.")
+                .build();
         }
         blogPostRepository.deleteById(id);
         log.info("Blog post deleted successfully");
@@ -123,12 +129,17 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     private BlogPost updateBlogPost(BlogPostUpdateDto updateRequest, BlogPost blogPost) {
-        log.debug("Updating blog post content and title");
-        if (updateRequest.getContent() != null)
+        log.debug("Updating blog post title, content, and tags");
+        if (updateRequest.getContent() != null) {
             blogPost.setContent(updateRequest.getContent());
-        if (updateRequest.getTitle() != null)
+        }
+        if (updateRequest.getTitle() != null) {
             blogPost.setTitle(updateRequest.getTitle());
-//        blogPost.setLastModified(LocalDateTime.now());
+        }
+        if (updateRequest.getTags() != null) {
+            blogPost.setTags(updateRequest.getTags());
+        }
+
         return blogPost;
     }
 
@@ -272,5 +283,10 @@ public class BlogPostServiceImpl implements BlogPostService {
         // Hard-delete from DB
         blogPostRepository.delete(post);
         log.info("Post {} was deleted by admin.", postId);
+    }
+
+    @Override
+    public List<BlogPost> getPostsByUserId(UUID userId) {
+        return blogPostRepository.findByUserId(userId);
     }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 
 import {UserAuthForm} from './components/user-auth-form';
 import AuthHeader from '@/app/(without-main-layout)/auth/register/components/AuthHeader';
@@ -69,7 +69,14 @@ export default function LoginPage() {
             </motion.div>
 
             <UserAuthForm />
-
+            <div className="mt-4 text-center">
+              <Link
+                  href="/auth/forgot-password"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
+              >
+                Forgot your password?
+              </Link>
+            </div>
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

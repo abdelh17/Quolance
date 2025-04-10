@@ -39,6 +39,11 @@ const statusConfigs: Record<ProjectStatus, StatusConfig> = {
     label: 'Closed',
     bgColor: 'bg-gray-600',
   },
+  [ProjectStatus.EXPIRED]: {
+    icon: XCircleIcon,
+    label: 'Expired',
+    bgColor: 'bg-gray-600',
+  },
 };
 
 const ProjectStatusBadge: React.FC<ProjectStatusBadgeProps> = ({

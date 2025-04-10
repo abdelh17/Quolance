@@ -179,6 +179,8 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
         Specification<User> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            predicates.add(criteriaBuilder.isFalse(root.get("deleted")));
+
             if (filters != null) {
                 if (filters.getSearchName() != null && !filters.getSearchName().trim().isEmpty()) {
                     String searchPattern = "%" + filters.getSearchName().toLowerCase() + "%";
@@ -215,7 +217,8 @@ public class ClientWorkflowServiceImpl implements ClientWorkflowService {
                 .filter(Objects::nonNull)
                 .toList();
 
-        return new PageImpl<>(freelancerDtos, pageable, userPage.getTotalElements());
+        return new PageImpl<>(freelancerDtos, pageable, freelancerDtos.size());
+
     }
 
     @Override

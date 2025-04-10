@@ -70,6 +70,7 @@ const FreelancerProfile: React.FC = () => {
     workExperiences: [],
     languagesSpoken: [],
     reviews: [],
+    deleted: false,
   });
 
   useEffect(() => {

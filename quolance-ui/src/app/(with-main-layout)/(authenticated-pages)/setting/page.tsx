@@ -1,6 +1,7 @@
 import ChangePassword from './components/ChangePassword';
 import NotificationSubscription from './components/NotificationSubscription';
 import PersonalInfo from './components/PersonalInfo';
+import DeleteAccount from './components/DeleteAccount';
 
 export default function SettingPage() {
   return (
@@ -15,7 +16,7 @@ export default function SettingPage() {
         <PersonalInfo />
         <ChangePassword />
         <NotificationSubscription />
-        {/*<DeleteAccount />*/}
+        <DeleteAccount />
       </div>
     </div>
   );

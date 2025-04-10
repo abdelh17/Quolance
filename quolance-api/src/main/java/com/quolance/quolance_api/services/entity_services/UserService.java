@@ -26,6 +26,8 @@ public interface UserService {
 
     void resetPassword(UpdateUserPasswordRequestDto request);
 
+    void resetForgottenPassword(String email, ResetForgottenPasswordDto request);
+
     UserResponseDto updateUser(UpdateUserRequestDto request, User user);
 
     void updateUserName(String username, User user);
