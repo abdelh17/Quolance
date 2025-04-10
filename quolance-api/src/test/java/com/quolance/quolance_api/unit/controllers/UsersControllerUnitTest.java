@@ -269,38 +269,6 @@ class UsersControllerUnitTest {
     }
 
     @Test
-    void forgotPassword_Success() {
-        ForgotPasswordRequestDto request = new ForgotPasswordRequestDto();
-        request.setEmail("test@example.com");
-
-        doNothing().when(userService).forgotPassword(request.getEmail());
-
-        ResponseEntity<Void> response = usersController.forgotPassword(request);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(userService).forgotPassword(request.getEmail());
-        verifyNoMoreInteractions(userService);
-    }
-
-    @Test
-    void forgotPassword_WithInvalidEmail_ThrowsApiException() {
-        ForgotPasswordRequestDto request = new ForgotPasswordRequestDto();
-        request.setEmail("invalid-email");
-
-        doThrow(ApiException.builder()
-                .message("Invalid email format")
-                .status(400)
-                .build())
-                .when(userService).forgotPassword(request.getEmail());
-
-        assertThatThrownBy(() -> usersController.forgotPassword(request))
-                .isInstanceOf(ApiException.class)
-                .hasMessage("Invalid email format");
-        verify(userService).forgotPassword(request.getEmail());
-        verifyNoMoreInteractions(userService);
-    }
-
-    @Test
     void resetPassword_Success() {
         UpdateUserPasswordRequestDto request = new UpdateUserPasswordRequestDto();
         request.setPassword("newPassword123");

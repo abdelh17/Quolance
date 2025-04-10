@@ -16,4 +16,6 @@ public interface BlogCommentRepository extends JpaRepository<BlogComment, UUID> 
     List<BlogComment> findByBlogPost(BlogPost blogPost);
 
     Page<BlogComment> findByBlogPostId(UUID blogPostId, Pageable pageable);
+
+    List<BlogComment> findBlogCommentsByUserId(UUID userId);
 }

@@ -40,7 +40,6 @@ public class ReactionServiceImpl implements ReactionService {
             throw new ApiException("BlogPostId must be provided for reacting to a post.");
         }
 
-        validateReactionType(requestDto.getReactionType());
 
         BlogPost blogPost = blogPostService.getBlogPostEntity(requestDto.getBlogPostId());
 

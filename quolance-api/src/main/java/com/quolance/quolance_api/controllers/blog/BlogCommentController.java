@@ -44,7 +44,7 @@ public class BlogCommentController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a blog comment")
-    public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable UUID id, @RequestBody BlogCommentDto request) {
+    public ResponseEntity<BlogCommentDto> updateBlogComment(@PathVariable UUID id, @Valid @RequestBody BlogCommentDto request) {
         User author = SecurityUtil.getAuthenticatedUser();
         log.info("User {} is updating comment {}", author.getId(), id);
         BlogCommentDto response = blogCommentService.updateBlogComment(id, request, author);

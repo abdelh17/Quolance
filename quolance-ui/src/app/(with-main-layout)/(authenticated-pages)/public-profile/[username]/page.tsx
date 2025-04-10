@@ -18,6 +18,8 @@ import { WorkExperienceCard } from '@/app/(with-main-layout)/(authenticated-page
 import ReviewCard from '../../(freelancer-protect-pages)/profile/components/ReviewCard';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
 import { useChat } from '@/components/ui/chat/ChatProvider';
+import { useRouter } from 'next/navigation';
+
 
 const tabButton = ['Experiences', 'Projects', 'Recommendations'];
 
@@ -53,6 +55,15 @@ export default function FreelancerPage() {
     username as string
   );
   const { onNewChat } = useChat();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (freelancer?.deleted) {
+      router.push('/dashboard');
+    }
+  }, [freelancer, router]);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -300,11 +311,10 @@ export default function FreelancerPage() {
                     <li
                       key={idx}
                       onClick={() => setActiveTab(item)}
-                      className={`cursor-pointer border-b-2 px-4 py-2 text-sm font-medium transition-all duration-300 ${
-                        activeTab === item
-                          ? 'border-n900 text-n900'
-                          : 'text-n500 hover:text-n900 border-transparent '
-                      }`}
+                      className={`cursor-pointer border-b-2 px-4 py-2 text-sm font-medium transition-all duration-300 ${activeTab === item
+                        ? 'border-n900 text-n900'
+                        : 'text-n500 hover:text-n900 border-transparent '
+                        }`}
                     >
                       {item}
                     </li>
@@ -399,7 +409,7 @@ export default function FreelancerPage() {
                 <div className='mt-3 hidden md:block'>
                   {activeTab === 'Projects' &&
                     (freelancer.projectExperiences &&
-                    freelancer.projectExperiences.length > 0 ? (
+                      freelancer.projectExperiences.length > 0 ? (
                       freelancer.projectExperiences.map((project, idx) => (
                         <ProjectExperienceCard key={idx} project={project} />
                       ))
@@ -413,7 +423,7 @@ export default function FreelancerPage() {
 
                   {activeTab === 'Experiences' &&
                     (freelancer.workExperiences &&
-                    freelancer.workExperiences.length > 0 ? (
+                      freelancer.workExperiences.length > 0 ? (
                       freelancer.workExperiences.map((work, idx) => (
                         <WorkExperienceCard key={idx} experience={work} />
                       ))

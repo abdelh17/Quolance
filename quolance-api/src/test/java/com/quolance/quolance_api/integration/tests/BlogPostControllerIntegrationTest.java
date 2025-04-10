@@ -49,7 +49,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @ActiveProfiles("test")
 class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
@@ -70,21 +69,24 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         userRepository.deleteAll();
         loggedInUser = userRepository.save(EntityCreationHelper.createClient());
         session = sessionCreationHelper.getSession(loggedInUser.getEmail(), "Password123!");
-        EntityCreationHelper.createFullBlogPost(loggedInUser,"java", "freelancing", List.of(BlogTags.SUPPORT, BlogTags.FREELANCING), LocalDateTime.of(2024, 2, 1, 0, 0));
+        EntityCreationHelper.createFullBlogPost(loggedInUser, "java", "freelancing",
+                List.of(BlogTags.SUPPORT, BlogTags.FREELANCING), LocalDateTime.of(2024, 2, 1, 0, 0));
     }
 
     @Test
     void testCreateBlogPostWithImages() throws Exception {
-        MockMultipartFile image1 = new MockMultipartFile("images", "test-image1.jpg", "image/jpeg", "Image 1 Content".getBytes());
-        MockMultipartFile image2 = new MockMultipartFile("images", "test-image2.jpg", "image/jpeg", "Image 2 Content".getBytes());
+        MockMultipartFile image1 = new MockMultipartFile("images", "test-image1.jpg", "image/jpeg",
+                "Image 1 Content".getBytes());
+        MockMultipartFile image2 = new MockMultipartFile("images", "test-image2.jpg", "image/jpeg",
+                "Image 2 Content".getBytes());
 
         mockMvc.perform(multipart("/api/blog-posts")
-                        .file(image1)
-                        .file(image2)
-                        .param("title", "Integration Test Post")
-                        .param("content", "This is a blog post with images.")
-                        .session(session)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .file(image1)
+                .file(image2)
+                .param("title", "Integration Test Post")
+                .param("content", "This is a blog post with images.")
+                .session(session)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Integration Test Post"))
                 .andExpect(jsonPath("$.imageUrls").isArray())
@@ -139,7 +141,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     void testGetBlogPostByIdNotFound() throws Exception {
         UUID notFound = UUID.randomUUID();
-        var response = mockMvc.perform(get("/api/blog-posts/"+notFound)
+        var response = mockMvc.perform(get("/api/blog-posts/" + notFound)
                 .session(session)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -151,7 +153,7 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
 
         String errorMessage = jsonNode.get("message").asText();
 
-        assertThat(errorMessage).isEqualTo("No blog post found with ID: "+ notFound);
+        assertThat(errorMessage).isEqualTo("No blog post found with ID: " + notFound);
     }
 
     @Test
@@ -162,7 +164,6 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
         update.setPostId(blogPost.getId());
         update.setTitle("Updated Title");
         update.setContent("Updated Content");
-
 
         mockMvc.perform(put("/api/blog-posts/update")
                 .session(session)
@@ -281,4 +282,87 @@ class BlogPostControllerIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(filterRequest)));
     }
+
+    @Test
+    void testUpdateBlogPost_NotOwner_ShouldReturn403() throws Exception {
+        User otherUser = userRepository.save(EntityCreationHelper.createFreelancer(0));
+        BlogPost post = blogPostRepository.save(EntityCreationHelper.createBlogPost(otherUser));
+
+        BlogPostUpdateDto update = new BlogPostUpdateDto();
+        update.setPostId(post.getId());
+        update.setTitle("Hacked Title");
+
+        mockMvc.perform(put("/api/blog-posts/update")
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testDeleteBlogPost_NotOwner_ShouldReturn403() throws Exception {
+        User otherUser = userRepository.save(EntityCreationHelper.createFreelancer(0));
+        BlogPost post = blogPostRepository.save(EntityCreationHelper.createBlogPost(otherUser));
+
+        mockMvc.perform(delete("/api/blog-posts/" + post.getId())
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testCreateBlogPost_Unauthenticated_ShouldReturn401() throws Exception {
+        BlogPostRequestDto request = new BlogPostRequestDto();
+        request.setTitle("Unauthenticated post");
+        request.setContent("No session provided.");
+
+        mockMvc.perform(post("/api/blog-posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testFilterBlogPosts_NoMatch_ShouldReturnEmpty() throws Exception {
+        BlogFilterRequestDto filter = new BlogFilterRequestDto();
+        filter.setTitle("nothing_should_match");
+
+        var response = performFilterRequest(filter)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode json = objectMapper.readTree(response);
+        assertThat(json.get("content").isArray()).isTrue();
+        assertThat(json.get("content")).isEmpty();
+    }
+
+    @Test
+    void testDeleteNonexistentBlogPost_ShouldReturn404() throws Exception {
+        UUID nonexistentId = UUID.randomUUID();
+
+        mockMvc.perform(delete("/api/blog-posts/" + nonexistentId)
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetBlogPostsByUser_WithNoPosts_ShouldReturnEmpty() throws Exception {
+        User newUser = userRepository.save(EntityCreationHelper.createFreelancer(1));
+
+        var response = mockMvc.perform(get("/api/blog-posts/user/" + newUser.getId())
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<BlogPostResponseDto> posts = objectMapper.readValue(response, new TypeReference<>() {
+        });
+        assertThat(posts).isEmpty();
+    }
+    
 }

@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +56,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
         if (!isAuthorOfPost(blogComment, author)) {
             log.warn("User ID: {} attempted to update a comment they do not own (comment ID: {})", author.getId(),
                     commentId);
-            throw new ApiException("You cannot update a comment that does not belong to you.");
+                    throw new AccessDeniedException("You cannot update a comment that does not belong to you.");
         }
 
         blogComment.setContent(blogCommentDto.getContent());
@@ -70,7 +72,7 @@ public class BlogCommentServiceImpl implements BlogCommentService {
 
         if (!isAuthorOfPost(blogComment, author)) {
             log.warn("User ID: {} attempted to delete a comment they do not own (comment ID: {})", author.getId(),commentId);
-            throw new ApiException("You cannot delete a comment that does not belong to you.");
+            throw new AccessDeniedException("You cannot delete a comment that does not belong to you.");
         }
 
         blogCommentRepository.delete(blogComment);
@@ -88,6 +90,11 @@ public class BlogCommentServiceImpl implements BlogCommentService {
         return comments.stream()
                 .map(BlogCommentDto::fromEntity)
                 .toList();
+    }
+
+    @Override
+    public List<BlogComment> getCommentsByUserId(UUID userId) {
+        return blogCommentRepository.findBlogCommentsByUserId(userId);
     }
 
     private boolean isAuthorOfPost(BlogComment blogComment, User author) {
