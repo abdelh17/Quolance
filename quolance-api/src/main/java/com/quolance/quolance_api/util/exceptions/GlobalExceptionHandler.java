@@ -1,5 +1,6 @@
 package com.quolance.quolance_api.util.exceptions;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         List<String> generalErrors = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
@@ -93,5 +95,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         response.put("status", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-}
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<HttpErrorResponse> handleAccessDenied(AccessDeniedException e) {
+        log.info("Handling AccessDeniedException: {}", e.getMessage());
+        var response = HttpErrorResponse.of(e.getMessage(), 403, null, null);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<HttpErrorResponse> handleEntityNotFound(EntityNotFoundException e) {
+        log.info("Entity not found: {}", e.getMessage());
+        HttpErrorResponse response = HttpErrorResponse.of(e.getMessage(), 404, null, null);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+}

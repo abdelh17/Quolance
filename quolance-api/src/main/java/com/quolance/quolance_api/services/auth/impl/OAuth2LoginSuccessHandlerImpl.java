@@ -1,9 +1,11 @@
 package com.quolance.quolance_api.services.auth.impl;
 
 import com.quolance.quolance_api.configs.ApplicationProperties;
+import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.User;
 import com.quolance.quolance_api.entities.UserConnectedAccount;
-import com.quolance.quolance_api.jobs.SendTempPasswordEmailJob;
+import com.quolance.quolance_api.entities.enums.Role;
+import com.quolance.quolance_api.jobs.SendGoogleWelcomeEmailJob;
 import com.quolance.quolance_api.repositories.ConnectedAccountRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.auth.OAuth2LoginSuccessHandler;
@@ -90,11 +92,47 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
             authenticateUser(existingUser, response);
         } else {
             log.info("No existing user found for email {}. Creating a new user.", email);
-            // Create a new user and authenticate
-            User newUser = createUserFromOauth2User(authenticationToken);
-            log.info("New user created with id: {}", newUser.getId());
+
+            Role selectedRole = getSelectedRole(request);
+
+            User newUser = createUserFromOauth2User(authenticationToken, selectedRole);
+            log.info("Assigned role '{}' to new user {}.", selectedRole, newUser.getEmail());
+            log.info("New user {} created with Google OAuth", newUser.getEmail());
+
+            if (newUser.getRole() == Role.FREELANCER) {
+                Profile profile = new Profile();
+                profile.setContactEmail(newUser.getEmail());
+                profile.setBio(newUser.getFirstName() + " " + newUser.getLastName() + " bio.");
+                newUser.setProfile(profile);
+            }
+
+            userRepository.save(newUser);
             authenticateUser(newUser, response);
         }
+    }
+
+    /**
+     * Retrieves the selected role from the request cookies. If no role is found, it returns null.
+     *
+     * @param request the HTTP request
+     * @return the selected role or null if not found
+     */
+    private Role getSelectedRole(HttpServletRequest request) {
+        String selectedRole;
+        if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("selectedRole".equals(cookie.getName())) {
+                    selectedRole = cookie.getValue();
+                    try {
+                        return Role.valueOf(selectedRole.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        log.warn("Invalid role value received: {}", selectedRole);
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -127,12 +165,13 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
      * @param authentication the OAuth2 authentication token
      * @return the newly created user
      */
-    private User createUserFromOauth2User(OAuth2AuthenticationToken authentication) {
+    private User createUserFromOauth2User(OAuth2AuthenticationToken authentication, Role role) {
         log.info("Creating new user from OAuth2 token.");
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
 
         // Initialize the user entity with attributes from the authentication token
         User user = new User(authentication.getPrincipal());
+        user.setRole(role);
         log.debug("User details extracted: {}", user);
 
         // Generate a random 10-character password
@@ -144,9 +183,8 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
         userRepository.save(user);
         log.info("New user saved with id: {}", user.getId());
 
-        // Enqueue the job to send the temporary password email
-        enqueueTempPasswordEmailJob(user, randomPassword);
-        log.info("Enqueued temporary password email job for user id: {}", user.getId());
+        enqueueGoogleWelcomeEmailJob(user);
+        log.info("Enqueued google welcome email job for user: {}", user.getEmail());
 
         // Link the connected account
         String provider = authentication.getAuthorizedClientRegistrationId();
@@ -161,12 +199,12 @@ public class OAuth2LoginSuccessHandlerImpl implements OAuth2LoginSuccessHandler 
     }
 
     /**
-     * Enqueues a job to send the temporary password email.
+     * Enqueues a job to send the welcome email.
      */
-    private void enqueueTempPasswordEmailJob(User user, String tempPassword) {
-        log.info("Enqueuing email job for user id: {} with temporary password.", user.getId());
-        SendTempPasswordEmailJob sendTempPasswordEmailJob = new SendTempPasswordEmailJob(user.getId(), tempPassword);
-        BackgroundJobRequest.enqueue(sendTempPasswordEmailJob);
+    private void enqueueGoogleWelcomeEmailJob(User user) {
+        log.info("Enqueuing email job for user id: {} with welcome message for google authentication.", user.getId());
+        SendGoogleWelcomeEmailJob sendGoogleWelcomeEmailJob = new SendGoogleWelcomeEmailJob(user.getId());
+        BackgroundJobRequest.enqueue(sendGoogleWelcomeEmailJob);
     }
 
     /**

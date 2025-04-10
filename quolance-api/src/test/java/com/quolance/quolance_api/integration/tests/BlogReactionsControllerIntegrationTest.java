@@ -22,130 +22,175 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 @ActiveProfiles("test")
 class BlogReactionsControllerIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired
-    private ReactionRepository reactionRepository;
+        @Autowired
+        private ReactionRepository reactionRepository;
 
-    @Autowired
-    private BlogPostRepository blogPostRepository;
+        @Autowired
+        private BlogPostRepository blogPostRepository;
 
-    @Autowired
-    private BlogCommentRepository blogCommentRepository;
+        @Autowired
+        private BlogCommentRepository blogCommentRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    private User loggedInUser;
-    private BlogPost blogPost;
-    private BlogComment blogComment;
+        private User loggedInUser;
+        private BlogPost blogPost;
+        private BlogComment blogComment;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        reactionRepository.deleteAll();
-        blogCommentRepository.deleteAll();
-        blogPostRepository.deleteAll();
-        userRepository.deleteAll();
+        @BeforeEach
+        void setUp() throws Exception {
+                reactionRepository.deleteAll();
+                blogCommentRepository.deleteAll();
+                blogPostRepository.deleteAll();
+                userRepository.deleteAll();
 
-        loggedInUser = userRepository.save(EntityCreationHelper.createClient());
-        blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
-        blogComment = blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+                loggedInUser = userRepository.save(EntityCreationHelper.createClient());
+                blogPost = blogPostRepository.save(EntityCreationHelper.createBlogPost(loggedInUser));
+                blogComment = blogCommentRepository
+                                .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
-        session = sessionCreationHelper.getSession("client@test.com", "Password123!");
+                session = sessionCreationHelper.getSession("client@test.com", "Password123!");
 
-    }
+        }
 
-    @Test
-    void testReactToPost() throws Exception {
-        ReactionRequestDto requestDto = new ReactionRequestDto();
-        requestDto.setReactionType(ReactionType.LIKE);
-        requestDto.setBlogPostId(blogPost.getId());
+        @Test
+        void testReactToPost() throws Exception {
+                ReactionRequestDto requestDto = new ReactionRequestDto();
+                requestDto.setReactionType(ReactionType.LIKE);
+                requestDto.setBlogPostId(blogPost.getId());
 
-        mockMvc.perform(post("/api/blog-posts/reactions/post")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto))
-                        .session(session))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(post("/api/blog-posts/reactions/post")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestDto))
+                                .session(session))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    void testReactToComment() throws Exception {
-        ReactionRequestDto requestDto = new ReactionRequestDto();
-        requestDto.setReactionType(ReactionType.LIKE);
-        requestDto.setBlogCommentId(blogComment.getId());
+        @Test
+        void testReactToComment() throws Exception {
+                ReactionRequestDto requestDto = new ReactionRequestDto();
+                requestDto.setReactionType(ReactionType.LIKE);
+                requestDto.setBlogCommentId(blogComment.getId());
 
-        mockMvc.perform(post("/api/blog-posts/reactions/comment")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto))
-                        .session(session))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(post("/api/blog-posts/reactions/comment")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestDto))
+                                .session(session))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    void testGetReactionsByPost() throws Exception {
-        reactionRepository.save(
-                Reaction.builder()
-                        .reactionType(ReactionType.LIKE)
-                        .blogPost(blogPost)
-                        .user(loggedInUser)
-                        .build()
-        );
+        @Test
+        void testGetReactionsByPost() throws Exception {
+                reactionRepository.save(
+                                Reaction.builder()
+                                                .reactionType(ReactionType.LIKE)
+                                                .blogPost(blogPost)
+                                                .user(loggedInUser)
+                                                .build());
 
-        mockMvc.perform(get("/api/blog-posts/reactions/post/" + blogPost.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(get("/api/blog-posts/reactions/post/" + blogPost.getId())
+                                .session(session)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    void testGetReactionsByComment() throws Exception {
-        reactionRepository.save(
-                Reaction.builder()
-                        .reactionType(ReactionType.LIKE)
-                        .blogComment(blogComment)
-                        .user(loggedInUser)
-                        .build()
-        );
+        @Test
+        void testGetReactionsByComment() throws Exception {
+                reactionRepository.save(
+                                Reaction.builder()
+                                                .reactionType(ReactionType.LIKE)
+                                                .blogComment(blogComment)
+                                                .user(loggedInUser)
+                                                .build());
 
-        mockMvc.perform(get("/api/blog-posts/reactions/comment/" + blogComment.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(get("/api/blog-posts/reactions/comment/" + blogComment.getId())
+                                .session(session)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    void testDeleteReactionByOwner() throws Exception {
-        Reaction reaction = reactionRepository.save(
-                Reaction.builder()
-                        .reactionType(ReactionType.LIKE)
-                        .blogPost(blogPost)
-                        .user(loggedInUser)
-                        .build()
-        );
+        @Test
+        void testDeleteReactionByOwner() throws Exception {
+                Reaction reaction = reactionRepository.save(
+                                Reaction.builder()
+                                                .reactionType(ReactionType.LIKE)
+                                                .blogPost(blogPost)
+                                                .user(loggedInUser)
+                                                .build());
 
-        mockMvc.perform(delete("/api/blog-posts/reactions/" + reaction.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                mockMvc.perform(delete("/api/blog-posts/reactions/" + reaction.getId())
+                                .session(session)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk());
 
-        assertThat(reactionRepository.findById(reaction.getId())).isEmpty();
-    }
+                assertThat(reactionRepository.findById(reaction.getId())).isEmpty();
+        }
 
-    @Test
-    void testDeleteReactionNotOwner() throws Exception {
-        User anotherUser = userRepository.save(EntityCreationHelper.createFreelancer(0));
-        Reaction reaction = reactionRepository.save(
-                Reaction.builder()
-                        .reactionType(ReactionType.LIKE)
-                        .blogPost(blogPost)
-                        .user(anotherUser)
-                        .build()
-        );
+        @Test
+        void testDeleteReactionNotOwner() throws Exception {
+                User anotherUser = userRepository.save(EntityCreationHelper.createFreelancer(0));
+                Reaction reaction = reactionRepository.save(
+                                Reaction.builder()
+                                                .reactionType(ReactionType.LIKE)
+                                                .blogPost(blogPost)
+                                                .user(anotherUser)
+                                                .build());
 
-        mockMvc.perform(delete("/api/blog-posts/reactions/" + reaction.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
-    }
+                mockMvc.perform(delete("/api/blog-posts/reactions/" + reaction.getId())
+                                .session(session)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void testReactToPost_Unauthenticated_ShouldReturn401() throws Exception {
+                ReactionRequestDto dto = new ReactionRequestDto();
+                dto.setReactionType(ReactionType.LIKE);
+                dto.setBlogPostId(blogPost.getId());
+
+                mockMvc.perform(post("/api/blog-posts/reactions/post")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                                .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        void testReactToPost_MissingReactionType_ShouldReturn422() throws Exception {
+                ReactionRequestDto dto = new ReactionRequestDto();
+                dto.setBlogPostId(blogPost.getId());
+
+                mockMvc.perform(post("/api/blog-posts/reactions/post")
+                                .session(session)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                                .andExpect(status().isUnprocessableEntity());
+        }
+
+        @Test
+        void testReactToNonexistentPost_ShouldReturn404() throws Exception {
+                ReactionRequestDto dto = new ReactionRequestDto();
+                dto.setReactionType(ReactionType.LIKE);
+                dto.setBlogPostId(UUID.randomUUID());
+
+                mockMvc.perform(post("/api/blog-posts/reactions/post")
+                                .session(session)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                                .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void testDeleteNonexistentReaction_ShouldReturn404() throws Exception {
+                mockMvc.perform(delete("/api/blog-posts/reactions/" + UUID.randomUUID())
+                                .session(session)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isNotFound());
+        }
+
 }

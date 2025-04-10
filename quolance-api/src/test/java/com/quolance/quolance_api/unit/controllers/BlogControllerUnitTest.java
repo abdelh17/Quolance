@@ -154,7 +154,11 @@ class BlogControllersUnitTest {
         try (MockedStatic<SecurityUtil> securityUtil = mockStatic(SecurityUtil.class)) {
             UUID id = UUID.randomUUID();
             securityUtil.when(SecurityUtil::getAuthenticatedUser).thenReturn(mockUser);
-            BlogPostUpdateDto updateDto = new BlogPostUpdateDto(id, "Updated Title", "Updated Content");
+            BlogPostUpdateDto updateDto = new BlogPostUpdateDto();
+            updateDto.setPostId(id);
+            updateDto.setTitle("Updated_Title");
+            updateDto.setContent("Updated_Content");
+            updateDto.setTags(null);
             when(blogPostService.update(eq(updateDto), any(User.class))).thenReturn(blogPostResponse);
 
             ResponseEntity<BlogPostResponseDto> response = blogPostController.updateBlogPost(updateDto);

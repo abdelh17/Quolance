@@ -2,6 +2,8 @@ package com.quolance.quolance_api.services.entity_services.impl;
 
 import com.quolance.quolance_api.dtos.users.*;
 import com.quolance.quolance_api.entities.*;
+import com.quolance.quolance_api.entities.blog.BlogComment;
+import com.quolance.quolance_api.entities.blog.BlogPost;
 import com.quolance.quolance_api.entities.enums.ApplicationStatus;
 import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Role;
@@ -12,6 +14,8 @@ import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import com.quolance.quolance_api.services.entity_services.UserService;
+import com.quolance.quolance_api.services.entity_services.blog.BlogCommentService;
+import com.quolance.quolance_api.services.entity_services.blog.BlogPostService;
 import com.quolance.quolance_api.services.websockets.impl.NotificationMessageService;
 import com.quolance.quolance_api.util.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +48,8 @@ public class UserServiceImpl implements UserService {
     private final ProjectRepository projectRepository;
     private final ApplicationRepository applicationRepository;
     private NotificationMessageService notificationMessageService;
+    private final BlogPostService blogPostService;
+    private final BlogCommentService blogCommentService;
 
     @Override
     @Transactional
@@ -200,14 +206,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void forgotPassword(String email) {
         log.debug("Processing forgot password request for email: {}", email);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    log.warn("Forgot password request failed - user not found: {}", email);
-                    return ApiException.builder()
-                            .status(HttpServletResponse.SC_NOT_FOUND)
-                            .message("User not found")
-                            .build();
-                });
+        User user = findByEmail(email);
 
         PasswordResetToken passwordResetToken = new PasswordResetToken(user);
         passwordResetTokenRepository.save(passwordResetToken);
@@ -215,6 +214,44 @@ public class UserServiceImpl implements UserService {
         SendResetPasswordEmailJob sendResetPasswordEmailJob = new SendResetPasswordEmailJob(passwordResetToken.getId());
         BackgroundJobRequest.enqueue(sendResetPasswordEmailJob);
         log.info("Password reset email queued for user ID: {}", user.getId());
+    }
+
+    @Override
+    @Transactional
+    public void resetForgottenPassword(String email, ResetForgottenPasswordDto request) {
+        log.debug("Attempting to reset password with token");
+        User user = findByEmail(email);
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(request.getPasswordResetToken())
+                .orElseThrow(() -> {
+                    log.warn("Password reset failed - token not found");
+                    return ApiException.builder()
+                            .status(HttpServletResponse.SC_NOT_FOUND)
+                            .message("Wrong password reset code.")
+                            .build();
+                });
+
+        if (passwordResetToken.isExpired()) {
+            log.warn("Password reset failed - token expired for user ID: {}",
+                    passwordResetToken.getUser().getId());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Password reset code is expired. Please request a new one.")
+                    .build();
+        }
+
+        if (passwordResetToken.getUser().getId() != user.getId()) {
+            log.warn("Password reset failed - token does not match user ID: {}",
+                    passwordResetToken.getUser().getId());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Wrong password reset code.")
+                    .build();
+        }
+
+        user.updatePassword(request.getPassword());
+        userRepository.save(user);
+        log.info("Successfully reset password for user ID: {}", user.getId());
+        passwordResetTokenRepository.delete(passwordResetToken);
     }
 
     @Override
@@ -297,6 +334,9 @@ public class UserServiceImpl implements UserService {
 
         if (role == Role.ADMIN) {
         }
+        // If Client:
+        // - Delete all projects
+        // - Notify freelancers who had activity on projects involving this client in last 30 days
         else if (role == Role.CLIENT){
             List<Project> projects = projectRepository.findProjectsByClientId(user.getId());
             for(Project project : projects){
@@ -307,21 +347,27 @@ public class UserServiceImpl implements UserService {
 
                         User selectedFreelancer = project.getSelectedFreelancer();
 
-                        String notifMessage = "A project that you were selected for was rescinded by the client." +
-                                              "This can be due to reasons such as the project being cancelled or the client's account being deleted." +
-                                              "Please verify the status of your application if still in progress." +
-                                              "Project Name: " + project.getTitle();
+                        String notifMessage = "Project Name:" + project.getTitle() + "was rescinded by the client." +
+                                              "Please verify the status of your application if still in progress.";
+
 
                         notificationMessageService.sendNotificationToUser(selectedFreelancer,selectedFreelancer, notifMessage);
 
                     }
 
                 }
+                for(Application application : project.getApplications()){
+                    application.setApplicationStatus(ApplicationStatus.CANCELLED);
+                }
+
                 project.setProjectStatus(ProjectStatus.EXPIRED);
                 projectRepository.save(project);
             }
 
         }
+        // if freelancer:
+        // - Delete all applications
+        // - Notify clients who had activity on projects involving this freelancer in last 30 days
         else if (role == Role.FREELANCER){
             List<Application> applications = applicationRepository.findApplicationsByFreelancerId(user.getId());
             for(Application application : applications){
@@ -332,8 +378,7 @@ public class UserServiceImpl implements UserService {
 
                         if(appliedToProject.getLastModifiedDate().isAfter(timeInterval)){
 
-                            String notifMessage = "A freelancer you selected for the project: " + appliedToProject.getTitle() + " is no longer available." +
-                                    "As a result, they may be unable to proceed with the project." +
+                            String notifMessage = "Freelancer for: " + appliedToProject.getTitle() + " is no longer available." +
                                     "Please verify the status of your project if still in progress.";
 
                             User affectedClient = appliedToProject.getClient();
@@ -344,6 +389,16 @@ public class UserServiceImpl implements UserService {
                 application.setApplicationStatus(ApplicationStatus.CANCELLED);
                 applicationRepository.save(application);
             }
+        }
+
+        // Deleting all blog posts by user
+        for (BlogPost post : blogPostService.getPostsByUserId(user.getId())){
+            blogPostService.deletePost(post.getId(), user);
+        }
+
+        // Deleting all blog comments by user
+        for(BlogComment comment : blogCommentService.getCommentsByUserId(user.getId())){
+            blogCommentService.deleteBlogComment(comment.getId(), user);
         }
 
         user.setDeleted(true);

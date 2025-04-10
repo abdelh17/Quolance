@@ -56,10 +56,18 @@ public class UsersController {
     }
 
 
-    @PostMapping("/forgot-password")
+    @PostMapping("/forgot-password/{email}")
     @Operation(summary = "Request a password reset email")
-    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequestDto req) {
-        userService.forgotPassword(req.getEmail());
+    public ResponseEntity<Void> requestForgotPassword(@PathVariable String email) {
+        userService.forgotPassword(email);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/reset-forgotten-password/{email}")
+    public ResponseEntity<Void> resetForgottenPassword(@PathVariable String email,
+                                                       @Valid @RequestBody ResetForgottenPasswordDto requestDTO) {
+        log.info("Trying to reset password for: "+ email);
+        userService.resetForgottenPassword(email, requestDTO);
         return ResponseEntity.ok().build();
     }
 

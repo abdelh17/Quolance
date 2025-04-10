@@ -12,6 +12,7 @@ export enum ApplicationStatus {
   APPLIED = 'APPLIED',
   ACCEPTED = 'ACCEPTED',
   REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELLED'
 }
 
 interface ApplicationStatusBadgeProps {
@@ -40,6 +41,11 @@ const statusConfigs: Record<ApplicationStatus, StatusConfig> = {
     icon: XCircleIcon,
     label: 'Rejected',
     bgColor: 'bg-red-600',
+  },
+  [ApplicationStatus.CANCELLED]: {
+    icon: XCircleIcon,
+    label: 'Canceled',
+    bgColor: 'bg-gray-600',
   },
 };
 

@@ -20,4 +20,5 @@ public class ApplicationProperties {
     private String adminUserEmail;
     private String adminUserPassword;
     private String verifyEmailUrl;
+    private String resetPasswordUrl;
 }

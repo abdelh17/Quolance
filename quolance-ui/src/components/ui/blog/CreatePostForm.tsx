@@ -108,10 +108,9 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, init
       id: initialData?.id,
       title, 
       content, 
-      userId: 
-      user.id, 
-      tags, 
-      files 
+      userId: user.id,
+      tags,
+      files
     };
 
     if (!isEditMode && user?.id) {
@@ -149,12 +148,12 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, init
             rows={6}
           />
           <button
-              type="button"
-              onClick={() => setIsAiModalOpen(true)}
-              className="absolute top-8 right-2 flex items-center justify-center p-2 bg-white/80 backdrop-blur-md border border-indigo-100 rounded-md shadow-md hover:bg-indigo-100"
-              title="Generate with AI"
-            >
-              ✨
+            type="button"
+            onClick={() => setIsAiModalOpen(true)}
+            className="absolute top-8 right-2 flex items-center justify-center p-2 bg-white/80 backdrop-blur-md border border-indigo-100 rounded-md shadow-md hover:bg-indigo-100"
+            title="Generate with AI"
+          >
+            ✨
           </button>
         </div>
 
@@ -203,45 +202,48 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, onClose, init
           )}
         </div>
 
-        {/* File Drop Area */}
-        <div
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          className="w-full p-6 border-dashed border-2 border-gray-300 rounded-md text-center bg-white"
-        >
-          <div className="text-2xl mb-2">📎</div>
-          <p className="text-gray-600 text-sm mb-1">Drag and drop images, or</p>
-          <label htmlFor="file-upload" className="cursor-pointer text-indigo-600 text-sm font-medium underline">
-            Select Files
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFileChange}
-            className="hidden"
-            id="file-upload"
-          />
-        </div>
+        {!isEditMode &&(
+          <>
+            {/* File Drop Area */}
+            <div
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              className="w-full p-6 border-dashed border-2 border-gray-300 rounded-md text-center bg-white"
+            >
+              <div className="text-2xl mb-2">📎</div>
+              <p className="text-gray-600 text-sm mb-1">Drag and drop images, or</p>
+              <label htmlFor="file-upload" className="cursor-pointer text-indigo-600 text-sm font-medium underline">
+                Select Files
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileChange}
+                className="hidden"
+                id="file-upload"
+              />
+            </div>
 
-        {/* Display selected files */}
-        {files.length > 0 && (
-          <ul className="mt-3 space-y-2 text-sm">
-            {files.map((file, index) => (
-              <li key={index} className="flex justify-between items-center border-b pb-1">
-                <span>{file.name}</span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveFile(index)}
-                  className="text-red-500 hover:underline text-xs"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
+            {/* Display selected files */}
+            {files.length > 0 && (
+              <ul className="mt-3 space-y-2 text-sm">
+                {files.map((file, index) => (
+                  <li key={index} className="flex justify-between items-center border-b pb-1">
+                    <span>{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(index)}
+                      className="text-red-500 hover:underline text-xs"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         )}
-
         <div className="flex justify-end gap-4 pt-2">
           <Button
             type="button"
