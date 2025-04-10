@@ -1,8 +1,10 @@
 # Quolance
+## Project demo
+[Watch the video for a demo!](https://youtu.be/Ne0H6jQiEIQ)
 
 ## Release Demos
 [Release 1](https://drive.google.com/file/d/1nvuJNa7pkpi7503dfrbAA316UC9RhYdX/view?usp=sharing)  
-[Release 2](https://drive.google.com/file/d/1G78NhfGW8ulzw6STDvDtgC3hTTn-31cE/view?usp=sharing)
+[Release 2](https://drive.google.com/file/d/1G78NhfGW8ulzw6STDvDtgC3hTTn-31cE/view?usp=sharing)  
 [Release 3](https://drive.google.com/file/d/1dP6QqEVKaLZEugkveU--s3gBc1I5LI09/view?usp=share_link)
 
 ## Important files
@@ -108,10 +110,10 @@ Before running the script, ensure the following:
    LOCAL_DATASOURCE_URL=YOUR_JDBC_URL
    
    # Mail Configuration
-   MAILPIT_SMTP_PORT=YOUR_SMTP_PORT
-   MAILPIT_UI_PORT=YOUR_SMTP_UI_PORT
-   MAILPIT_USER=YOUR_SMTP_USERNAME
-   MAILPIT_PASSWORD=YOUR_SMTP_PASSWORD
+   MAILPIT_SMTP_PORT=YOUR_SMTP_PORT (usually 1025)
+   MAILPIT_UI_PORT=YOUR_SMTP_UI_PORT (usually 8025)
+   MAILPIT_USER=mailpit
+   MAILPIT_PASSWORD=mailpit
    
    # Cloudinary Configuration
    CLOUDINARY_CLOUD_NAME=YOUR_CLOUDINARY_CLOUD_NAME
@@ -120,8 +122,6 @@ Before running the script, ensure the following:
    CLOUDINARY_API_ENV_VAR=YOUR_CLOUDINARY_URL
    
    # OAuth2 Configuration
-   GITHUB_CLIENT_ID=YOUR_GITHUB_CLIENT_ID
-   GITHUB_CLIENT_SECRET=YOUR_GITHUB_CLIENT_SECRET
    GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
    GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
    
