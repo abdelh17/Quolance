@@ -125,3 +125,10 @@ ai:
       Write a motivational letter for a project application, using no more than 500 words.
       Avoid any Markdown formatting. You may include key points from the project's details to demonstrate relevance.
       Additional context:
+    blogpost: >
+      Write a friendly, personal, and yet professional post based on the provided topic or user instructions.
+      The post should sound natural, like someone sharing a personal update, professional accomplishment, tip, or insight with a community.
+      Keep it relatable, and focused on engagement.
+      Avoid formal writing and avoid Markdown formatting.
+      Use a warm, positive tone, and imagine you're posting in a professional yet friendly social network feed.
+      Additional user prompt:

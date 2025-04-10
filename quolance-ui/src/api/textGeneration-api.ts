@@ -148,3 +148,41 @@ export const useGenerateText = (
     isLoading: mutation.status === 'pending',
   };
 };
+
+/**
+ * Hook to generate Blog Post text using the AI text-generation endpoint.
+ */
+export const useGenerateBlogPost = (): MutationWithIsLoading<
+  string,
+  HttpErrorResponse,
+  string
+> => {
+  const mutation = useMutation<string, HttpErrorResponse, string>({
+    mutationFn: async (prompt: string) => {
+      const response = await httpClient.post(
+        '/api/text-generation/blogpost',
+        { prompt },
+        { responseType: 'text' }
+      );
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      showToast(
+        `AI generation (Blog Post) succeeded for prompt: ${variables}`,
+        'success'
+      );
+    },
+    onError: (error) => {
+      const errorMessage = error?.message ?? 'Unknown error';
+      showToast(
+        `Error generating Blog Post text: ${errorMessage}`,
+        'error'
+      );
+    },
+  });
+
+  return {
+    ...mutation,
+    isLoading: mutation.status === 'pending',
+  };
+};
