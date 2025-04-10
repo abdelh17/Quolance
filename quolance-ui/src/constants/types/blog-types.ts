@@ -11,6 +11,8 @@ export type BlogPostType = {
     title: string;
     content: string;
     userId: string;
+    tags: string[];
+    files?: File[];
 };
 
 export type CommentType = {
