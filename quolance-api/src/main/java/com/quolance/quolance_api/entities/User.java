@@ -144,7 +144,6 @@ public class User extends AbstractEntity implements UserDetails {
             }
         }
         this.verified = true;
-        this.role = Role.PENDING;
     }
 
     /**

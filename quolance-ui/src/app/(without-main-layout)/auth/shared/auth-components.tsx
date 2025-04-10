@@ -1,20 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { UseFormRegister } from 'react-hook-form';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
-import { cn } from '@/util/utils';
+import {UseFormRegister} from 'react-hook-form';
+import {FaGoogle} from 'react-icons/fa';
+import {cn} from '@/util/utils';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
 
 export const getProviderLoginUrl = (
-  provider: 'google' | 'facebook' | 'github' | 'okta'
+    provider: 'google',
+    role?: string
 ) => {
-  return process.env.NEXT_PUBLIC_BASE_URL + `/oauth2/authorization/${provider}`;
+  return `/api/set-role?role=${role}`;
 };
-
 interface FormInputProps {
   id: string;
   label: string;
@@ -56,22 +56,11 @@ export const FormInput = ({
   </div>
 );
 
-export const SocialAuthLogins = ({ isLoading }: { isLoading: boolean }) => (
+export const SocialAuthLogins = ({ isLoading, userRole }: { isLoading: boolean, userRole?: string }) => (
   <>
     <div className="flex flex-col gap-4 sm:flex-row">
-      {/* <Link href={getProviderLoginUrl('github')} className="w-full">
-        <Button
-          variant="outline"
-          type="button"
-          disabled={isLoading}
-          className="w-full"
-        >
-          <FaGithub className="mr-2 h-4 w-4" />
-          GitHub
-        </Button>
-      </Link> */}
 
-      <Link href={getProviderLoginUrl('google')} className="w-full">
+      <Link href={getProviderLoginUrl('google', userRole)} className="w-full">
         <Button
           variant="outline"
           type="button"

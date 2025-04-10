@@ -8,7 +8,6 @@ app:
   verify-email-url: "${app.ui-url}/auth/verify-email"
   reset-password-url: "${app.ui-url}/auth/reset-password"
 
-
   admin:
     email: ${ADMIN_EMAIL}
     password: ${ADMIN_PASSWORD}

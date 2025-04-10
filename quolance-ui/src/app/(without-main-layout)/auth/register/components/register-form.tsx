@@ -162,7 +162,7 @@ export function UserRegisterForm({
         </motion.div>
         
         <motion.div variants={itemVariants}>
-          <SocialAuthLogins isLoading={isLoading} />
+          <SocialAuthLogins isLoading={isLoading} userRole={userRole} />
         </motion.div>
         
         <motion.form variants={itemVariants} onSubmit={handleSubmit(onSubmit)} className="space-y-5">
