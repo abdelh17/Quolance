@@ -18,6 +18,7 @@ import AiPromptModal from '@/components/ui/AiPromptModal';
 import { Sparkles } from 'lucide-react';
 import { useGenerateApplicationLetter } from '@/api/textGeneration-api';
 import { motion } from 'framer-motion';
+import { ApplicationStatus } from '@/models/applications/ApplicationResponse';
 
 type ApplicationFormProps = {
   projectId: string;
@@ -122,25 +123,25 @@ export default function FreelancerApplicationForm({
                       bg-white/90 backdrop-blur-sm border border-indigo-100
                       shadow-md text-indigo-800 rounded-md overflow-hidden"
                     title="Generate with AI"
-                    whileHover={{ 
-                      y: -2, 
+                    whileHover={{
+                      y: -2,
                       boxShadow: "0 8px 20px -4px rgba(99, 102, 241, 0.25)"
                     }}
-                    transition={{ 
-                      type: "spring", 
-                      stiffness: 500, 
-                      damping: 15 
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 15
                     }}
                   >
                     {/* Background gradient that appears on hover */}
-                    <motion.div 
+                    <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 opacity-0"
                       initial={{ opacity: 0 }}
                       whileHover={{ opacity: 1 }}
                     />
 
                     {/* Icon container with animation */}
-                    <motion.div 
+                    <motion.div
                       className="relative flex items-center justify-center w-5 h-5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-sm"
                       whileHover={{ scale: 1.1 }}
                     >
@@ -148,15 +149,15 @@ export default function FreelancerApplicationForm({
                     </motion.div>
 
                     {/* Tiny activity indicator */}
-                    <motion.span 
+                    <motion.span
                       className="absolute top-0.5 right-0.5 h-1 w-1 rounded-full bg-fuchsia-500"
-                      animate={{ 
+                      animate={{
                         scale: [1, 1.5, 1],
-                        opacity: [1, 0.5, 1] 
+                        opacity: [1, 0.5, 1]
                       }}
-                      transition={{ 
-                        repeat: Infinity, 
-                        duration: 2 
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2
                       }}
                     />
                   </motion.button>
@@ -178,21 +179,21 @@ export default function FreelancerApplicationForm({
               </div>
 
               <div className='mt-6 flex items-center'>
-                    <input
-                        type='checkbox'
-                        id='termsCheckbox'
-                        className='h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
-                        checked={isChecked}
-                        onChange={() => setIsChecked(!isChecked)}
-                    />
-                    <label htmlFor='termsCheckbox' className='ml-2 text-sm text-gray-700'>
-                      By submitting this application, I confirm that I have read and agree to the
-                      <a href='/support/terms-of-service' className='text-blue-600 underline ml-1' target='_blank'>
-                        Terms of Service
-                      </a>{' '}
-                      and acknowledge that Quolance is not liable for any disputes or outcomes related to this application.
-                    </label>
-                  </div>
+                <input
+                  type='checkbox'
+                  id='termsCheckbox'
+                  className='h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
+                  checked={isChecked}
+                  onChange={() => setIsChecked(!isChecked)}
+                />
+                <label htmlFor='termsCheckbox' className='ml-2 text-sm text-gray-700'>
+                  By submitting this application, I confirm that I have read and agree to the
+                  <a href='/support/terms-of-service' className='text-blue-600 underline ml-1' target='_blank'>
+                    Terms of Service
+                  </a>{' '}
+                  and acknowledge that Quolance is not liable for any disputes or outcomes related to this application.
+                </label>
+              </div>
 
               {/* Submit Button */}
               <div className='flex items-center justify-end gap-3'>
@@ -258,22 +259,23 @@ export default function FreelancerApplicationForm({
               </div>
 
               {/* Footer Action Section */}
-              <div className='border-n30 border-t bg-gray-50/50 px-6 py-4'>
-                <div className='flex justify-end'>
-                  <Button
-                    data-test="application-withdraw-btn"
-                    onClick={() => setIsDeleteModalOpen(true)}
-                    shape='full'
-                    animation='default'
-                    bgColor='red-600'
-                    icon={<PiX className='text-xl' />}
-                    iconPosition='left'
-                    className={`${projectStatus === ProjectStatus.CLOSED && 'invisible'}`}
-                  >
-                    Withdraw Application
-                  </Button>
+              {(projectStatus === ProjectStatus.OPEN && application.status === ApplicationStatus.APPLIED) && (
+                <div className='border-n30 border-t bg-gray-50/50 px-6 py-4'>
+                  <div className='flex justify-end'>
+                    <Button
+                      data-test="application-withdraw-btn"
+                      onClick={() => setIsDeleteModalOpen(true)}
+                      shape='full'
+                      animation='default'
+                      bgColor='red-600'
+                      icon={<PiX className='text-xl' />}
+                      iconPosition='left'
+                    >
+                      Withdraw Application
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}

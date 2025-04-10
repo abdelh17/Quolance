@@ -1,26 +1,49 @@
-export default function DeleteAccount(){
 
+'use client';
 
-    return(
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
-                <div>
-                  <h2 className="text-base/7 font-semibold ">Delete account</h2>
-                  <p className="mt-1 text-sm/6 text-gray-400">
-                    No longer want to use our service? You can delete your account here. This action is not reversible.
-                    All information related to this account will be deleted permanently.
-                  </p>
-                </div>
- 
- 
-                <form className="flex items-start md:col-span-2">
-                  <button
-                    type="submit"
-                    className="rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-900"
-                  >
-                    Yes, Delete My Account
-                  </button>
-                </form>
-              </div>
-    )
- }
- 
+import { useState } from 'react';
+import DeleteAccountModal from './DeleteAccountModal';
+import { useDeleteAccount } from '@/api/user-api';
+import { useAuthGuard } from '@/api/auth-api';
+
+export default function DeleteAccount() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { mutate: deleteAccount } = useDeleteAccount();
+  const { logout } = useAuthGuard({ middleware: 'auth' });
+
+  const handleConfirmDelete = () => {
+    deleteAccount();
+    setIsModalOpen(false);
+    logout();
+  };
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+        <div>
+          <h2 className="text-base/7 font-semibold">Delete account</h2>
+          <p className="mt-1 text-sm/6 text-gray-400">
+            No longer want to use our service? You can delete your account here. This action is not reversible.
+            All information related to this account will be deleted permanently.
+          </p>
+        </div>
+
+        <div className="flex items-start md:col-span-2">
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-900"
+          >
+            Yes, Delete My Account
+          </button>
+        </div>
+      </div>
+
+      <DeleteAccountModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+}

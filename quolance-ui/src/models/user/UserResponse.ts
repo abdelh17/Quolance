@@ -29,7 +29,8 @@ export interface FreelancerProfileType {
   projectExperiences: ProjectExperience[];
   workExperiences: WorkExperience[];
   languagesSpoken: string[];
-  reviews:GetReviewType[];
+  reviews: GetReviewType[];
+  deleted: boolean;
 }
 
 export interface FreelancerRecommendationType {
@@ -97,10 +98,10 @@ export type GetReviewType = {
   clientUsername: string;
   projectId: string;
   reviewedFreelancerId: string;
- };
- 
- 
- export type PostReviewType = {
+};
+
+
+export type PostReviewType = {
   title: string;
   communicationRating: number;
   qualityOfWorkRating: number;
@@ -108,5 +109,4 @@ export type GetReviewType = {
   comment: string;
   projectId: string;
   reviewedFreelancerId: string;
- }
- 
+}

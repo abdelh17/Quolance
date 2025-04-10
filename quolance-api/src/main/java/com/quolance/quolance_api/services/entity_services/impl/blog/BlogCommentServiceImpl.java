@@ -92,6 +92,11 @@ public class BlogCommentServiceImpl implements BlogCommentService {
                 .toList();
     }
 
+    @Override
+    public List<BlogComment> getCommentsByUserId(UUID userId) {
+        return blogCommentRepository.findBlogCommentsByUserId(userId);
+    }
+
     private boolean isAuthorOfPost(BlogComment blogComment, User author) {
         return blogComment.getUser().getId().equals(author.getId());
     }

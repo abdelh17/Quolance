@@ -23,4 +23,6 @@ public interface BlogCommentService {
     Page<BlogCommentDto> getPaginatedComments(UUID blogPostId, Pageable pageable);
 
     List<BlogCommentDto> getCommentsByBlogPostId(UUID blogPostId);
+
+    List<BlogComment> getCommentsByUserId(UUID userId);
 }

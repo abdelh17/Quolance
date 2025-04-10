@@ -284,4 +284,9 @@ public class BlogPostServiceImpl implements BlogPostService {
         blogPostRepository.delete(post);
         log.info("Post {} was deleted by admin.", postId);
     }
+
+    @Override
+    public List<BlogPost> getPostsByUserId(UUID userId) {
+        return blogPostRepository.findByUserId(userId);
+    }
 }
