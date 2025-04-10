@@ -1,6 +1,8 @@
 package com.quolance.quolance_api.dtos.blog;
 
 import com.quolance.quolance_api.entities.blog.BlogComment;
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +20,7 @@ public class BlogCommentDto {
     private UUID blogPostId;
     private UUID userId;
     private String username;
+    @NotBlank(message = "Content cannot be blank")
     private String content;
 
 
