@@ -206,14 +206,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void forgotPassword(String email) {
         log.debug("Processing forgot password request for email: {}", email);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    log.warn("Forgot password request failed - user not found: {}", email);
-                    return ApiException.builder()
-                            .status(HttpServletResponse.SC_NOT_FOUND)
-                            .message("User not found")
-                            .build();
-                });
+        User user = findByEmail(email);
 
         PasswordResetToken passwordResetToken = new PasswordResetToken(user);
         passwordResetTokenRepository.save(passwordResetToken);
@@ -221,6 +214,44 @@ public class UserServiceImpl implements UserService {
         SendResetPasswordEmailJob sendResetPasswordEmailJob = new SendResetPasswordEmailJob(passwordResetToken.getId());
         BackgroundJobRequest.enqueue(sendResetPasswordEmailJob);
         log.info("Password reset email queued for user ID: {}", user.getId());
+    }
+
+    @Override
+    @Transactional
+    public void resetForgottenPassword(String email, ResetForgottenPasswordDto request) {
+        log.debug("Attempting to reset password with token");
+        User user = findByEmail(email);
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(request.getPasswordResetToken())
+                .orElseThrow(() -> {
+                    log.warn("Password reset failed - token not found");
+                    return ApiException.builder()
+                            .status(HttpServletResponse.SC_NOT_FOUND)
+                            .message("Wrong password reset code.")
+                            .build();
+                });
+
+        if (passwordResetToken.isExpired()) {
+            log.warn("Password reset failed - token expired for user ID: {}",
+                    passwordResetToken.getUser().getId());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Password reset code is expired. Please request a new one.")
+                    .build();
+        }
+
+        if (passwordResetToken.getUser().getId() != user.getId()) {
+            log.warn("Password reset failed - token does not match user ID: {}",
+                    passwordResetToken.getUser().getId());
+            throw ApiException.builder()
+                    .status(HttpServletResponse.SC_BAD_REQUEST)
+                    .message("Wrong password reset code.")
+                    .build();
+        }
+
+        user.updatePassword(request.getPassword());
+        userRepository.save(user);
+        log.info("Successfully reset password for user ID: {}", user.getId());
+        passwordResetTokenRepository.delete(passwordResetToken);
     }
 
     @Override

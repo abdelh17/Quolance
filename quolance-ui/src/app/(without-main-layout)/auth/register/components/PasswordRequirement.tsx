@@ -31,18 +31,16 @@ export default function PasswordRequirements({ password }: Props) {
   if (!password) return null;
 
   return (
-    <div className="p-2 mt-2 border rounded-md text-sm bg-gray-50">
-      <p className="font-medium mb-1">Password must contain:</p>
-      <ul className="space-y-1">
-        {rules.map((rule, idx) => (
-          <li key={idx} className="flex items-center gap-2">
-            <span>
-              {rule.test(password) ? '✅' : '❌'}
-            </span>
-            <span>{rule.label}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="mt-4 text-sm text-gray-700">
+        <p className="font-medium mb-2">Password must contain:</p>
+        <ul className="space-y-1">
+          {rules.map((rule, idx) => (
+              <li key={idx} className="flex items-center gap-2">
+                <span className="text-lg">{rule.test(password) ? '✅' : '❌'}</span>
+                <span>{rule.label}</span>
+              </li>
+          ))}
+        </ul>
+      </div>
   );
 }

@@ -35,10 +35,10 @@ public class SendResetPasswordEmailJobHandler implements JobRequestHandler<SendR
     }
 
     private void sendResetPasswordEmail(User user, PasswordResetToken token) {
-        String link = applicationProperties.getBaseUrl() + "/auth/reset-password?token=" + token.getToken();
         Context thymeleafContext = new Context();
         thymeleafContext.setVariable("user", user);
-        thymeleafContext.setVariable("link", link);
+        thymeleafContext.setVariable("code", token.getToken());
+        thymeleafContext.setVariable("resetPasswordLink", applicationProperties.getResetPasswordUrl() + "/" + user.getEmail());
         String htmlBody = templateEngine.process("password-reset", thymeleafContext);
         emailService.sendHtmlMessage(List.of(user.getEmail()), "Password reset requested", htmlBody);
         token.onEmailSent();
