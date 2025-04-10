@@ -3,24 +3,25 @@
 ## Release Demos
 [Release 1](https://drive.google.com/file/d/1nvuJNa7pkpi7503dfrbAA316UC9RhYdX/view?usp=sharing)  
 [Release 2](https://drive.google.com/file/d/1G78NhfGW8ulzw6STDvDtgC3hTTn-31cE/view?usp=sharing)
+[Release 3](https://drive.google.com/file/d/1dP6QqEVKaLZEugkveU--s3gBc1I5LI09/view?usp=share_link)
 
 ## Important files
-| File                                                                                                                                                                                                                              | Purpose                                                                                                                                |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| [quolance-ui/src/api/auth-api.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/api/auth-api.ts) | This code provides an authentication guard that manages user login status, redirects, and handles login/logout actions.|
-| [quolance-ui/src/components/role-guard.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/components/role-guard.tsx) | This component provides a role-based access guard that renders child content only if the user's role matches one of the allowed roles. |
-| [quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/util/SecurityUtil.java) | This file is used to recover the authenticated user, in the controllers.|
-| [quolance-api/src/main/.../services/business_workflow/impl/FreelancerWorkflowServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/business_workflow/impl/FreelancerWorkflowServiceImpl.java) | Contains the core logic of the application from the freelancer POV|
-| [quolance-api/src/main/.../services/business_workflow/impl/ApplicationProcessWorkflowImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/business_workflow/impl/ApplicationProcessWorkflowImpl.java)| Core logic for application processing|
+| File                                                                                                                                                                                                                              | Purpose                                                                                                                 |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| [quolance-ui/src/api/auth-api.ts](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/src/api/auth-api.ts) | This code provides an authentication guard that manages user login status, redirects, and handles login/logout actions. |
+| [quolance-api/src/main/java/com/quolance/quolance_api/services/entity_services/impl/UserServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/entity_services/impl/UserServiceImpl.java) | Handles user creation, update, deletion, as well as resetting a forgotten password and verifying an email.              |
+| [quolance-api/src/main/java/com/quolance/quolance_api/services/ai_models/GeminiService.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/ai_models/GeminiService.java) | Handles interactions between our codebase and the Gemini service.                                                       |
+| [quolance-api/src/main/.../services/business_workflow/impl/FreelancerWorkflowServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/business_workflow/impl/FreelancerWorkflowServiceImpl.java) | Contains the core logic of the application from the freelancer POV.                                                     |
+| [quolance-api/src/main/java/com/quolance/quolance_api/services/chat/impl/ChatServiceImpl.java](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/main/java/com/quolance/quolance_api/services/chat/impl/ChatServiceImpl.java)| This code allows users to use a chat system and communicate in-app.                                                     |
 
 ## Important tests
 |Test|Purpose|
 |----|-------|
 |[getAllProjectsReturnsVisibleProjects()](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/FreelancerControllerIntegrationTest.java)|Ensures only visible projects are returned, even closed ones.|
-|[updateNotPendingProjectDoesNotUpdateProject()](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/integration/ClientControllerIntegrationTest.java)|Ensures a project can only be modified in pending state|
+|[deleteFile_Success()](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/unit/services/entity_services/FileServiceUnitTest.java)|Ensures that once a file is deleted, it's information is not kept in database or cloud.|
 |[create_Success()](https://github.com/abdelh17/Quolance/blob/main/quolance-api/src/test/java/com/quolance/quolance_api/unit/services/entity_services/UserServiceUnitTest.java)|Makes sure new users are able to create a new account, considering all requirements are met |
-|[Error Registration Flow](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/cypress/e2e/registration.cy.ts)|This test ensures users receive clear error messages for invalid inputs during registration.|
-|[Approve Pending Project Flow](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/cypress/e2e/admin.cy.ts)|This test ensures admins can successfully approve pending projects, enabling freelancers to access them.|
+|[Error Create Project Flow](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/cypress/e2e/client.cy.ts)|Tests to see if certain error messages are shown when creating project by client.|
+|[Submitting an Application For Project](https://github.com/abdelh17/Quolance/blob/main/quolance-ui/cypress/e2e/freelancer.cy.ts)|Shows that an application to a project by a freelancer was submitted successfully. |
 
 
 ## Description
@@ -124,9 +125,14 @@ Before running the script, ensure the following:
    GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
    GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
    
+   # AI variables
+   MODEL_NAME=YOUR_PREFERRED_GEMINI_MODEL
+   EMBEDDING_MODEL_NAME=YOUR_PREFERRED_GEMINI_EMBEDDING_MODEL
+   GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
+   
    # Admin Configuration
-   ADMIN_EMAIL=YOUR_ADMIN_EMAIL
-   ADMIN_PASSWORD=YOUR_ADMIN_PASSWORD
+   ADMIN_EMAIL=CHOOSE_AN_ADMIN_EMAIL
+   ADMIN_PASSWORD=CHOOSE_AN_ADMIN_PASSWORD
    
    # Logging Configuration
    LOG_FILE=YOUR_LOG_FILE_PATH
