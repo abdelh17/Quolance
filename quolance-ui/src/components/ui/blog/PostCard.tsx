@@ -99,6 +99,12 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
 
   const isUserSummaryOpen = openUserSummaryPostId === id;
 
+  const translateClasses = [
+    'translate-x-4 translate-y-4',
+    'translate-x-2 translate-y-2',
+    'translate-x-0 translate-y-0',
+  ];
+
   useEffect(() => {
     if (pagedComments?.content) {
       setAllLoadedComments((prevComments) => {
@@ -400,24 +406,22 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, content, authorName, dat
         {/* Image stack */}
         {imageUrls.length > 0 && (
           <div className="relative w-full md:w-[250px] h-[250px] mb-2 md:mb-0 shrink-0">
-            {imageUrls.slice(0, 3).map((url, index) => (
+            {imageUrls.slice(0, 3).reverse().map((url, index) => (
               <div
                 key={index}
                 onClick={() => handleImageClick(index)}
-                className="absolute top-0 left-0 w-[230px] h-[230px] rounded-md overflow-hidden cursor-pointer border transition-transform"
-                style={{
-                  transform: `translate(${index * 10}px, ${index * 10}px)`,
-                  zIndex: 10 - index,
-                }}
+                className={`absolute top-0 left-0 w-[230px] h-[230px] rounded-md overflow-hidden cursor-pointer border transition-transform ${translateClasses[index]} z-[${10 - index}]`}
               >
                 <img
                   src={url}
                   alt={`Post image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
+
                 {index === 2 && imageUrls.length > 3 && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-sm font-semibold">
-                    +{imageUrls.length - 3}
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-white font-semibold rounded-md">
+                    <span className="text-2xl">{imageUrls.length}+</span>
+                    <span className="text-xs mt-1">more</span>
                   </div>
                 )}
               </div>
