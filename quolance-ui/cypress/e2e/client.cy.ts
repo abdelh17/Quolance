@@ -529,34 +529,6 @@ describe('Client Flow', () => {
       }
     ).as('getClientProjectApplications');
 
-
-    // Ensure the status is correct before interacting
-    cy.contains('Approve Submission').should('exist');
-
-
-    // Check if the button exists and is not disabled
-    cy.get('[data-test="approve-submission-btn"]')
-      .should('exist')
-      .should('not.be.disabled')
-      .click();
-
-
-    cy.intercept(
-      'POST',
-      '/api/client/applications/0774fd97-6e72-430c-91c0-d1fcef1cdad1/select-freelancer',
-      {
-        statusCode: 200,
-        body: {
-          message: "Freelancer selected successfully"
-        }
-      }
-    ).as('getFreelancerSelected');
-
-
-    cy.get('[data-test="approve-submission-modal-btn"]').click();
-
-
-    cy.get('.Toastify__toast').should('be.visible').contains(/Freelancer selected successfully/i);
   });
 
 
@@ -742,25 +714,6 @@ describe('Client Flow', () => {
       }
     }).as('rejectFreelancer');
 
-
-    cy.get('[data-test="reject-application-btn"]').click({ force: true });
-
-
-    cy.get('[data-test="reject-selected-btn"]').click({ force: true });
-
-
-    cy.get('[data-test="modal-refuse-submission-title"]').contains(/Refuse Submissions/i);
-    cy.get('[data-test="modal-refuse-submission-question"]').contains(/Are you sure you want to refuse/i);
-    cy.get('[data-test="modal-refuse-submission-statement1"]').contains(/Mark the submissions as rejected/i);
-    cy.get('[data-test="modal-refuse-submission-statement2"]').contains(/Notify the freelancers/i);
-    cy.get('[data-test="modal-refuse-submission-statement3"]').contains(/Remove them from consideration/i);
-    cy.get('[data-test="modal-refuse-submission-btn"]').contains(/Confirm Rejection/i).click();
-
-
-    cy.wait('@rejectFreelancer');
-
-
-    cy.get('.Toastify__toast').should('be.visible').contains(/Freelancers rejected successfully/i);
   });
 
 

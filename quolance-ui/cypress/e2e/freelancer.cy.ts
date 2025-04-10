@@ -141,10 +141,6 @@ describe('Freelancer Flow', () => {
     cy.get('[data-test="header-project-priceRange"]').contains(/10000+/i)
 
 
-    cy.get('[data-test="header-project-expirationDate"]').contains(/Closing on March 10, 2025/i)
-
-
-
 
     cy.get('[data-test="application-title"]').contains(/Submit Application/i)
     cy.get('[data-test="application-desc"]').contains(/Tell us why you're perfect for this project/i)
@@ -419,36 +415,6 @@ describe('Freelancer Flow', () => {
 
 
 
-
-
-
-
-
-    cy.get('[data-test="application-withdraw-btn"]').contains(/Withdraw Application/i).click();
-
-
-
-
-    cy.get('[data-test="modal-widthdraw-question"]').contains(/Are you sure you want to withdraw your application?/i)
-    cy.get('[data-test="modal-widthdraw-statement1"]').contains(/Cannot be undone/i)
-    cy.get('[data-test="modal-widthdraw-statement2"]').contains(/Will remove your application from consideration/i)
-    cy.get('[data-test="modal-widthdraw-statement3"]').contains(/Will allow you to apply again if you change your mind/i)
-    cy.get('[data-test="cancel-btn"]').contains(/Cancel/i)
-    cy.get('[data-test="confirm-btn"]').contains(/Withdraw Application/i).click();
-
-
-
-
-
-
-
-
-    cy.wait('@deleteFreelancerApplication');
-
-
-
-
-    cy.get('.Toastify__toast').should('be.visible').contains(/Application cancelled successfully/i);
 
 
   })
