@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -68,9 +69,9 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         commentDto.setUserId(loggedInUser.getId());
 
         mockMvc.perform(post("/api/blog-comments/" + blogPost.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(commentDto))
-                        .session(session))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(commentDto))
+                .session(session))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -93,10 +94,10 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         blogCommentDto.setUserId(loggedInUser.getId());
 
         mockMvc.perform(post("/api/blog-comments/" + blogPost.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(blogCommentDto)))
-                .andExpect(status().isBadRequest());
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(blogCommentDto)))
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -105,8 +106,8 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
                 .save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
 
         mockMvc.perform(delete("/api/blog-comments/" + blogComment.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         assertThat(blogCommentRepository.findById(blogComment.getId())).isEmpty();
@@ -123,9 +124,9 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         blogCommentDto.setUserId(loggedInUser.getId());
 
         mockMvc.perform(put("/api/blog-comments/" + blogComment.getId())
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(blogCommentDto)))
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(blogCommentDto)))
                 .andExpect(status().isOk());
 
         BlogComment updatedComment = blogCommentRepository.findAll().getFirst();
@@ -140,8 +141,8 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         }
 
         var response = mockMvc.perform(get("/api/blog-comments/" + blogPost.getId() + "?page=0&size=3")
-                        .session(session)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -167,6 +168,111 @@ class BlogCommentControllerIntegrationTest extends BaseIntegrationTest {
         assertThat(pageResponse.getTotalElements()).isEqualTo(6);
         assertThat(pageResponse.getTotalPages()).isEqualTo(2);
         assertThat(isLastPage).isFalse();
+    }
+
+    @Test
+    void testCreateBlogComment_Unauthenticated_ShouldReturn401() throws Exception {
+        BlogCommentDto commentDto = new BlogCommentDto();
+        commentDto.setContent("Should fail");
+        commentDto.setBlogPostId(blogPost.getId());
+        commentDto.setUserId(loggedInUser.getId());
+
+        mockMvc.perform(post("/api/blog-comments/" + blogPost.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(commentDto))) 
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdateBlogComment_AsDifferentUser_ShouldReturn403() throws Exception {
+        User otherUser = EntityCreationHelper.createClient();
+        otherUser.setEmail("other_" + UUID.randomUUID() + "@test.com");
+        otherUser.setUsername("User_" + UUID.randomUUID());
+        otherUser = userRepository.save(otherUser);
+
+        BlogComment blogComment = blogCommentRepository.save(
+                EntityCreationHelper.createBlogComment(otherUser, blogPost));
+
+        BlogCommentDto commentDto = new BlogCommentDto();
+        commentDto.setContent("Unauthorized edit");
+        commentDto.setBlogPostId(blogPost.getId());
+        commentDto.setUserId(loggedInUser.getId());
+
+        mockMvc.perform(put("/api/blog-comments/" + blogComment.getId())
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(commentDto)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testDeleteBlogComment_AsDifferentUser_ShouldReturn403() throws Exception {
+        User otherUser = EntityCreationHelper.createClient();
+        otherUser.setEmail("other_" + UUID.randomUUID() + "@test.com");
+        otherUser.setUsername("User_" + UUID.randomUUID());
+        otherUser = userRepository.save(otherUser);
+
+        BlogComment blogComment = blogCommentRepository.save(
+                EntityCreationHelper.createBlogComment(otherUser, blogPost));
+
+        mockMvc.perform(delete("/api/blog-comments/" + blogComment.getId())
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden()); 
+    }
+
+    @Test
+    void testUpdateBlogComment_WithInvalidContent_ShouldReturn422() throws Exception {
+        BlogComment blogComment = blogCommentRepository.save(
+                EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+
+        BlogCommentDto commentDto = new BlogCommentDto();
+        commentDto.setContent(""); // invalid
+        commentDto.setBlogPostId(blogPost.getId());
+        commentDto.setUserId(loggedInUser.getId());
+
+        mockMvc.perform(put("/api/blog-comments/" + blogComment.getId())
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(commentDto)))
+                .andExpect(status().isUnprocessableEntity()); 
+    }
+
+    @Test
+    void testCreateBlogComment_OnNonexistentPost_ShouldReturn404() throws Exception {
+        UUID invalidPostId = UUID.randomUUID(); // doesn't exist
+
+        BlogCommentDto commentDto = new BlogCommentDto();
+        commentDto.setContent("Comment on non-existent post");
+        commentDto.setBlogPostId(invalidPostId);
+        commentDto.setUserId(loggedInUser.getId());
+
+        mockMvc.perform(post("/api/blog-comments/" + invalidPostId)
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(commentDto)))
+                .andExpect(status().isNotFound()); 
+    }
+
+    @Test
+    void testGetCommentsPageBeyondRange_ShouldReturnEmptyContent() throws Exception {
+        for (int i = 0; i < 2; i++) {
+            blogCommentRepository.save(EntityCreationHelper.createBlogComment(loggedInUser, blogPost));
+        }
+
+        var response = mockMvc.perform(get("/api/blog-comments/" + blogPost.getId() + "?page=5&size=2")
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode jsonNode = objectMapper.readTree(response);
+        JsonNode content = jsonNode.get("content");
+
+        assertThat(content).isNotNull();
+        assertThat(content.isEmpty()).isTrue();
     }
 
 }
