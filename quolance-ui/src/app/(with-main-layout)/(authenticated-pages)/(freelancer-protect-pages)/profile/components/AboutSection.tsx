@@ -61,6 +61,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
             editModeKey='editAbout'
             updateEditModes={updateEditModes}
             checkEditModes={checkEditModes}
+            dataTest="profile-about-edit-btn"
           />
         )}
       </div>
@@ -75,6 +76,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
               onChange={handleBioChange}
               className={`w-full text-sm placeholder:text-sm ${inputClassName}`}
               rows={4}
+              data-test="about-profile-input"
             />
             {/* Floating AI button (top-right corner) */}
             <motion.button
@@ -84,25 +86,25 @@ const AboutSection: React.FC<AboutSectionProps> = ({
                 bg-white/90 backdrop-blur-sm border border-indigo-100
                 shadow-md text-indigo-800 rounded-md overflow-hidden"
               title="Generate with AI"
-              whileHover={{ 
-                y: -2, 
+              whileHover={{
+                y: -2,
                 boxShadow: "0 8px 20px -4px rgba(99, 102, 241, 0.25)"
               }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 500, 
-                damping: 15 
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 15
               }}
             >
               {/* Background gradient that appears on hover */}
-              <motion.div 
+              <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 opacity-0"
                 initial={{ opacity: 0 }}
                 whileHover={{ opacity: 1 }}
               />
 
               {/* Icon container with animation */}
-              <motion.div 
+              <motion.div
                 className="relative flex items-center justify-center w-5 h-5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-sm"
                 whileHover={{ scale: 1.1 }}
               >
@@ -110,15 +112,15 @@ const AboutSection: React.FC<AboutSectionProps> = ({
               </motion.div>
 
               {/* Tiny activity indicator */}
-              <motion.span 
+              <motion.span
                 className="absolute top-0.5 right-0.5 h-1 w-1 rounded-full bg-fuchsia-500"
-                animate={{ 
+                animate={{
                   scale: [1, 1.5, 1],
-                  opacity: [1, 0.5, 1] 
+                  opacity: [1, 0.5, 1]
                 }}
-                transition={{ 
-                  repeat: Infinity, 
-                  duration: 2 
+                transition={{
+                  repeat: Infinity,
+                  duration: 2
                 }}
               />
             </motion.button>
@@ -137,7 +139,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
               </span>
               <span>/{maxBioLength} characters</span>
             </div>
-            <SaveButton editModeKey='editAbout' handleSave={handleSave} />
+            <SaveButton editModeKey='editAbout' handleSave={handleSave} dataTest="profile-about-save-btn" />
           </div>
         </div>
       ) : (

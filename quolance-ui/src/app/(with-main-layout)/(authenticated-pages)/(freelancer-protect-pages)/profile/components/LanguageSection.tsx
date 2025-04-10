@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Globe, X } from 'lucide-react';
 import {
- EditModesType,
- FreelancerProfileType,
+  EditModesType,
+  FreelancerProfileType,
 } from '@/models/user/UserResponse';
 import EditButton from './EditButton';
 import SaveButton from './SaveButton';
@@ -10,170 +10,172 @@ import CustomListbox, { ListboxItem } from '@/components/ui/ComboListBox';
 
 
 interface LanguageSectionProps {
- profile: FreelancerProfileType;
- handleInputChange: (field: keyof FreelancerProfileType, value: any) => void;
- updateEditModes: (value: string) => void;
- editModes: EditModesType;
- handleSave: (value: string) => void;
- checkEditModes: (value: string) => boolean;
+  profile: FreelancerProfileType;
+  handleInputChange: (field: keyof FreelancerProfileType, value: any) => void;
+  updateEditModes: (value: string) => void;
+  editModes: EditModesType;
+  handleSave: (value: string) => void;
+  checkEditModes: (value: string) => boolean;
 }
 
 
 // Common languages list
 const LANGUAGES: ListboxItem[] = [
- { id: '1', value: 'ENGLISH', label: 'English' },
- { id: '2', value: 'SPANISH', label: 'Spanish' },
- { id: '3', value: 'FRENCH', label: 'French' },
- { id: '4', value: 'GERMAN', label: 'German' },
- { id: '5', value: 'CHINESE', label: 'Chinese' },
- { id: '6', value: 'JAPANESE', label: 'Japanese' },
- { id: '7', value: 'RUSSIAN', label: 'Russian' },
- { id: '8', value: 'PORTUGUESE', label: 'Portuguese' },
- { id: '9', value: 'HINDI', label: 'Hindi' },
- { id: '10', value: 'ARABIC', label: 'Arabic' },
- { id: '11', value: 'ITALIAN', label: 'Italian' },
- { id: '12', value: 'DUTCH', label: 'Dutch' },
- { id: '13', value: 'KOREAN', label: 'Korean' },
- { id: '14', value: 'TURKISH', label: 'Turkish' },
- { id: '15', value: 'SWEDISH', label: 'Swedish' },
- { id: '16', value: 'POLISH', label: 'Polish' },
- { id: '17', value: 'VIETNAMESE', label: 'Vietnamese' },
- { id: '18', value: 'THAI', label: 'Thai' },
- { id: '19', value: 'GREEK', label: 'Greek' },
- { id: '20', value: 'HEBREW', label: 'Hebrew' },
+  { id: '1', value: 'ENGLISH', label: 'English' },
+  { id: '2', value: 'SPANISH', label: 'Spanish' },
+  { id: '3', value: 'FRENCH', label: 'French' },
+  { id: '4', value: 'GERMAN', label: 'German' },
+  { id: '5', value: 'CHINESE', label: 'Chinese' },
+  { id: '6', value: 'JAPANESE', label: 'Japanese' },
+  { id: '7', value: 'RUSSIAN', label: 'Russian' },
+  { id: '8', value: 'PORTUGUESE', label: 'Portuguese' },
+  { id: '9', value: 'HINDI', label: 'Hindi' },
+  { id: '10', value: 'ARABIC', label: 'Arabic' },
+  { id: '11', value: 'ITALIAN', label: 'Italian' },
+  { id: '12', value: 'DUTCH', label: 'Dutch' },
+  { id: '13', value: 'KOREAN', label: 'Korean' },
+  { id: '14', value: 'TURKISH', label: 'Turkish' },
+  { id: '15', value: 'SWEDISH', label: 'Swedish' },
+  { id: '16', value: 'POLISH', label: 'Polish' },
+  { id: '17', value: 'VIETNAMESE', label: 'Vietnamese' },
+  { id: '18', value: 'THAI', label: 'Thai' },
+  { id: '19', value: 'GREEK', label: 'Greek' },
+  { id: '20', value: 'HEBREW', label: 'Hebrew' },
 ];
 
 
 const LanguageSection: React.FC<LanguageSectionProps> = ({
- profile,
- handleInputChange,
- updateEditModes,
- editModes,
- handleSave,
- checkEditModes,
+  profile,
+  handleInputChange,
+  updateEditModes,
+  editModes,
+  handleSave,
+  checkEditModes,
 }) => {
- const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
-   profile.languagesSpoken || []
- );
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
+    profile.languagesSpoken || []
+  );
 
 
- useEffect(() => {
-   setSelectedLanguages(profile.languagesSpoken || []);
- }, [profile.languagesSpoken]);
+  useEffect(() => {
+    setSelectedLanguages(profile.languagesSpoken || []);
+  }, [profile.languagesSpoken]);
 
 
- const handleLanguageChange = (selected: string | string[]) => {
-   if (Array.isArray(selected)) {
-     setSelectedLanguages(selected);
-     handleInputChange('languagesSpoken', selected);
-   }
- };
+  const handleLanguageChange = (selected: string | string[]) => {
+    if (Array.isArray(selected)) {
+      setSelectedLanguages(selected);
+      handleInputChange('languagesSpoken', selected);
+    }
+  };
 
 
- const handleRemoveLanguage = (languageToRemove: string) => {
-   const updatedLanguages = selectedLanguages.filter(
-     (lang) => lang !== languageToRemove
-   );
-   setSelectedLanguages(updatedLanguages);
-   handleInputChange('languagesSpoken', updatedLanguages);
- };
+  const handleRemoveLanguage = (languageToRemove: string) => {
+    const updatedLanguages = selectedLanguages.filter(
+      (lang) => lang !== languageToRemove
+    );
+    setSelectedLanguages(updatedLanguages);
+    handleInputChange('languagesSpoken', updatedLanguages);
+  };
 
 
- const getLanguageLabel = (value: string) => {
-   const language = LANGUAGES.find((lang) => lang.value === value);
-   return language?.label || value;
- };
+  const getLanguageLabel = (value: string) => {
+    const language = LANGUAGES.find((lang) => lang.value === value);
+    return language?.label || value;
+  };
 
 
- const handleLanguageSave = (editModeKey: string) => {
-   handleSave(editModeKey);
- };
+  const handleLanguageSave = (editModeKey: string) => {
+    handleSave(editModeKey);
+  };
 
 
- return (
-   <section className='mb-8 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md'>
-     <div className='mb-4 flex justify-between'>
-       <h2 className='flex items-center self-center text-md sm:text-xl font-semibold text-gray-800'>
-         <Globe className='mr-2' /> Languages
-       </h2>
-       {!editModes.editLanguages ? (
-         <EditButton
-           editModeKey='editLanguages'
-           updateEditModes={updateEditModes}
-           checkEditModes={checkEditModes}
-         />
-       ) : null}
-     </div>
+  return (
+    <section className='mb-8 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md'>
+      <div className='mb-4 flex justify-between'>
+        <h2 className='flex items-center self-center text-md sm:text-xl font-semibold text-gray-800'>
+          <Globe className='mr-2' /> Languages
+        </h2>
+        {!editModes.editLanguages ? (
+          <EditButton
+            editModeKey='editLanguages'
+            updateEditModes={updateEditModes}
+            checkEditModes={checkEditModes}
+            dataTest="profile-languages-edit-btn"
+          />
+        ) : null}
+      </div>
 
 
-     <div>
-       {editModes.editLanguages ? (
-         <div className='space-y-4'>
-           {/* Display selected languages as badges */}
-           {selectedLanguages.length > 0 && (
-             <div className='mb-3 flex flex-wrap gap-2 justify-center md:justify-start'>
-               {selectedLanguages.map((languageValue) => (
-                 <div
-                   key={languageValue}
-                   className='flex items-center rounded-full justify-between bg-blue-50 px-3 py-1.5 text-xs lg:text-sm text-blue-700 w-28 lg:w-32 h-10'
-                 >
-                   <span>{getLanguageLabel(languageValue)}</span>
-                   <button
-                     onClick={() => handleRemoveLanguage(languageValue)}
-                     className='ml-1.5 rounded-full p-0.5 text-blue-700 hover:bg-blue-100'
-                   >
-                     <X size={14} />
-                   </button>
-                 </div>
-               ))}
-             </div>
-           )}
+      <div>
+        {editModes.editLanguages ? (
+          <div className='space-y-4'>
+            {/* Display selected languages as badges */}
+            {selectedLanguages.length > 0 && (
+              <div className='mb-3 flex flex-wrap gap-2 justify-center md:justify-start'>
+                {selectedLanguages.map((languageValue) => (
+                  <div
+                    key={languageValue}
+                    className='flex items-center rounded-full justify-between bg-blue-50 px-3 py-1.5 text-xs lg:text-sm text-blue-700 w-28 lg:w-32 h-10'
+                  >
+                    <span>{getLanguageLabel(languageValue)}</span>
+                    <button
+                      onClick={() => handleRemoveLanguage(languageValue)}
+                      className='ml-1.5 rounded-full p-0.5 text-blue-700 hover:bg-blue-100'
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
 
 
-           {/* Language selection dropdown */}
-           <div>
-             <CustomListbox
-               items={LANGUAGES}
-               name='languages'
-               multiple={true}
-               value={selectedLanguages}
-               onChange={handleLanguageChange}
-               placeholder='Select languages you speak...'
-               className='w-full'
-             />
-             <p className='mt-1 text-xs text-gray-500'>
-               Select multiple languages from the dropdown
-             </p>
-           </div>
+            {/* Language selection dropdown */}
+            <div>
+              <CustomListbox
+                items={LANGUAGES}
+                name='languages'
+                multiple={true}
+                value={selectedLanguages}
+                onChange={handleLanguageChange}
+                placeholder='Select languages you speak...'
+                className='w-full'
+              />
+              <p className='mt-1 text-xs text-gray-500'>
+                Select multiple languages from the dropdown
+              </p>
+            </div>
 
 
-           {/* Save Button */}
-           <div className='mt-6'>
-             <SaveButton
-               editModeKey='editLanguages'
-               handleSave={handleLanguageSave}
-             />
-           </div>
-         </div>
-       ) : (
-         <div className='flex flex-wrap gap-2'>
-         {selectedLanguages.length > 0 ? (
-           selectedLanguages.map((lang) => (
-             <span
-               key={lang}
-               className='w-20 lg:w-32 h-10 inline-flex items-center justify-center text-xs truncate text-center rounded-full bg-slate-100 text-gray-700 font-medium'
-             >
-               {getLanguageLabel(lang)}
-             </span>
-           ))
-         ) : (
-           <p className='italic text-gray-500'>No languages added yet.</p>
-         )}
-       </div>
-       )}
-     </div>
-   </section>
- );
+            {/* Save Button */}
+            <div className='mt-6'>
+              <SaveButton
+                editModeKey='editLanguages'
+                handleSave={handleLanguageSave}
+                dataTest="profile-languages-save-btn"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className='flex flex-wrap gap-2'>
+            {selectedLanguages.length > 0 ? (
+              selectedLanguages.map((lang) => (
+                <span
+                  key={lang}
+                  className='w-20 lg:w-32 h-10 inline-flex items-center justify-center text-xs truncate text-center rounded-full bg-slate-100 text-gray-700 font-medium'
+                >
+                  {getLanguageLabel(lang)}
+                </span>
+              ))
+            ) : (
+              <p className='italic text-gray-500'>No languages added yet.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  );
 };
 
 
