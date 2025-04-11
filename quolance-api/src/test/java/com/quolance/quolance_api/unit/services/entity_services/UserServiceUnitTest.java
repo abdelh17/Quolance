@@ -4,13 +4,15 @@ import com.quolance.quolance_api.dtos.users.CreateAdminRequestDto;
 import com.quolance.quolance_api.dtos.users.CreateUserRequestDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserPasswordRequestDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
-import com.quolance.quolance_api.entities.PasswordResetToken;
-import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.VerificationCode;
+import com.quolance.quolance_api.entities.*;
+import com.quolance.quolance_api.entities.enums.ApplicationStatus;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
 import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
+import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
+import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import com.quolance.quolance_api.services.entity_services.impl.UserServiceImpl;
@@ -27,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +42,12 @@ class UserServiceUnitTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ProjectRepository projectRepository;
+
+    @Mock
+    private ApplicationRepository applicationRepository;
 
     @Mock
     private VerificationCodeService verificationCodeService;
@@ -302,4 +311,5 @@ class UserServiceUnitTest {
         assertThat(result).isNotPresent();
         verify(userRepository).findByUsername("testuser");
     }
+
 }

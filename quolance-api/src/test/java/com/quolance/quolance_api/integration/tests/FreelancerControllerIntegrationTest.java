@@ -1,15 +1,14 @@
 package com.quolance.quolance_api.integration.tests;
 
 import com.quolance.quolance_api.dtos.application.ApplicationCreateDto;
+import com.quolance.quolance_api.dtos.paging.PageableRequestDto;
+import com.quolance.quolance_api.dtos.profile.FreelancerProfileFilterDto;
 import com.quolance.quolance_api.dtos.profile.UpdateFreelancerProfileDto;
 import com.quolance.quolance_api.entities.Application;
 import com.quolance.quolance_api.entities.Profile;
 import com.quolance.quolance_api.entities.Project;
 import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.enums.ApplicationStatus;
-import com.quolance.quolance_api.entities.enums.Availability;
-import com.quolance.quolance_api.entities.enums.FreelancerExperienceLevel;
-import com.quolance.quolance_api.entities.enums.ProjectStatus;
+import com.quolance.quolance_api.entities.enums.*;
 import com.quolance.quolance_api.helpers.integration.EntityCreationHelper;
 import com.quolance.quolance_api.helpers.integration.NoOpNotificationConfig;
 import com.quolance.quolance_api.integration.BaseIntegrationTest;
@@ -24,14 +23,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -406,6 +403,192 @@ class FreelancerControllerIntegrationTest extends BaseIntegrationTest {
     void getFreelancerProfileUnauthorizedReturnsError() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/freelancer/profile"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void uploadProfilePictureIsOk() throws Exception {
+        // Arrange
+        MockMultipartFile photo = new MockMultipartFile(
+                "photo",
+                "profile.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "Test image content".getBytes()
+        );
+
+        // Act
+        String response = mockMvc.perform(multipart("/api/freelancer/profile/picture")
+                        .file(photo)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        assertThat(response).isEqualTo("Profile picture uploaded successfully");
+    }
+
+    @Test
+    void getProfileCompletionIsOk() throws Exception {
+        // Act
+        String response = mockMvc.perform(get("/api/freelancer/profile/completion")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        int completionPercentage = Integer.parseInt(response);
+        assertThat(completionPercentage).isBetween(0, 100);
+    }
+
+
+    @Test
+    void getAllFreelancerApplicationsReturnsEmptyList() throws Exception {
+        // Act
+        String response = mockMvc.perform(get("/api/freelancer/applications/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+        assertThat(content).isEmpty();
+    }
+
+    @Test
+    void getProjectByIdWithNonExistentProjectReturnsNotFound() throws Exception {
+        // Arrange
+        UUID nonExistentProjectId = UUID.randomUUID();
+
+        // Act
+        String response = mockMvc.perform(get("/api/freelancer/projects/" + nonExistentProjectId)
+                        .session(session))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + nonExistentProjectId);
+    }
+
+    @Test
+    void updateFreelancerProfileWithMissingFieldsReturnsError() throws Exception {
+        // Arrange
+        UpdateFreelancerProfileDto updateDto = UpdateFreelancerProfileDto.builder()
+                .lastName("Updated") // Missing firstName
+                .build();
+
+        // Act
+        String response = mockMvc.perform(put("/api/freelancer/profile")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isInternalServerError())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "Failed to update profile");
+    }
+
+    @Test
+    void applyToProjectWithInvalidProjectIdReturnsNotFound() throws Exception {
+        // Arrange
+        UUID invalidProjectId = UUID.randomUUID();
+        String message = "This is a test application message.";
+
+        // Act
+        String response = mockMvc.perform(post("/api/freelancer/submit-application")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ApplicationCreateDto(invalidProjectId, message)))
+                        .session(session))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + invalidProjectId);
+    }
+
+    @Test
+    void deleteApplicationWithNonExistentApplicationReturnsNotFound() throws Exception {
+        // Arrange
+        UUID nonExistentApplicationId = UUID.randomUUID();
+
+        // Act
+        String response = mockMvc.perform(delete("/api/freelancer/applications/" + nonExistentApplicationId)
+                        .session(session))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "No Application found with ID: " + nonExistentApplicationId);
+    }
+
+    @Test
+    void getAllVisibleProjectsWithFiltersIsOk() throws Exception {
+        // Arrange
+        Project project1 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
+        Project project2 = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.CLOSED, client));
+
+        // Act
+        String response = mockMvc.perform(get("/api/freelancer/projects/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("filters.status", "OPEN")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+        assertThat(content).hasSize(1);
+        assertThat(content.get(0)).containsEntry("id", project1.getId().toString());
+    }
+
+    @Test
+    void uploadProfilePictureWithMissingFileReturnsBadRequest() throws Exception {
+        // Act
+        String response = mockMvc.perform(multipart("/api/freelancer/profile/picture")
+                        .session(session))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+         assertThat(jsonResponse).containsEntry("detail", "Required part 'photo' is not present.");
+    }
+
+    @Test
+    void deleteApplicationUnauthorizedReturnsError() throws Exception {
+        // Arrange
+        Project project = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.OPEN, client));
+        Application application = applicationRepository.save(EntityCreationHelper.createApplication(project, freelancer));
+
+        // Act & Assert
+        mockMvc.perform(delete("/api/freelancer/applications/" + application.getId()))
                 .andExpect(status().isUnauthorized());
     }
 }

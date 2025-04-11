@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -293,5 +294,354 @@ class AdminControllerIntegrationTest extends BaseIntegrationTest {
 
         // 3) Verify it's removed
         assertThat(blogPostRepository.findById(reportedUnresolved.getId())).isEmpty();
+    }
+
+    @Test
+    void getAllPendingProjects_noPendingProjects_returnsEmpty() throws Exception {
+        // Act
+        String response = mockMvc.perform(get("/api/admin/projects/pending/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+
+        // Assert
+        assertThat(content).isEmpty();
+    }
+
+    @Test
+    void getAllReportedBlogPosts_noReportedPosts_returnsEmpty() throws Exception {
+        // Act
+        String responseJson = mockMvc.perform(get("/api/admin/blog-posts/reported")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // The response is a Page<BlogPostResponseDto>: parse as Map, then get "content"
+        Map<String, Object> json = objectMapper.readValue(responseJson, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) json.get("content");
+        assertThat(content).isEmpty();
+    }
+
+    @Test
+    void getAllPreviouslyResolvedBlogPosts_noResolvedPosts_returnsEmpty() throws Exception {
+        // Act
+        String responseJson = mockMvc.perform(get("/api/admin/blog-posts/resolved")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Map<String, Object> json = objectMapper.readValue(responseJson, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) json.get("content");
+        assertThat(content).isEmpty();
+    }
+
+    @Test
+    void keepReportedBlogPost_notReported_returnsBadRequest() throws Exception {
+        // Arrange
+        BlogPost notReported = EntityCreationHelper.createBlogPost(client);
+        notReported.setReported(false);
+        notReported.setResolved(false);
+        notReported = blogPostRepository.save(notReported);
+
+        // Act
+        String response = mockMvc.perform(post("/api/admin/blog-posts/reported/" + notReported.getId() + "/keep")
+                        .session(session))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "Post is not in a reported & unresolved state.");
+    }
+
+    @Test
+    void approveProject_notFound_returnsNotFound() throws Exception {
+        // Act
+        UUID uuid = UUID.randomUUID();
+        String response = mockMvc.perform(post("/api/admin/projects/pending/" + uuid + "/approve")
+                        .session(session))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + uuid);
+    }
+
+    @Test
+    void rejectProject_notFound_returnsNotFound() throws Exception {
+        // Arrange
+        ProjectRejectionDto rejectionDto = new ProjectRejectionDto("This project does not respect platform rules.");
+
+        // Act
+        UUID uuid = UUID.randomUUID();
+        String response = mockMvc.perform(post("/api/admin/projects/pending/" + uuid + "/reject")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(rejectionDto))
+                        .session(session))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "No Project found with ID: " + uuid);
+    }
+
+    @Test
+    void keepReportedBlogPost_alreadyResolved_returnsConflict() throws Exception {
+        // Arrange
+        BlogPost reportedResolved = EntityCreationHelper.createBlogPost(client);
+        reportedResolved.setReported(true);
+        reportedResolved.setResolved(true);
+        reportedResolved = blogPostRepository.save(reportedResolved);
+
+        // Act
+        String response = mockMvc.perform(post("/api/admin/blog-posts/reported/" + reportedResolved.getId() + "/keep")
+                        .session(session))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("message", "Post is not in a reported & unresolved state.");
+    }
+
+    @Test
+    void getAllPendingProjects_withPagination_returnsPagedResults() throws Exception {
+        // Arrange
+        for (int i = 0; i < 15; i++) {
+            projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+        }
+
+        // Act
+        String response = mockMvc.perform(get("/api/admin/projects/pending/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMap = objectMapper.readValue(response, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) responseMap.get("content");
+
+        // Assert
+        assertThat(content).hasSize(10);
+    }
+
+    @Test
+    void getAllReportedBlogPosts_withPagination_returnsPagedResults() throws Exception {
+        // Arrange
+        for (int i = 0; i < 15; i++) {
+            BlogPost reportedUnresolved = EntityCreationHelper.createBlogPost(client);
+            reportedUnresolved.setReported(true);
+            reportedUnresolved.setResolved(false);
+            blogPostRepository.save(reportedUnresolved);
+        }
+
+        // Act
+        String responseJson = mockMvc.perform(get("/api/admin/blog-posts/reported")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // The response is a Page<BlogPostResponseDto>: parse as Map, then get "content"
+        Map<String, Object> json = objectMapper.readValue(responseJson, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) json.get("content");
+        assertThat(content).hasSize(10);
+    }
+
+    @Test
+    void getAllPreviouslyResolvedBlogPosts_withPagination_returnsPagedResults() throws Exception {
+        // Arrange
+        for (int i = 0; i < 15; i++) {
+            BlogPost reportedResolved = EntityCreationHelper.createBlogPost(client);
+            reportedResolved.setReported(true);
+            reportedResolved.setResolved(true);
+            blogPostRepository.save(reportedResolved);
+        }
+
+        // Act
+        String responseJson = mockMvc.perform(get("/api/admin/blog-posts/resolved")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Map<String, Object> json = objectMapper.readValue(responseJson, Map.class);
+        List<Map<String, Object>> content = (List<Map<String, Object>>) json.get("content");
+        assertThat(content).hasSize(10);
+    }
+
+    @Test
+    void getAllPendingProjects_withMultiplePages_returnsPagedResults() throws Exception {
+        // Arrange
+        for (int i = 0; i < 25; i++) {
+            projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+        }
+
+        // Act
+        String responsePage1 = mockMvc.perform(get("/api/admin/projects/pending/all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMapPage1 = objectMapper.readValue(responsePage1, Map.class);
+        List<Map<String, Object>> contentPage1 = (List<Map<String, Object>>) responseMapPage1.get("content");
+
+        String responsePage2 = mockMvc.perform(get("/api/admin/projects/pending/all")
+                        .param("page", "1")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMapPage2 = objectMapper.readValue(responsePage2, Map.class);
+        List<Map<String, Object>> contentPage2 = (List<Map<String, Object>>) responseMapPage2.get("content");
+
+        // Assert
+        assertThat(contentPage1).hasSize(10);
+        assertThat(contentPage2).hasSize(10);
+    }
+
+    @Test
+    void getAllReportedBlogPosts_withMultiplePages_returnsPagedResults() throws Exception {
+        // Arrange
+        for (int i = 0; i < 25; i++) {
+            BlogPost reportedUnresolved = EntityCreationHelper.createBlogPost(client);
+            reportedUnresolved.setReported(true);
+            reportedUnresolved.setResolved(false);
+            blogPostRepository.save(reportedUnresolved);
+        }
+
+        // Act
+        String responsePage1 = mockMvc.perform(get("/api/admin/blog-posts/reported")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMapPage1 = objectMapper.readValue(responsePage1, Map.class);
+        List<Map<String, Object>> contentPage1 = (List<Map<String, Object>>) responseMapPage1.get("content");
+
+        String responsePage2 = mockMvc.perform(get("/api/admin/blog-posts/reported")
+                        .param("page", "1")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMapPage2 = objectMapper.readValue(responsePage2, Map.class);
+        List<Map<String, Object>> contentPage2 = (List<Map<String, Object>>) responseMapPage2.get("content");
+
+        // Assert
+        assertThat(contentPage1).hasSize(10);
+        assertThat(contentPage2).hasSize(10);
+    }
+
+    @Test
+    void getAllPreviouslyResolvedBlogPosts_withMultiplePages_returnsPagedResults() throws Exception {
+        // Arrange
+        for (int i = 0; i < 25; i++) {
+            BlogPost reportedResolved = EntityCreationHelper.createBlogPost(client);
+            reportedResolved.setReported(true);
+            reportedResolved.setResolved(true);
+            blogPostRepository.save(reportedResolved);
+        }
+
+        // Act
+        String responsePage1 = mockMvc.perform(get("/api/admin/blog-posts/resolved")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMapPage1 = objectMapper.readValue(responsePage1, Map.class);
+        List<Map<String, Object>> contentPage1 = (List<Map<String, Object>>) responseMapPage1.get("content");
+
+        String responsePage2 = mockMvc.perform(get("/api/admin/blog-posts/resolved")
+                        .param("page", "1")
+                        .param("size", "10")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Map<String, Object> responseMapPage2 = objectMapper.readValue(responsePage2, Map.class);
+        List<Map<String, Object>> contentPage2 = (List<Map<String, Object>>) responseMapPage2.get("content");
+
+        // Assert
+        assertThat(contentPage1).hasSize(10);
+        assertThat(contentPage2).hasSize(10);
+    }
+
+    @Test
+    void approvePendingProject_updatesProjectStatus() throws Exception {
+        // Arrange
+        Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+
+        // Act
+        mockMvc.perform(post("/api/admin/projects/pending/" + pendingProject.getId() + "/approve")
+                        .session(session))
+                .andExpect(status().isOk());
+
+        // Assert
+        Project approvedProject = projectRepository.findById(pendingProject.getId()).get();
+        assertThat(approvedProject.getProjectStatus()).isEqualTo(ProjectStatus.OPEN);
+    }
+
+    @Test
+    void rejectPendingProject_updatesProjectStatusAndReason() throws Exception {
+        // Arrange
+        Project pendingProject = projectRepository.save(EntityCreationHelper.createProject(ProjectStatus.PENDING, client));
+        ProjectRejectionDto rejectionDto = new ProjectRejectionDto("This project does not respect platform rules.");
+
+        // Act
+        mockMvc.perform(post("/api/admin/projects/pending/" + pendingProject.getId() + "/reject")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(rejectionDto))
+                        .session(session))
+                .andExpect(status().isOk());
+
+        // Assert
+        Project rejectedProject = projectRepository.findById(pendingProject.getId()).get();
+        assertThat(rejectedProject.getProjectStatus()).isEqualTo(ProjectStatus.REJECTED);
+        assertThat(rejectedProject.getRejectionReason()).isEqualTo("This project does not respect platform rules.");
     }
 }
