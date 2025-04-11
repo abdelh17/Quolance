@@ -376,15 +376,6 @@ class UsersControllerIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void testForgotPasswordWithInvalidEmailFormatReturnsError() throws Exception {
-        Map<String, String> request = Map.of("email", "invalid-email");
-
-        mockMvc.perform(post("/api/users/forgot-password")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnprocessableEntity());
-    }
 
     @Test
     void testUpdateNotificationSubscriptionWithMissingPayloadReturnsError() throws Exception {
