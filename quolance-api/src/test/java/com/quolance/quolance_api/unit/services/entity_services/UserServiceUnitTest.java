@@ -4,13 +4,15 @@ import com.quolance.quolance_api.dtos.users.CreateAdminRequestDto;
 import com.quolance.quolance_api.dtos.users.CreateUserRequestDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserPasswordRequestDto;
 import com.quolance.quolance_api.dtos.users.UpdateUserRequestDto;
-import com.quolance.quolance_api.entities.PasswordResetToken;
-import com.quolance.quolance_api.entities.User;
-import com.quolance.quolance_api.entities.VerificationCode;
+import com.quolance.quolance_api.entities.*;
+import com.quolance.quolance_api.entities.enums.ApplicationStatus;
+import com.quolance.quolance_api.entities.enums.ProjectStatus;
 import com.quolance.quolance_api.entities.enums.Role;
 import com.quolance.quolance_api.jobs.SendResetPasswordEmailJob;
 import com.quolance.quolance_api.jobs.SendWelcomeEmailJob;
+import com.quolance.quolance_api.repositories.ApplicationRepository;
 import com.quolance.quolance_api.repositories.PasswordResetTokenRepository;
+import com.quolance.quolance_api.repositories.ProjectRepository;
 import com.quolance.quolance_api.repositories.UserRepository;
 import com.quolance.quolance_api.services.auth.VerificationCodeService;
 import com.quolance.quolance_api.services.entity_services.impl.UserServiceImpl;
@@ -27,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +42,12 @@ class UserServiceUnitTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ProjectRepository projectRepository;
+
+    @Mock
+    private ApplicationRepository applicationRepository;
 
     @Mock
     private VerificationCodeService verificationCodeService;
@@ -302,4 +311,88 @@ class UserServiceUnitTest {
         assertThat(result).isNotPresent();
         verify(userRepository).findByUsername("testuser");
     }
+
+    @Test
+    void deleteUser_Success() {
+        // No need to stub userRepository.findById() since it's not used in the method
+        userService.deleteUser(mockUser);
+        verify(userRepository, times(1)).save(mockUser);
+        assertThat(mockUser.isDeleted()).isTrue();
+    }
+
+    @Test
+    void deleteUser_ClientWithActiveProjects_ProjectsExpired() {
+        mockUser.setRole(Role.CLIENT);
+        Project project = new Project();
+        project.setLastModifiedDate(LocalDateTime.now());
+        project.setProjectStatus(ProjectStatus.OPEN);
+
+        when(projectRepository.findProjectsByClientId(mockUser.getId())).thenReturn(List.of(project));
+
+        userService.deleteUser(mockUser);
+
+        verify(projectRepository).save(project);
+        assertThat(project.getProjectStatus()).isEqualTo(ProjectStatus.EXPIRED);
+        verify(userRepository).save(mockUser);
+        assertThat(mockUser.isDeleted()).isTrue();
+    }
+
+    @Test
+    void deleteUser_FreelancerWithActiveApplications_ApplicationsCancelled() {
+        mockUser.setRole(Role.FREELANCER);
+        Application application = new Application();
+        application.setApplicationStatus(ApplicationStatus.APPLIED);
+        Project project = new Project();
+        project.setLastModifiedDate(LocalDateTime.now());
+        application.setProject(project);
+
+        when(applicationRepository.findApplicationsByFreelancerId(mockUser.getId())).thenReturn(List.of(application));
+
+        userService.deleteUser(mockUser);
+
+        verify(applicationRepository).save(application);
+        assertThat(application.getApplicationStatus()).isEqualTo(ApplicationStatus.CANCELLED);
+        verify(userRepository).save(mockUser);
+        assertThat(mockUser.isDeleted()).isTrue();
+    }
+
+
+    @Test
+    void deleteUser_ClientWithNoProjects_NoProjectInteraction() {
+        mockUser.setRole(Role.CLIENT);
+
+        when(projectRepository.findProjectsByClientId(mockUser.getId())).thenReturn(List.of());
+
+        userService.deleteUser(mockUser);
+
+        verify(projectRepository, never()).save(any(Project.class));
+        verify(userRepository).save(mockUser);
+        assertThat(mockUser.isDeleted()).isTrue();
+    }
+
+
+
+    @Test
+    void deleteUser_FreelancerWithNoApplications_NoApplicationInteraction() {
+        mockUser.setRole(Role.FREELANCER);
+
+        when(applicationRepository.findApplicationsByFreelancerId(mockUser.getId())).thenReturn(List.of());
+
+        userService.deleteUser(mockUser);
+
+        verify(applicationRepository, never()).save(any(Application.class));
+        verify(userRepository).save(mockUser);
+        assertThat(mockUser.isDeleted()).isTrue();
+    }
+
+    @Test
+    void deleteUser_UserAlreadyDeleted_NoFurtherActions() {
+        mockUser.setDeleted(true);
+
+        userService.deleteUser(mockUser);
+
+        verify(projectRepository, never()).save(any(Project.class));
+        verify(applicationRepository, never()).save(any(Application.class));
+    }
+
 }
