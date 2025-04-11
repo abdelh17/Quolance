@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {NoOpNotificationConfig.class})
@@ -226,5 +227,190 @@ class UsersControllerIntegrationTest extends BaseIntegrationTest {
         // Assert
         User updatedUser = userRepository.findByEmail("client@test.com").get();
         assertThat(updatedUser.getPassword()).isEqualTo(createdClient.getPassword());
+    }
+
+    @Test
+    void testCreateUserWithInvalidEmailReturnsError() throws Exception {
+        CreateUserRequestDto request = CreateUserRequestDto.builder()
+                .email("invalid-email")
+                .username("InvalidUser")
+                .firstName("Test")
+                .lastName("Test")
+                .password("Test1234")
+                .passwordConfirmation("Test1234")
+                .role("CLIENT")
+                .build();
+
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void testResetPasswordWithInvalidTokenReturnsError() throws Exception {
+        UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()
+                .passwordResetToken("invalid-token")
+                .password("NewPassword123!")
+                .confirmPassword("NewPassword123!")
+                .build();
+
+        mockMvc.perform(patch("/api/users/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testUpdateNotificationSubscriptionIsOk() throws Exception {
+        // Arrange
+        User client = userRepository.save(EntityCreationHelper.createClient());
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
+        Map<String, Boolean> request = Map.of("subscribed", false);
+
+        // Act
+        mockMvc.perform(patch("/api/users/notifications")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        // Assert
+        User updatedUser = userRepository.findByEmail(client.getEmail()).get();
+        assertThat(updatedUser.isNotificationsSubscribed()).isFalse();
+    }
+
+    @Test
+    void testDeleteUserIsOk() throws Exception {
+        // Arrange
+        User client = userRepository.save(EntityCreationHelper.createClient());
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
+
+        // Act
+        mockMvc.perform(delete("/api/users/delete")
+                        .session(session))
+                .andExpect(status().isOk());
+
+        // Assert
+        User updatedUser = userRepository.findByEmail(client.getEmail()).get();
+        assertThat(updatedUser.isDeleted()).isTrue();
+    }
+
+    @Test
+    void testGetNotificationSubscriptionStatusIsOk() throws Exception {
+        // Arrange
+        User client = userRepository.save(EntityCreationHelper.createClient());
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
+
+        // Act
+        String response = mockMvc.perform(get("/api/users/notifications/status")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        // Assert
+        Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
+        assertThat(jsonResponse).containsEntry("subscribed", client.isNotificationsSubscribed());
+    }
+
+    @Test
+    void testDeleteUserWithoutAuthenticationReturnsUnauthorized() throws Exception {
+        mockMvc.perform(delete("/api/users/delete"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testForgotPasswordWithNonExistentEmailReturnsError() throws Exception {
+        Map<String, String> request = Map.of("email", "nonexistent@test.com");
+
+        mockMvc.perform(post("/api/users/forgot-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testResetPasswordWithMismatchedPasswordsReturnsError() throws Exception {
+        UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()
+                .passwordResetToken("valid-token")
+                .password("NewPassword123!")
+                .confirmPassword("DifferentPassword123!")
+                .build();
+
+        mockMvc.perform(patch("/api/users/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void testUpdateUserWithoutSessionReturnsUnauthorized() throws Exception {
+        UpdateUserRequestDto request = UpdateUserRequestDto.builder()
+                .firstName("UpdatedFirstName")
+                .lastName("UpdatedLastName")
+                .build();
+
+        mockMvc.perform(put("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdatePasswordWithIncorrectOldPasswordReturnsError() throws Exception {
+        User client = userRepository.save(EntityCreationHelper.createClient());
+        UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()
+                .oldPassword("WrongPassword123!")
+                .password("NewPassword123!")
+                .confirmPassword("NewPassword123!")
+                .build();
+
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
+
+        mockMvc.perform(patch("/api/users/password")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testForgotPasswordWithInvalidEmailFormatReturnsError() throws Exception {
+        Map<String, String> request = Map.of("email", "invalid-email");
+
+        mockMvc.perform(post("/api/users/forgot-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void testUpdateNotificationSubscriptionWithMissingPayloadReturnsError() throws Exception {
+        User client = userRepository.save(EntityCreationHelper.createClient());
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
+
+        mockMvc.perform(patch("/api/users/notifications")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdatePasswordWithMissingFieldsReturnsError() throws Exception {
+        User client = userRepository.save(EntityCreationHelper.createClient());
+        UpdateUserPasswordRequestDto request = UpdateUserPasswordRequestDto.builder()
+                .oldPassword(null) // Missing old password
+                .password("NewPassword123!")
+                .confirmPassword("NewPassword123!")
+                .build();
+
+        session = sessionCreationHelper.getSession(client.getEmail(), "Password123!");
+
+        mockMvc.perform(patch("/api/users/password").session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError());
     }
 }
